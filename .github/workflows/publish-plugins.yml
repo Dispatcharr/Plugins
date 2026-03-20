@@ -1,0 +1,70 @@
+name: Publish Plugins
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'plugins/**'
+      - '.github/workflows/publish-plugins.yml'
+      - '.github/scripts/publish/run.sh'
+      - '.github/scripts/publish/build-zips.sh'
+      - '.github/scripts/publish/plugin-readmes.sh'
+      - '.github/scripts/publish/cleanup.sh'
+      - '.github/scripts/publish/generate-manifest.sh'
+      - '.github/scripts/publish/releases-readme.sh'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-plugins
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Make scripts executable
+        run: chmod +x .github/scripts/publish/*.sh
+
+      - name: Publish plugins to releases branch
+        id: publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -o pipefail
+          .github/scripts/publish/run.sh ${{ github.ref_name }} 2>&1 | tee publish.log
+
+      - name: Generate job summary
+        if: always()
+        run: |
+          echo "## Published Plugins" >> $GITHUB_STEP_SUMMARY
+          if [ -f publish.log ]; then
+            if grep -q "Successfully published" publish.log; then
+              echo "✅ Publishing completed successfully" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              # Extract plugin info from the temporary repo if available
+              if [ -d /tmp/tmp.*/repo ]; then
+                REPO_DIR=$(find /tmp -maxdepth 1 -name "tmp.*" -type d 2>/dev/null | head -1)/repo
+                if [ -f "$REPO_DIR/manifest.json" ]; then
+                  cat "$REPO_DIR/manifest.json" | jq -r '.plugins[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY
+                fi
+              fi
+            else
+              echo "❌ Publishing failed" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "See logs for details." >> $GITHUB_STEP_SUMMARY
+            fi
+          fi

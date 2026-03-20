@@ -1,0 +1,545 @@
+name: Validate Plugin
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  security-events: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - ready_for_review
+
+jobs:
+  # --------------------------------------------------------------------------
+  # Job 1: Post a notice on draft PRs - no validation runs yet
+  # --------------------------------------------------------------------------
+  draft-notice:
+    if: github.event.pull_request.draft == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Post draft notice
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          MARKER="<!--PLUGIN_VALIDATION_DRAFT_NOTICE-->"
+          COMMENT="$MARKER"$'\n'"This PR is currently a draft. Plugin validation will run once the PR is marked ready for review."
+          EXISTING=$(gh pr view $PR_NUMBER --json comments \
+            | jq -r --arg marker "$MARKER" '.comments[] | select(.author.login=="github-actions[bot]") | select(.body | contains($marker)) | .id')
+          if [ -n "$EXISTING" ]; then
+            gh api "repos/${{ github.repository }}/issues/comments/$EXISTING" -X PATCH -f body="$COMMENT"
+          else
+            gh pr comment $PR_NUMBER --body "$COMMENT"
+          fi
+
+  # --------------------------------------------------------------------------
+  # Job 2: Detect which plugins changed and build the matrix
+  # --------------------------------------------------------------------------
+  detect-changes:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.detect.outputs.matrix }}
+      plugin_count: ${{ steps.detect.outputs.plugin_count }}
+      close_pr: ${{ steps.detect.outputs.close_pr }}
+      close_reason: ${{ steps.detect.outputs.close_reason }}
+      outside_files: ${{ steps.detect.outputs.outside_files }}
+      outside_violation: ${{ steps.detect.outputs.outside_violation }}
+      skip_validation: ${{ steps.detect.outputs.skip_validation }}
+    steps:
+      - name: Checkout base branch scripts (trusted)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+
+      - name: Save trusted scripts before fork checkout
+        run: cp -r .github/scripts /tmp/trusted-scripts
+
+      - name: Checkout PR plugins (untrusted content only)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          sparse-checkout: plugins
+          sparse-checkout-cone-mode: false
+          clean: false
+
+      - name: Restore trusted scripts
+        run: mkdir -p .github && cp -r /tmp/trusted-scripts .github/scripts
+
+      - name: Re-fetch base branch refs
+        run: git fetch https://github.com/${{ github.repository }} +${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
+
+      - name: Detect changed plugins
+        id: detect
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          chmod +x .github/scripts/validate/*.sh
+          .github/scripts/validate/detect-changes.sh \
+            "${{ github.event.pull_request.user.login }}" \
+            "${{ github.event.pull_request.base.ref }}"
+
+  # --------------------------------------------------------------------------
+  # Job 3: CodeQL security and quality analysis (runs after validate-plugin)
+  #   Skipped automatically if any validation shard fails, saving ~15 min.
+  #   Analysis is explicitly scoped to only the changed plugin directories.
+  # --------------------------------------------------------------------------
+  codeql-analyze:
+    needs: [detect-changes, validate-plugin]
+    if: needs.validate-plugin.result == 'success' && needs.detect-changes.outputs.skip_validation != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      codeql_status: ${{ steps.status.outputs.codeql_status }}
+      codeql_errors: ${{ steps.status.outputs.codeql_errors }}
+      codeql_warnings: ${{ steps.status.outputs.codeql_warnings }}
+      codeql_mediums: ${{ steps.status.outputs.codeql_mediums }}
+    steps:
+      - name: Checkout PR merge commit for analysis
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          # Minimal placeholder — overridden immediately by the next step
+          # (actions/checkout doesn't support dynamic expressions in sparse-checkout)
+          sparse-checkout: .gitignore
+          sparse-checkout-cone-mode: false
+
+      - name: Limit checkout to changed plugin folders only
+        run: |
+          echo '${{ needs.detect-changes.outputs.matrix }}' \
+            | jq -r '.[] | "plugins/\(.)"' \
+            | git sparse-checkout set --stdin
+          git checkout
+
+      - name: Get merge commit SHA
+        id: merge
+        run: echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: python
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        id: analyze
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:python/pr-${{ github.event.pull_request.number }}
+          output: sarif-results
+          upload: false
+        continue-on-error: true
+
+      - name: Upload SARIF to GitHub (always, so resolved alerts are closed)
+        if: always() && hashFiles('sarif-results/**') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: sarif-results
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          sha: ${{ steps.merge.outputs.sha }}
+          category: /language:python/pr-${{ github.event.pull_request.number }}
+        continue-on-error: true
+
+      - name: Set CodeQL status output
+        id: status
+        if: always()
+        run: |
+          # Only block on security findings with CVSS score >= 7.0 (HIGH or CRITICAL).
+          # CodeQL stores this in rule properties["security-severity"], not in result.level.
+          JQ_BLOCKING='
+            [ .runs[] |
+              . as $run |
+              (
+                [ (($run.tool.driver.rules // [])[]          | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
+                  ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
+                | from_entries
+              ) as $secmap |
+              ($run.results // [])[] |
+              ((.ruleId // .rule.id // "") | tostring) as $rid |
+              select((($secmap[$rid] // "0") | tonumber) >= 7.0)
+            ] | length'
+          JQ_MEDIUM='
+            [ .runs[] |
+              . as $run |
+              (
+                [ (($run.tool.driver.rules // [])[]          | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
+                  ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
+                | from_entries
+              ) as $secmap |
+              ($run.results // [])[] |
+              ((.ruleId // .rule.id // "") | tostring) as $rid |
+              (($secmap[$rid] // "0") | tonumber) as $sev |
+              select($sev >= 6.0 and $sev < 7.0)
+            ] | length'
+          RESULT_COUNT=0
+          MEDIUM_COUNT=0
+          TOTAL_COUNT=0
+          if [[ -d "sarif-results" ]]; then
+            for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
+              [[ -f "$f" ]] || continue
+              if [[ "$f" == *.gz ]]; then
+                CONTENT=$(gunzip -c "$f")
+              else
+                CONTENT=$(cat "$f")
+              fi
+              COUNT=$(echo "$CONTENT" | jq "$JQ_BLOCKING")
+              MED=$(echo "$CONTENT" | jq "$JQ_MEDIUM")
+              TOT=$(echo "$CONTENT" | jq '[.runs[] | (.results // [])[]] | length')
+              echo "File $f: ${COUNT:-0} blocking, ${MED:-0} medium, $TOT total"
+              echo "$CONTENT" | jq -r \
+                '[ .runs[] | . as $run |
+                   ([ (($run.tool.driver.rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
+                      ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ] | from_entries) as $secmap |
+                   ($run.results // [])[] |
+                   (($r.ruleId // $r.rule.id // "") | tostring) as $rid |
+                   select((($secmap[$rid] // "0") | tonumber) >= 7.0) |
+                   "  [blocking] \($rid) sec-sev=\($secmap[$rid] // \"n/a\")" ] | .[]' || true
+              RESULT_COUNT=$((RESULT_COUNT + ${COUNT:-0}))
+              MEDIUM_COUNT=$((MEDIUM_COUNT + ${MED:-0}))
+              TOTAL_COUNT=$((TOTAL_COUNT + ${TOT:-0}))
+            done
+          fi
+          WARN_COUNT=$(( TOTAL_COUNT > RESULT_COUNT ? TOTAL_COUNT - RESULT_COUNT : 0 ))
+          echo "Found $RESULT_COUNT high/critical, $MEDIUM_COUNT medium, and $WARN_COUNT other CodeQL result(s)"
+          echo "codeql_errors=$RESULT_COUNT" >> "$GITHUB_OUTPUT"
+          echo "codeql_warnings=$WARN_COUNT" >> "$GITHUB_OUTPUT"
+          echo "codeql_mediums=$MEDIUM_COUNT" >> "$GITHUB_OUTPUT"
+
+          # Generate a findings detail file for inclusion in the PR comment
+          if [[ "$RESULT_COUNT" -gt 0 ]]; then
+            MERGE_SHA=$(git rev-parse HEAD)
+            {
+              echo "| Rule | Location | Description |"
+              echo "|------|----------|-------------|"
+              for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
+                [[ -f "$f" ]] || continue
+                if [[ "$f" == *.gz ]]; then
+                  FC=$(gunzip -c "$f")
+                else
+                  FC=$(cat "$f")
+                fi
+                echo "$FC" | jq -r \
+                  --arg repo "$GITHUB_REPOSITORY" \
+                  --arg sha "$MERGE_SHA" \
+                  '.runs[] |
+                  . as $run |
+                  (
+                    [ (($run.tool.driver.rules // [])[]         | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
+                      ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
+                    | from_entries
+                  ) as $secmap |
+                  ($run.results // [])[] |
+                  . as $result |
+                  (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
+                  select((($secmap[$rid] // "0") | tonumber) >= 7.0) |
+                  (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
+                  ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
+                  (.message.text // "no description" | gsub("\n"; " ") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
+                  "| `\($rid)` | [\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line)) | \($msg) |"'
+              done
+            } > codeql-findings.md
+          fi
+          # Generate medium findings detail file for informational display in the PR comment
+          if [[ "$MEDIUM_COUNT" -gt 0 ]]; then
+            MERGE_SHA=${MERGE_SHA:-$(git rev-parse HEAD)}
+            {
+              echo "| Rule | Location | Description |"
+              echo "|------|----------|-------------|"
+              for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
+                [[ -f "$f" ]] || continue
+                if [[ "$f" == *.gz ]]; then
+                  FC=$(gunzip -c "$f")
+                else
+                  FC=$(cat "$f")
+                fi
+                echo "$FC" | jq -r \
+                  --arg repo "$GITHUB_REPOSITORY" \
+                  --arg sha "$MERGE_SHA" \
+                  '.runs[] |
+                  . as $run |
+                  (
+                    [ (($run.tool.driver.rules // [])[]         | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
+                      ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
+                    | from_entries
+                  ) as $secmap |
+                  ($run.results // [])[] |
+                  . as $result |
+                  (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
+                  (($secmap[$rid] // "0") | tonumber) as $sev |
+                  select($sev >= 6.0 and $sev < 7.0) |
+                  (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
+                  ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
+                  (.message.text // "no description" | gsub("\n"; " ") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
+                  "| `\($rid)` | [\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line)) | \($msg) |"'
+              done
+            } > codeql-medium-findings.md
+          fi
+          if [[ "$RESULT_COUNT" -gt 0 || "${{ steps.analyze.outcome }}" != "success" ]]; then
+            echo "codeql_status=failure" >> "$GITHUB_OUTPUT"
+          else
+            echo "codeql_status=success" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload findings detail for PR comment
+        if: always() && steps.status.outputs.codeql_status == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-findings
+          path: codeql-findings.md
+          if-no-files-found: ignore
+
+      - name: Upload medium findings detail for PR comment
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-medium-findings
+          path: codeql-medium-findings.md
+          if-no-files-found: ignore
+
+      - name: Fail job if CodeQL found high/error/critical issues
+        if: always() && steps.status.outputs.codeql_status == 'failure'
+        run: exit 1
+
+  # --------------------------------------------------------------------------
+  # Job 4: Validate each plugin in parallel via matrix
+  # --------------------------------------------------------------------------
+  validate-plugin:
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.close_pr == 'false' && needs.detect-changes.outputs.skip_validation != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        plugin: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+    steps:
+      - name: Checkout base branch scripts (trusted)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+
+      - name: Save trusted scripts before fork checkout
+        run: cp -r .github/scripts /tmp/trusted-scripts
+
+      - name: Checkout PR plugins (untrusted content only)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          sparse-checkout: plugins
+          sparse-checkout-cone-mode: false
+          clean: false
+
+      - name: Restore trusted scripts
+        run: mkdir -p .github && cp -r /tmp/trusted-scripts .github/scripts
+
+      - name: Re-fetch base branch refs
+        run: git fetch https://github.com/${{ github.repository }} +${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
+
+      - name: Validate ${{ matrix.plugin }}
+        id: validate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          chmod +x .github/scripts/validate/*.sh
+          set +e
+          .github/scripts/validate/validate.sh \
+            "${{ matrix.plugin }}" \
+            "${{ github.event.pull_request.user.login }}" \
+            "${{ github.event.pull_request.base.ref }}" \
+            "${{ matrix.plugin }}.fragment.md"
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Upload report fragment
+        uses: actions/upload-artifact@v4
+        with:
+          name: fragment-${{ matrix.plugin }}
+          path: ${{ matrix.plugin }}.fragment.md
+          if-no-files-found: warn
+
+      - name: Fail step if validation failed
+        if: steps.validate.outputs.exit_code != '0'
+        run: exit 1
+
+  # --------------------------------------------------------------------------
+  # Job 5: Aggregate all fragments, post PR comment, set final status
+  # --------------------------------------------------------------------------
+  report:
+    needs: [detect-changes, validate-plugin, codeql-analyze]
+    if: always() && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false' && needs.detect-changes.outputs.skip_validation != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Download all report fragments
+        uses: actions/download-artifact@v4
+        with:
+          pattern: fragment-*
+          path: fragments
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Download CodeQL findings detail
+        uses: actions/download-artifact@v4
+        with:
+          name: codeql-findings
+          path: codeql-findings
+        continue-on-error: true
+
+      - name: Download CodeQL medium findings detail
+        uses: actions/download-artifact@v4
+        with:
+          name: codeql-medium-findings
+          path: codeql-medium-findings
+        continue-on-error: true
+
+      - name: Aggregate and post comment
+        id: report
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DISCORD_URL: ${{ vars.DISCORD_URL }}
+          CODEQL_RESULT: ${{ needs.codeql-analyze.outputs.codeql_status }}
+          CODEQL_ERRORS: ${{ needs.codeql-analyze.outputs.codeql_errors }}
+          CODEQL_WARNINGS: ${{ needs.codeql-analyze.outputs.codeql_warnings }}
+          CODEQL_MEDIUMS: ${{ needs.codeql-analyze.outputs.codeql_mediums }}
+          OUTSIDE_FILES: ${{ needs.detect-changes.outputs.outside_files }}
+        run: |
+          chmod +x .github/scripts/validate/*.sh
+          set +e
+          .github/scripts/validate/report.sh \
+            "${{ github.event.pull_request.number }}" \
+            "${{ github.event.pull_request.user.login }}" \
+            "${{ needs.detect-changes.outputs.plugin_count }}" \
+            "false" \
+            "fragments"
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Fail workflow if any plugin failed
+        if: steps.report.outputs.exit_code != '0'
+        run: |
+          echo "::error::Plugin validation failed. See PR comment for details."
+          exit 1
+
+  # --------------------------------------------------------------------------
+  # Job 6: Auto-close unauthorized PRs
+  # --------------------------------------------------------------------------
+  close-unauthorized:
+    needs: detect-changes
+    if: always() && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Post close comment and close PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DISCORD_URL: ${{ vars.DISCORD_URL }}
+          CLOSE_REASON: ${{ needs.detect-changes.outputs.close_reason }}
+        run: |
+          chmod +x .github/scripts/validate/*.sh
+          .github/scripts/validate/report.sh \
+            "${{ github.event.pull_request.number }}" \
+            "${{ github.event.pull_request.user.login }}" \
+            "${{ needs.detect-changes.outputs.plugin_count }}" \
+            "true" \
+            "/dev/null"
+
+  # --------------------------------------------------------------------------
+  # Job 7: Gate - single fixed status check for branch protection rules
+  #   Reference this job by name "Plugin PR Check" in your branch protection.
+  #   Passes only when detect-changes + CodeQL + all matrix validations + report
+  #   all succeed. Fails for any error, including unauthorized PRs.
+  # --------------------------------------------------------------------------
+  plugin-pr-check:
+    name: Plugin PR Check
+    needs: [detect-changes, codeql-analyze, validate-plugin, report]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Evaluate validation result
+        env:
+          DETECT_RESULT: ${{ needs.detect-changes.result }}
+          CLOSE_PR: ${{ needs.detect-changes.outputs.close_pr }}
+          SKIP_VALIDATION: ${{ needs.detect-changes.outputs.skip_validation }}
+          OUTSIDE_VIOLATION: ${{ needs.detect-changes.outputs.outside_violation }}
+          CODEQL_RESULT: ${{ needs.codeql-analyze.result }}
+          CODEQL_STATUS: ${{ needs.codeql-analyze.outputs.codeql_status }}
+          VALIDATE_RESULT: ${{ needs.validate-plugin.result }}
+          REPORT_RESULT: ${{ needs.report.result }}
+        run: |
+          if [[ "$DETECT_RESULT" != "success" ]]; then
+            echo "::error::Plugin detection failed or no plugin changes found."
+            exit 1
+          fi
+          if [[ "$SKIP_VALIDATION" == "true" ]]; then
+            echo "No plugin changes detected and author has write access - passing."
+            exit 0
+          fi
+          if [[ "$OUTSIDE_VIOLATION" == "true" ]]; then
+            echo "::error::PR contains unauthorized changes outside the plugins/ directory."
+            exit 1
+          fi
+          if [[ "$CLOSE_PR" == "true" ]]; then
+            echo "::error::PR is unauthorized - no permission to modify these plugins."
+            exit 1
+          fi
+          if [[ "$CODEQL_RESULT" == "failure" || "$CODEQL_STATUS" == "failure" ]]; then
+            echo "::error::CodeQL security analysis failed. See the Security tab for details."
+            exit 1
+          fi
+          if [[ "$VALIDATE_RESULT" == "failure" || "$VALIDATE_RESULT" == "cancelled" ]]; then
+            echo "::error::One or more plugin validations failed. See PR comment for details."
+            exit 1
+          fi
+          if [[ "$REPORT_RESULT" != "success" ]]; then
+            echo "::error::Plugin validation failed. See PR comment for details."
+            exit 1
+          fi
+          echo "All plugins validated successfully."
