@@ -15,6 +15,28 @@ set -e
 MAX_VERSIONED_ZIPS=${MAX_VERSIONED_ZIPS:-10}
 
 # ── LEGACY CLEANUP (safe to remove once all releases branches are migrated) ─────
+# Migrates releases/<plugin>/ → zips/<plugin>/ (folder rename from old layout).
+if [[ -d releases ]]; then
+  echo "  Migrating legacy releases/ → zips/"
+  mkdir -p zips
+  for old_dir in releases/*/; do
+    [[ ! -d "$old_dir" ]] && continue
+    plugin_name=$(basename "$old_dir")
+    mkdir -p "zips/$plugin_name"
+    # Move any files not already present in the destination
+    for f in "$old_dir"*; do
+      [[ -f "$f" ]] || continue
+      dest="zips/$plugin_name/$(basename "$f")"
+      if [[ ! -f "$dest" ]]; then
+        mv "$f" "$dest"
+      fi
+    done
+  done
+  rm -rf releases
+fi
+# ── END LEGACY CLEANUP ──────────────────────────────────────────────────────────
+
+# ── LEGACY CLEANUP (safe to remove once all releases branches are migrated) ─────
 # Removes the old metadata/ directory that pre-dated zips/<plugin>/manifest.json.
 if [[ -d metadata ]]; then
   echo "  Removing legacy metadata/ directory"
