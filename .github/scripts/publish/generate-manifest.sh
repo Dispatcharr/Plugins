@@ -199,6 +199,7 @@ for plugin_dir in plugins/*/; do
 
   root_entry=$(jq -n \
     --argjson latest_metadata "$latest_metadata" \
+    --arg slug "$plugin_name" \
     --arg name "$(jq -r '.name // ""' "$plugin_file")" \
     --arg description "$desc_trimmed" \
     --arg icon_url "$icon_url" \
@@ -207,7 +208,7 @@ for plugin_dir in plugins/*/; do
     --arg license "$(jq -r '.license // ""' "$plugin_file")" \
     --arg latest_url "$latest_url" \
     '{
-      slug: $plugin_name,
+      slug: $slug,
       name: $name,
       description: $description,
       icon_url: (if $icon_url != "" then $icon_url else null end),
