@@ -152,7 +152,7 @@ for plugin_dir in plugins/*/; do
     '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .')
   if write_manifest_if_changed "metadata/$plugin_name/manifest.json" "$new_plugin_manifest"; then
     sign_manifest "metadata/$plugin_name/manifest.json"
-  elif [[ -n "$gpg_key_id" ]] && ! sig_is_current "metadata/$plugin_name/manifest.json"; then
+  elif [[ -n "$gpg_key_id" && "$gpg_signing_failed" -eq 0 ]] && ! sig_is_current "metadata/$plugin_name/manifest.json"; then
     sign_manifest "metadata/$plugin_name/manifest.json"
   fi
   plugin_entries+=("$plugin_entry")
@@ -213,7 +213,7 @@ new_root_manifest=$(
 )
 if write_manifest_if_changed "manifest.json" "$new_root_manifest"; then
   sign_manifest "manifest.json"
-elif [[ -n "$gpg_key_id" ]] && ! sig_is_current "manifest.json"; then
+elif [[ -n "$gpg_key_id" && "$gpg_signing_failed" -eq 0 ]] && ! sig_is_current "manifest.json"; then
   sign_manifest "manifest.json"
 fi
 
