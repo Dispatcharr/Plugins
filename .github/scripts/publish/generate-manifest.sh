@@ -2,7 +2,7 @@
 set -e
 
 # publish-generate-manifest.sh
-# Generates metadata/<plugin>/manifest.json for each plugin and the root manifest.json.
+# Generates zips/<plugin>/manifest.json for each plugin and the root manifest.json.
 #
 # Called from the releases branch checkout directory by publish-plugins.sh.
 # Required env: SOURCE_BRANCH, RELEASES_BRANCH, GITHUB_REPOSITORY
@@ -113,19 +113,31 @@ for plugin_dir in plugins/*/; do
 
   echo "  $plugin_name"
 
-  latest_url="https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${plugin_name}-latest.zip"
+  latest_url="https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${plugin_name}-latest.zip"
 
   versioned_zips="[]"
   latest_metadata="{}"
 
+  # existing per-plugin manifest from previous run — used as metadata fallback
+  existing_manifest_file="zips/$plugin_name/manifest.json"
+
   while IFS= read -r zipfile; do
     zip_basename=$(basename "$zipfile")
     zip_version=$(echo "$zip_basename" | sed "s/${plugin_name}-\(.*\)\.zip/\1/")
-    zip_url="https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${zip_basename}"
-    metadata_file="metadata/$plugin_name/${plugin_name}-${zip_version}.json"
+    zip_url="https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${zip_basename}"
 
-    if [[ -f "$metadata_file" ]]; then
-      metadata=$(cat "$metadata_file")
+    # Fresh metadata from this run takes priority; fall back to existing manifest
+    fresh_meta_file="${BUILD_META_DIR:-}/$plugin_name/${plugin_name}-${zip_version}.json"
+    metadata="{}"
+    if [[ -n "${BUILD_META_DIR:-}" && -f "$fresh_meta_file" ]]; then
+      metadata=$(cat "$fresh_meta_file")
+    elif [[ -f "$existing_manifest_file" ]]; then
+      meta_from_manifest=$(jq -c --arg v "$zip_version" \
+        '.manifest.versions[]? | select(.version == $v)' "$existing_manifest_file" 2>/dev/null || true)
+      [[ -n "$meta_from_manifest" ]] && metadata="$meta_from_manifest"
+    fi
+
+    if [[ "$metadata" != "{}" ]]; then
       versioned_zips=$(jq --arg url "$zip_url" --argjson metadata "$metadata" \
         '. + [($metadata + {url: $url})]' <<< "$versioned_zips")
       if [[ "$latest_metadata" == "{}" ]]; then
@@ -135,7 +147,7 @@ for plugin_dir in plugins/*/; do
       versioned_zips=$(jq --arg version "$zip_version" --arg url "$zip_url" \
         '. + [{version: $version, url: $url}]' <<< "$versioned_zips")
     fi
-  done < <(ls -1 "releases/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
+  done < <(ls -1 "zips/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
       | grep -v latest | sort -t- -k2 -V -r)
 
   # Compute icon_url before building plugin_entry so it can be included in both manifests
@@ -174,10 +186,10 @@ for plugin_dir in plugins/*/; do
     )' \
     "$plugin_file")
 
-  if write_manifest_if_changed "metadata/$plugin_name/manifest.json" "$plugin_entry"; then
-    sign_manifest "metadata/$plugin_name/manifest.json"
-  elif [[ -n "$gpg_key_id" && "$gpg_signing_failed" -eq 0 ]] && ! sig_is_current "metadata/$plugin_name/manifest.json"; then
-    sign_manifest "metadata/$plugin_name/manifest.json"
+  if write_manifest_if_changed "zips/$plugin_name/manifest.json" "$plugin_entry"; then
+    sign_manifest "zips/$plugin_name/manifest.json"
+  elif [[ -n "$gpg_key_id" && "$gpg_signing_failed" -eq 0 ]] && ! sig_is_current "zips/$plugin_name/manifest.json"; then
+    sign_manifest "zips/$plugin_name/manifest.json"
   fi
   plugin_entries+=("$plugin_entry")
 
@@ -189,7 +201,7 @@ for plugin_dir in plugins/*/; do
     desc_trimmed="$desc_raw"
   fi
 
-  plugin_manifest_url="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${RELEASES_BRANCH}/metadata/${plugin_name}/manifest.json"
+  plugin_manifest_url="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${RELEASES_BRANCH}/zips/${plugin_name}/manifest.json"
 
   root_entry=$(jq -n \
     --argjson latest_metadata "$latest_metadata" \
@@ -245,7 +257,7 @@ if [[ "$gpg_signing_failed" -eq 1 ]]; then
   while IFS= read -r -d '' _f; do
     _tmp=$(mktemp)
     jq 'del(.signature)' "$_f" > "$_tmp" && mv "$_tmp" "$_f" || rm -f "$_tmp"
-  done < <(find metadata -name "manifest.json" -print0 2>/dev/null)
+  done < <(find zips -name "manifest.json" -print0 2>/dev/null)
   _tmp=$(mktemp)
   jq 'del(.signature)' manifest.json > "$_tmp" && mv "$_tmp" manifest.json || rm -f "$_tmp"
   unset _f _tmp

@@ -27,12 +27,12 @@ render_plugin() {
   local version_count=${11}
   local license=${12}
 
-  local zip_url="https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${plugin_name}-latest.zip"
+  local zip_url="https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${plugin_name}-latest.zip"
   local source_url="https://github.com/${GITHUB_REPOSITORY}/tree/$SOURCE_BRANCH/plugins/${plugin_name}"
   local readme_url="https://github.com/${GITHUB_REPOSITORY}/blob/$SOURCE_BRANCH/plugins/${plugin_name}/README.md"
-  local releases_readme_url="https://github.com/${GITHUB_REPOSITORY}/blob/$RELEASES_BRANCH/releases/${plugin_name}/README.md"
+  local releases_readme_url="https://github.com/${GITHUB_REPOSITORY}/blob/$RELEASES_BRANCH/zips/${plugin_name}/README.md"
   local commit_url="https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha}"
-  local releases_dir="./releases/${plugin_name}"
+  local releases_dir="./zips/${plugin_name}"
   local has_source_readme=false
   [[ -f "plugins/$plugin_name/README.md" ]] && has_source_readme=true
 
@@ -73,8 +73,7 @@ render_plugin() {
   echo "## Quick Access"
   echo ""
   echo "- [manifest.json](./manifest.json) - Complete plugin registry with metadata"
-  echo "- [releases/](./releases/) - All plugin ZIP files"
-  echo "- [metadata/](./metadata/) - Version metadata with checksums"
+  echo "- [zips/](./zips/) - Plugin ZIP files and per-plugin manifests"
   echo ""
   echo "## Available Plugins"
   echo ""
@@ -130,7 +129,7 @@ render_plugin() {
       || date -u +"%Y-%m-%dT%H:%M:%SZ")
     commit_sha=$(git log -1 --format=%H origin/$SOURCE_BRANCH -- "$plugin_dir" 2>/dev/null || echo "unknown")
     commit_sha_short=$(git log -1 --format=%h origin/$SOURCE_BRANCH -- "$plugin_dir" 2>/dev/null || echo "unknown")
-    version_count=$(ls -1 "releases/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
+    version_count=$(ls -1 "zips/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
       | grep -v latest | wc -l | tr -d ' ')
     plugin_license=$(jq -r '.license // ""' "$plugin_file")
 
@@ -174,7 +173,7 @@ render_plugin() {
         || date -u +"%Y-%m-%dT%H:%M:%SZ")
       commit_sha=$(git log -1 --format=%H origin/$SOURCE_BRANCH -- "$plugin_dir" 2>/dev/null || echo "unknown")
       commit_sha_short=$(git log -1 --format=%h origin/$SOURCE_BRANCH -- "$plugin_dir" 2>/dev/null || echo "unknown")
-      version_count=$(ls -1 "releases/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
+      version_count=$(ls -1 "zips/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
         | grep -v latest | wc -l | tr -d ' ')
       plugin_license=$(jq -r '.license // ""' "$plugin_file")
 

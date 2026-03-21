@@ -2,14 +2,22 @@
 set -e
 
 # publish-build-zips.sh
-# Builds versioned ZIPs and per-version metadata files for all plugins.
-# Skips plugins whose current version already has a ZIP + metadata file.
+# Builds versioned ZIPs and per-version metadata for all plugins.
+# Per-version metadata is written to a temporary working directory (BUILD_META_DIR)
+# so generate-manifest.sh can consume it within this CI run without persisting
+# per-version JSON files to the releases branch.
+# Skips plugins whose current version already has a ZIP and an entry in the
+# existing per-plugin manifest.
 # Writes changed_plugins.txt to cwd (one "name@version" per line).
 #
 # Called from the releases branch checkout directory by publish-plugins.sh.
 # Required env: SOURCE_BRANCH, RELEASES_BRANCH, GITHUB_REPOSITORY
 
 : "${SOURCE_BRANCH:?}" "${RELEASES_BRANCH:?}" "${GITHUB_REPOSITORY:?}"
+
+# Temp dir for this run's per-version metadata, cleaned up by run.sh trap
+export BUILD_META_DIR
+BUILD_META_DIR=$(mktemp -d)
 
 > changed_plugins.txt
 
@@ -18,14 +26,18 @@ for plugin_dir in plugins/*/; do
   plugin_name=$(basename "$plugin_dir")
   version=$(jq -r '.version' "$plugin_dir/plugin.json")
 
-  mkdir -p "releases/$plugin_name" "metadata/$plugin_name"
+  mkdir -p "zips/$plugin_name"
 
-  zip_path="releases/$plugin_name/${plugin_name}-${version}.zip"
-  metadata_path="metadata/$plugin_name/${plugin_name}-${version}.json"
+  zip_path="zips/$plugin_name/${plugin_name}-${version}.zip"
+  existing_manifest="zips/$plugin_name/manifest.json"
 
-  if [[ -f "$zip_path" ]] && [[ -f "$metadata_path" ]]; then
-    echo "  $plugin_name v$version - skipping (already exists)"
-    continue
+  # Skip if ZIP exists and the version is already in the existing manifest
+  if [[ -f "$zip_path" ]]; then
+    if [[ -f "$existing_manifest" ]] && \
+       jq -e --arg v "$version" '.manifest.versions[]? | select(.version == $v)' "$existing_manifest" >/dev/null 2>&1; then
+      echo "  $plugin_name v$version - skipping (already exists)"
+      continue
+    fi
   fi
 
   echo "  $plugin_name v$version - building"
@@ -45,6 +57,7 @@ for plugin_dir in plugins/*/; do
   min_da_version=$(jq -r '.min_dispatcharr_version // ""' "$plugin_dir/plugin.json")
   max_da_version=$(jq -r '.max_dispatcharr_version // ""' "$plugin_dir/plugin.json")
 
+  mkdir -p "$BUILD_META_DIR/$plugin_name"
   jq -n \
     --arg version "$version" \
     --arg commit_sha "$commit_sha" \
@@ -65,9 +78,9 @@ for plugin_dir in plugins/*/; do
       checksum_sha256: $checksum_sha256
     } + (if $min_da_version != "" then {min_dispatcharr_version: $min_da_version} else {} end)
       + (if $max_da_version != "" then {max_dispatcharr_version: $max_da_version} else {} end)' \
-    > "$metadata_path"
+    > "$BUILD_META_DIR/$plugin_name/${plugin_name}-${version}.json"
 
-  cp "$zip_path" "releases/$plugin_name/${plugin_name}-latest.zip"
+  cp "$zip_path" "zips/$plugin_name/${plugin_name}-latest.zip"
 done
 
 changed=$(wc -l < changed_plugins.txt | tr -d ' ')

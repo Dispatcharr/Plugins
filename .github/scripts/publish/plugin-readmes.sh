@@ -2,7 +2,7 @@
 set -e
 
 # publish-per-plugin-readmes.sh
-# Generates releases/<plugin>/README.md for every plugin.
+# Generates zips/<plugin>/README.md for every plugin.
 #
 # Called from the releases branch checkout directory by publish-plugins.sh.
 # Required env: SOURCE_BRANCH, RELEASES_BRANCH, GITHUB_REPOSITORY
@@ -53,26 +53,27 @@ for plugin_dir in plugins/*/; do
     echo "### Latest Release"
     echo ""
 
-    latest_zip="releases/$plugin_name/${plugin_name}-latest.zip"
+    latest_zip="zips/$plugin_name/${plugin_name}-latest.zip"
     if [[ -f "$latest_zip" ]]; then
-      latest_versioned=$(ls -1 "releases/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
+      latest_versioned=$(ls -1 "zips/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
         | grep -v latest | sort -t- -k2 -V -r | head -1)
       if [[ -n "$latest_versioned" ]]; then
         zip_basename=$(basename "$latest_versioned")
         latest_version=$(echo "$zip_basename" | sed "s/${plugin_name}-\(.*\)\.zip/\1/")
-        metadata_file="metadata/$plugin_name/${plugin_name}-${latest_version}.json"
+        manifest_file="zips/$plugin_name/manifest.json"
+        meta_entry=""
+        if [[ -f "$manifest_file" ]]; then
+          meta_entry=$(jq -c --arg v "$latest_version" \
+            '.manifest.versions[]? | select(.version == $v)' "$manifest_file" 2>/dev/null || true)
+        fi
+        if [[ -n "$meta_entry" ]]; then
+          commit_sha=$(echo "$meta_entry" | jq -r '.commit_sha')
+          commit_sha_short=$(echo "$meta_entry" | jq -r '.commit_sha_short')
+          build_timestamp=$(echo "$meta_entry" | jq -r '.build_timestamp')
+          checksum_md5=$(echo "$meta_entry" | jq -r '.checksum_md5')
+          checksum_sha256=$(echo "$meta_entry" | jq -r '.checksum_sha256')
 
-        echo "**Version:** \`$latest_version\`"
-        echo ""
-
-        if [[ -f "$metadata_file" ]]; then
-          commit_sha=$(jq -r '.commit_sha' "$metadata_file")
-          commit_sha_short=$(jq -r '.commit_sha_short' "$metadata_file")
-          build_timestamp=$(jq -r '.build_timestamp' "$metadata_file")
-          checksum_md5=$(jq -r '.checksum_md5' "$metadata_file")
-          checksum_sha256=$(jq -r '.checksum_sha256' "$metadata_file")
-
-          echo "- **Download:** [\`${plugin_name}-latest.zip\`](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${plugin_name}-latest.zip)"
+          echo "- **Download:** [\`${plugin_name}-latest.zip\`](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${plugin_name}-latest.zip)"
           echo "- **Built:** $(fmt_date "$build_timestamp")"
           echo "- **Source Commit:** [\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha})"
           echo ""
@@ -82,7 +83,7 @@ for plugin_dir in plugins/*/; do
           echo "SHA256: $checksum_sha256"
           echo "\`\`\`"
         else
-          echo "- **Download:** [\`${plugin_name}-latest.zip\`](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${plugin_name}-latest.zip)"
+          echo "- **Download:** [\`${plugin_name}-latest.zip\`](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${plugin_name}-latest.zip)"
         fi
       fi
     fi
@@ -93,23 +94,29 @@ for plugin_dir in plugins/*/; do
     echo "| Version | Download | Built | Commit | MD5 | SHA256 |"
     echo "|---------|----------|-------|--------|-----|--------|"
 
+    manifest_file="zips/$plugin_name/manifest.json"
     while IFS= read -r zipfile; do
       zip_basename=$(basename "$zipfile")
       version=$(echo "$zip_basename" | sed "s/${plugin_name}-\(.*\)\.zip/\1/")
-      metadata_file="metadata/$plugin_name/${plugin_name}-${version}.json"
 
-      if [[ -f "$metadata_file" ]]; then
-        commit_sha_short=$(jq -r '.commit_sha_short' "$metadata_file")
-        commit_sha=$(jq -r '.commit_sha' "$metadata_file")
-        build_timestamp=$(jq -r '.build_timestamp' "$metadata_file")
-        checksum_md5=$(jq -r '.checksum_md5' "$metadata_file")
-        checksum_sha256=$(jq -r '.checksum_sha256' "$metadata_file")
-        build_date=$(fmt_date "$build_timestamp")
-        echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${zip_basename}) | $build_date | [\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha}) | \`$checksum_md5\` | \`$checksum_sha256\` |"
-      else
-        echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${zip_basename}) | - | - | - |"
+      meta_entry=""
+      if [[ -f "$manifest_file" ]]; then
+        meta_entry=$(jq -c --arg v "$version" \
+          '.manifest.versions[]? | select(.version == $v)' "$manifest_file" 2>/dev/null || true)
       fi
-    done < <(ls -1 "releases/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
+
+      if [[ -n "$meta_entry" ]]; then
+        commit_sha_short=$(echo "$meta_entry" | jq -r '.commit_sha_short')
+        commit_sha=$(echo "$meta_entry" | jq -r '.commit_sha')
+        build_timestamp=$(echo "$meta_entry" | jq -r '.build_timestamp')
+        checksum_md5=$(echo "$meta_entry" | jq -r '.checksum_md5')
+        checksum_sha256=$(echo "$meta_entry" | jq -r '.checksum_sha256')
+        build_date=$(fmt_date "$build_timestamp")
+        echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${zip_basename}) | $build_date | [\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha}) | \`$checksum_md5\` | \`$checksum_sha256\` |"
+      else
+        echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${zip_basename}) | - | - | - |"
+      fi
+    done < <(ls -1 "zips/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
         | grep -v latest | sort -t- -k2 -V -r)
 
     echo ""
@@ -117,7 +124,7 @@ for plugin_dir in plugins/*/; do
     echo ""
     echo "**Source:** [Browse Plugin](https://github.com/${GITHUB_REPOSITORY}/tree/$SOURCE_BRANCH/plugins/${plugin_name})"
     echo ""
-    echo "**Metadata:** [View full metadata](../../metadata/${plugin_name}/manifest.json)"
+    echo "**Metadata:** [View full manifest](./manifest.json)"
 
     if [[ "$has_readme" == "true" ]]; then
       echo ""
@@ -127,7 +134,7 @@ for plugin_dir in plugins/*/; do
       echo ""
       cat "$plugin_dir/README.md"
     fi
-  } > "releases/$plugin_name/README.md"
+  } > "zips/$plugin_name/README.md"
 
   echo "  $plugin_name"
 done

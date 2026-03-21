@@ -28,7 +28,7 @@ echo "Publishing plugins from $SOURCE_BRANCH to $RELEASES_BRANCH"
 
 # Create temporary working directory
 WORK_DIR=$(mktemp -d)
-trap "rm -rf $WORK_DIR" EXIT
+trap 'rm -rf "$WORK_DIR" "${BUILD_META_DIR:-}"' EXIT
 
 echo "Cloning repository..."
 git clone --no-checkout "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$WORK_DIR/repo"
@@ -57,16 +57,12 @@ echo "Fetching plugins from $SOURCE_BRANCH..."
 git fetch origin $SOURCE_BRANCH
 git checkout origin/$SOURCE_BRANCH -- plugins
 
-mkdir -p releases
+mkdir -p zips
 
 # --- Phases ---
 echo ""
 echo "=== Building ZIPs ==="
 bash "$SCRIPT_DIR/build-zips.sh"
-
-echo ""
-echo "=== Generating per-plugin READMEs ==="
-bash "$SCRIPT_DIR/plugin-readmes.sh"
 
 echo ""
 echo "=== Cleaning up old releases ==="
@@ -77,6 +73,10 @@ echo "=== Generating manifests ==="
 bash "$SCRIPT_DIR/generate-manifest.sh"
 
 echo ""
+echo "=== Generating per-plugin READMEs ==="
+bash "$SCRIPT_DIR/plugin-readmes.sh"
+
+echo ""
 echo "=== Generating releases README ==="
 bash "$SCRIPT_DIR/releases-readme.sh"
 
@@ -85,7 +85,7 @@ echo ""
 echo "=== Committing ==="
 rm -rf plugins
 git rm -rf --cached plugins 2>/dev/null || true
-git add releases metadata manifest.json README.md
+git add releases manifest.json README.md
 
 if git diff --cached --quiet; then
   echo "No changes to commit."
