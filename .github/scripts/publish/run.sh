@@ -85,7 +85,7 @@ echo ""
 echo "=== Committing ==="
 rm -rf plugins
 git rm -rf --cached plugins 2>/dev/null || true
-git add releases metadata manifest.json README.md
+git add releases metadata manifest.json manifest.json.sig README.md
 
 if git diff --cached --quiet; then
   echo "No changes to commit."
