@@ -11,7 +11,7 @@ set -e
 
 generated_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 repo_url="https://github.com/${GITHUB_REPOSITORY}"
-repo_name="${GITHUB_REPOSITORY##*/}"
+repo_name="${GITHUB_REPOSITORY}"
 
 # GPG signing setup - optional; set GPG_PRIVATE_KEY (armored) and optionally GPG_PASSPHRASE
 gpg_key_id=""
@@ -30,47 +30,76 @@ else
   echo "GPG_PRIVATE_KEY not set - signatures will be skipped."
 fi
 
-# Writes $2 (JSON string) to $1 only when the content (excluding generated_at)
-# differs from the file already on disk.  Returns 0 if written, 1 if skipped.
+# Writes a manifest wrapper to $1 with $2 as the signed payload (.manifest),
+# only when .manifest content differs from what is on disk.
+# Wrapper structure: {generated_at, repo_url, repo_name, manifest: <payload>}
+# The .signature field is added separately by sign_manifest.
+# Returns 0 if written, 1 if skipped (content unchanged).
 write_manifest_if_changed() {
-  local dest="$1" new_content="$2"
+  local dest="$1" manifest_payload="$2"
+  local new_compact
+  new_compact=$(echo "$manifest_payload" | jq -c '.')
   if [[ -f "$dest" ]]; then
-    local existing_stripped new_stripped
-    existing_stripped=$(jq -c 'del(.generated_at)' "$dest")
-    new_stripped=$(echo "$new_content" | jq -c 'del(.generated_at)')
-    if [[ "$existing_stripped" == "$new_stripped" ]]; then
+    local existing_manifest
+    existing_manifest=$(jq -c '.manifest' "$dest" 2>/dev/null)
+    if [[ "$existing_manifest" == "$new_compact" ]]; then
       return 1
     fi
   fi
-  echo "$new_content" > "$dest"
+  jq -n \
+    --arg generated_at "$generated_at" \
+    --arg repo_url "$repo_url" \
+    --arg repo_name "$repo_name" \
+    --argjson manifest "$new_compact" \
+    '{generated_at: $generated_at, repo_url: $repo_url, repo_name: $repo_name, manifest: $manifest}' \
+    > "$dest"
   return 0
 }
 
-# Returns 0 if $1.sig exists and was created by the current gpg_key_id, 1 otherwise.
-# Used to detect key rotation: if the key changed we must re-sign even when content is unchanged.
+# Returns 0 if the manifest at $1 has an embedded .signature made by the current
+# gpg_key_id, 1 otherwise. Uses --list-packets on a temp file to read the issuer
+# key ID without cryptographic verification, avoiding trust-level pitfalls.
 sig_is_current() {
   local file="$1"
-  [[ -f "${file}.sig" ]] || return 1
-  local sig_fpr
-  sig_fpr=$(jq -c '.' "$file" | gpg --verify --status-fd 1 "${file}.sig" - 2>/dev/null \
-    | awk '/VALIDSIG/{print $3}' | head -1)
-  # gpg_key_id is a 16-char long key ID; VALIDSIG gives the full 40-char fingerprint
-  [[ -n "$sig_fpr" && "$sig_fpr" == *"$gpg_key_id" ]] && return 0 || return 1
+  local sig
+  sig=$(jq -r '.signature // empty' "$file" 2>/dev/null)
+  [[ -n "$sig" ]] || return 1
+  local tmp_sig sig_key_id
+  tmp_sig=$(mktemp)
+  printf '%s\n' "$sig" > "$tmp_sig"
+  sig_key_id=$(gpg --list-packets "$tmp_sig" 2>/dev/null \
+    | sed -n 's/.*issuer key ID \([A-Fa-f0-9]\{16\}\).*/\1/p' | head -1 \
+    | tr 'a-f' 'A-F')
+  rm -f "$tmp_sig"
+  local cur_key_upper
+  cur_key_upper=$(echo "$gpg_key_id" | tr 'a-f' 'A-F')
+  [[ -n "$sig_key_id" && "$sig_key_id" == "$cur_key_upper" ]]
 }
 
-# Signs $1 (a JSON file) and writes an armored detached signature to $1.sig.
-# Sets gpg_signing_failed=1 on any gpg error so all sigs are cleaned up at the end.
+# Signs the .manifest payload of $1 and embeds the armored signature as .signature
+# in the same JSON file. Sets gpg_signing_failed=1 on any error.
 sign_manifest() {
   local file="$1"
   [[ -z "$gpg_key_id" ]] && return 0
-  local gpg_opts=(--batch --yes --armor --detach-sign --local-user "$gpg_key_id" --output "${file}.sig")
+  local gpg_opts=(--batch --yes --armor --detach-sign --local-user "$gpg_key_id" --output -)
   if [[ -n "${GPG_PASSPHRASE:-}" ]]; then
     gpg_opts+=(--passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback)
   fi
-  if ! jq -c '.' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null; then
+  local sig
+  sig=$(jq -c '.manifest' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null) || true
+  if [[ -z "$sig" ]]; then
     echo "::warning::GPG signing failed for ${file} - all signatures will be removed."
     gpg_signing_failed=1
-    rm -f "${file}.sig"
+    return 1
+  fi
+  local tmp
+  tmp=$(mktemp)
+  if jq --arg sig "$sig" '. + {signature: $sig}' "$file" > "$tmp"; then
+    mv "$tmp" "$file"
+  else
+    rm -f "$tmp"
+    echo "::warning::Failed to embed signature in ${file}."
+    gpg_signing_failed=1
   fi
 }
 
@@ -145,12 +174,7 @@ for plugin_dir in plugins/*/; do
     )' \
     "$plugin_file")
 
-  new_plugin_manifest=$(echo "$plugin_entry" | jq \
-    --arg ts "$generated_at" \
-    --arg repo_url "$repo_url" \
-    --arg repo_name "$repo_name" \
-    '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .')
-  if write_manifest_if_changed "metadata/$plugin_name/manifest.json" "$new_plugin_manifest"; then
+  if write_manifest_if_changed "metadata/$plugin_name/manifest.json" "$plugin_entry"; then
     sign_manifest "metadata/$plugin_name/manifest.json"
   elif [[ -n "$gpg_key_id" && "$gpg_signing_failed" -eq 0 ]] && ! sig_is_current "metadata/$plugin_name/manifest.json"; then
     sign_manifest "metadata/$plugin_name/manifest.json"
@@ -192,7 +216,7 @@ for plugin_dir in plugins/*/; do
   root_entries+=("$root_entry")
 done
 
-new_root_manifest=$(
+inner_root=$(
   {
     echo '{'
     echo '  "plugins": ['
@@ -205,24 +229,25 @@ new_root_manifest=$(
     echo ""
     echo '  ]'
     echo '}'
-  } | jq \
-    --arg ts "$generated_at" \
-    --arg repo_url "$repo_url" \
-    --arg repo_name "$repo_name" \
-    '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .'
+  } | jq -c '.'
 )
-if write_manifest_if_changed "manifest.json" "$new_root_manifest"; then
+if write_manifest_if_changed "manifest.json" "$inner_root"; then
   sign_manifest "manifest.json"
 elif [[ -n "$gpg_key_id" && "$gpg_signing_failed" -eq 0 ]] && ! sig_is_current "manifest.json"; then
   sign_manifest "manifest.json"
 fi
 
-# If any signing step failed, remove ALL .sig files so the repo is never
-# left in a partially-signed state.
+# If any signing step failed, strip embedded signatures from all manifests so
+# the repo is never left in a partially-signed state.
 if [[ "$gpg_signing_failed" -eq 1 ]]; then
-  echo "::warning::Removing all .sig files due to signing failure."
-  find metadata -name "*.sig" -delete 2>/dev/null || true
-  rm -f manifest.json.sig
+  echo "::warning::Removing all signatures due to signing failure."
+  while IFS= read -r -d '' _f; do
+    _tmp=$(mktemp)
+    jq 'del(.signature)' "$_f" > "$_tmp" && mv "$_tmp" "$_f" || rm -f "$_tmp"
+  done < <(find metadata -name "manifest.json" -print0 2>/dev/null)
+  _tmp=$(mktemp)
+  jq 'del(.signature)' manifest.json > "$_tmp" && mv "$_tmp" manifest.json || rm -f "$_tmp"
+  unset _f _tmp
 fi
 
 echo "Generated manifest.json with ${#root_entries[@]} plugin(s)."

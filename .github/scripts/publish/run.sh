@@ -86,8 +86,6 @@ echo "=== Committing ==="
 rm -rf plugins
 git rm -rf --cached plugins 2>/dev/null || true
 git add releases metadata manifest.json README.md
-# manifest.json.sig only exists when GPG signing succeeded
-[[ -f manifest.json.sig ]] && git add manifest.json.sig || git rm --cached --ignore-unmatch manifest.json.sig
 
 if git diff --cached --quiet; then
   echo "No changes to commit."

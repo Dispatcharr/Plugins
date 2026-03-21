@@ -55,38 +55,40 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ## Verifying Manifest Signatures
 
-Each manifest is GPG-signed. A detached armored signature is published alongside it as a `.sig` sidecar file:
+Each manifest file embeds its GPG signature directly. The `signature` field covers the compact (`jq -c '.manifest'`) form of the `manifest` payload:
 
-| File | URL |
-|------|-----|
-| Root manifest | `.../releases/manifest.json` |
-| Root signature | `.../releases/manifest.json.sig` |
-| Plugin manifest | `.../releases/metadata/<plugin>/manifest.json` |
-| Plugin signature | `.../releases/metadata/<plugin>/manifest.json.sig` |
+```json
+{
+  "generated_at": "...",
+  "repo_url": "...",
+  "repo_name": "owner/repo",
+  "signature": "-----BEGIN PGP SIGNATURE-----\n...",
+  "manifest": { ... }
+}
+```
+
+The public key is bundled with Dispatcharr. To verify manually, export it from the application or obtain `.github/scripts/keys/dispatcharr-plugins.pub` from the default branch.
 
 ### Steps
 
 **1. Import the public key**
 
-The public key is bundled with Dispatcharr. To verify manually, export it from the application or obtain it from the repository and import it:
-
 ```bash
 gpg --import dispatcharr-plugins.pub
 ```
 
-**2. Download the manifest and its signature**
+**2. Download the manifest**
 
 ```bash
 curl -sO https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json
-curl -sO https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json.sig
 ```
 
 **3. Verify**
 
-The signature covers the compact (`jq -c '.'`) form of the JSON:
-
 ```bash
-jq -c '.' manifest.json | gpg --verify manifest.json.sig -
+jq -r '.signature' manifest.json > manifest.json.sig
+jq -c '.manifest' manifest.json | gpg --verify manifest.json.sig -
+rm manifest.json.sig
 ```
 
 A successful result looks like:
@@ -96,4 +98,4 @@ gpg: Signature made ...
 gpg: Good signature from "..." [full]
 ```
 
-The same steps apply to any per-plugin manifest - just substitute the path to `metadata/<plugin>/manifest.json`.
+The same steps apply to any per-plugin manifest — substitute the path to `metadata/<plugin>/manifest.json`.
