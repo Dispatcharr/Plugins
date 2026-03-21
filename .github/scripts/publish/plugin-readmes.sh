@@ -67,21 +67,23 @@ for plugin_dir in plugins/*/; do
             '.manifest.versions[]? | select(.version == $v)' "$manifest_file" 2>/dev/null || true)
         fi
         if [[ -n "$meta_entry" ]]; then
-          commit_sha=$(echo "$meta_entry" | jq -r '.commit_sha')
-          commit_sha_short=$(echo "$meta_entry" | jq -r '.commit_sha_short')
-          build_timestamp=$(echo "$meta_entry" | jq -r '.build_timestamp')
-          checksum_md5=$(echo "$meta_entry" | jq -r '.checksum_md5')
-          checksum_sha256=$(echo "$meta_entry" | jq -r '.checksum_sha256')
+          commit_sha=$(echo "$meta_entry" | jq -r '.commit_sha // empty')
+          commit_sha_short=$(echo "$meta_entry" | jq -r '.commit_sha_short // empty')
+          build_timestamp=$(echo "$meta_entry" | jq -r '.build_timestamp // empty')
+          checksum_md5=$(echo "$meta_entry" | jq -r '.checksum_md5 // empty')
+          checksum_sha256=$(echo "$meta_entry" | jq -r '.checksum_sha256 // empty')
 
           echo "- **Download:** [\`${plugin_name}-latest.zip\`](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${plugin_name}-latest.zip)"
-          echo "- **Built:** $(fmt_date "$build_timestamp")"
-          echo "- **Source Commit:** [\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha})"
-          echo ""
-          echo "**Checksums:**"
-          echo "\`\`\`"
-          echo "MD5:    $checksum_md5"
-          echo "SHA256: $checksum_sha256"
-          echo "\`\`\`"
+          [[ -n "$build_timestamp" ]] && echo "- **Built:** $(fmt_date "$build_timestamp")"
+          [[ -n "$commit_sha" ]] && echo "- **Source Commit:** [\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha})"
+          if [[ -n "$checksum_md5" || -n "$checksum_sha256" ]]; then
+            echo ""
+            echo "**Checksums:**"
+            echo "\`\`\`"
+            [[ -n "$checksum_md5" ]]    && echo "MD5:    $checksum_md5"
+            [[ -n "$checksum_sha256" ]] && echo "SHA256: $checksum_sha256"
+            echo "\`\`\`"
+          fi
         else
           echo "- **Download:** [\`${plugin_name}-latest.zip\`](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${plugin_name}-latest.zip)"
         fi
@@ -106,13 +108,15 @@ for plugin_dir in plugins/*/; do
       fi
 
       if [[ -n "$meta_entry" ]]; then
-        commit_sha_short=$(echo "$meta_entry" | jq -r '.commit_sha_short')
-        commit_sha=$(echo "$meta_entry" | jq -r '.commit_sha')
-        build_timestamp=$(echo "$meta_entry" | jq -r '.build_timestamp')
-        checksum_md5=$(echo "$meta_entry" | jq -r '.checksum_md5')
-        checksum_sha256=$(echo "$meta_entry" | jq -r '.checksum_sha256')
+        commit_sha_short=$(echo "$meta_entry" | jq -r '.commit_sha_short // empty')
+        commit_sha=$(echo "$meta_entry" | jq -r '.commit_sha // empty')
+        build_timestamp=$(echo "$meta_entry" | jq -r '.build_timestamp // empty')
+        checksum_md5=$(echo "$meta_entry" | jq -r '.checksum_md5 // empty')
+        checksum_sha256=$(echo "$meta_entry" | jq -r '.checksum_sha256 // empty')
         build_date=$(fmt_date "$build_timestamp")
-        echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${zip_basename}) | $build_date | [\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha}) | \`$checksum_md5\` | \`$checksum_sha256\` |"
+        commit_cell="-"
+        [[ -n "$commit_sha" ]] && commit_cell="[\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha})"
+        echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${zip_basename}) | ${build_date:--} | $commit_cell | ${checksum_md5:--} | ${checksum_sha256:--} |"
       else
         echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${zip_basename}) | - | - | - |"
       fi

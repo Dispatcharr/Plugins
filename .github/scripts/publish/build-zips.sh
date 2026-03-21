@@ -13,11 +13,7 @@ set -e
 # Called from the releases branch checkout directory by publish-plugins.sh.
 # Required env: SOURCE_BRANCH, RELEASES_BRANCH, GITHUB_REPOSITORY
 
-: "${SOURCE_BRANCH:?}" "${RELEASES_BRANCH:?}" "${GITHUB_REPOSITORY:?}"
-
-# Temp dir for this run's per-version metadata, cleaned up by run.sh trap
-export BUILD_META_DIR
-BUILD_META_DIR=$(mktemp -d)
+: "${SOURCE_BRANCH:?}" "${RELEASES_BRANCH:?}" "${GITHUB_REPOSITORY:?}" "${BUILD_META_DIR:?}"
 
 > changed_plugins.txt
 

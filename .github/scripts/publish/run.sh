@@ -26,9 +26,11 @@ export SOURCE_BRANCH RELEASES_BRANCH MAX_VERSIONED_ZIPS
 
 echo "Publishing plugins from $SOURCE_BRANCH to $RELEASES_BRANCH"
 
-# Create temporary working directory
+# Create temporary working directories
 WORK_DIR=$(mktemp -d)
-trap 'rm -rf "$WORK_DIR" "${BUILD_META_DIR:-}"' EXIT
+BUILD_META_DIR=$(mktemp -d)
+export BUILD_META_DIR
+trap 'rm -rf "$WORK_DIR" "$BUILD_META_DIR"' EXIT
 
 echo "Cloning repository..."
 git clone --no-checkout "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$WORK_DIR/repo"
