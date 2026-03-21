@@ -90,8 +90,8 @@ for plugin_dir in plugins/*/; do
     echo ""
     echo "### All Versions"
     echo ""
-    echo "| Version | Download | Built | Commit | MD5 Checksum |"
-    echo "|---------|----------|-------|--------|--------------|"
+    echo "| Version | Download | Built | Commit | MD5 | SHA256 |"
+    echo "|---------|----------|-------|--------|-----|--------|"
 
     while IFS= read -r zipfile; do
       zip_basename=$(basename "$zipfile")
@@ -103,8 +103,9 @@ for plugin_dir in plugins/*/; do
         commit_sha=$(jq -r '.commit_sha' "$metadata_file")
         build_timestamp=$(jq -r '.build_timestamp' "$metadata_file")
         checksum_md5=$(jq -r '.checksum_md5' "$metadata_file")
+        checksum_sha256=$(jq -r '.checksum_sha256' "$metadata_file")
         build_date=$(fmt_date "$build_timestamp")
-        echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${zip_basename}) | $build_date | [\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha}) | \`$checksum_md5\` |"
+        echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${zip_basename}) | $build_date | [\`$commit_sha_short\`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha}) | \`$checksum_md5\` | \`$checksum_sha256\` |"
       else
         echo "| \`$version\` | [Download](https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/releases/${plugin_name}/${zip_basename}) | - | - | - |"
       fi
