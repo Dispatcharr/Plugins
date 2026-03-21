@@ -167,7 +167,6 @@ for plugin_dir in plugins/*/; do
       "deprecated","unlisted","min_dispatcharr_version","max_dispatcharr_version","repo_url","discord_thread","license"
     ))) + {
       slug: $plugin_name,
-      latest_url: $latest_url,
       versions: $versioned_zips
     } + (if $icon_url != "" then {icon_url: $icon_url} else {} end)
       + (
@@ -208,6 +207,7 @@ for plugin_dir in plugins/*/; do
     --arg license "$(jq -r '.license // ""' "$plugin_file")" \
     --arg latest_url "$latest_url" \
     '{
+      slug: $plugin_name,
       name: $name,
       description: $description,
       icon_url: (if $icon_url != "" then $icon_url else null end),
