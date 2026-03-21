@@ -176,12 +176,7 @@ for plugin_dir in plugins/*/; do
         latest: ($latest_metadata + {
           latest_url: $latest_url,
           url: $versioned_zips[0].url
-        }),
-        latest_commit_sha: $latest_metadata.commit_sha,
-        latest_commit_sha_short: $latest_metadata.commit_sha_short,
-        latest_build_timestamp: $latest_metadata.build_timestamp,
-        latest_checksum_md5: $latest_metadata.checksum_md5,
-        latest_checksum_sha256: $latest_metadata.checksum_sha256
+        })
       } else {} end
     )' \
     "$plugin_file")
