@@ -19,6 +19,7 @@ on:
       - '.github/scripts/publish/cleanup.sh'
       - '.github/scripts/publish/generate-manifest.sh'
       - '.github/scripts/publish/releases-readme.sh'
+      - '.github/scripts/keys/**'
   workflow_dispatch:
 
 concurrency:
