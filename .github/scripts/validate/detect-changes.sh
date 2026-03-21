@@ -169,5 +169,14 @@ if [[ $HAS_OUTSIDE_VIOLATION -eq 1 ]]; then
   } >> "$GITHUB_OUTPUT"
 fi
 
+# Warn when an authorized contributor changes the signing public key
+PUB_KEY_CHANGED=false
+if [[ "$(has_write_access "$PR_AUTHOR")" -eq 1 ]]; then
+  if echo "$OUTSIDE_CHANGES" | grep -q "^\.github/scripts/keys/dispatcharr-plugins\.pub$"; then
+    PUB_KEY_CHANGED=true
+  fi
+fi
+echo "pub_key_changed=$PUB_KEY_CHANGED" >> "$GITHUB_OUTPUT"
+
 echo "Detected $PLUGIN_COUNT plugin(s): $PLUGIN_LIST"
 echo "close_pr=$CLOSE_PR"

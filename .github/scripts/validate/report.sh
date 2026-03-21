@@ -108,8 +108,6 @@ done
 
     if [[ -n "${OUTSIDE_FILES:-}" ]]; then
       OVERALL_FAILED=1
-      # echo ""
-      # echo "## Unauthorized File Modification"
       echo ""
       echo "⚠️ This PR modifies files outside of \`plugins/\`, which requires write access to the repository. These changes will block merging."
       echo ""
@@ -123,6 +121,21 @@ done
         echo ""
         echo "For help: [Dispatcharr Discord]($DISCORD_URL)"
       fi
+      echo ""
+    fi
+
+    if [[ "${PUB_KEY_CHANGED:-}" == "true" ]]; then
+      echo ""
+      echo "---"
+      echo ""
+      echo "### ⚠️ Signing Key Change Detected"
+      echo ""
+      echo "This PR modifies \`.github/scripts/keys/dispatcharr-plugins.pub\`. This is the public GPG key used by Dispatcharr to verify manifest signatures."
+      echo ""
+      echo "**Before merging, confirm:**"
+      echo "- The corresponding private key and passphrase secrets (\`GPG_PRIVATE_KEY\`, \`GPG_PASSPHRASE\`) have been updated in the repository settings."
+      echo "- The new public key has been bundled into the Dispatcharr application."
+      echo "- Existing \`.sig\` files on the \`releases\` branch will be regenerated on next publish."
       echo ""
     fi
 

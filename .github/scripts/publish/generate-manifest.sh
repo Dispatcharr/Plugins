@@ -15,15 +15,23 @@ repo_name="${GITHUB_REPOSITORY##*/}"
 
 # GPG signing setup - optional; set GPG_PRIVATE_KEY (armored) and optionally GPG_PASSPHRASE
 gpg_key_id=""
+gpg_signing_failed=0
 if [[ -n "${GPG_PRIVATE_KEY:-}" ]]; then
   echo "$GPG_PRIVATE_KEY" | gpg --batch --import 2>/dev/null
   gpg_key_id=$(gpg --list-secret-keys --keyid-format LONG 2>/dev/null \
     | awk '/^sec/{print $2}' | head -1 | cut -d'/' -f2)
-  echo "GPG signing enabled (key: $gpg_key_id)"
+  if [[ -n "$gpg_key_id" ]]; then
+    echo "GPG signing enabled (key: $gpg_key_id)"
+  else
+    echo "::warning::GPG key import succeeded but no usable secret key found - signatures will be skipped."
+    gpg_signing_failed=1
+  fi
+else
+  echo "GPG_PRIVATE_KEY not set - signatures will be skipped."
 fi
 
 # Signs $1 (a JSON file) and writes an armored detached signature to $1.sig.
-# The signed payload is the compact JSON of the file.
+# Sets gpg_signing_failed=1 on any gpg error so all sigs are cleaned up at the end.
 sign_manifest() {
   local file="$1"
   [[ -z "$gpg_key_id" ]] && return 0
@@ -31,7 +39,11 @@ sign_manifest() {
   if [[ -n "${GPG_PASSPHRASE:-}" ]]; then
     gpg_opts+=(--passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback)
   fi
-  jq -c '.' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null
+  if ! jq -c '.' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null; then
+    echo "::warning::GPG signing failed for ${file} - all signatures will be removed."
+    gpg_signing_failed=1
+    rm -f "${file}.sig"
+  fi
 }
 
 plugin_entries=()
@@ -166,5 +178,13 @@ done
   --arg repo_name "$repo_name" \
   '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .' > manifest.json
 sign_manifest "manifest.json"
+
+# If any signing step failed, remove ALL .sig files so the repo is never
+# left in a partially-signed state.
+if [[ "$gpg_signing_failed" -eq 1 ]]; then
+  echo "::warning::Removing all .sig files due to signing failure."
+  find metadata -name "*.sig" -delete 2>/dev/null || true
+  rm -f manifest.json.sig
+fi
 
 echo "Generated manifest.json with ${#root_entries[@]} plugin(s)."

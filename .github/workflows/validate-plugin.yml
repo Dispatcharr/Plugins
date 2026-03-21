@@ -57,6 +57,7 @@ jobs:
       outside_files: ${{ steps.detect.outputs.outside_files }}
       outside_violation: ${{ steps.detect.outputs.outside_violation }}
       skip_validation: ${{ steps.detect.outputs.skip_validation }}
+      pub_key_changed: ${{ steps.detect.outputs.pub_key_changed }}
     steps:
       - name: Checkout base branch scripts (trusted)
         uses: actions/checkout@v4
@@ -443,6 +444,7 @@ jobs:
           CODEQL_WARNINGS: ${{ needs.codeql-analyze.outputs.codeql_warnings }}
           CODEQL_MEDIUMS: ${{ needs.codeql-analyze.outputs.codeql_mediums }}
           OUTSIDE_FILES: ${{ needs.detect-changes.outputs.outside_files }}
+          PUB_KEY_CHANGED: ${{ needs.detect-changes.outputs.pub_key_changed }}
         run: |
           chmod +x .github/scripts/validate/*.sh
           set +e
