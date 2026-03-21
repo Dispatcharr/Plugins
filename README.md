@@ -52,3 +52,48 @@ Visit the [releases branch](https://github.com/Dispatcharr/Plugins/tree/releases
 ```bash
 curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json
 ```
+
+## Verifying Manifest Signatures
+
+Each manifest is GPG-signed. A detached armored signature is published alongside it as a `.sig` sidecar file:
+
+| File | URL |
+|------|-----|
+| Root manifest | `.../releases/manifest.json` |
+| Root signature | `.../releases/manifest.json.sig` |
+| Plugin manifest | `.../releases/metadata/<plugin>/manifest.json` |
+| Plugin signature | `.../releases/metadata/<plugin>/manifest.json.sig` |
+
+### Steps
+
+**1. Import the public key**
+
+The public key is bundled with Dispatcharr. To verify manually, export it from the application or obtain it from the repository and import it:
+
+```bash
+gpg --import dispatcharr-plugins.pub
+```
+
+**2. Download the manifest and its signature**
+
+```bash
+curl -sO https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json
+curl -sO https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json.sig
+```
+
+**3. Verify**
+
+The signature covers the compact (`jq -c '.'`) form of the JSON:
+
+```bash
+jq -c '.' manifest.json | gpg --verify manifest.json.sig -
+```
+
+A successful result looks like:
+
+```
+gpg: Signature made ...
+gpg: Good signature from "..." [full]
+```
+
+The same steps apply to any per-plugin manifest - just substitute the path to `metadata/<plugin>/manifest.json`.

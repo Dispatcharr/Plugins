@@ -1,0 +1,53 @@
+# Plugin Signature Files
+.github/scripts/keys/*.key
+.github/scripts/keys/*.pass
+
+# macOS
+**/.DS_Store
+**/.AppleDouble
+**/.LSOverride
+
+# IDE
+**/.vscode/
+**/.idea/
+**/*.sublime-project
+**/*.sublime-workspace
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+**/*.egg
+**/*.egg-info/
+**/dist/
+**/build/
+**/.eggs/
+**/.env
+**/.venv
+**/env/
+**/venv/
+**/*.env.local
+**/.Python
+**/pip-log.txt
+**/pip-delete-this-directory.txt
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/htmlcov/
+**/.coverage
+**/.coverage.*
+**/coverage.xml
+**/*.log
+
+# Shell
+**/*.swp
+**/*.swo
+**/*~
+
+# Docker
+**/.dockerignore
+**/docker-compose.override.yml
+**/.docker/
+
+

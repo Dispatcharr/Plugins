@@ -9,6 +9,31 @@ set -e
 
 : "${SOURCE_BRANCH:?}" "${RELEASES_BRANCH:?}" "${GITHUB_REPOSITORY:?}"
 
+generated_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+repo_url="https://github.com/${GITHUB_REPOSITORY}"
+repo_name="${GITHUB_REPOSITORY##*/}"
+
+# GPG signing setup - optional; set GPG_PRIVATE_KEY (armored) and optionally GPG_PASSPHRASE
+gpg_key_id=""
+if [[ -n "${GPG_PRIVATE_KEY:-}" ]]; then
+  echo "$GPG_PRIVATE_KEY" | gpg --batch --import 2>/dev/null
+  gpg_key_id=$(gpg --list-secret-keys --keyid-format LONG 2>/dev/null \
+    | awk '/^sec/{print $2}' | head -1 | cut -d'/' -f2)
+  echo "GPG signing enabled (key: $gpg_key_id)"
+fi
+
+# Signs $1 (a JSON file) and writes an armored detached signature to $1.sig.
+# The signed payload is the compact JSON of the file.
+sign_manifest() {
+  local file="$1"
+  [[ -z "$gpg_key_id" ]] && return 0
+  local gpg_opts=(--batch --yes --armor --detach-sign --local-user "$gpg_key_id" --output "${file}.sig")
+  if [[ -n "${GPG_PASSPHRASE:-}" ]]; then
+    gpg_opts+=(--passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback)
+  fi
+  jq -c '.' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null
+}
+
 plugin_entries=()
 root_entries=()
 
@@ -80,7 +105,12 @@ for plugin_dir in plugins/*/; do
     )' \
     "$plugin_file")
 
-  echo "$plugin_entry" | jq '.' > "metadata/$plugin_name/manifest.json"
+  echo "$plugin_entry" | jq \
+    --arg ts "$generated_at" \
+    --arg repo_url "$repo_url" \
+    --arg repo_name "$repo_name" \
+    '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .' > "metadata/$plugin_name/manifest.json"
+  sign_manifest "metadata/$plugin_name/manifest.json"
   plugin_entries+=("$plugin_entry")
 
   # Compact root manifest entry
@@ -130,6 +160,11 @@ done
   echo ""
   echo '  ]'
   echo '}'
-} | jq --arg ts "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" '{generated_at: $ts} + .' > manifest.json
+} | jq \
+  --arg ts "$generated_at" \
+  --arg repo_url "$repo_url" \
+  --arg repo_name "$repo_name" \
+  '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .' > manifest.json
+sign_manifest "manifest.json"
 
 echo "Generated manifest.json with ${#root_entries[@]} plugin(s)."
