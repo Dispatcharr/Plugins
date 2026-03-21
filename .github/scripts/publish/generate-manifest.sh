@@ -110,6 +110,7 @@ for plugin_dir in plugins/*/; do
   plugin_file="$plugin_dir/plugin.json"
   [[ ! -f "$plugin_file" ]] && continue
   plugin_name=$(basename "$plugin_dir")
+  [[ "$(jq -r '.unlisted // false' "$plugin_file")" == "true" ]] && continue
 
   echo "  $plugin_name"
 
@@ -163,8 +164,8 @@ for plugin_dir in plugins/*/; do
     --argjson versioned_zips "$versioned_zips" \
     --argjson latest_metadata "$latest_metadata" \
     'with_entries(select(.key | IN(
-      "name","version","description","author","maintainers",
-      "deprecated","unlisted","min_dispatcharr_version","max_dispatcharr_version","repo_url","discord_thread","license"
+      "name","description","author","maintainers",
+      "deprecated","repo_url","discord_thread","license"
     ))) + {
       slug: $plugin_name,
       versions: $versioned_zips
