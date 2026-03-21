@@ -9,7 +9,7 @@ set -e
 
 EMAIL="plugins@dispatcharr.tv"
 NAME="Dispatcharr Plugin Repo"
-PASSPHRASE=$(LC_ALL=C tr -dc 'A-Za-z0-9!@#$%^&*' </dev/urandom | head -c 12)
+PASSPHRASE=$(LC_ALL=C tr -dc 'A-Za-z0-9!@#$%^&*' </dev/urandom | head -c 128)
 KEYS_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Generating GPG signing key..."
