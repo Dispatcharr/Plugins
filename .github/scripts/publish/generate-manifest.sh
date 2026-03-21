@@ -200,6 +200,7 @@ for plugin_dir in plugins/*/; do
 
   root_entry=$(jq -n \
     --argjson latest_metadata "$latest_metadata" \
+    --argjson versioned_zips "$versioned_zips" \
     --arg slug "$plugin_name" \
     --arg name "$(jq -r '.name // ""' "$plugin_file")" \
     --arg description "$desc_trimmed" \
@@ -207,7 +208,6 @@ for plugin_dir in plugins/*/; do
     --arg manifest_url "$plugin_manifest_url" \
     --arg author "$(jq -r '.author // ""' "$plugin_file")" \
     --arg license "$(jq -r '.license // ""' "$plugin_file")" \
-    --arg latest_url "$latest_url" \
     '{
       slug: $slug,
       name: $name,
@@ -219,7 +219,7 @@ for plugin_dir in plugins/*/; do
       latest_version: ($latest_metadata.version // null),
       latest_md5: ($latest_metadata.checksum_md5 // null),
       latest_sha256: ($latest_metadata.checksum_sha256 // null),
-      latest_url: $latest_url,
+      latest_url: ($versioned_zips[0].url // null),
       min_dispatcharr_version: ($latest_metadata.min_dispatcharr_version // null),
       max_dispatcharr_version: ($latest_metadata.max_dispatcharr_version // null)
     } | with_entries(select(.value != null))')
