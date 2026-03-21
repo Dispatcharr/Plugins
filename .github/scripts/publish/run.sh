@@ -85,6 +85,8 @@ echo ""
 echo "=== Committing ==="
 rm -rf plugins
 git rm -rf --cached plugins 2>/dev/null || true
+# Stage deletions of legacy directories that cleanup.sh may have removed
+git rm -rf --cached releases metadata 2>/dev/null || true
 git add zips manifest.json README.md
 
 if git diff --cached --quiet; then
