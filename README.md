@@ -95,4 +95,4 @@ gpg: Signature made ...
 gpg: Good signature from "..." [full]
 ```
 
-The same steps apply to any per-plugin manifest — substitute the path to `zips/<plugin>/manifest.json`.
+The same steps apply to any per-plugin manifest - substitute the path to `zips/<plugin>/manifest.json`.

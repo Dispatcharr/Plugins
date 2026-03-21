@@ -118,7 +118,7 @@ for plugin_dir in plugins/*/; do
   versioned_zips="[]"
   latest_metadata="{}"
 
-  # existing per-plugin manifest from previous run — used as metadata fallback
+  # existing per-plugin manifest from previous run - used as metadata fallback
   existing_manifest_file="zips/$plugin_name/manifest.json"
 
   while IFS= read -r zipfile; do

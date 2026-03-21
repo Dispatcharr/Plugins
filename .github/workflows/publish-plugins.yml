@@ -21,6 +21,12 @@ on:
       - '.github/scripts/publish/releases-readme.sh'
       - '.github/scripts/keys/**'
   workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: 'Delete and recreate the releases branch from scratch'
+        type: boolean
+        default: false
+        required: false
 
 concurrency:
   group: publish-plugins
@@ -46,6 +52,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          FORCE_REBUILD: ${{ inputs.force_rebuild }}
         run: |
           set -o pipefail
           .github/scripts/publish/run.sh ${{ github.ref_name }} 2>&1 | tee publish.log

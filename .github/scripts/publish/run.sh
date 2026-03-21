@@ -40,7 +40,13 @@ git config user.email "github-actions[bot]@users.noreply.github.com"
 
 # Checkout or create releases branch
 echo "Setting up $RELEASES_BRANCH branch..."
-if git ls-remote --exit-code --heads origin $RELEASES_BRANCH >/dev/null 2>&1; then
+if [[ "${FORCE_REBUILD:-false}" == "true" ]]; then
+  echo "Force rebuild requested - resetting $RELEASES_BRANCH to a new orphan commit."
+  git checkout --orphan $RELEASES_BRANCH
+  git rm -rf . 2>/dev/null || true
+  git commit --allow-empty -m "Initialize $RELEASES_BRANCH branch (force rebuild)"
+  git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" $RELEASES_BRANCH
+elif git ls-remote --exit-code --heads origin $RELEASES_BRANCH >/dev/null 2>&1; then
   git checkout $RELEASES_BRANCH
   git pull origin $RELEASES_BRANCH || true
 else
@@ -85,8 +91,6 @@ echo ""
 echo "=== Committing ==="
 rm -rf plugins
 git rm -rf --cached plugins 2>/dev/null || true
-# Stage deletions of legacy directories that cleanup.sh may have removed
-git rm -rf --cached releases metadata 2>/dev/null || true
 git add zips manifest.json README.md
 
 if git diff --cached --quiet; then

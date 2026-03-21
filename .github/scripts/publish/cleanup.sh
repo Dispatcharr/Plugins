@@ -4,8 +4,6 @@ set -e
 # publish-cleanup.sh
 # Removes release artifacts for plugins that no longer exist in source,
 # and prunes versioned ZIPs beyond MAX_VERSIONED_ZIPS.
-# Also contains LEGACY CLEANUP blocks (clearly marked) that can be removed
-# once all pre-existing releases branches have been migrated.
 #
 # Called from the releases branch checkout directory by publish-plugins.sh.
 # Required env: SOURCE_BRANCH
@@ -13,36 +11,6 @@ set -e
 
 : "${SOURCE_BRANCH:?}"
 MAX_VERSIONED_ZIPS=${MAX_VERSIONED_ZIPS:-10}
-
-# ── LEGACY CLEANUP (safe to remove once all releases branches are migrated) ─────
-# Migrates releases/<plugin>/ → zips/<plugin>/ (folder rename from old layout).
-if [[ -d releases ]]; then
-  echo "  Migrating legacy releases/ → zips/"
-  mkdir -p zips
-  for old_dir in releases/*/; do
-    [[ ! -d "$old_dir" ]] && continue
-    plugin_name=$(basename "$old_dir")
-    mkdir -p "zips/$plugin_name"
-    # Move any files not already present in the destination
-    for f in "$old_dir"*; do
-      [[ -f "$f" ]] || continue
-      dest="zips/$plugin_name/$(basename "$f")"
-      if [[ ! -f "$dest" ]]; then
-        mv "$f" "$dest"
-      fi
-    done
-  done
-  rm -rf releases
-fi
-# ── END LEGACY CLEANUP ──────────────────────────────────────────────────────────
-
-# ── LEGACY CLEANUP (safe to remove once all releases branches are migrated) ─────
-# Removes the old metadata/ directory that pre-dated zips/<plugin>/manifest.json.
-if [[ -d metadata ]]; then
-  echo "  Removing legacy metadata/ directory"
-  rm -rf metadata
-fi
-# ── END LEGACY CLEANUP ──────────────────────────────────────────────────────────
 
 # Remove artifacts for deleted plugins
 if [[ -d zips ]]; then
@@ -56,7 +24,7 @@ if [[ -d zips ]]; then
   done
 fi
 
-# Prune old versions and remove legacy per-version JSON files per plugin
+# Prune old versions per plugin
 for plugin_dir in plugins/*/; do
   [[ ! -d "$plugin_dir" ]] && continue
   plugin_name=$(basename "$plugin_dir")
@@ -69,13 +37,4 @@ for plugin_dir in plugins/*/; do
   done < <(ls -1t "$zip_dir/${plugin_name}-"*.zip 2>/dev/null \
     | grep -v "${plugin_name}-latest.zip" \
     | awk "NR>$MAX_VERSIONED_ZIPS")
-
-  # ── LEGACY CLEANUP (safe to remove once all releases branches are migrated) ───
-  # Removes per-version <plugin>-<version>.json files that pre-dated embedded manifest versions.
-  for legacy_file in "$zip_dir/${plugin_name}-"*.json; do
-    [[ -f "$legacy_file" ]] || continue
-    echo "  Removed legacy metadata: $(basename "$legacy_file")"
-    rm -f "$legacy_file"
-  done
-  # ── END LEGACY CLEANUP ────────────────────────────────────────────────────────
 done
