@@ -30,6 +30,34 @@ else
   echo "GPG_PRIVATE_KEY not set - signatures will be skipped."
 fi
 
+# Writes $2 (JSON string) to $1 only when the content (excluding generated_at)
+# differs from the file already on disk.  Returns 0 if written, 1 if skipped.
+write_manifest_if_changed() {
+  local dest="$1" new_content="$2"
+  if [[ -f "$dest" ]]; then
+    local existing_stripped new_stripped
+    existing_stripped=$(jq -c 'del(.generated_at)' "$dest")
+    new_stripped=$(echo "$new_content" | jq -c 'del(.generated_at)')
+    if [[ "$existing_stripped" == "$new_stripped" ]]; then
+      return 1
+    fi
+  fi
+  echo "$new_content" > "$dest"
+  return 0
+}
+
+# Returns 0 if $1.sig exists and was created by the current gpg_key_id, 1 otherwise.
+# Used to detect key rotation: if the key changed we must re-sign even when content is unchanged.
+sig_is_current() {
+  local file="$1"
+  [[ -f "${file}.sig" ]] || return 1
+  local sig_fpr
+  sig_fpr=$(jq -c '.' "$file" | gpg --verify --status-fd 1 "${file}.sig" - 2>/dev/null \
+    | awk '/VALIDSIG/{print $3}' | head -1)
+  # gpg_key_id is a 16-char long key ID; VALIDSIG gives the full 40-char fingerprint
+  [[ -n "$sig_fpr" && "$sig_fpr" == *"$gpg_key_id" ]] && return 0 || return 1
+}
+
 # Signs $1 (a JSON file) and writes an armored detached signature to $1.sig.
 # Sets gpg_signing_failed=1 on any gpg error so all sigs are cleaned up at the end.
 sign_manifest() {
@@ -117,12 +145,16 @@ for plugin_dir in plugins/*/; do
     )' \
     "$plugin_file")
 
-  echo "$plugin_entry" | jq \
+  new_plugin_manifest=$(echo "$plugin_entry" | jq \
     --arg ts "$generated_at" \
     --arg repo_url "$repo_url" \
     --arg repo_name "$repo_name" \
-    '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .' > "metadata/$plugin_name/manifest.json"
-  sign_manifest "metadata/$plugin_name/manifest.json"
+    '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .')
+  if write_manifest_if_changed "metadata/$plugin_name/manifest.json" "$new_plugin_manifest"; then
+    sign_manifest "metadata/$plugin_name/manifest.json"
+  elif [[ -n "$gpg_key_id" ]] && ! sig_is_current "metadata/$plugin_name/manifest.json"; then
+    sign_manifest "metadata/$plugin_name/manifest.json"
+  fi
   plugin_entries+=("$plugin_entry")
 
   # Compact root manifest entry
@@ -160,24 +192,30 @@ for plugin_dir in plugins/*/; do
   root_entries+=("$root_entry")
 done
 
-{
-  echo '{'
-  echo '  "plugins": ['
-  first=true
-  for entry in "${root_entries[@]}"; do
-    if [[ "$first" != true ]]; then echo ","; fi
-    first=false
-    echo "$entry" | sed 's/^/    /'
-  done
-  echo ""
-  echo '  ]'
-  echo '}'
-} | jq \
-  --arg ts "$generated_at" \
-  --arg repo_url "$repo_url" \
-  --arg repo_name "$repo_name" \
-  '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .' > manifest.json
-sign_manifest "manifest.json"
+new_root_manifest=$(
+  {
+    echo '{'
+    echo '  "plugins": ['
+    first=true
+    for entry in "${root_entries[@]}"; do
+      if [[ "$first" != true ]]; then echo ","; fi
+      first=false
+      echo "$entry" | sed 's/^/    /'
+    done
+    echo ""
+    echo '  ]'
+    echo '}'
+  } | jq \
+    --arg ts "$generated_at" \
+    --arg repo_url "$repo_url" \
+    --arg repo_name "$repo_name" \
+    '{generated_at: $ts, repo_url: $repo_url, repo_name: $repo_name} + .'
+)
+if write_manifest_if_changed "manifest.json" "$new_root_manifest"; then
+  sign_manifest "manifest.json"
+elif [[ -n "$gpg_key_id" ]] && ! sig_is_current "manifest.json"; then
+  sign_manifest "manifest.json"
+fi
 
 # If any signing step failed, remove ALL .sig files so the repo is never
 # left in a partially-signed state.
