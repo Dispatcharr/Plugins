@@ -66,7 +66,7 @@ At least one of `author` or `maintainers` must include your GitHub username. `au
 | `repo_url` | `string` | URL to the plugin's source repository (must start with `http://` or `https://`) |
 | `discord_thread` | `string` | URL to the associated Discord thread (must start with `http://` or `https://`) |
 | `deprecated` | `boolean` | Marks the plugin as deprecated. Default: `false` |
-| `unlisted` | `boolean` | Hides the plugin from the releases README. Default: `false` |
+| `unlisted` | `boolean` | Excludes the plugin from `manifest.json` and hides it from the releases README. Default: `false` |
 
 ### Full Example
 
@@ -111,8 +111,8 @@ PRs where the author has no permission for any of the modified plugins are **aut
 Once your PR merges to `main`, the publish workflow runs automatically:
 
 1. Your plugin is packaged into a versioned ZIP (`your-plugin-1.0.0.zip`) and a latest ZIP (`your-plugin-latest.zip`)
-2. An MD5 checksum is computed
-3. A per-plugin `releases/your-plugin-name/README.md` is generated with download links and version history
+2. MD5 and SHA256 checksums are computed
+3. A per-plugin `zips/your-plugin-name/README.md` is generated with download links and version history
 4. `manifest.json` is updated with your plugin's metadata and download URLs
 5. The releases branch README is regenerated
 6. Up to 10 versioned ZIPs are retained; older ones are pruned
