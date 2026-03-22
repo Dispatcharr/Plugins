@@ -247,10 +247,12 @@ elif [[ -n "$gpg_key_id" && "$gpg_signing_failed" -eq 0 ]] && ! sig_is_current "
   sign_manifest "manifest.json"
 fi
 
-# If any signing step failed, strip embedded signatures from all manifests so
-# the repo is never left in a partially-signed state.
-if [[ "$gpg_signing_failed" -eq 1 ]]; then
-  echo "::warning::Removing all signatures due to signing failure."
+# If any signing step failed, or no GPG key is configured, strip embedded
+# signatures from all manifests so the repo is never left in a partially-signed
+# or stale-signed state (e.g. incremental runs where unchanged manifests retain
+# signatures from a previous key that is no longer present).
+if [[ "$gpg_signing_failed" -eq 1 ]] || [[ -z "$gpg_key_id" ]]; then
+  echo "::warning::Removing all manifest signatures (no GPG key configured or signing failed)."
   while IFS= read -r -d '' _f; do
     _tmp=$(mktemp)
     jq 'del(.signature)' "$_f" > "$_tmp" && mv "$_tmp" "$_f" || rm -f "$_tmp"
