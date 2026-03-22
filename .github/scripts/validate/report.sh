@@ -135,7 +135,7 @@ done
       echo "**Before merging, confirm:**"
       echo "- The corresponding private key and passphrase secrets (\`GPG_PRIVATE_KEY\`, \`GPG_PASSPHRASE\`) have been updated in the repository settings."
       echo "- The new public key has been bundled into the Dispatcharr application."
-      echo "- Existing \`.sig\` files on the \`releases\` branch will be regenerated on next publish."
+      echo "- Existing embedded signatures in \`manifest.json\` files on the \`releases\` branch will be regenerated on next publish."
       echo ""
     fi
 
