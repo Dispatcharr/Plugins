@@ -69,12 +69,17 @@ if [[ -z "$PLUGIN_LIST" ]]; then
   fi
   if [[ "$(has_write_access "$PR_AUTHOR")" -eq 1 ]]; then
     # Repo maintainer with no plugin changes - skip plugin validation entirely and pass
+    PUB_KEY_CHANGED=false
+    if echo "$OUTSIDE_CHANGES" | grep -q "^\.github/scripts/keys/dispatcharr-plugins\.pub$"; then
+      PUB_KEY_CHANGED=true
+    fi
     echo "matrix=[]"               >> "$GITHUB_OUTPUT"
     echo "plugin_count=0"          >> "$GITHUB_OUTPUT"
     echo "close_pr=false"          >> "$GITHUB_OUTPUT"
     echo "close_reason="           >> "$GITHUB_OUTPUT"
     echo "skip_validation=true"    >> "$GITHUB_OUTPUT"
     echo "outside_violation=false" >> "$GITHUB_OUTPUT"
+    echo "pub_key_changed=$PUB_KEY_CHANGED" >> "$GITHUB_OUTPUT"
     echo "No plugin changes detected - skipping plugin validation (author has write access)."
     exit 0
   fi
