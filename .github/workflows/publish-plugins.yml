@@ -23,9 +23,14 @@ on:
   workflow_dispatch:
     inputs:
       force_rebuild:
-        description: 'Delete and recreate the releases branch from scratch'
+        description: 'Wipe and recreate the releases branch from scratch. WARNING: purges all version history — only the latest version of each plugin will be retained.'
         type: boolean
         default: false
+        required: false
+      force_rebuild_confirm:
+        description: 'Type CONFIRM to proceed with force rebuild (required when force_rebuild is true)'
+        type: string
+        default: ''
         required: false
 
 concurrency:
@@ -53,8 +58,13 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           FORCE_REBUILD: ${{ inputs.force_rebuild }}
+          FORCE_REBUILD_CONFIRM: ${{ inputs.force_rebuild_confirm }}
         run: |
           set -o pipefail
+          if [[ "${FORCE_REBUILD}" == "true" && "${FORCE_REBUILD_CONFIRM}" != "CONFIRM" ]]; then
+            echo "::error::force_rebuild requires typing CONFIRM in the force_rebuild_confirm input."
+            exit 1
+          fi
           .github/scripts/publish/run.sh ${{ github.ref_name }} 2>&1 | tee publish.log
 
       - name: Generate job summary
