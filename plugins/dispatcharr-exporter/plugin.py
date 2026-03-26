@@ -42,7 +42,7 @@ def _load_plugin_config():
         logger.warning(f"Could not load plugin.json, using fallback config: {e}")
         # Fallback configuration if JSON can't be loaded
         return {
-            "version": "-dev-c8392fd2-20260320133552",
+            "version": "2.4.1",
             "name": "Dispatcharr Exporter",
             "author": "SethWV",
             "description": "Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring",
@@ -1769,6 +1769,29 @@ class MetricsServer:
             # If we can't parse versions, assume it's okay
             return True
         
+    def _verify_stopped(self, timeout=3):
+        """Verify the server port is actually free after stopping.
+        Returns True if port is confirmed free, False otherwise."""
+        import socket
+        import time
+        
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                sock.settimeout(0.5)
+                sock.bind((self.host, self.port))
+                sock.close()
+                logger.info(f"Verified port {self.port} is free after server stop")
+                return True
+            except OSError:
+                sock.close()
+                time.sleep(0.2)
+        
+        logger.warning(f"Port {self.port} still in use after {timeout}s — server may not have stopped cleanly")
+        return False
+
     def wsgi_app(self, environ, start_response):
         """WSGI application for serving metrics"""
         path = environ.get('PATH_INFO', '/')
@@ -2001,20 +2024,51 @@ class MetricsServer:
                     spawn(self.server.serve_forever)
                     
                     # Monitor for stop signal via Redis
+                    # Get Redis client once for the monitor loop
+                    try:
+                        from core.utils import RedisClient
+                        monitor_redis = RedisClient.get_client()
+                        logger.debug("Stop signal monitor started with Redis client")
+                    except Exception as e:
+                        logger.error(f"Could not get Redis client for stop signal monitoring: {e}")
+                        monitor_redis = None
+                    
+                    check_count = 0
                     while self.running:
                         try:
-                            from core.utils import RedisClient
-                            redis_client = RedisClient.get_client()
-                            if redis_client:
-                                stop_flag = redis_client.get("prometheus_exporter:stop_requested")
-                                # If stop requested, shut down
+                            if monitor_redis:
+                                stop_flag = monitor_redis.get("prometheus_exporter:stop_requested")
                                 if stop_flag == "1" or stop_flag == b"1":
-                                    logger.debug("Stop signal detected via Redis, shutting down metrics server")
+                                    logger.info("Stop signal detected via Redis, shutting down metrics server")
                                     self.running = False
-                                    self.server.stop()
+                                    try:
+                                        self.server.stop(timeout=5)
+                                    except Exception as e:
+                                        logger.warning(f"Error during server.stop(): {e}")
+                                    self._verify_stopped(timeout=3)
                                     break
+                            else:
+                                # Try to re-acquire Redis client
+                                try:
+                                    from core.utils import RedisClient
+                                    monitor_redis = RedisClient.get_client()
+                                    if monitor_redis:
+                                        logger.info("Re-acquired Redis client for stop signal monitoring")
+                                except Exception:
+                                    pass
+                            
+                            check_count += 1
+                            # Log heartbeat every 60 seconds to confirm monitor is alive
+                            if check_count % 60 == 0:
+                                logger.debug(f"Stop signal monitor alive (check #{check_count}), server running on {self.host}:{self.port}")
                         except Exception as e:
-                            logger.debug(f"Error checking stop signal: {e}")
+                            logger.warning(f"Error checking stop signal (check #{check_count}): {e}")
+                            # Try to re-acquire Redis client on error
+                            try:
+                                from core.utils import RedisClient
+                                monitor_redis = RedisClient.get_client()
+                            except Exception:
+                                monitor_redis = None
                         
                         sleep(1)  # Check every second
                     
@@ -2040,7 +2094,7 @@ class MetricsServer:
                     except Exception as e:
                         logger.debug(f"Could not remove lock file on shutdown: {e}")
                     
-                    logger.debug("Metrics server stopped and cleaned up")
+                    logger.info("Metrics server stopped and cleaned up")
                     
                 except Exception as e:
                     logger.error(f"Error running metrics server: {e}", exc_info=True)
@@ -2074,9 +2128,10 @@ class MetricsServer:
         
         if self.server:
             try:
-                self.server.stop()
+                self.server.stop(timeout=5)
             except Exception as e:
-                logger.debug(f"Error stopping server: {e}")
+                logger.warning(f"Error during server.stop(): {e}")
+            self._verify_stopped(timeout=3)
         
         self.running = False
         _metrics_server = None
@@ -2588,7 +2643,9 @@ class Plugin:
                 if redis_client:
                     try:
                         # Set stop request flag
+                        logger_ctx.info("Server is in another worker, sending stop signal via Redis")
                         redis_client.set("prometheus_exporter:stop_requested", "1")
+                        logger_ctx.debug("Stop signal set in Redis, waiting for server to confirm shutdown...")
                         
                         # Wait up to 5 seconds for server to stop
                         import time
@@ -2596,6 +2653,7 @@ class Plugin:
                             running_flag = redis_client.get("prometheus_exporter:server_running")
                             if not running_flag or (running_flag != "1" and running_flag != b"1"):
                                 # Server has stopped
+                                logger_ctx.info("Server confirmed shutdown via Redis")
                                 return {
                                     "status": "success",
                                     "message": "Metrics server stopped successfully"
@@ -2603,9 +2661,29 @@ class Plugin:
                             time.sleep(0.1)
                         
                         # Timeout - server didn't stop in time
+                        # Force cleanup Redis keys so server can at least be restarted
+                        logger_ctx.warning("Server did not confirm shutdown within 5 seconds, force-cleaning Redis keys")
+                        try:
+                            redis_client.delete("prometheus_exporter:server_running")
+                            redis_client.delete("prometheus_exporter:server_host")
+                            redis_client.delete("prometheus_exporter:server_port")
+                            redis_client.delete("prometheus_exporter:stop_requested")
+                            logger_ctx.info("Force-cleaned all Redis keys")
+                        except Exception as cleanup_err:
+                            logger_ctx.error(f"Failed to force-clean Redis keys: {cleanup_err}")
+                        
+                        # Clean up lock file
+                        try:
+                            lock_file = "/tmp/prometheus_exporter_autostart.lock"
+                            if os.path.exists(lock_file):
+                                os.remove(lock_file)
+                                logger_ctx.debug("Removed auto-start lock file")
+                        except Exception:
+                            pass
+                        
                         return {
                             "status": "warning",
-                            "message": "Stop signal sent, but server did not confirm shutdown within 5 seconds"
+                            "message": "Stop signal sent, but server did not confirm shutdown within 5 seconds. Redis keys have been force-cleaned — you can now restart the server. The old server process may still be running but will not conflict."
                         }
                     except Exception as redis_error:
                         logger_ctx.error(f"Failed to signal stop via Redis: {redis_error}")
@@ -2635,15 +2713,32 @@ class Plugin:
                 # Always clear Redis flags and signal stop
                 if redis_client:
                     try:
+                        logger_ctx.info("Sending stop signal via Redis for restart")
                         redis_client.set("prometheus_exporter:stop_requested", "1")
                         
                         # Wait up to 5 seconds for server to stop
                         import time
+                        stopped = False
                         for i in range(50):
                             running_flag = redis_client.get("prometheus_exporter:server_running")
                             if not running_flag or (running_flag != "1" and running_flag != b"1"):
+                                stopped = True
                                 break
                             time.sleep(0.1)
+                        
+                        if not stopped:
+                            # Force cleanup so restart can proceed
+                            logger_ctx.warning("Server did not confirm shutdown within 5 seconds during restart, force-cleaning Redis keys")
+                            redis_client.delete("prometheus_exporter:server_running")
+                            redis_client.delete("prometheus_exporter:server_host")
+                            redis_client.delete("prometheus_exporter:server_port")
+                            redis_client.delete("prometheus_exporter:stop_requested")
+                            try:
+                                lock_file = "/tmp/prometheus_exporter_autostart.lock"
+                                if os.path.exists(lock_file):
+                                    os.remove(lock_file)
+                            except Exception:
+                                pass
                     except Exception as redis_error:
                         logger_ctx.error(f"Failed to signal stop via Redis: {redis_error}")
                         return {
