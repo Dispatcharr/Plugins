@@ -58,6 +58,8 @@ jobs:
       outside_violation: ${{ steps.detect.outputs.outside_violation }}
       skip_validation: ${{ steps.detect.outputs.skip_validation }}
       pub_key_changed: ${{ steps.detect.outputs.pub_key_changed }}
+      has_new_plugin: ${{ steps.detect.outputs.has_new_plugin }}
+      has_updated_plugin: ${{ steps.detect.outputs.has_updated_plugin }}
     steps:
       - name: Checkout base branch scripts (trusted)
         uses: actions/checkout@v4
@@ -102,7 +104,53 @@ jobs:
             "${{ github.event.pull_request.base.ref }}"
 
   # --------------------------------------------------------------------------
-  # Job 3: CodeQL security and quality analysis (runs after validate-plugin)
+  # Job 3: Apply PR labels based on change classification
+  # --------------------------------------------------------------------------
+  label-pr:
+    needs: [detect-changes]
+    if: always() && needs.detect-changes.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ensure labels exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create "New Plugin"    --color "2ea44f" --description "PR adds a new plugin"               --force 2>/dev/null || true
+          gh label create "Plugin Update" --color "a333c8" --description "PR updates an existing plugin"      --force 2>/dev/null || true
+          gh label create "Repo Update"   --color "0ea5e9" --description "PR modifies files outside plugins/" --force 2>/dev/null || true
+
+      - name: Apply labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HAS_NEW_PLUGIN: ${{ needs.detect-changes.outputs.has_new_plugin }}
+          HAS_UPDATED_PLUGIN: ${{ needs.detect-changes.outputs.has_updated_plugin }}
+          OUTSIDE_FILES: ${{ needs.detect-changes.outputs.outside_files }}
+          OUTSIDE_VIOLATION: ${{ needs.detect-changes.outputs.outside_violation }}
+        run: |
+          apply_label() {
+            local label=$1 condition=$2
+            if [[ "$condition" == "true" ]]; then
+              gh pr edit "$PR_NUMBER" --add-label "$label" || true
+            else
+              gh pr edit "$PR_NUMBER" --remove-label "$label" 2>/dev/null || true
+            fi
+          }
+          apply_label "New Plugin"    "$HAS_NEW_PLUGIN"
+          apply_label "Plugin Update" "$HAS_UPDATED_PLUGIN"
+          # Repo Update only when there are outside files AND it's not a violation (authorized)
+          if [[ -n "$OUTSIDE_FILES" && "$OUTSIDE_VIOLATION" != "true" ]]; then
+            IS_REPO_UPDATE=true
+          else
+            IS_REPO_UPDATE=false
+          fi
+          apply_label "Repo Update" "$IS_REPO_UPDATE"
+
+  # --------------------------------------------------------------------------
+  # Job 4: CodeQL security and quality analysis (runs after validate-plugin)
   #   Skipped automatically if any validation shard fails, saving ~15 min.
   #   Analysis is explicitly scoped to only the changed plugin directories.
   # --------------------------------------------------------------------------
@@ -326,7 +374,7 @@ jobs:
         run: exit 1
 
   # --------------------------------------------------------------------------
-  # Job 4: Validate each plugin in parallel via matrix
+  # Job 5: Validate each plugin in parallel via matrix
   # --------------------------------------------------------------------------
   validate-plugin:
     needs: [detect-changes]
@@ -397,7 +445,7 @@ jobs:
         run: exit 1
 
   # --------------------------------------------------------------------------
-  # Job 5: Aggregate all fragments, post PR comment, set final status
+  # Job 6: Aggregate all fragments, post PR comment, set final status
   # --------------------------------------------------------------------------
   report:
     needs: [detect-changes, validate-plugin, codeql-analyze]
@@ -463,7 +511,7 @@ jobs:
           exit 1
 
   # --------------------------------------------------------------------------
-  # Job 6: Auto-close unauthorized PRs
+  # Job 7: Auto-close unauthorized PRs
   # --------------------------------------------------------------------------
   close-unauthorized:
     needs: detect-changes
@@ -493,7 +541,7 @@ jobs:
             "/dev/null"
 
   # --------------------------------------------------------------------------
-  # Job 7: Gate - single fixed status check for branch protection rules
+  # Job 8: Gate - single fixed status check for branch protection rules
   #   Reference this job by name "Plugin PR Check" in your branch protection.
   #   Passes only when detect-changes + CodeQL + all matrix validations + report
   #   all succeed. Fails for any error, including unauthorized PRs.

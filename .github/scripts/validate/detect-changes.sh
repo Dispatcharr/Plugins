@@ -60,6 +60,8 @@ if [[ -z "$PLUGIN_LIST" ]]; then
     echo "close_reason="          >> "$GITHUB_OUTPUT"
     echo "skip_validation=false"  >> "$GITHUB_OUTPUT"
     echo "outside_violation=true" >> "$GITHUB_OUTPUT"
+    echo "has_new_plugin=false"    >> "$GITHUB_OUTPUT"
+    echo "has_updated_plugin=false" >> "$GITHUB_OUTPUT"
     {
       echo "outside_files<<OUTSIDE_EOF"
       echo "$OUTSIDE_CHANGES"
@@ -80,6 +82,15 @@ if [[ -z "$PLUGIN_LIST" ]]; then
     echo "skip_validation=true"    >> "$GITHUB_OUTPUT"
     echo "outside_violation=false" >> "$GITHUB_OUTPUT"
     echo "pub_key_changed=$PUB_KEY_CHANGED" >> "$GITHUB_OUTPUT"
+    echo "has_new_plugin=false"              >> "$GITHUB_OUTPUT"
+    echo "has_updated_plugin=false"          >> "$GITHUB_OUTPUT"
+    if [[ -n "$OUTSIDE_CHANGES" ]]; then
+      {
+        echo "outside_files<<OUTSIDE_EOF"
+        echo "$OUTSIDE_CHANGES"
+        echo "OUTSIDE_EOF"
+      } >> "$GITHUB_OUTPUT"
+    fi
     echo "No plugin changes detected - skipping plugin validation (author has write access)."
     exit 0
   fi
@@ -105,18 +116,22 @@ if [[ -z "$PLUGIN_LIST" ]]; then
   echo "close_reason=no-valid-plugins" >> "$GITHUB_OUTPUT"
   echo "plugin_count=0"             >> "$GITHUB_OUTPUT"
   echo "matrix=[]"                  >> "$GITHUB_OUTPUT"
+  echo "has_new_plugin=false"       >> "$GITHUB_OUTPUT"
+  echo "has_updated_plugin=false"   >> "$GITHUB_OUTPUT"
   exit 0
 fi
 
 PLUGIN_COUNT=$(echo "$PLUGIN_LIST" | wc -l | tr -d ' ')
 
-# --- Check if any modified plugin is new (does not exist on base branch) ---
+# --- Check if any modified plugin is new / updated ---
 HAS_NEW_PLUGIN=0
+HAS_UPDATED_PLUGIN=0
 while IFS= read -r plugin; do
   [[ -z "$plugin" ]] && continue
   if ! git show "origin/${BASE_REF}:plugins/${plugin}/plugin.json" > /dev/null 2>&1; then
     HAS_NEW_PLUGIN=1
-    break
+  else
+    HAS_UPDATED_PLUGIN=1
   fi
 done <<< "$PLUGIN_LIST"
 
@@ -166,7 +181,7 @@ if [[ "$CLOSE_PR" == "true" ]]; then
 else
   echo "close_reason=" >> "$GITHUB_OUTPUT"
 fi
-if [[ $HAS_OUTSIDE_VIOLATION -eq 1 ]]; then
+if [[ -n "$OUTSIDE_CHANGES" ]]; then
   {
     echo "outside_files<<OUTSIDE_EOF"
     echo "$OUTSIDE_CHANGES"
@@ -182,6 +197,9 @@ if [[ "$(has_write_access "$PR_AUTHOR")" -eq 1 ]]; then
   fi
 fi
 echo "pub_key_changed=$PUB_KEY_CHANGED" >> "$GITHUB_OUTPUT"
+
+echo "has_new_plugin=$( [[ $HAS_NEW_PLUGIN -eq 1 ]] && echo true || echo false )" >> "$GITHUB_OUTPUT"
+echo "has_updated_plugin=$( [[ $HAS_UPDATED_PLUGIN -eq 1 ]] && echo true || echo false )" >> "$GITHUB_OUTPUT"
 
 echo "Detected $PLUGIN_COUNT plugin(s): $PLUGIN_LIST"
 echo "close_pr=$CLOSE_PR"
