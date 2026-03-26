@@ -263,9 +263,9 @@ jobs:
                    ([ (($run.tool.driver.rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
                       ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ] | from_entries) as $secmap |
                    ($run.results // [])[] |
-                   (($r.ruleId // $r.rule.id // "") | tostring) as $rid |
+                   ((.ruleId // .rule.id // "") | tostring) as $rid |
                    select((($secmap[$rid] // "0") | tonumber) >= 7.0) |
-                   "  [blocking] \($rid) sec-sev=\($secmap[$rid] // \"n/a\")" ] | .[]' || true
+                   "  [blocking] \($rid) sec-sev=\($secmap[$rid] // "n/a")" ] | .[]' || true
               RESULT_COUNT=$((RESULT_COUNT + ${COUNT:-0}))
               MEDIUM_COUNT=$((MEDIUM_COUNT + ${MED:-0}))
               TOTAL_COUNT=$((TOTAL_COUNT + ${TOT:-0}))
