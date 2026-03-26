@@ -120,6 +120,7 @@ jobs:
           gh label create "New Plugin"    --color "2ea44f" --description "PR adds a new plugin"               --force 2>/dev/null || true
           gh label create "Plugin Update" --color "a333c8" --description "PR updates an existing plugin"      --force 2>/dev/null || true
           gh label create "Repo Update"   --color "0ea5e9" --description "PR modifies files outside plugins/" --force 2>/dev/null || true
+          gh label create "Invalid"       --color "e4e669" --description "PR contains unauthorized changes"   --force 2>/dev/null || true
 
       - name: Apply labels
         env:
@@ -130,6 +131,7 @@ jobs:
           HAS_UPDATED_PLUGIN: ${{ needs.detect-changes.outputs.has_updated_plugin }}
           OUTSIDE_FILES: ${{ needs.detect-changes.outputs.outside_files }}
           OUTSIDE_VIOLATION: ${{ needs.detect-changes.outputs.outside_violation }}
+          CLOSE_PR: ${{ needs.detect-changes.outputs.close_pr }}
         run: |
           apply_label() {
             local label=$1 condition=$2
@@ -148,6 +150,13 @@ jobs:
             IS_REPO_UPDATE=false
           fi
           apply_label "Repo Update" "$IS_REPO_UPDATE"
+          # Invalid when PR has unauthorized outside changes or unauthorized plugin modifications
+          if [[ "$OUTSIDE_VIOLATION" == "true" || "$CLOSE_PR" == "true" ]]; then
+            IS_INVALID=true
+          else
+            IS_INVALID=false
+          fi
+          apply_label "Invalid" "$IS_INVALID"
 
   # --------------------------------------------------------------------------
   # Job 4: CodeQL security and quality analysis (runs after validate-plugin)
