@@ -112,16 +112,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - name: Ensure labels exist
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          gh label create "New Plugin"    --color "2ea44f" --description "PR adds a new plugin"               --force 2>/dev/null || true
-          gh label create "Plugin Update" --color "a333c8" --description "PR updates an existing plugin"      --force 2>/dev/null || true
-          gh label create "Repo Update"   --color "0ea5e9" --description "PR modifies files outside plugins/" --force 2>/dev/null || true
-          gh label create "Invalid"       --color "e4e669" --description "PR contains unauthorized changes"   --force 2>/dev/null || true
-
       - name: Apply labels
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
