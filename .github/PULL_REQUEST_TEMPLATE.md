@@ -1,8 +1,11 @@
-<!-- Read CONTRIBUTING.md before submitting: https://github.com/Dispatcharr/Plugins/blob/main/CONTRIBUTING.md -->
-<!-- Suggested PR title format: [your-plugin-name]: brief summary of change -->
-<!-- e.g. [dispatcharr-exporter]: add initial release   or   [my-plugin]: bump to 1.2.0 -->
+<!--
+  Read CONTRIBUTING.md before submitting: https://github.com/Dispatcharr/Plugins/blob/main/CONTRIBUTING.md
 
-## What does this PR do?
+  Suggested PR title format: [your-plugin-name]: brief summary of change
+  e.g. [dispatcharr-exporter]: add initial release   or   [my-plugin]: bump to 1.2.0
+-->
+
+## About this submission
 
 <!-- Briefly describe the change: new plugin, update, metadata change, etc. -->
 
