@@ -209,6 +209,7 @@ for plugin_dir in plugins/*/; do
       manifest_url: $manifest_url,
       author: $author,
       license: (if $license != "" then $license else null end),
+      last_updated: ($latest_metadata.last_updated // null),
       latest_version: ($latest_metadata.version // null),
       latest_md5: ($latest_metadata.checksum_md5 // null),
       latest_sha256: ($latest_metadata.checksum_sha256 // null),
