@@ -106,7 +106,7 @@ jobs:
               if [ -d /tmp/tmp.*/repo ]; then
                 REPO_DIR=$(find /tmp -maxdepth 1 -name "tmp.*" -type d 2>/dev/null | head -1)/repo
                 if [ -f "$REPO_DIR/manifest.json" ]; then
-                  cat "$REPO_DIR/manifest.json" | jq -r '.plugins[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY
+                  cat "$REPO_DIR/manifest.json" | jq -r '.manifest.plugins[] | "- **\(.name)** v\(.latest_version)"' >> $GITHUB_STEP_SUMMARY
                 fi
               fi
             else

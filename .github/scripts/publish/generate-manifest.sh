@@ -10,8 +10,9 @@ set -e
 : "${SOURCE_BRANCH:?}" "${RELEASES_BRANCH:?}" "${GITHUB_REPOSITORY:?}"
 
 generated_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-repo_url="https://github.com/${GITHUB_REPOSITORY}"
-repo_name="${GITHUB_REPOSITORY}"
+registry_url="https://github.com/${GITHUB_REPOSITORY}"
+registry_name="${GITHUB_REPOSITORY}"
+root_url="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${RELEASES_BRANCH}"
 
 # GPG signing setup - optional; set GPG_PRIVATE_KEY (armored) and optionally GPG_PASSPHRASE
 gpg_key_id=""
@@ -32,7 +33,7 @@ fi
 
 # Writes a manifest wrapper to $1 with $2 as the signed payload (.manifest),
 # only when .manifest content differs from what is on disk.
-# Wrapper structure: {generated_at, repo_url, repo_name, manifest: <payload>}
+# Wrapper structure: {generated_at, manifest: <payload>}
 # The .signature field is added separately by sign_manifest.
 # Returns 0 if written, 1 if skipped (content unchanged).
 write_manifest_if_changed() {
@@ -48,10 +49,8 @@ write_manifest_if_changed() {
   fi
   jq -n \
     --arg generated_at "$generated_at" \
-    --arg repo_url "$repo_url" \
-    --arg repo_name "$repo_name" \
     --argjson manifest "$new_compact" \
-    '{generated_at: $generated_at, repo_url: $repo_url, repo_name: $repo_name, manifest: $manifest}' \
+    '{generated_at: $generated_at, manifest: $manifest}' \
     > "$dest"
   return 0
 }
@@ -114,7 +113,7 @@ for plugin_dir in plugins/*/; do
 
   echo "  $plugin_name"
 
-  latest_url="https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${plugin_name}-latest.zip"
+  latest_url="zips/${plugin_name}/${plugin_name}-latest.zip"
 
   versioned_zips="[]"
   latest_metadata="{}"
@@ -125,7 +124,7 @@ for plugin_dir in plugins/*/; do
   while IFS= read -r zipfile; do
     zip_basename=$(basename "$zipfile")
     zip_version=$(echo "$zip_basename" | sed "s/${plugin_name}-\(.*\)\.zip/\1/")
-    zip_url="https://github.com/${GITHUB_REPOSITORY}/raw/$RELEASES_BRANCH/zips/${plugin_name}/${zip_basename}"
+    zip_url="zips/${plugin_name}/${zip_basename}"
 
     # Fresh metadata from this run takes priority; fall back to existing manifest
     fresh_meta_file="${BUILD_META_DIR:-}/$plugin_name/${plugin_name}-${zip_version}.json"
@@ -151,16 +150,11 @@ for plugin_dir in plugins/*/; do
   done < <(ls -1 "zips/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
       | grep -v latest | sort -t- -k2 -V -r)
 
-  # Compute icon_url before building plugin_entry so it can be included in both manifests
-  icon_url=""
-  if [[ -f "plugins/$plugin_name/logo.png" ]]; then
-    icon_url="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${SOURCE_BRANCH}/plugins/${plugin_name}/logo.png"
-  fi
-
   plugin_entry=$(jq \
     --arg plugin_name "$plugin_name" \
     --arg latest_url "$latest_url" \
-    --arg icon_url "$icon_url" \
+    --arg registry_url "$registry_url" \
+    --arg registry_name "$registry_name" \
     --argjson versioned_zips "$versioned_zips" \
     --argjson latest_metadata "$latest_metadata" \
     'with_entries(select(.key | IN(
@@ -168,9 +162,10 @@ for plugin_dir in plugins/*/; do
       "deprecated","repo_url","discord_thread","license"
     ))) + {
       slug: $plugin_name,
+      registry_url: $registry_url,
+      registry_name: $registry_name,
       versions: $versioned_zips
-    } + (if $icon_url != "" then {icon_url: $icon_url} else {} end)
-      + (
+    } + (
       if ($latest_metadata | length > 0) then {
         last_updated: $latest_metadata.last_updated,
         latest: ($latest_metadata + {
@@ -196,7 +191,7 @@ for plugin_dir in plugins/*/; do
     desc_trimmed="$desc_raw"
   fi
 
-  plugin_manifest_url="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${RELEASES_BRANCH}/zips/${plugin_name}/manifest.json"
+  plugin_manifest_url="zips/${plugin_name}/manifest.json"
 
   root_entry=$(jq -n \
     --argjson latest_metadata "$latest_metadata" \
@@ -204,7 +199,6 @@ for plugin_dir in plugins/*/; do
     --arg slug "$plugin_name" \
     --arg name "$(jq -r '.name // ""' "$plugin_file")" \
     --arg description "$desc_trimmed" \
-    --arg icon_url "$icon_url" \
     --arg manifest_url "$plugin_manifest_url" \
     --arg author "$(jq -r '.author // ""' "$plugin_file")" \
     --arg license "$(jq -r '.license // ""' "$plugin_file")" \
@@ -212,10 +206,10 @@ for plugin_dir in plugins/*/; do
       slug: $slug,
       name: $name,
       description: $description,
-      icon_url: (if $icon_url != "" then $icon_url else null end),
       manifest_url: $manifest_url,
       author: $author,
       license: (if $license != "" then $license else null end),
+      last_updated: ($latest_metadata.last_updated // null),
       latest_version: ($latest_metadata.version // null),
       latest_md5: ($latest_metadata.checksum_md5 // null),
       latest_sha256: ($latest_metadata.checksum_sha256 // null),
@@ -229,6 +223,9 @@ done
 inner_root=$(
   {
     echo '{'
+    echo '  "registry_url": '"$(jq -n --arg u "$registry_url" '$u')"','
+    echo '  "registry_name": '"$(jq -n --arg u "$registry_name" '$u')"','
+    echo '  "root_url": '"$(jq -n --arg u "$root_url" '$u')"','
     echo '  "plugins": ['
     first=true
     for entry in "${root_entries[@]}"; do

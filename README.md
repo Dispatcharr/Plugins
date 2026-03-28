@@ -52,19 +52,38 @@ Visit the [releases branch](https://github.com/Dispatcharr/Plugins/tree/releases
 curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json
 ```
 
-## Verifying Manifest Signatures
+## Manifest Structure
 
-Each manifest file embeds its GPG signature directly. The `signature` field covers the compact (`jq -c '.manifest'`) form of the `manifest` payload:
+The root `manifest.json` uses a `root_url` plus relative paths to save space. All URL fields (`manifest_url`, `latest_url`, versioned zip `url`) are relative to `root_url`:
 
 ```json
 {
   "generated_at": "...",
-  "repo_url": "...",
-  "repo_name": "owner/repo",
   "signature": "-----BEGIN PGP SIGNATURE-----\n...",
-  "manifest": { ... }
+  "manifest": {
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "root_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases",
+    "plugins": [
+      {
+        "slug": "my-plugin",
+        "name": "My Plugin",
+        "manifest_url": "zips/my-plugin/manifest.json",
+        "latest_url": "zips/my-plugin/my-plugin-1.0.0.zip",
+        ...
+      }
+    ]
+  }
 }
 ```
+
+To resolve a full download URL: `root_url + "/" + latest_url`.
+
+The `slug` matches the plugin folder name and can be used to construct other paths (e.g. icon: `plugins/<slug>/logo.png` on the source branch).
+
+## Verifying Manifest Signatures
+
+Each manifest file embeds its GPG signature directly. The `signature` field covers the compact (`jq -c '.manifest'`) form of the `manifest` payload.
 
 The public key is bundled with Dispatcharr. To verify manually, export it from the application or obtain `.github/scripts/keys/dispatcharr-plugins.pub` from the default branch.
 
