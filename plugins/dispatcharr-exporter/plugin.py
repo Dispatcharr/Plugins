@@ -42,7 +42,7 @@ def _load_plugin_config():
         logger.warning(f"Could not load plugin.json, using fallback config: {e}")
         # Fallback configuration if JSON can't be loaded
         return {
-            "version": "2.4.1",
+            "version": "2.4.2",
             "name": "Dispatcharr Exporter",
             "author": "SethWV",
             "description": "Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring",
@@ -2364,6 +2364,46 @@ class Plugin:
             'repo_url': repo_url
         }
     
+    @staticmethod
+    def _cleanup_stale_redis_state():
+        """Clean up all Redis keys this plugin has ever created.
+        
+        Called on startup before auto-start to ensure we're working from a clean
+        slate. This prevents stale keys from a previous container lifecycle (e.g.
+        failed upgrade, ungraceful shutdown) from blocking the server from starting.
+        """
+        # Every Redis key this plugin has ever set across all versions
+        ALL_PLUGIN_KEYS = [
+            "prometheus_exporter:server_running",
+            "prometheus_exporter:server_host",
+            "prometheus_exporter:server_port",
+            "prometheus_exporter:stop_requested",
+            "prometheus_exporter:autostart_completed",
+            "prometheus_exporter:update_available",
+            "prometheus_exporter:last_update_notification",
+        ]
+        
+        try:
+            from core.utils import RedisClient
+            redis_client = RedisClient.get_client()
+            if redis_client:
+                deleted = redis_client.delete(*ALL_PLUGIN_KEYS)
+                if deleted:
+                    logger.info(f"Startup cleanup: removed {deleted} stale Redis key(s)")
+                else:
+                    logger.debug("Startup cleanup: no stale Redis keys found")
+        except Exception as e:
+            logger.warning(f"Startup cleanup: could not clear Redis keys: {e}")
+        
+        # Also remove the lock file from a previous lifecycle
+        try:
+            lock_file = "/tmp/prometheus_exporter_autostart.lock"
+            if os.path.exists(lock_file):
+                os.remove(lock_file)
+                logger.debug("Startup cleanup: removed stale auto-start lock file")
+        except Exception as e:
+            logger.debug(f"Startup cleanup: could not remove lock file: {e}")
+
     def __init__(self):
         self.collector = PrometheusMetricsCollector()
 
@@ -2419,20 +2459,12 @@ class Plugin:
                 
                 logger.debug("Prometheus exporter: Lock acquired, checking config for auto-start")
                 
-                # We got the lock - we're the chosen worker for auto-start
-                try:
-                    from core.utils import RedisClient
-                    redis_client = RedisClient.get_client()
-                    if redis_client:
-                        # Check if server is already running
-                        running_flag = redis_client.get("prometheus_exporter:server_running")
-                        if running_flag == "1" or running_flag == b"1":
-                            logger.debug("Prometheus exporter: Server already running (detected via Redis), skipping auto-start")
-                            fcntl.flock(lock_fd.fileno(), fcntl.LOCK_UN)
-                            lock_fd.close()
-                            return
-                except Exception as e:
-                    logger.debug(f"Could not check Redis for running server: {e}")
+                # We got the lock - we're the chosen worker.
+                # Clean slate: wipe any Redis keys from a previous container lifecycle
+                # (e.g. failed upgrade, ungraceful shutdown) before checking state.
+                # This runs inside the flock so only one worker ever does it, and
+                # it happens before any new server state is set.
+                Plugin._cleanup_stale_redis_state()
                 
                 # Capture the INITIAL auto-start setting to lock in behavior at Dispatcharr startup
                 # This prevents runtime setting changes from triggering auto-start
