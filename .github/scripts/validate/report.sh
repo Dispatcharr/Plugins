@@ -106,7 +106,7 @@ done
   else
     echo "$COMBINED_BODY"
 
-    if [[ -n "${OUTSIDE_FILES:-}" ]]; then
+  if [[ -n "${OUTSIDE_FILES:-}" && "${OUTSIDE_VIOLATION:-}" == "true" ]]; then
       OVERALL_FAILED=1
       echo ""
       echo "⚠️ This PR modifies files outside of \`plugins/\`, which requires write access to the repository. These changes will block merging."

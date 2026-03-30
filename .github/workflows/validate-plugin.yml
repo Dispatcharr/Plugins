@@ -630,6 +630,7 @@ jobs:
           CODEQL_WARNINGS: ${{ needs.codeql-analyze.outputs.codeql_warnings }}
           CODEQL_MEDIUMS: ${{ needs.codeql-analyze.outputs.codeql_mediums }}
           OUTSIDE_FILES: ${{ needs.detect-changes.outputs.outside_files }}
+          OUTSIDE_VIOLATION: ${{ needs.detect-changes.outputs.outside_violation }}
           PUB_KEY_CHANGED: ${{ needs.detect-changes.outputs.pub_key_changed }}
         run: |
           chmod +x .github/scripts/validate/*.sh
