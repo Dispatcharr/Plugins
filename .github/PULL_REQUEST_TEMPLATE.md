@@ -1,8 +1,14 @@
 <!--
   Read CONTRIBUTING.md before submitting: https://github.com/Dispatcharr/Plugins/blob/main/CONTRIBUTING.md
 
-  Suggested PR title format: [your-plugin-name]: brief summary of change
-  e.g. [dispatcharr-exporter]: add initial release   or   [my-plugin]: bump to 1.2.0
+  PR Title format:
+    If modifying a single plugin, use your plugin slug (the folder-name of your plugin)
+      [plugin-slug]: BRIEF description of changes
+      [dispatcharr-exporter]: Bump version to X.X.X
+
+    If modifying more than one plugin, use your github username:
+      [author]: BRIEF description of changes
+      [sethwv]: Update my plugins to new manifest formatting
 -->
 
 ## About this submission
