@@ -109,6 +109,7 @@ for plugin_dir in plugins/*/; do
   plugin_file="$plugin_dir/plugin.json"
   [[ ! -f "$plugin_file" ]] && continue
   plugin_name=$(basename "$plugin_dir")
+  plugin_key=${plugin_name//-/_}
   [[ "$(jq -r '.unlisted // false' "$plugin_file")" == "true" ]] && continue
 
   echo "  $plugin_name"
@@ -127,7 +128,7 @@ for plugin_dir in plugins/*/; do
     zip_url="zips/${plugin_name}/${zip_basename}"
 
     # Fresh metadata from this run takes priority; fall back to existing manifest
-    fresh_meta_file="${BUILD_META_DIR:-}/$plugin_name/${plugin_name}-${zip_version}.json"
+    fresh_meta_file="${BUILD_META_DIR:-}/$plugin_key/${plugin_key}-${zip_version}.json"
     metadata="{}"
     if [[ -n "${BUILD_META_DIR:-}" && -f "$fresh_meta_file" ]]; then
       metadata=$(cat "$fresh_meta_file")
