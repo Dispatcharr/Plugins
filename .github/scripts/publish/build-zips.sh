@@ -20,6 +20,7 @@ set -e
 for plugin_dir in plugins/*/; do
   [[ ! -d "$plugin_dir" ]] && continue
   plugin_name=$(basename "$plugin_dir")
+  plugin_key=${plugin_name//-/_}
   version=$(jq -r '.version' "$plugin_dir/plugin.json")
 
   mkdir -p "zips/$plugin_name"
@@ -37,7 +38,7 @@ for plugin_dir in plugins/*/; do
   fi
 
   echo "  $plugin_name v$version - building"
-  echo "$plugin_name@$version" >> changed_plugins.txt
+  echo "$plugin_key@$version" >> changed_plugins.txt
 
   commit_sha=$(git log -1 --format=%H origin/$SOURCE_BRANCH -- "$plugin_dir")
   commit_sha_short=$(git log -1 --format=%h origin/$SOURCE_BRANCH -- "$plugin_dir")
@@ -45,7 +46,13 @@ for plugin_dir in plugins/*/; do
   last_updated=$(git log -1 --format=%cI origin/$SOURCE_BRANCH -- "$plugin_dir" 2>/dev/null \
     || date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-  zip -r "$zip_path" "$plugin_dir" -q
+  (
+    abspath="$(pwd)/$zip_path"
+    tmpdir=$(mktemp -d)
+    trap 'rm -rf "$tmpdir"' EXIT
+    cp -r "plugins/$plugin_name" "$tmpdir/$plugin_key"
+    cd "$tmpdir" && zip -r "$abspath" "$plugin_key" -q
+  )
 
   checksum_md5=$(md5sum "$zip_path" | awk '{print $1}')
   checksum_sha256=$(shasum -a 256 "$zip_path" | awk '{print $1}')
@@ -53,7 +60,7 @@ for plugin_dir in plugins/*/; do
   min_da_version=$(jq -r '.min_dispatcharr_version // ""' "$plugin_dir/plugin.json")
   max_da_version=$(jq -r '.max_dispatcharr_version // ""' "$plugin_dir/plugin.json")
 
-  mkdir -p "$BUILD_META_DIR/$plugin_name"
+  mkdir -p "$BUILD_META_DIR/$plugin_key"
   jq -n \
     --arg version "$version" \
     --arg commit_sha "$commit_sha" \
@@ -74,7 +81,7 @@ for plugin_dir in plugins/*/; do
       checksum_sha256: $checksum_sha256
     } + (if $min_da_version != "" then {min_dispatcharr_version: $min_da_version} else {} end)
       + (if $max_da_version != "" then {max_dispatcharr_version: $max_da_version} else {} end)' \
-    > "$BUILD_META_DIR/$plugin_name/${plugin_name}-${version}.json"
+    > "$BUILD_META_DIR/$plugin_key/${plugin_key}-${version}.json"
 
   cp "$zip_path" "zips/$plugin_name/${plugin_name}-latest.zip"
 done
