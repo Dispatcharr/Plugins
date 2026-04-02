@@ -60,14 +60,7 @@ render_plugin() {
   echo "$description"
   echo ""
   # Build badges (license, discord, repo)
-  local discord_link=""
-  if [[ -n "$discord_thread" ]]; then
-    if [[ "$discord_thread" == https://discord.com/* ]]; then
-      discord_link="discord://${discord_thread#https://}"
-    else
-      discord_link="$discord_thread"
-    fi
-  fi
+  local discord_link="$discord_thread"
   local badges=""
   if [[ -n "$license" ]]; then
     badges="[![License: $license](https://img.shields.io/badge/License-$(shields_encode "$license")-blue?style=flat-square)](https://spdx.org/licenses/${license}.html)"

@@ -53,14 +53,7 @@ for plugin_dir in plugins/*/; do
     echo "$description"
     echo ""
     # Build badge row
-    local_discord_link=""
-    if [[ -n "$discord_thread" ]]; then
-      if [[ "$discord_thread" == https://discord.com/* ]]; then
-        local_discord_link="discord://${discord_thread#https://}"
-      else
-        local_discord_link="$discord_thread"
-      fi
-    fi
+    local_discord_link="$discord_thread"
     badges=""
     if [[ -n "$license" ]]; then
       badges="[![License: $license](https://img.shields.io/badge/License-$(shields_encode "$license")-blue?style=flat-square)](https://spdx.org/licenses/${license}.html)"
