@@ -31,6 +31,7 @@ for plugin_dir in plugins/*/; do
   name=$(jq -r '.name' "$plugin_file")
   description=$(jq -r '.description' "$plugin_file")
   author=$(jq -r '.author // ""' "$plugin_file")
+  maintainers=$(jq -r '[.maintainers[]?] | join(", ")' "$plugin_file")
   repo_url=$(jq -r '.repo_url // empty' "$plugin_file")
   discord_thread=$(jq -r '.discord_thread // empty' "$plugin_file")
   license=$(jq -r '.license // ""' "$plugin_file")
@@ -67,16 +68,20 @@ for plugin_dir in plugins/*/; do
     fi
     echo "$badges"
     echo ""
+    if [[ -n "$maintainers" ]]; then
+      echo "**Maintainers:** $maintainers"
+      echo ""
+    fi
     if [[ -n "$min_dispatcharr" || -n "$max_dispatcharr" ]]; then
-      compat=""
-      if [[ -n "$min_dispatcharr" && -n "$max_dispatcharr" ]]; then
-        compat="$min_dispatcharr – $max_dispatcharr"
-      elif [[ -n "$min_dispatcharr" ]]; then
-        compat="$min_dispatcharr+"
-      else
-        compat="up to $max_dispatcharr"
+      compat_badges=""
+      if [[ -n "$min_dispatcharr" ]]; then
+        compat_badges="![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-$(shields_encode "$min_dispatcharr")-brightgreen?style=flat-square)"
       fi
-      echo "**Dispatcharr Compatibility:** $compat"
+      if [[ -n "$max_dispatcharr" ]]; then
+        [[ -n "$compat_badges" ]] && compat_badges+=" "
+        compat_badges+="![Dispatcharr max](https://img.shields.io/badge/Dispatcharr_max-$(shields_encode "$max_dispatcharr")-orange?style=flat-square)"
+      fi
+      echo "$compat_badges"
       echo ""
     fi
     echo "## Downloads"

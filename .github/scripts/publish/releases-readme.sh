@@ -85,15 +85,15 @@ render_plugin() {
     echo ""
   fi
   if [[ -n "$min_dispatcharr" || -n "$max_dispatcharr" ]]; then
-    compat=""
-    if [[ -n "$min_dispatcharr" && -n "$max_dispatcharr" ]]; then
-      compat="$min_dispatcharr – $max_dispatcharr"
-    elif [[ -n "$min_dispatcharr" ]]; then
-      compat="$min_dispatcharr+"
-    else
-      compat="up to $max_dispatcharr"
+    compat_badges=""
+    if [[ -n "$min_dispatcharr" ]]; then
+      compat_badges="![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-$(shields_encode "$min_dispatcharr")-brightgreen?style=flat-square)"
     fi
-    echo "**Dispatcharr Compatibility:** $compat"
+    if [[ -n "$max_dispatcharr" ]]; then
+      [[ -n "$compat_badges" ]] && compat_badges+=" "
+      compat_badges+="![Dispatcharr max](https://img.shields.io/badge/Dispatcharr_max-$(shields_encode "$max_dispatcharr")-orange?style=flat-square)"
+    fi
+    echo "$compat_badges"
     echo ""
   fi
   echo "**Downloads:**"
