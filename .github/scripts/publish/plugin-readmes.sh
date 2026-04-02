@@ -12,6 +12,16 @@ set -e
 # Format an ISO8601 timestamp as "Mon DD, HH:MM UTC"
 fmt_date() { date -d "$1" -u +"%b %d %Y, %H:%M UTC" 2>/dev/null || echo "$1"; }
 
+# Encode a string for use in a shields.io badge path segment
+# spaces -> _, underscores -> __, hyphens -> --
+shields_encode() {
+  local s="$1"
+  s="${s//_/__}"
+  s="${s//-/--}"
+  s="${s// /_}"
+  printf '%s' "$s"
+}
+
 for plugin_dir in plugins/*/; do
   [[ ! -d "$plugin_dir" ]] && continue
   plugin_name=$(basename "$plugin_dir")
@@ -36,20 +46,27 @@ for plugin_dir in plugins/*/; do
     echo ""
     echo "$description"
     echo ""
-    echo "**Author:** $author"
-    echo ""
-    if [[ -n "$repo_url" ]]; then
-      echo "**Repository:** [$repo_url]($repo_url)"
-      echo ""
-    fi
+    # Build badge row
+    local_discord_link=""
     if [[ -n "$discord_thread" ]]; then
-      echo "**Discord:** [Discussion Thread]($discord_thread)"
-      echo ""
+      if [[ "$discord_thread" == https://discord.com/* ]]; then
+        local_discord_link="discord://${discord_thread#https://}"
+      else
+        local_discord_link="$discord_thread"
+      fi
     fi
+    badges="![Author](https://img.shields.io/badge/Author-$(shields_encode "$author")-grey?style=flat-square)"
     if [[ -n "$license" ]]; then
-      echo "**License:** [$license](https://spdx.org/licenses/${license}.html)"
-      echo ""
+      badges+=" [![License: $license](https://img.shields.io/badge/License-$(shields_encode "$license")-blue?style=flat-square)](https://spdx.org/licenses/${license}.html)"
     fi
+    if [[ -n "$local_discord_link" ]]; then
+      badges+=" [![Discord](https://img.shields.io/badge/Discord-Discussion_Thread-5865F2?style=flat-square&logo=discord&logoColor=white)]($local_discord_link)"
+    fi
+    if [[ -n "$repo_url" ]]; then
+      badges+=" [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)]($repo_url)"
+    fi
+    echo "$badges"
+    echo ""
     if [[ -n "$min_dispatcharr" || -n "$max_dispatcharr" ]]; then
       compat=""
       if [[ -n "$min_dispatcharr" && -n "$max_dispatcharr" ]]; then
