@@ -74,7 +74,7 @@ render_plugin() {
   fi
   if [[ -n "$discord_link" ]]; then
     [[ -n "$badges" ]] && badges+=" "
-    badges+="[![Discord](https://img.shields.io/badge/Discord-Discussion_Thread-5865F2?style=flat-square&logo=discord&logoColor=white)]($discord_link)"
+    badges+="[![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)]($discord_link)"
   fi
   if [[ -n "$repo_url" ]]; then
     [[ -n "$badges" ]] && badges+=" "
@@ -143,15 +143,11 @@ render_plugin() {
       version=$(jq -r '.version' "$plugin_file")
       author=$(jq -r '.author // ""' "$plugin_file")
       description=$(jq -r '.description' "$plugin_file")
-      table_license=$(jq -r '.license // ""' "$plugin_file")
+      table_license=$(jq -r '.license // "-"' "$plugin_file")
       anchor=$(echo "$name" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | sed 's/--*/-/g')
       suffix=""
       [[ "$pass" == "deprecated" ]] && suffix=" (deprecated)"
-      if [[ -n "$table_license" ]]; then
-        license_cell="[![${table_license}](https://img.shields.io/badge/License-$(shields_encode "$table_license")-blue?style=flat-square)](https://spdx.org/licenses/${table_license}.html)"
-      else
-        license_cell="-"
-      fi
+      license_cell="${table_license}"
 
       echo "| [\`$name\`](#$anchor)$suffix | \`$version\` | $author | $license_cell | $description |"
     done

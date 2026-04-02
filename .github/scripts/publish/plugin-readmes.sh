@@ -60,7 +60,7 @@ for plugin_dir in plugins/*/; do
       badges+=" [![License: $license](https://img.shields.io/badge/License-$(shields_encode "$license")-blue?style=flat-square)](https://spdx.org/licenses/${license}.html)"
     fi
     if [[ -n "$local_discord_link" ]]; then
-      badges+=" [![Discord](https://img.shields.io/badge/Discord-Discussion_Thread-5865F2?style=flat-square&logo=discord&logoColor=white)]($local_discord_link)"
+      badges+=" [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)]($local_discord_link)"
     fi
     if [[ -n "$repo_url" ]]; then
       badges+=" [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)]($repo_url)"
