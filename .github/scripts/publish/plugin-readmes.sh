@@ -37,6 +37,9 @@ for plugin_dir in plugins/*/; do
   license=$(jq -r '.license // ""' "$plugin_file")
   min_dispatcharr=$(jq -r '.min_dispatcharr_version // empty' "$plugin_file")
   max_dispatcharr=$(jq -r '.max_dispatcharr_version // empty' "$plugin_file")
+  version=$(jq -r '.version' "$plugin_file")
+  last_updated=$(git log -1 --format=%cI origin/$SOURCE_BRANCH -- "$plugin_dir" 2>/dev/null \
+    || date -u +"%Y-%m-%dT%H:%M:%SZ")
   has_readme=false
   [[ -f "$plugin_dir/README.md" ]] && has_readme=true
 
@@ -44,6 +47,8 @@ for plugin_dir in plugins/*/; do
     echo "[Back to All Plugins](../../README.md)"
     echo ""
     echo "# $name"
+    echo ""
+    echo "**Version:** \`$version\` | **Author:** $author | **Last Updated:** $(fmt_date "$last_updated")"
     echo ""
     echo "$description"
     echo ""
@@ -56,20 +61,20 @@ for plugin_dir in plugins/*/; do
         local_discord_link="$discord_thread"
       fi
     fi
-    badges="![Author](https://img.shields.io/badge/Author-$(shields_encode "$author")-grey?style=flat-square)"
+    badges=""
     if [[ -n "$license" ]]; then
-      badges+=" [![License: $license](https://img.shields.io/badge/License-$(shields_encode "$license")-blue?style=flat-square)](https://spdx.org/licenses/${license}.html)"
+      badges="[![License: $license](https://img.shields.io/badge/License-$(shields_encode "$license")-blue?style=flat-square)](https://spdx.org/licenses/${license}.html)"
     fi
     if [[ -n "$local_discord_link" ]]; then
-      badges+=" [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)]($local_discord_link)"
+      [[ -n "$badges" ]] && badges+=" "
+      badges+="[![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)]($local_discord_link)"
     fi
     if [[ -n "$repo_url" ]]; then
-      badges+=" [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)]($repo_url)"
+      [[ -n "$badges" ]] && badges+=" "
+      badges+="[![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)]($repo_url)"
     fi
-    echo "$badges"
-    echo ""
-    if [[ -n "$maintainers" ]]; then
-      echo "**Maintainers:** $maintainers"
+    if [[ -n "$badges" ]]; then
+      echo "$badges"
       echo ""
     fi
     if [[ -n "$min_dispatcharr" || -n "$max_dispatcharr" ]]; then
@@ -162,7 +167,10 @@ for plugin_dir in plugins/*/; do
     echo ""
     echo "---"
     echo ""
-    echo "**Source:** [Browse Plugin](https://github.com/${GITHUB_REPOSITORY}/tree/$SOURCE_BRANCH/plugins/${plugin_name})"
+    local_footer=""
+    [[ -n "$maintainers" ]] && local_footer="**Maintainers:** $maintainers | "
+    local_footer+="**Source:** [Browse Plugin](https://github.com/${GITHUB_REPOSITORY}/tree/$SOURCE_BRANCH/plugins/${plugin_name})"
+    echo "$local_footer"
     echo ""
     echo "**Metadata:** [View full manifest](./manifest.json)"
 
