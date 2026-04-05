@@ -250,8 +250,7 @@ jobs:
   # --------------------------------------------------------------------------
   # Validate PR title format
   #   Runs on every non-draft, non-closing PR event (including 'edited', which
-  #   fires when the title is renamed). Results are informational only and do
-  #   not block the Plugin PR Check status.
+  #   fires when the title is renamed).
   # --------------------------------------------------------------------------
   validate-title:
     needs: [detect-changes]
