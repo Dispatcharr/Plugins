@@ -110,8 +110,8 @@ for plugin_dir in plugins/*/; do
   [[ ! -f "$plugin_file" ]] && continue
   plugin_name=$(basename "$plugin_dir")
   plugin_key=${plugin_name//-/_}
-  is_unlisted=false
-  [[ "$(jq -r '.unlisted // false' "$plugin_file")" == "true" ]] && is_unlisted=true
+  unlisted=false
+  [[ "$(jq -r '.unlisted // false' "$plugin_file")" == "true" ]] && unlisted=true
 
   echo "  $plugin_name"
 
@@ -186,7 +186,7 @@ for plugin_dir in plugins/*/; do
   plugin_entries+=("$plugin_entry")
 
   # Unlisted plugins get a per-plugin manifest but are excluded from the root manifest
-  [[ "$is_unlisted" == "true" ]] && continue
+  [[ "$unlisted" == "true" ]] && continue
 
   # Compact root manifest entry
   desc_raw=$(jq -r '.description // ""' "$plugin_file")
