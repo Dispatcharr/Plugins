@@ -82,7 +82,7 @@ At least one of `author` or `maintainers` must include your GitHub username. `au
 | `repo_url` | `string` | URL to the plugin's source repository (must start with `http://` or `https://`) |
 | `discord_thread` | `string` | URL to the associated Discord thread (must start with `http://` or `https://`) |
 | `deprecated` | `boolean` | Marks the plugin as deprecated. Default: `false` |
-| `unlisted` | `boolean` | Excludes the plugin from `manifest.json` and hides it from the releases README. Default: `false` |
+| `unlisted` | `boolean` | Excludes the plugin from the root `manifest.json` (and the releases README) but still generates a per-plugin manifest. Default: `false` |
 
 ### Full Example
 

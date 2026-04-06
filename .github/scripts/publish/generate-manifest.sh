@@ -110,7 +110,8 @@ for plugin_dir in plugins/*/; do
   [[ ! -f "$plugin_file" ]] && continue
   plugin_name=$(basename "$plugin_dir")
   plugin_key=${plugin_name//-/_}
-  [[ "$(jq -r '.unlisted // false' "$plugin_file")" == "true" ]] && continue
+  is_unlisted=false
+  [[ "$(jq -r '.unlisted // false' "$plugin_file")" == "true" ]] && is_unlisted=true
 
   echo "  $plugin_name"
 
@@ -184,6 +185,9 @@ for plugin_dir in plugins/*/; do
   fi
   plugin_entries+=("$plugin_entry")
 
+  # Unlisted plugins get a per-plugin manifest but are excluded from the root manifest
+  [[ "$is_unlisted" == "true" ]] && continue
+
   # Compact root manifest entry
   desc_raw=$(jq -r '.description // ""' "$plugin_file")
   if [[ ${#desc_raw} -gt 200 ]]; then
@@ -203,6 +207,7 @@ for plugin_dir in plugins/*/; do
     --arg manifest_url "$plugin_manifest_url" \
     --arg author "$(jq -r '.author // ""' "$plugin_file")" \
     --arg license "$(jq -r '.license // ""' "$plugin_file")" \
+    --argjson deprecated "$(jq 'if .deprecated == true then true else null end' "$plugin_file")" \
     '{
       slug: $slug,
       name: $name,
@@ -210,6 +215,7 @@ for plugin_dir in plugins/*/; do
       manifest_url: $manifest_url,
       author: $author,
       license: (if $license != "" then $license else null end),
+      deprecated: $deprecated,
       last_updated: ($latest_metadata.last_updated // null),
       latest_version: ($latest_metadata.version // null),
       latest_md5: ($latest_metadata.checksum_md5 // null),
