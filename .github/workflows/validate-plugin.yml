@@ -425,12 +425,12 @@ jobs:
             echo "found=true" >> "$GITHUB_OUTPUT"
             echo "languages=$LANG_CSV" >> "$GITHUB_OUTPUT"
             echo "Detected languages for CodeQL: $LANG_CSV"
-            [[ -n "$UNSCANNED_CSV" ]] && echo "Unscanned (no CodeQL support): $UNSCANNED_CSV"
+            if [[ -n "$UNSCANNED_CSV" ]]; then echo "Unscanned (no CodeQL support): $UNSCANNED_CSV"; fi
           else
             echo "found=false" >> "$GITHUB_OUTPUT"
             echo "languages=" >> "$GITHUB_OUTPUT"
             echo "No supported language files found in changed plugins - skipping CodeQL."
-            [[ -n "$UNSCANNED_CSV" ]] && echo "Unscanned file types detected (no CodeQL support): $UNSCANNED_CSV"
+            if [[ -n "$UNSCANNED_CSV" ]]; then echo "Unscanned file types detected (no CodeQL support): $UNSCANNED_CSV"; fi
           fi
 
       - name: Get merge commit SHA
