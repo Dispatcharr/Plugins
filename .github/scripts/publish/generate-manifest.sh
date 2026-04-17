@@ -119,6 +119,8 @@ for plugin_dir in plugins/*/; do
 
   versioned_zips="[]"
   latest_metadata="{}"
+  latest_size_kb=0
+  latest_size_set=false
 
   # existing per-plugin manifest from previous run - used as metadata fallback
   existing_manifest_file="zips/$plugin_name/manifest.json"
@@ -127,6 +129,12 @@ for plugin_dir in plugins/*/; do
     zip_basename=$(basename "$zipfile")
     zip_version=$(echo "$zip_basename" | sed "s/${plugin_name}-\(.*\)\.zip/\1/")
     zip_url="zips/${plugin_name}/${zip_basename}"
+    zip_size_bytes=$(stat -f%z "$zipfile" 2>/dev/null || stat -c%s "$zipfile" 2>/dev/null || echo 0)
+    zip_size_kb=$(( zip_size_bytes / 1024 ))
+    if [[ "$latest_size_set" == "false" ]]; then
+      latest_size_kb=$zip_size_kb
+      latest_size_set=true
+    fi
 
     # Fresh metadata from this run takes priority; fall back to existing manifest
     fresh_meta_file="${BUILD_META_DIR:-}/$plugin_key/${plugin_key}-${zip_version}.json"
@@ -140,14 +148,14 @@ for plugin_dir in plugins/*/; do
     fi
 
     if [[ "$metadata" != "{}" ]]; then
-      versioned_zips=$(jq --arg url "$zip_url" --argjson metadata "$metadata" \
-        '. + [($metadata + {url: $url})]' <<< "$versioned_zips")
+      versioned_zips=$(jq --arg url "$zip_url" --argjson metadata "$metadata" --argjson size "$zip_size_kb" \
+        '. + [($metadata + {url: $url, size: $size})]' <<< "$versioned_zips")
       if [[ "$latest_metadata" == "{}" ]]; then
         latest_metadata="$metadata"
       fi
     else
-      versioned_zips=$(jq --arg version "$zip_version" --arg url "$zip_url" \
-        '. + [{version: $version, url: $url}]' <<< "$versioned_zips")
+      versioned_zips=$(jq --arg version "$zip_version" --arg url "$zip_url" --argjson size "$zip_size_kb" \
+        '. + [{version: $version, url: $url, size: $size}]' <<< "$versioned_zips")
     fi
   done < <(ls -1 "zips/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
       | grep -v latest | sort -t- -k2 -V -r)
@@ -159,6 +167,7 @@ for plugin_dir in plugins/*/; do
     --arg registry_name "$registry_name" \
     --argjson versioned_zips "$versioned_zips" \
     --argjson latest_metadata "$latest_metadata" \
+    --argjson latest_size_kb "$latest_size_kb" \
     'with_entries(select(.key | IN(
       "name","description","author","maintainers",
       "deprecated","repo_url","discord_thread","license"
@@ -172,7 +181,8 @@ for plugin_dir in plugins/*/; do
         last_updated: $latest_metadata.last_updated,
         latest: ($latest_metadata + {
           latest_url: $latest_url,
-          url: $versioned_zips[0].url
+          url: $versioned_zips[0].url,
+          size: $latest_size_kb
         })
       } else {} end
     )' \
@@ -208,6 +218,7 @@ for plugin_dir in plugins/*/; do
     --arg author "$(jq -r '.author // ""' "$plugin_file")" \
     --arg license "$(jq -r '.license // ""' "$plugin_file")" \
     --argjson deprecated "$(jq 'if .deprecated == true then true else null end' "$plugin_file")" \
+    --argjson latest_size_kb "$latest_size_kb" \
     '{
       slug: $slug,
       name: $name,
@@ -221,6 +232,7 @@ for plugin_dir in plugins/*/; do
       latest_md5: ($latest_metadata.checksum_md5 // null),
       latest_sha256: ($latest_metadata.checksum_sha256 // null),
       latest_url: ($versioned_zips[0].url // null),
+      latest_size: (if $latest_size_kb > 0 then $latest_size_kb else null end),
       min_dispatcharr_version: ($latest_metadata.min_dispatcharr_version // null),
       max_dispatcharr_version: ($latest_metadata.max_dispatcharr_version // null)
     } | with_entries(select(.value != null))')
