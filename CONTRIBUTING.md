@@ -117,10 +117,9 @@ Automated validation runs on every PR and posts a comment with results. The foll
 | `min_dispatcharr_version` | Must be semver if provided |
 | `max_dispatcharr_version` | Must be semver and ≥ `min_dispatcharr_version` if both provided |
 | `repo_url` / `discord_thread` | Must start with `http://` or `https://` if provided |
-| CodeQL | Python code is scanned for security issues (blocking) |
-| `.github/` | Cannot be modified by non-maintainers of this repository |
+| CodeQL | Python code is scanned for security issues (blocking) || ClamAV | All submitted files are scanned for malware (blocking) || `.github/` | Cannot be modified by non-maintainers of this repository |
 
-PRs where the author has no permission for any of the modified plugins are **automatically closed** with instructions.
+PRs where the author has no permission for any of the modified plugins are **automatically closed** with instructions. PRs from accounts or plugins on the repository blocklist are also automatically closed.
 
 ## What Happens After Merge
 

@@ -26,6 +26,7 @@ Every PR runs automated validation that checks:
 - PR author is listed in `author` or `maintainers`
 - `.github/` files are not modified by non-maintainers
 - Python code is scanned by CodeQL (required check)
+- All files are scanned by ClamAV for malware (required check)
 
 PRs where the author has no permission for any modified plugin are automatically closed with instructions.
 
