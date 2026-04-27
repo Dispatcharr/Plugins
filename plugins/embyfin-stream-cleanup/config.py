@@ -173,12 +173,13 @@ def _build_server_fields(n):
             "type": "string",
             "default": "",
             "description": (
-                f"The IP, hostname, or label that media server{label_num} uses when "
+                f"The IP, hostname, CIDR block, or username that media server{label_num} uses when "
                 "connecting to Dispatcharr (as shown in the Client Identifier column). "
                 "Comma-separated for multiple values. "
+                "CIDR notation (e.g. 10.0.0.0/24) matches any IP in the range. "
                 "This links the server's session pool to its connections for accurate cleanup"
             ),
-            "placeholder": "emby-prod, 192.168.1.100",
+            "placeholder": "emby-prod, 192.168.1.0/24",
         },
     ]
 

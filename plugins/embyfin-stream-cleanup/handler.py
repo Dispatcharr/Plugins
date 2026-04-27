@@ -9,6 +9,7 @@ Optionally cross-references with an Emby/Jellyfin Sessions API to detect
 orphaned connections that the media server failed to close.
 """
 
+import ipaddress
 import json
 import logging
 import socket
@@ -109,10 +110,38 @@ class StreamMonitor:
         return [v.strip().lower() for v in client_identifier.split(",") if v.strip()]
 
     @staticmethod
+    def _is_cidr(ident):
+        """Return True if *ident* looks like a CIDR block (e.g. 10.0.0.0/24)."""
+        if "/" not in ident:
+            return False
+        try:
+            ipaddress.ip_network(ident, strict=False)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
+    def _ip_in_cidr(ip, cidr):
+        """Return True if *ip* falls within the *cidr* network."""
+        try:
+            return ipaddress.ip_address(ip.strip()) in ipaddress.ip_network(cidr.strip(), strict=False)
+        except ValueError:
+            return False
+
+    @staticmethod
     def _resolve_identifiers(identifiers):
-        """Resolve any hostnames in *identifiers* to IP addresses."""
+        """Resolve any hostnames in *identifiers* to IP addresses.
+        CIDR blocks and plain IPs are skipped (not hostnames)."""
         resolved = set()
         for ident in identifiers:
+            # Skip CIDR blocks and plain IP addresses
+            if "/" in ident:
+                continue
+            try:
+                ipaddress.ip_address(ident)
+                continue  # plain IP, no resolution needed
+            except ValueError:
+                pass
             try:
                 for info in socket.getaddrinfo(ident, None):
                     resolved.add(info[4][0])
@@ -124,13 +153,22 @@ class StreamMonitor:
     def _match_client(ip, username, identifiers, resolved_ips,
                       ident_to_server=None, resolved_ip_to_server=None):
         """Check if a client matches any configured identifier.
+        Supports plain IPs, usernames, hostnames, and CIDR blocks.
         Returns (matched: bool, reason: str, server_info: dict or None)."""
         if "all" in identifiers:
             srv = (ident_to_server or {}).get("all")
             return True, "ALL (matches every client)", srv
-        ip_lower = ip.lower()
-        uname_lower = username.lower()
+        ip_lower = ip.strip().lower()
+        uname_lower = username.strip().lower()
         for ident in identifiers:
+            if "/" in ident:
+                try:
+                    if ipaddress.ip_address(ip_lower) in ipaddress.ip_network(ident, strict=False):
+                        srv = (ident_to_server or {}).get(ident)
+                        return True, f"CIDR match ({ident})", srv
+                except ValueError:
+                    pass
+                continue
             if ip_lower == ident:
                 srv = (ident_to_server or {}).get(ident)
                 return True, f"IP match ({ident})", srv
@@ -292,22 +330,30 @@ class StreamMonitor:
     def _pool_channels_for_client(ip, username, pool_channels_by_ident):
         """Find the pool channel set that covers this client.
 
-        Checks the client's IP, username (lowercased), and resolved hostname
-        against the ``pool_channels_by_ident`` mapping which is keyed by
-        identifier strings (IPs, usernames, hostnames).
+        Checks the client's IP, username (lowercased), resolved hostname,
+        and CIDR blocks against the ``pool_channels_by_ident`` mapping
+        which is keyed by identifier strings (IPs, usernames, hostnames,
+        or CIDR blocks).
 
         Returns the matching channel set, or ``None`` if no identifier matches.
         """
         if not pool_channels_by_ident:
             return None
-        ip_lower = ip.lower()
-        uname_lower = (username or "").lower()
+        ip_lower = ip.strip().lower()
+        uname_lower = (username or "").strip().lower()
         if ip_lower in pool_channels_by_ident:
             return pool_channels_by_ident[ip_lower]
         if uname_lower and uname_lower in pool_channels_by_ident:
             return pool_channels_by_ident[uname_lower]
-        # Check if client IP matches a resolved hostname identifier
+        # Check CIDR blocks and resolved hostname identifiers
         for ident, ch_set in pool_channels_by_ident.items():
+            if "/" in ident:
+                try:
+                    if ipaddress.ip_address(ip_lower) in ipaddress.ip_network(ident, strict=False):
+                        return ch_set
+                except ValueError:
+                    pass
+                continue
             try:
                 for info in socket.getaddrinfo(ident, None):
                     if info[4][0] == ip_lower:
@@ -639,9 +685,17 @@ class StreamMonitor:
                     for ident in idents:
                         ident_to_server[ident] = srv_info
                     break
-        # Map resolved IPs to the server that owns the resolving identifier
+        # Map resolved IPs to the server that owns the resolving identifier.
+        # Skip CIDR blocks and plain IPs (only resolve hostnames).
         resolved_ip_to_server = {}
         for ident, srv_info in ident_to_server.items():
+            if "/" in ident:
+                continue  # CIDR block, not a hostname
+            try:
+                ipaddress.ip_address(ident)
+                continue  # plain IP, no resolution needed
+            except ValueError:
+                pass
             try:
                 for info in socket.getaddrinfo(ident, None):
                     ip = info[4][0]
