@@ -99,6 +99,8 @@ class StreamMonitor:
         self._emby_active_count = None  # None=not configured, int=session count
         self._emby_error = None  # last error message, if any
         self._media_server_status = []  # per-server status dicts for debug page
+        self._active_recording_channels = set()  # channel numbers with in-progress DVR recordings
+        self._recording_count_by_url = {}  # {server_url: int} for dashboard display
 
     # ── Identifier helpers ───────────────────────────────────────────────────
 
@@ -300,6 +302,41 @@ class StreamMonitor:
             return 0
         return sum(1 for s in sessions
                    if s.get("NowPlayingItem", {}).get("Type") in _LIVE_TV_TYPES)
+
+    def _fetch_active_recording_channels(self):
+        """Return channel numbers for active in-progress DVR recordings.
+
+        Calls GET /LiveTv/Recordings?IsInProgress=true on each configured
+        media server.  Returns a list of dicts with 'channel_number' and
+        '_source_url' keys so callers can map them back to server identifiers.
+        """
+        servers = self._get_media_server_configs()
+        if not servers:
+            return []
+        results = []
+        for url, api_key, _ in servers:
+            endpoint = f"{url}/LiveTv/Recordings?IsInProgress=true&Fields=ChannelNumber&Limit=200"
+            try:
+                req = urllib.request.Request(endpoint, headers={
+                    "Accept": "application/json",
+                    "X-Emby-Token": api_key,
+                })
+                with urllib.request.urlopen(req, timeout=5) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    items = data.get("Items", []) if isinstance(data, dict) else []
+                    for item in items:
+                        ch_num = item.get("ChannelNumber")
+                        if ch_num:
+                            ch_num = str(ch_num).strip()
+                            try:
+                                num = float(ch_num)
+                                ch_num = str(int(num)) if num == int(num) else ch_num
+                            except (ValueError, TypeError):
+                                pass
+                            results.append({"channel_number": ch_num, "_source_url": url})
+            except Exception as e:
+                logger.debug(f"Could not fetch active recordings from {url}: {e}")
+        return results
 
     @staticmethod
     def _signal_client_stop(channel_uuid, client_id, redis_client):
@@ -514,6 +551,8 @@ class StreamMonitor:
         self._stop_logged = set()
         self._emby_active_count = None
         self._emby_error = None
+        self._active_recording_channels = set()
+        self._recording_count_by_url = {}
 
         # Mark as running in Redis (with heartbeat TTL so the key expires
         # if this process dies without cleaning up).
@@ -730,6 +769,23 @@ class StreamMonitor:
                     source_url = s.get("_source_url", "")
                     for ident in url_to_idents.get(source_url, set()):
                         pool_channels_by_ident.setdefault(ident, set()).add(ch_num)
+
+            # Also protect channels with active in-progress DVR recordings.
+            # The recording backend connects to Dispatcharr as a client but
+            # never appears as a regular playback session, so without this its
+            # channel would be absent from the pool and terminated.
+            recording_channels = set()
+            recording_count_by_url = {}
+            for rec in self._fetch_active_recording_channels():
+                ch_num = rec["channel_number"]
+                source_url = rec.get("_source_url", "")
+                media_server_channel_numbers.add(ch_num)
+                recording_channels.add(ch_num)
+                recording_count_by_url[source_url] = recording_count_by_url.get(source_url, 0) + 1
+                for ident in url_to_idents.get(source_url, set()):
+                    pool_channels_by_ident.setdefault(ident, set()).add(ch_num)
+            self._active_recording_channels = recording_channels
+            self._recording_count_by_url = recording_count_by_url
 
         try:
             for key in redis_client.scan_iter(match="channel_stream:*"):
@@ -1019,4 +1075,6 @@ class StreamMonitor:
             "emby_active_count": self._emby_active_count,
             "emby_error": self._emby_error,
             "media_servers": list(self._media_server_status),
+            "recording_channels": set(self._active_recording_channels),
+            "recording_count_by_url": dict(self._recording_count_by_url),
         }

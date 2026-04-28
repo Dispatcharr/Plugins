@@ -230,13 +230,16 @@ def render_debug_page(debug_state, settings):
     emby_active_count = debug_state.get("emby_active_count")
     emby_error = debug_state.get("emby_error")
     media_servers = debug_state.get("media_servers", [])
+    recording_count_by_url = debug_state.get("recording_count_by_url", {})
+    total_recordings = sum(recording_count_by_url.values())
     emby_html = ""
     media_server_cards = ""
     if emby_configured:
         if emby_error:
             emby_html = '<tr><td>Media Server Pool</td><td><span class="warn">Error (see below)</span></td></tr>'
         elif emby_active_count is not None:
-            emby_html = f'<tr><td>Media Server Pool</td><td><span>{emby_active_count} active session(s)</span></td></tr>'
+            total_pool = emby_active_count + total_recordings
+            emby_html = f'<tr><td>Media Server Pool</td><td><span>{total_pool} session(s)</span></td></tr>'
         else:
             emby_html = '<tr><td>Media Server Pool</td><td><span>Connecting...</span></td></tr>'
 
@@ -262,6 +265,7 @@ def render_debug_page(debug_state, settings):
                 ).upper() if srv_idents else "(no identifier)"
                 srv_active = srv.get("active")
                 srv_error = srv.get("error")
+                srv_rec_count = recording_count_by_url.get(srv_url, 0)
                 if srv_error:
                     srv_class = "srv-unknown"
                     srv_badge = '<span class="badge pending">Error</span>'
@@ -269,8 +273,10 @@ def render_debug_page(debug_state, settings):
                     srv_detail = f'<span class="warn">{err_display}</span>'
                 elif srv_active is not None:
                     srv_class = st.css_class
-                    srv_badge = f'<span class="badge active">{srv_active} session(s)</span>'
-                    srv_detail = f'{srv_active} active stream(s) detected'
+                    srv_total = srv_active + srv_rec_count
+                    srv_badge = f'<span class="badge active">{srv_total} session(s)</span>'
+                    rec_detail = f' ({srv_active} live, {srv_rec_count} DVR)' if srv_rec_count else ""
+                    srv_detail = f'{srv_total} active stream(s) detected{rec_detail}'
                 else:
                     srv_class = "srv-unknown"
                     srv_badge = '<span class="badge idle">Connecting</span>'
@@ -288,6 +294,7 @@ def render_debug_page(debug_state, settings):
 
     # Build channel cards from last scan
     scan = debug_state.get("scan", {})
+    recording_channels = debug_state.get("recording_channels", set())
     channels_html = ""
     if scan:
         for ch_uuid, ch_data in sorted(scan.items(), key=lambda x: x[1].get("channel_number", "")):
@@ -324,10 +331,12 @@ def render_debug_page(debug_state, settings):
                 status_desc = "No clients on this channel match the configured identifier"
 
             name_html = f' <span class="channel-name">{channel_name}</span>' if channel_name else ""
+            is_recording = channel_number in recording_channels
+            rec_badge = ' <span class="badge rec" title="Active DVR recording">&#9679; DVR</span>' if is_recording else ""
             card_html = f'''
             <div class="card {status_class}">
                 <div class="card-header">
-                    <span class="channel-num">CH {channel_number}{name_html}</span>
+                    <span class="channel-num">CH {channel_number}{name_html}{rec_badge}</span>
                     <span class="badge {status_class}">{status_label}</span>
                 </div>
                 <div class="status-desc">{status_desc}</div>'''
@@ -469,6 +478,7 @@ def _debug_html(plugin_name, monitor_badge,
         .badge.pending {{ background: #3a2a10; color: #ffb74d; }}
         .badge.idle {{ background: #2a2a2a; color: #888; }}
         .badge.grace {{ background: #1a2a3a; color: #64b5f6; }}
+        .badge.rec {{ background: #3a1a1a; color: #ef5350; font-size: 11px; padding: 2px 7px; }}
         .grace-note {{ color: #64b5f6; }}
         .section-label {{
             font-size: 11px;
