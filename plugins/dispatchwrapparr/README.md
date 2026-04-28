@@ -21,15 +21,19 @@
 
 ## 🚀 Installation
 
-For ease of installation, Dispatchwrapparr can be installed through the official Dispatcharr plugin repository. Alternatively, it can be downloaded here: [Dispatchwrapparr Releases](https://github.com/jordandalley/dispatchwrapparr/releases/latest)
+Dispatchwrapparr can be installed through the official Dispatcharr plugin repository.
+
+You can find this in Dispatcharr under 'Plugins' -> 'Find Plugins' and searching for 'Dispatchwrapparr'.
 
 Once the Dispatchwrapparr plugin is installed, configuring your first profile is easy!
 
-Simply enter in a name for your stream profile, then click the 'Generate Stream Profile' button.
+<img width="383" height="182" alt="image" src="https://github.com/user-attachments/assets/f67e12ea-e03d-4ca2-aed3-b4b6ffe28b3e" />
+
+Simply click 'Settings', complete the details in the form and then click 'Save'. When finished, click the 'Actions' tab and then click the 'Generate Stream Profile' button.
 
 Note: For the new stream profile to appear, you will need to refresh Dispatcharr from your browser.
 
-<img width="608" height="982" alt="image" src="https://github.com/user-attachments/assets/bcfe255f-6454-437f-8016-e8a52776f39b" />
+Dispatchwrapparr has many more features than those available in the form. The below documentation contains an exhaustive list of the capabilities of the plugin including how to achieve DRM decryption of HLS and DASH streams using clearkey(s).
 
 ---
 
@@ -41,16 +45,17 @@ URL fragment options can be used to tell Dispatchwrapparr what to do with a spec
 
 Below is a list of fragment options and their specifc usage:
 
-| Fragment       | Type          | Example Usage                                | Description                                                                                                                                                                                  |
-| :---           | :---          | :---                                         | :---                                                                                                                                                                                         | 
-| clearkey       | String        | `#clearkey=7ff8541ab5771900c442f0ba5885745f` | Defines the DRM Clearkey for decryption of stream content                                                                                                                                    | 
-| header         | String        | `#header=Authorization:Bearer%20XYZ&header=Origin:https://example.com` | Adds one or more custom HTTP headers using repeated `header=<Header-Name>:<Header-Value>` fragments                                                                                         |
-| referer        | String        | `#referer=https://somesite.com/`             | Defines the 'Referer' header to use for the stream URL                                                                                                                                       | 
-| origin         | String        | `#origin=https://somesite.com/`              | Defines the 'Origin' header to use for the stream URL                                                                                                                                        | 
-| stream         | String        | `#stream=1080p_alt`                          | Override Dispatchwrapparr automatic stream selection with a manual selection for the stream URL                                                                                              | 
-| novariantcheck | Bool          | `#novariantcheck=true`                       | Do not automatically detect audio-only or video-only streams and mux in blank video or silent audio for compatibility purposes. Just pass through the stream as-is (without video or audio). |
-| noaudio        | Bool          | `#noaudio=true`                              | Disables variant checking (-novariantcheck) and manually specifies that the stream contains no audio. This instructs Dispatchwrapparr to mux in silent audio.                                |
-| novideo        | Bool          | `#novideo=true`                              | Disables variant checking (-novariantcheck) and manually specifies that the stream contains no video. This instructs Dispatchwrapparr to mux in blank video.                                 |
+| Fragment        | Type          | Example Usage                                | Description                                                                                                                                                                                  |
+| :---            | :---          | :---                                         | :---                                                                                                                                                                                         | 
+| clearkey        | String        | `#clearkey=7ff8541ab5771900c442f0ba5885745f` | Defines the DRM Clearkey for decryption of stream content                                                                                                                                    | 
+| header          | String        | `#header=Authorization:Bearer%20XYZ&header=Origin:https://example.com` | Adds one or more custom HTTP headers using repeated `header=<Header-Name>:<Header-Value>` fragments                                                                |
+| referer         | String        | `#referer=https://somesite.com/`             | Defines the 'Referer' header to use for the stream URL                                                                                                                                       | 
+| origin          | String        | `#origin=https://somesite.com/`              | Defines the 'Origin' header to use for the stream URL                                                                                                                                        | 
+| stream          | String        | `#stream=1080p_alt`                          | Override Dispatchwrapparr automatic stream selection with a manual selection for the stream URL                                                                                              | 
+| novariantcheck  | Bool          | `#novariantcheck=true`                       | Do not automatically detect audio-only or video-only streams and mux in blank video or silent audio for compatibility purposes. Just pass through the stream as-is (without video or audio). |
+| ffmpeg_nocopyts | Bool          | `#ffmpeg_nocopyts=true`                      | Do not copy timestamps during stream muxing. May help solve playability issues with some streams.                                                                                            |
+| noaudio         | Bool          | `#noaudio=true`                              | Disables variant checking (-novariantcheck) and manually specifies that the stream contains no audio. This instructs Dispatchwrapparr to mux in silent audio.                                |
+| novideo         | Bool          | `#novideo=true`                              | Disables variant checking (-novariantcheck) and manually specifies that the stream contains no video. This instructs Dispatchwrapparr to mux in blank video.                                 |
 
 Important notes about fragment options:
 
@@ -117,6 +122,7 @@ For example, to select the '720p+a128k_48k' stream variant, then it would look l
 | -stream                 | Optional | `1080p_alt` or `worst`                                    | Override Dispatchwrapparr automatic stream selection with a manual selection for the stream URL                                                                                              |
 | -ffmpeg                 | Optional | `/path/to/ffmpeg`                                         | Specify the location of an ffmpeg binary for use in stream muxing instead of auto detecting ffmpeg binaries in PATH or in the same directory as dispatchwrapparr.py                          |
 | -ffmpeg_transcode_audio | Optional | `copy`, `eac3`, `aac`, `ac3`                              | Enables the ffmpeg option to transcode audio. By default, dispatchwrapparr just copies the audio.                                                                                            |
+| -ffmpeg_nocopyts        | Optional |                                                           | Do not copy timestamps during stream muxing. May help solve playability issues with some streams.                                                                                            |
 | -novariantcheck         | Optional |                                                           | Do not automatically detect audio-only or video-only streams and mux in blank video or silent audio for compatibility purposes. Just pass through the stream as-is (without video or audio). |
 | -noaudio                | Optional |                                                           | Disables variant checking (-novariantcheck) and manually specifies that the stream contains no audio. This instructs Dispatchwrapparr to mux in silent audio.                                |
 | -novideo                | Optional |                                                           | Disables variant checking (-novariantcheck) and manually specifies that the stream contains no video. This instructs Dispatchwrapparr to mux in blank video.                                 |
@@ -165,6 +171,12 @@ In Jellyfin there are a number of settings related to m3u8 manifests.
 
 Make sure that all options ("Allow fMP4 transcoding container", "Allow stream sharing", "Auto-loop live streams", "Ignore DTS (decoding timestamp)", and "Read input at native frame rate") are unticked/disabled.
 
+### My stream only plays audio or won't start
+
+Sometimes broadcasters don't include timestamps in the audio stream. Since version 1.6.2, Dispatchwrapparr copies timestamps by default when muxing. There may be occasions where you may need to disable this feature.
+
+See the `-ffmpeg_nocopyts` option or `#ffmpeg_nocopyts=true` url fragment options for more details.
+
 ### My streams stop on ad breaks, why?
 
 This is a technology called SCTE-35 (aka. SSAI or DAI) which injects ads/commercial breaks into streams based on parameters such as geolocation and demographics etc.
@@ -184,6 +196,7 @@ This script was made possible thanks to many wonderful python libraries and open
 - [Dispatcharr](https://github.com/Dispatcharr/Dispatcharr) development community for making such an awesome stream manager!
 - [SergeantPanda](https://github.com/SergeantPanda) for support and guidance on the Dispatcharr discord
 - [OkinawaBoss](https://github.com/OkinawaBoss) for creating the Dispatcharr plugin system and providing example code
+- [sethwv](https://github.com/sethwv) for building such an awesome plugin system in Dispatcharr
 - [Streamlink](https://streamlink.github.io/) for their awesome API and stream handling capability
 - [titus-au](https://github.com/titus-au/streamlink-plugin-dashdrm) who laid a lot of the groundwork for managing DASHDRM streams in streamlink!
 - [matthuisman](https://github.com/matthuisman) this guy is a local streaming legend in New Zealand. His code and work with streams has taught me heaps!
