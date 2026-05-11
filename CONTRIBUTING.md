@@ -42,7 +42,7 @@ On merge, the registry fetches the ZIP from your release, computes its checksums
 
 **Requirements for external plugins:**
 
-- `source_url` must be a GitHub Releases download URL (`https://github.com/owner/repo/releases/download/...`)
+- `source_url` must be an HTTPS URL pointing directly to a downloadable ZIP
 - `source_url` must contain a `{version}` placeholder that is substituted at publish time
 - `repo_url` is required (points to your source repository)
 - The source repository must be public and under an OSI-approved open source license
@@ -162,7 +162,7 @@ Automated validation runs on every PR and posts a comment with results. The foll
 | `repo_url` / `discord_thread` | Must start with `http://` or `https://` if provided |
 | CodeQL | Python code is scanned for security issues (blocking). For external plugins, the release ZIP is downloaded and its contents scanned |
 | ClamAV | All submitted files are scanned for malware (blocking). For external plugins, the release ZIP is downloaded and scanned |
-| `source_url` | For external plugins: must be a GitHub Releases URL with a `{version}` placeholder; artifact must be reachable |
+| `source_url` | For external plugins: must be an HTTPS URL with a `{version}` placeholder; artifact must be reachable |
 | `repo_url` | Required for external plugins |
 | `.github/` | Cannot be modified by non-maintainers of this repository |
 

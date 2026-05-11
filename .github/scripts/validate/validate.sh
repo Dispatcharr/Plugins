@@ -157,8 +157,8 @@ has_permission="false"
     if [[ -z "$ext_source_url" ]]; then
       TABLE_ROWS+=("| \`source_url\` | ❌ | Required when \`source_type\` is \`external\` |")
       failed=1
-    elif [[ ! "$ext_source_url" =~ ^https://github\.com/[^/]+/[^/]+/releases/download/ ]]; then
-      TABLE_ROWS+=("| \`source_url\` | ❌ | Must be a GitHub Releases URL (\`https://github.com/owner/repo/releases/download/...\`) — required so the source can be analysed by CodeQL |")
+    elif [[ ! "$ext_source_url" =~ ^https:// ]]; then
+      TABLE_ROWS+=("| \`source_url\` | ❌ | Must be an HTTPS URL |")
       failed=1
     elif [[ "$ext_source_url" != *"{version}"* ]]; then
       TABLE_ROWS+=("| \`source_url\` | ❌ | Must contain a \`{version}\` placeholder (e.g. \`.../v{version}/plugin.zip\`) |")
