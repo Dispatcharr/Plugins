@@ -625,6 +625,18 @@ jobs:
           echo "codeql_mediums=$MEDIUM_COUNT" >> "$GITHUB_OUTPUT"
           echo "codeql_lows=$LOW_COUNT" >> "$GITHUB_OUTPUT"
 
+          # Build list of external plugin path prefixes so findings links are suppressed
+          # for files that came from a downloaded ZIP and don't exist in this repo.
+          EXTERNAL_PREFIXES='[]'
+          while IFS= read -r _plugin_name; do
+            _pjson="plugins/$_plugin_name/plugin.json"
+            [[ -f "$_pjson" ]] || continue
+            _stype=$(jq -r '.source_type // "local"' "$_pjson" 2>/dev/null || echo "local")
+            if [[ "$_stype" == "external" ]]; then
+              EXTERNAL_PREFIXES=$(printf '%s' "$EXTERNAL_PREFIXES" | jq --arg p "plugins/$_plugin_name/" '. + [$p]')
+            fi
+          done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
+
           # Generate a findings detail file for inclusion in the PR comment
           if [[ "$RESULT_COUNT" -gt 0 ]]; then
             MERGE_SHA=$(git rev-parse HEAD)
@@ -641,6 +653,7 @@ jobs:
                 echo "$FC" | jq -r \
                   --arg repo "$GITHUB_REPOSITORY" \
                   --arg sha "$MERGE_SHA" \
+                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
                   '.runs[] |
                   . as $run |
                   (
@@ -655,7 +668,8 @@ jobs:
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
                   (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
-                  (if $uri != "?" and $line != "?" then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
+                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
+                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
               done
             } > codeql-findings.md
@@ -676,6 +690,7 @@ jobs:
                 echo "$FC" | jq -r \
                   --arg repo "$GITHUB_REPOSITORY" \
                   --arg sha "$MERGE_SHA" \
+                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
                   '.runs[] |
                   . as $run |
                   (
@@ -691,7 +706,8 @@ jobs:
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
                   (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
-                  (if $uri != "?" and $line != "?" then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
+                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
+                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
               done
             } > codeql-medium-findings.md
@@ -712,6 +728,7 @@ jobs:
                 echo "$FC" | jq -r \
                   --arg repo "$GITHUB_REPOSITORY" \
                   --arg sha "$MERGE_SHA" \
+                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
                   '.runs[] |
                   . as $run |
                   (
@@ -727,7 +744,8 @@ jobs:
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
                   (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
-                  (if $uri != "?" and $line != "?" then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
+                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
+                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
               done
             } > codeql-low-findings.md
