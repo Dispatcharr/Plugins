@@ -431,8 +431,6 @@ jobs:
           git checkout
 
       - name: Populate external plugin source for analysis
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           while IFS= read -r plugin_name; do
             plugin_json="plugins/$plugin_name/plugin.json"
@@ -445,31 +443,15 @@ jobs:
             source_url_template=$(jq -r '.source_url // ""' "$plugin_json")
             source_url="${source_url_template//\{version\}/$version}"
 
-            if [[ "$source_url" =~ ^https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/ ]]; then
-              gh_owner="${BASH_REMATCH[1]}"
-              gh_repo="${BASH_REMATCH[2]}"
-              gh_tag="${BASH_REMATCH[3]}"
-            else
-              echo "::warning::Cannot parse GitHub owner/repo from $source_url - CodeQL will analyse only plugin.json for $plugin_name"
-              continue
-            fi
-
-            echo "Fetching source archive for CodeQL: $gh_owner/$gh_repo@$gh_tag"
-            curl -fsSL \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${gh_owner}/${gh_repo}/zipball/${gh_tag}" \
-              -o "/tmp/${plugin_name}-source.zip"
+            echo "Fetching release ZIP for CodeQL: $source_url"
+            curl -fsSL "$source_url" -o "/tmp/${plugin_name}-release.zip"
 
             mkdir -p "/tmp/${plugin_name}-src"
-            unzip -q "/tmp/${plugin_name}-source.zip" -d "/tmp/${plugin_name}-src"
-            extracted_dir=$(ls "/tmp/${plugin_name}-src/" | head -1)
-            # Copy source into plugins dir without overwriting the registry plugin.json
-            cp -rn "/tmp/${plugin_name}-src/${extracted_dir}/." "plugins/$plugin_name/"
-            # Strip CI/VCS metadata so workflow shell scripts don't pollute the CodeQL scan
-            rm -rf "plugins/$plugin_name/.github" "plugins/$plugin_name/.git"
-            rm -rf "/tmp/${plugin_name}-source.zip" "/tmp/${plugin_name}-src"
-            echo "Source for $plugin_name extracted into plugins/$plugin_name/"
+            unzip -q "/tmp/${plugin_name}-release.zip" -d "/tmp/${plugin_name}-src"
+            # Copy extracted files into plugins dir without overwriting the registry plugin.json
+            cp -rn "/tmp/${plugin_name}-src/." "plugins/$plugin_name/"
+            rm -rf "/tmp/${plugin_name}-release.zip" "/tmp/${plugin_name}-src"
+            echo "Release ZIP for $plugin_name extracted into plugins/$plugin_name/"
           done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
 
       - name: Detect supported languages
