@@ -466,6 +466,8 @@ jobs:
             extracted_dir=$(ls "/tmp/${plugin_name}-src/" | head -1)
             # Copy source into plugins dir without overwriting the registry plugin.json
             cp -rn "/tmp/${plugin_name}-src/${extracted_dir}/." "plugins/$plugin_name/"
+            # Strip CI/VCS metadata so workflow shell scripts don't pollute the CodeQL scan
+            rm -rf "plugins/$plugin_name/.github" "plugins/$plugin_name/.git"
             rm -rf "/tmp/${plugin_name}-source.zip" "/tmp/${plugin_name}-src"
             echo "Source for $plugin_name extracted into plugins/$plugin_name/"
           done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
