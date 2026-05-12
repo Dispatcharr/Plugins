@@ -1,10 +1,10 @@
 {
   "name": "Waybill",
   "version": "1.3.0",
-  "description": "Waybill matches, renames, and organizes any streams—no matter the provider. Infinitely configurable pipelines for total control.",
+  "description": "Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control.",
   "author": "Matthew-Beckett",
   "license": "MIT",
-  "min_dispatcharr_version": "0.24.0",
+  "min_dispatcharr_version": "0.23.0",
   "max_dispatcharr_version": "0.24.0",
   "repo_url": "https://github.com/Matthew-Beckett/waybill",
   "help_url": "https://github.com/Matthew-Beckett/waybill",
