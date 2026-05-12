@@ -159,6 +159,7 @@ for plugin_dir in plugins/*/; do
           checksum_sha256: $metadata.checksum_sha256,
           min_dispatcharr_version: $metadata.min_dispatcharr_version,
           max_dispatcharr_version: $metadata.max_dispatcharr_version,
+          source_url: $metadata.source_url,
           url: $url,
           size: $size
         } | with_entries(select(.value != null))]' <<< "$versioned_zips")
@@ -188,6 +189,8 @@ for plugin_dir in plugins/*/; do
       maintainers: (.maintainers // null),
       license: (.license // null),
       deprecated: (if .deprecated == true then true else null end),
+      source_type: (if .source_type == "external" then "external" else null end),
+      source_url: (.source_url // null),
       repo_url: (.repo_url // null),
       discord_thread: (.discord_thread // null),
       registry_url: $registry_url,
@@ -203,6 +206,7 @@ for plugin_dir in plugins/*/; do
         checksum_sha256: $latest_metadata.checksum_sha256,
         min_dispatcharr_version: $latest_metadata.min_dispatcharr_version,
         max_dispatcharr_version: $latest_metadata.max_dispatcharr_version,
+        source_url: $latest_metadata.source_url,
         latest_url: $latest_url,
         url: $versioned_zips[0].url,
         size: $latest_size_kb

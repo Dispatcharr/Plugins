@@ -430,6 +430,30 @@ jobs:
             | git sparse-checkout set --stdin
           git checkout
 
+      - name: Populate external plugin source for analysis
+        run: |
+          while IFS= read -r plugin_name; do
+            plugin_json="plugins/$plugin_name/plugin.json"
+            [[ ! -f "$plugin_json" ]] && continue
+
+            source_type=$(jq -r '.source_type // "local"' "$plugin_json")
+            [[ "$source_type" != "external" ]] && continue
+
+            version=$(jq -r '.version' "$plugin_json")
+            source_url_template=$(jq -r '.source_url // ""' "$plugin_json")
+            source_url="${source_url_template//\{version\}/$version}"
+
+            echo "Fetching release ZIP for CodeQL: $source_url"
+            curl -fsSL "$source_url" -o "/tmp/${plugin_name}-release.zip"
+
+            mkdir -p "/tmp/${plugin_name}-src"
+            unzip -q "/tmp/${plugin_name}-release.zip" -d "/tmp/${plugin_name}-src"
+            # Copy extracted files into plugins dir without overwriting the registry plugin.json
+            cp -rn "/tmp/${plugin_name}-src/." "plugins/$plugin_name/"
+            rm -rf "/tmp/${plugin_name}-release.zip" "/tmp/${plugin_name}-src"
+            echo "Release ZIP for $plugin_name extracted into plugins/$plugin_name/"
+          done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
+
       - name: Detect supported languages
         id: detect-langs
         run: |
@@ -601,6 +625,18 @@ jobs:
           echo "codeql_mediums=$MEDIUM_COUNT" >> "$GITHUB_OUTPUT"
           echo "codeql_lows=$LOW_COUNT" >> "$GITHUB_OUTPUT"
 
+          # Build list of external plugin path prefixes so findings links are suppressed
+          # for files that came from a downloaded ZIP and don't exist in this repo.
+          EXTERNAL_PREFIXES='[]'
+          while IFS= read -r _plugin_name; do
+            _pjson="plugins/$_plugin_name/plugin.json"
+            [[ -f "$_pjson" ]] || continue
+            _stype=$(jq -r '.source_type // "local"' "$_pjson" 2>/dev/null || echo "local")
+            if [[ "$_stype" == "external" ]]; then
+              EXTERNAL_PREFIXES=$(printf '%s' "$EXTERNAL_PREFIXES" | jq --arg p "plugins/$_plugin_name/" '. + [$p]')
+            fi
+          done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
+
           # Generate a findings detail file for inclusion in the PR comment
           if [[ "$RESULT_COUNT" -gt 0 ]]; then
             MERGE_SHA=$(git rev-parse HEAD)
@@ -617,6 +653,7 @@ jobs:
                 echo "$FC" | jq -r \
                   --arg repo "$GITHUB_REPOSITORY" \
                   --arg sha "$MERGE_SHA" \
+                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
                   '.runs[] |
                   . as $run |
                   (
@@ -631,7 +668,8 @@ jobs:
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
                   (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
-                  (if $uri != "?" and $line != "?" then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
+                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
+                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
               done
             } > codeql-findings.md
@@ -652,6 +690,7 @@ jobs:
                 echo "$FC" | jq -r \
                   --arg repo "$GITHUB_REPOSITORY" \
                   --arg sha "$MERGE_SHA" \
+                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
                   '.runs[] |
                   . as $run |
                   (
@@ -667,7 +706,8 @@ jobs:
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
                   (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
-                  (if $uri != "?" and $line != "?" then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
+                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
+                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
               done
             } > codeql-medium-findings.md
@@ -688,6 +728,7 @@ jobs:
                 echo "$FC" | jq -r \
                   --arg repo "$GITHUB_REPOSITORY" \
                   --arg sha "$MERGE_SHA" \
+                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
                   '.runs[] |
                   . as $run |
                   (
@@ -703,7 +744,8 @@ jobs:
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
                   (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
-                  (if $uri != "?" and $line != "?" then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
+                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
+                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
               done
             } > codeql-low-findings.md
@@ -823,15 +865,43 @@ jobs:
       - name: Scan changed plugin directories
         id: scan
         run: |
-          PLUGIN_DIRS=$(echo '${{ needs.detect-changes.outputs.matrix }}' \
-            | jq -r '.[] | "plugins/\(.)"' | tr '\n' ' ')
-          echo "Scanning: $PLUGIN_DIRS"
+          SCAN_TARGETS=()
+          EXT_SCAN_DIR="/tmp/external-scan"
+          mkdir -p "$EXT_SCAN_DIR"
+
+          while IFS= read -r plugin_name; do
+            plugin_json="plugins/$plugin_name/plugin.json"
+            [[ ! -f "$plugin_json" ]] && continue
+
+            source_type=$(jq -r '.source_type // "local"' "$plugin_json")
+
+            if [[ "$source_type" == "external" ]]; then
+              version=$(jq -r '.version' "$plugin_json")
+              source_url_template=$(jq -r '.source_url // ""' "$plugin_json")
+              source_url="${source_url_template//\{version\}/$version}"
+
+              echo "Downloading external ZIP for ClamAV scan: $source_url"
+              scan_dir="$EXT_SCAN_DIR/$plugin_name"
+              mkdir -p "$scan_dir/extracted"
+              zip_file="$scan_dir/${plugin_name}.zip"
+
+              if curl -fsSL "$source_url" -o "$zip_file" --max-time 60; then
+                unzip -q "$zip_file" -d "$scan_dir/extracted" || true
+                SCAN_TARGETS+=("$scan_dir/extracted")
+              else
+                echo "::warning::Could not download $source_url — scanning plugin.json only for $plugin_name"
+                SCAN_TARGETS+=("plugins/$plugin_name")
+              fi
+            else
+              SCAN_TARGETS+=("plugins/$plugin_name")
+            fi
+          done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
+
+          echo "Scanning: ${SCAN_TARGETS[*]}"
           set +e
-          # SC2086: PLUGIN_DIRS is intentionally word-split to produce multiple args
-          # shellcheck disable=SC2086
           clamscan --database=/tmp/clamav-db \
             --recursive --infected --no-summary \
-            $PLUGIN_DIRS > clamav-output.txt 2>&1
+            "${SCAN_TARGETS[@]}" > clamav-output.txt 2>&1
           echo "exit_code=$?" >> $GITHUB_OUTPUT
           set -e
           cat clamav-output.txt

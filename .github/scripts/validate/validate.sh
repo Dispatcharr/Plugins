@@ -148,6 +148,41 @@ has_permission="false"
   MAINTAINERS=$(jq -r '[.maintainers[]?] | join(" ")' "$PLUGIN_JSON")
   VERSION=$(jq -r '.version' "$PLUGIN_JSON")
 
+  # ── External source checks ────────────────────────────────────────────────────
+  source_type=$(jq -r '.source_type // "local"' "$PLUGIN_JSON")
+  if [[ "$source_type" == "external" ]]; then
+    ext_source_url=$(jq -r '.source_url // ""' "$PLUGIN_JSON")
+    ext_repo_url=$(jq -r '.repo_url // ""' "$PLUGIN_JSON")
+
+    if [[ -z "$ext_source_url" ]]; then
+      TABLE_ROWS+=("| \`source_url\` | ❌ | Required when \`source_type\` is \`external\` |")
+      failed=1
+    elif [[ ! "$ext_source_url" =~ ^https:// ]]; then
+      TABLE_ROWS+=("| \`source_url\` | ❌ | Must be an HTTPS URL |")
+      failed=1
+    elif [[ "$ext_source_url" != *"{version}"* ]]; then
+      TABLE_ROWS+=("| \`source_url\` | ❌ | Must contain a \`{version}\` placeholder (e.g. \`.../v{version}/plugin.zip\`) |")
+      failed=1
+    else
+      # TABLE_ROWS+=("| \`source_url\` | ✅ | \`${ext_source_url}\` |")
+      if [[ $(validate_semver "$VERSION") -eq 1 ]]; then
+        resolved_url="${ext_source_url//\{version\}/$VERSION}"
+        http_code=$(curl -o /dev/null -s -w "%{http_code}" --max-time 15 -L "$resolved_url" || echo "000")
+        if [[ "$http_code" == "200" ]]; then
+          TABLE_ROWS+=("| Release artifact | ✅ | Artifact reachable at resolved URL |")
+        else
+          TABLE_ROWS+=("| Release artifact | ❌ | Could not reach \`$resolved_url\` (HTTP \`$http_code\`) — ensure the release exists |")
+          failed=1
+        fi
+      fi
+    fi
+
+    if [[ -z "$ext_repo_url" ]]; then
+      TABLE_ROWS+=("| \`repo_url\` | ❌ | Required for external plugins — set to the upstream source repository URL |")
+      failed=1
+    fi
+  fi
+
   # Maintainers
   if [[ -z "$AUTHOR" ]] && [[ -z "$MAINTAINERS" ]]; then
     TABLE_ROWS+=("| Maintainers | ❌ | At least one of \`author\` or \`maintainers\` must include your GitHub username |")

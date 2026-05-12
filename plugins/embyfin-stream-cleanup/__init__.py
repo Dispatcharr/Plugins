@@ -17,7 +17,7 @@ from .config import (
 from .handler import StreamMonitor
 from .server import DebugServer, get_current_server
 from .autostart import attempt_autostart
-from .utils import get_redis_client, read_redis_flag, normalize_host, redis_decode
+from .utils import get_redis_client, read_redis_flag, normalize_host, redis_decode, prune_stale_server_keys
 
 logger = logging.getLogger(__name__)
 
@@ -100,36 +100,9 @@ class Plugin:
             from apps.plugins.models import PluginConfig
             cfg = PluginConfig.objects.get(key=PLUGIN_DB_KEY)
             count = max(1, int(settings.get("media_server_count", 1)))
-            changed = False
-            # Server 1 uses bare keys (media_server_url, media_server_api_key)
-            # Server N>1 uses suffixed keys (media_server_url_N, media_server_api_key_N)
-            stale_keys = [
-                k for k in list(cfg.settings.keys())
-                if (k.startswith("media_server_url_") or k.startswith("media_server_api_key_")
-                    or k.startswith("media_server_identifier_"))
-            ]
-            for k in stale_keys:
-                # Extract the server number from the suffix
-                suffix = k.rsplit("_", 1)[-1]
-                try:
-                    num = int(suffix)
-                except (ValueError, TypeError):
-                    continue
-                if num > count:
-                    del cfg.settings[k]
-                    changed = True
-                    logger.debug(f"Pruned stale setting: {k}")
-            if changed:
+            if prune_stale_server_keys(cfg.settings, count):
                 cfg.save(update_fields=["settings"])
-                # Update the live settings dict so the monitor gets clean values
-                for k in list(settings.keys()):
-                    if k.startswith(("media_server_url_", "media_server_api_key_", "media_server_identifier_")):
-                        suffix = k.rsplit("_", 1)[-1]
-                        try:
-                            if int(suffix) > count:
-                                del settings[k]
-                        except (ValueError, TypeError):
-                            pass
+                prune_stale_server_keys(settings, count)
         except Exception as e:
             logger.debug(f"Could not prune media server settings: {e}")
 

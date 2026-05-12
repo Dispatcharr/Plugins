@@ -37,22 +37,37 @@ for plugin_dir in plugins/*/; do
     fi
   fi
 
-  echo "  $plugin_name v$version - building"
-  echo "$plugin_key@$version" >> changed_plugins.txt
-
-  commit_sha=$(git log -1 --format=%H origin/$SOURCE_BRANCH -- "$plugin_dir")
-  commit_sha_short=$(git log -1 --format=%h origin/$SOURCE_BRANCH -- "$plugin_dir")
+  source_type=$(jq -r '.source_type // "local"' "$plugin_dir/plugin.json")
   build_timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-  last_updated=$(git log -1 --format=%cI origin/$SOURCE_BRANCH -- "$plugin_dir" 2>/dev/null \
-    || date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-  (
-    abspath="$(pwd)/$zip_path"
-    tmpdir=$(mktemp -d)
-    trap 'rm -rf "$tmpdir"' EXIT
-    cp -r "plugins/$plugin_name" "$tmpdir/$plugin_key"
-    cd "$tmpdir" && zip -r "$abspath" "$plugin_key" -q
-  )
+  if [[ "$source_type" == "external" ]]; then
+    source_url_template=$(jq -r '.source_url' "$plugin_dir/plugin.json")
+    source_url_resolved="${source_url_template//\{version\}/$version}"
+    echo "  $plugin_name v$version - fetching external ZIP from $source_url_resolved"
+    echo "$plugin_key@$version" >> changed_plugins.txt
+    curl -fsSL "$source_url_resolved" -o "$zip_path" || {
+      echo "::error::Failed to download external ZIP from $source_url_resolved"
+      exit 1
+    }
+    commit_sha=""
+    commit_sha_short=""
+    last_updated="$build_timestamp"
+  else
+    echo "  $plugin_name v$version - building"
+    echo "$plugin_key@$version" >> changed_plugins.txt
+    commit_sha=$(git log -1 --format=%H origin/$SOURCE_BRANCH -- "$plugin_dir")
+    commit_sha_short=$(git log -1 --format=%h origin/$SOURCE_BRANCH -- "$plugin_dir")
+    last_updated=$(git log -1 --format=%cI origin/$SOURCE_BRANCH -- "$plugin_dir" 2>/dev/null \
+      || date -u +"%Y-%m-%dT%H:%M:%SZ")
+    source_url_resolved=""
+    (
+      abspath="$(pwd)/$zip_path"
+      tmpdir=$(mktemp -d)
+      trap 'rm -rf "$tmpdir"' EXIT
+      cp -r "plugins/$plugin_name" "$tmpdir/$plugin_key"
+      cd "$tmpdir" && zip -r "$abspath" "$plugin_key" -q
+    )
+  fi
 
   checksum_md5=$(md5sum "$zip_path" | awk '{print $1}')
   checksum_sha256=$(shasum -a 256 "$zip_path" | awk '{print $1}')
@@ -71,15 +86,17 @@ for plugin_dir in plugins/*/; do
     --arg checksum_sha256 "$checksum_sha256" \
     --arg min_da_version "$min_da_version" \
     --arg max_da_version "$max_da_version" \
+    --arg source_url "$source_url_resolved" \
     '{      version: $version,
-      commit_sha: $commit_sha,
-      commit_sha_short: $commit_sha_short,
+      commit_sha: (if $commit_sha != "" then $commit_sha else null end),
+      commit_sha_short: (if $commit_sha_short != "" then $commit_sha_short else null end),
       build_timestamp: $build_timestamp,
       last_updated: $last_updated,
       checksum_md5: $checksum_md5,
       checksum_sha256: $checksum_sha256,
       min_dispatcharr_version: (if $min_da_version != "" then $min_da_version else null end),
-      max_dispatcharr_version: (if $max_da_version != "" then $max_da_version else null end)
+      max_dispatcharr_version: (if $max_da_version != "" then $max_da_version else null end),
+      source_url: (if $source_url != "" then $source_url else null end)
     } | with_entries(select(.value != null))' \
     > "$BUILD_META_DIR/$plugin_key/${plugin_key}-${version}.json"
 
