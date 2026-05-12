@@ -85,7 +85,7 @@ sign_manifest() {
     gpg_opts+=(--passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback)
   fi
   local sig
-  sig=$(jq -c '.manifest' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null) || true
+  sig=$(jq -ca '.manifest' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null) || true
   if [[ -z "$sig" ]]; then
     echo "::warning::GPG signing failed for ${file} - all signatures will be removed."
     gpg_signing_failed=1
