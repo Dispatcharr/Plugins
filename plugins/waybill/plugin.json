@@ -7,5 +7,7 @@
   "min_dispatcharr_version": "0.24.0",
   "max_dispatcharr_version": "0.24.0",
   "repo_url": "https://github.com/Matthew-Beckett/waybill",
-  "help_url": "https://github.com/Matthew-Beckett/waybill"
+  "help_url": "https://github.com/Matthew-Beckett/waybill",
+  "source_type": "external",
+  "source_url": "https://github.com/Matthew-Beckett/waybill/releases/download/v{version}/waybill-{version}-py3-none-any.zip"
 }
