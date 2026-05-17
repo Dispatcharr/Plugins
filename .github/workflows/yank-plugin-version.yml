@@ -1,0 +1,95 @@
+name: Yank Plugin Version
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: 'Plugin slug to yank a version from (e.g. dispatcharr-exporter)'
+        type: string
+        required: true
+      version:
+        description: 'Version to remove (e.g. 3.0.1)'
+        type: string
+        required: true
+      issue_number:
+        description: 'Issue number of the Version Removal Request that authorized this yank (e.g. 42). The issue will be cited in the commit and rollback PR, then closed.'
+        type: string
+        required: true
+
+jobs:
+  yank:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Load app ID from config
+        id: config
+        env:
+          GH_APP_ID: ${{ vars.GH_APP_ID }}
+          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        run: |
+          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
+            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
+            echo "use_app=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "use_app=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate GitHub App token
+        if: steps.config.outputs.use_app == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ steps.config.outputs.app_id }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Log fallback to actions token
+        if: steps.config.outputs.use_app != 'true'
+        run: |
+          printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Make scripts executable
+        run: chmod +x .github/scripts/publish/*.sh
+
+      - name: Yank plugin version
+        env:
+          GITHUB_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          YANK_PLUGIN: ${{ inputs.plugin }}
+          YANK_VERSION: ${{ inputs.version }}
+          YANK_ISSUE: ${{ inputs.issue_number }}
+          SOURCE_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -o pipefail
+          .github/scripts/publish/yank-version.sh 2>&1 | tee yank.log
+
+      - name: Generate job summary
+        if: always()
+        run: |
+          echo "## Yank Result" >> $GITHUB_STEP_SUMMARY
+          if [ -f yank.log ]; then
+            if grep -q "Successfully yanked" yank.log; then
+              echo "✅ Yank completed successfully" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ Yank failed - see logs for details." >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -20 yank.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi

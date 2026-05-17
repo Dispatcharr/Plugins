@@ -28,7 +28,6 @@
 - [ ] `plugin.json` contains all required fields (`name`, `version`, `description`, `author` or `maintainers`, `license`)
 - [ ] My GitHub username is in `author` or `maintainers`
 - [ ] `license` is a valid [OSI-approved SPDX identifier](https://spdx.org/licenses/) (e.g. `MIT`, `Apache-2.0`)
-- [ ] I have the right to distribute this plugin under the license specified and understand that once a version is published its license cannot be changed retroactively
 - [ ] I have tested the plugin against a running Dispatcharr instance
 
 **If this is an update to an existing plugin:**

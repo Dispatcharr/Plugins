@@ -56,7 +56,20 @@ fi
 
 # Checkout or create releases branch
 echo "Setting up $RELEASES_BRANCH branch..."
-if [[ "${FORCE_REBUILD:-false}" == "true" ]]; then
+if [[ "${FORCE_REBUILD:-false}" == "true" && -n "${FORCE_REBUILD_PLUGIN:-}" ]]; then
+  # Targeted rebuild: keep existing releases branch, clear only the named plugin's zips dir.
+  # build-zips.sh will rebuild it since the zip is gone; all other plugins are untouched.
+  if git ls-remote --exit-code --heads origin $RELEASES_BRANCH >/dev/null 2>&1; then
+    git checkout $RELEASES_BRANCH
+    git pull origin $RELEASES_BRANCH || true
+  else
+    git checkout --orphan $RELEASES_BRANCH
+    git rm -rf . 2>/dev/null || true
+    git commit --allow-empty -m "Initialize $RELEASES_BRANCH branch"
+  fi
+  echo "Targeted force rebuild: clearing zips/$FORCE_REBUILD_PLUGIN/"
+  rm -rf "zips/$FORCE_REBUILD_PLUGIN"
+elif [[ "${FORCE_REBUILD:-false}" == "true" ]]; then
   echo "Force rebuild requested - resetting $RELEASES_BRANCH to a new orphan commit."
   git checkout --orphan $RELEASES_BRANCH
   git rm -rf . 2>/dev/null || true
