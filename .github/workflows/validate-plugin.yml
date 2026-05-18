@@ -524,15 +524,12 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ steps.detect-langs.outputs.languages }}
+          build-mode: none
           # Query suite options (slowest → fastest):
           #   security-and-quality  – security + maintainability/style (quality results are discarded by our SARIF filter anyway)
           #   security-extended     – all security severities, no quality queries (current)
           #   (omit queries:)       – high-confidence security only; drops CVSS 6.0–6.9 medium findings our report surfaces
           queries: security-extended
-
-      - name: Autobuild
-        if: steps.detect-langs.outputs.found == 'true'
-        uses: github/codeql-action/autobuild@v4
 
       - name: Perform CodeQL Analysis
         if: steps.detect-langs.outputs.found == 'true'
