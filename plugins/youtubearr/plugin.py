@@ -24,7 +24,7 @@ from core.scheduling import create_or_update_periodic_task, delete_periodic_task
 
 class Plugin:
     name = "YouTubearr"
-    version = "1.17.7"
+    version = "1.19.0"
     description = "Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering"
     author = "Jeff Gooch"
     help_url = "https://github.com/jeff-gooch/youtubearr"
@@ -64,6 +64,15 @@ class Plugin:
             "min": 5,
             "max": 60,
             "help_text": "How often to check for new/ended livestreams (5-60 minutes).",
+        },
+        {
+            "id": "max_streams_per_channel",
+            "label": "Max Streams to Scan per Channel",
+            "type": "number",
+            "default": 15,
+            "min": 5,
+            "max": 50,
+            "help_text": "Maximum entries to check on the /streams tab per channel per poll (default: 15). Increase only if a channel runs more than 15 simultaneous streams.",
         },
         {
             "id": "info_settings",
@@ -1397,10 +1406,14 @@ class Plugin:
                 except ValueError:
                     pass
 
-        # Find the first available decimal slot starting from 1
+        # Find the first available decimal slot starting from 1.
+        # Skip multiples of 10 (10, 20, 30...) because float("90.10") == float("90.1"),
+        # which would collide with an already-assigned slot.
         next_decimal = 1
         while next_decimal in occupied:
             next_decimal += 1
+            if next_decimal % 10 == 0:
+                next_decimal += 1
 
         return float(f"{base_number}.{next_decimal}")
 
@@ -1639,7 +1652,7 @@ class Plugin:
     def _poll_monitored_channels(self, settings: Dict[str, Any]) -> tuple[int, int]:
         """Poll monitored channels for new/ended streams. Returns (added, ended) counts.
 
-        Uses yt-dlp flat-playlist to detect live streams - NO YouTube API quota required!
+        Uses yt-dlp two-phase scan to detect live streams - NO YouTube API quota required!
         """
         # Clear assigned channel numbers at start of poll cycle to avoid duplicates
         self._assigned_channel_numbers.clear()
@@ -1678,8 +1691,11 @@ class Plugin:
 
                 self._log(f"Polling channel: @{username} ({channel_id})")
 
-                # Get live streams using yt-dlp flat-playlist (NO API quota!)
-                live_streams = self._get_live_streams_via_ytdlp(username, settings)
+                # Get live streams — pass per-channel title filter so it can be applied
+                # between Phase 1 and Phase 2, avoiding live checks on non-matching streams.
+                mapping = self._parse_channel_number_mapping(settings)
+                channel_filter = (mapping.get(channel_id) or {}).get("filter")
+                live_streams = self._get_live_streams_via_ytdlp(username, settings, title_filter=channel_filter)
 
                 # Handle errors - None means error occurred, skip this channel
                 if live_streams is None:
@@ -1687,18 +1703,6 @@ class Plugin:
                     continue
 
                 self._log(f"Found {len(live_streams)} live stream(s) on @{username}")
-
-                # Apply title filter BEFORE full extraction (saves time on channels with many streams)
-                if live_streams:
-                    filtered_streams = []
-                    for stream_info in live_streams:
-                        title = stream_info.get("title", "")
-                        if self._check_title_filter(title, channel_id, settings):
-                            filtered_streams.append(stream_info)
-
-                    if len(filtered_streams) < len(live_streams):
-                        self._log(f"Title filter: {len(filtered_streams)}/{len(live_streams)} streams match")
-                    live_streams = filtered_streams
 
                 # Check for new streams
                 self._log(f"Checking {len(live_streams)} stream(s) against tracked_streams (currently tracking {len(tracked_streams)} streams)")
@@ -1894,14 +1898,14 @@ class Plugin:
                 for video_id, stream_data in list(tracked_streams.items()):
                     if stream_data.get("monitored_channel_id") == channel_id:
                         if video_id not in current_video_ids and stream_data.get("is_live"):
-                            # Flat-playlist missed this stream — verify directly before acting.
-                            # The /streams tab scan is unreliable (rate-limiting, CDN inconsistency)
-                            # and routinely returns 0 for channels with active streams. A direct
-                            # video-level check is authoritative and avoids false deletions.
+                            # Stream absent from scan — verify directly before marking ended.
+                            # Phase 1 flat-playlist is fast but occasionally misses active streams
+                            # (rate-limiting, CDN inconsistency). A direct video-level check is
+                            # authoritative and avoids false deletions.
                             title = stream_data.get("title", video_id)
-                            self._log(f"Stream not in flat-playlist, verifying directly: {title}")
+                            self._log(f"Stream not in scan results, verifying directly: {title}")
                             if self._verify_video_is_live(video_id):
-                                self._log(f"Direct check: still live (flat-playlist false negative): {title}")
+                                self._log(f"Direct check: still live (scan false negative): {title}")
                             else:
                                 stream_data["is_live"] = False
                                 ended_count += 1
@@ -1934,8 +1938,10 @@ class Plugin:
                 "--print", "live_status",
                 "--no-warnings",
                 "--quiet",
-                f"https://www.youtube.com/watch?v={video_id}",
             ]
+            if self._qjs_path:
+                cmd += ["--js-runtimes", f"quickjs:{self._qjs_path}"]
+            cmd.append(f"https://www.youtube.com/watch?v={video_id}")
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
             status = result.stdout.strip()
             self._log(f"Direct live check for {video_id}: {status!r}")
@@ -1947,90 +1953,121 @@ class Plugin:
             self._log_error(f"Direct live check failed for {video_id}: {exc}, assuming live")
             return True
 
-    def _get_live_streams_via_ytdlp(self, channel_handle: str, settings: Dict[str, Any]) -> Optional[List[Dict[str, Any]]]:
-        """Get currently live streams for a YouTube channel using yt-dlp flat-playlist.
+    def _get_live_streams_via_ytdlp(self, channel_handle: str, settings: Dict[str, Any], title_filter: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
+        """Get currently live streams for a YouTube channel using two-phase detection.
 
-        This method uses NO API quota - it scrapes the channel's /streams page directly.
+        Phase 1: flat-playlist scan to collect video IDs from /streams tab (fast, no per-video fetches).
+                 When a title_filter is set, scans up to 100 entries so the full channel is covered.
+        Phase 2: per-video live_status check — only for title-matched candidates when filter is set,
+                 otherwise for all candidates up to max_streams_per_channel.
 
-        Args:
-            channel_handle: YouTube channel handle (e.g., "@nasa" or "nasa")
-            settings: Plugin settings dict (for title filtering)
-
-        Returns:
-            List of stream info dicts with keys: video_id, title, thumbnail
-            or None on error.
+        Uses NO API quota. Returns list of {video_id, title, thumbnail} dicts for confirmed-live
+        streams only, or None on error (caller skips the channel).
         """
-        # Normalize handle
         if not channel_handle.startswith("@"):
             channel_handle = f"@{channel_handle}"
 
-        streams_url = f"https://www.youtube.com/{channel_handle}/streams"
-        self._log(f"Scanning {streams_url} via yt-dlp flat-playlist (no API quota)")
+        if not self._ytdlp_path:
+            self._log_error("yt-dlp binary not found")
+            return None
 
+        streams_url = f"https://www.youtube.com/{channel_handle}/streams"
+        max_streams = int(settings.get("max_streams_per_channel", 15))
+
+        # When a title filter is set, scan more entries in Phase 1 (cheap — one fast request)
+        # so we don't miss matching streams that sit beyond the default cap.
+        phase1_limit = 100 if title_filter else max_streams
+
+        self._log(f"Scanning {streams_url} (up to {phase1_limit} entries)")
         try:
-            yt_dlp_path = self._find_ytdlp_binary()
-            if not yt_dlp_path:
-                self._log_error("yt-dlp binary not found")
-                return None
             cmd = [
-                yt_dlp_path,
+                self._ytdlp_path,
                 "--flat-playlist",
                 "--dump-json",
+                "--playlist-end", str(phase1_limit),
                 "--no-warnings",
                 "--ignore-errors",
-                streams_url
+                streams_url,
             ]
-
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=120  # 2 minute timeout for large channels
-            )
-
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
             if result.returncode != 0 and not result.stdout:
-                self._log_error(f"yt-dlp flat-playlist failed: {result.stderr[:200] if result.stderr else 'no output'}")
+                self._log_error(f"yt-dlp scan failed: {result.stderr[:200] if result.stderr else 'no output'}")
                 return None
 
-            # Parse JSON lines output
-            live_streams = []
-            lines = result.stdout.strip().split('\n')
-
-            for line in lines:
+            candidates = []
+            for line in result.stdout.strip().split('\n'):
                 if not line.strip():
                     continue
                 try:
                     entry = json.loads(line)
                     video_id = entry.get("id")
-                    title = entry.get("title", "Unknown")
-                    live_status = entry.get("live_status", "")
-
-                    # Only include currently live streams
-                    if live_status != "is_live":
-                        continue
-
-                    # Get thumbnail
-                    thumbnail = entry.get("thumbnail") or f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
-
-                    stream_info = {
-                        "video_id": video_id,
-                        "title": title,
-                        "thumbnail": thumbnail,
-                    }
-                    live_streams.append(stream_info)
-
+                    if video_id:
+                        title = entry.get("title", "Unknown")
+                        thumbnail = entry.get("thumbnail") or f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
+                        candidates.append({"video_id": video_id, "title": title, "thumbnail": thumbnail})
                 except json.JSONDecodeError:
                     continue
 
-            self._log(f"Found {len(live_streams)} live stream(s) via yt-dlp flat-playlist")
-            return live_streams
+            if not candidates:
+                self._log(f"No entries found on {streams_url}")
+                return []
+
+            # Apply title filter between phases — avoids live checks on non-matching streams.
+            # This is the key optimisation for channels with many simultaneous streams (e.g.
+            # VirtualRailfan's 70+ railcam feeds): Phase 1 fetches all 100, filter cuts to
+            # the 4-5 that match, Phase 2 only checks those.
+            if title_filter:
+                before = len(candidates)
+                try:
+                    candidates = [c for c in candidates if re.search(title_filter, c["title"], re.IGNORECASE)]
+                except re.error as e:
+                    self._log_error(f"Invalid title filter regex '{title_filter}': {e}")
+                if len(candidates) < before:
+                    self._log(f"Title filter: {len(candidates)}/{before} candidates match '{title_filter}'")
+
+            if not candidates:
+                self._log(f"No candidates match title filter for {channel_handle}")
+                return []
+
+            self._log(f"Phase 1: {len(candidates)} candidate(s), checking live status...")
 
         except subprocess.TimeoutExpired:
-            self._log_error(f"yt-dlp flat-playlist timed out for {channel_handle}")
+            self._log_error(f"Phase 1 scan timed out for {channel_handle}")
             return None
         except Exception as exc:
-            self._log_error(f"yt-dlp flat-playlist error: {exc}")
+            self._log_error(f"Phase 1 scan error for {channel_handle}: {exc}")
             return None
+
+        # Phase 2: check live_status per candidate (lightweight — no format selection or URL extraction)
+        live_streams = []
+        for candidate in candidates:
+            video_id = candidate["video_id"]
+            try:
+                check_cmd = [
+                    self._ytdlp_path,
+                    "--skip-download",
+                    "--print", "live_status",
+                    "--no-warnings",
+                    "--quiet",
+                ]
+                if self._qjs_path:
+                    check_cmd += ["--js-runtimes", f"quickjs:{self._qjs_path}"]
+                check_cmd.append(f"https://www.youtube.com/watch?v={video_id}")
+
+                check = subprocess.run(check_cmd, capture_output=True, text=True, timeout=30)
+                status = check.stdout.strip()
+                if status == "is_live":
+                    live_streams.append(candidate)
+                    self._log(f"Live confirmed: {candidate['title']} ({video_id})")
+                else:
+                    self._log(f"Not live ({status or 'no status'}): {candidate['title']}")
+            except subprocess.TimeoutExpired:
+                self._log_error(f"Live check timed out for {video_id}, skipping")
+            except Exception as exc:
+                self._log_error(f"Live check failed for {video_id}: {exc}, skipping")
+
+        self._log(f"Found {len(live_streams)} live stream(s) for {channel_handle}")
+        return live_streams
 
     def _extract_username_map(self, raw: str) -> Dict[str, str]:
         """Extract mapping of channel_id -> username from monitored channels input.

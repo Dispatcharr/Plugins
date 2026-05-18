@@ -328,12 +328,20 @@ has_permission="false"
 
       if $metadata_only_change && [[ -n "$changed_fields" ]]; then
         TABLE_ROWS+=("| Version bump | ✅ | \`$OLD_VERSION\` (unchanged - metadata-only update) |")
-      elif $metadata_only_change && [[ -z "$changed_fields" ]]; then
-        # Nothing changed at all - still require a bump so PRs aren't no-ops
-        TABLE_ROWS+=("| Version bump | ❌ | No changes detected - nothing to publish |")
-        failed=1
       else
-        TABLE_ROWS+=("| Version bump | ❌ | \`$VERSION\` must be greater than current \`$OLD_VERSION\` |")
+        # Any non-metadata plugin.json change or other file change requires a version bump.
+        # If plugin.json is identical, check whether other files in the directory changed
+        # so we can give a more accurate error message.
+        _other_changed=""
+        if [[ -z "$changed_fields" ]]; then
+          _other_changed=$(git diff --name-only "origin/${BASE_REF}...HEAD" -- "$PLUGIN_DIR" \
+            | grep -v "^${PLUGIN_JSON}$" | head -1 || true)
+        fi
+        if [[ -z "$changed_fields" && -z "$_other_changed" ]]; then
+          TABLE_ROWS+=("| Version bump | ❌ | No changes detected - nothing to publish |")
+        else
+          TABLE_ROWS+=("| Version bump | ❌ | \`$VERSION\` must be greater than current \`$OLD_VERSION\` |")
+        fi
         failed=1
       fi
     fi

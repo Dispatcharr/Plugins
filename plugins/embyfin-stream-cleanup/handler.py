@@ -317,16 +317,26 @@ class StreamMonitor:
     def _fetch_active_recording_channels(self):
         """Return channel numbers for active in-progress DVR recordings.
 
-        Calls GET /LiveTv/Recordings?IsInProgress=true on each configured
-        media server.  Returns a list of dicts with 'channel_number' and
-        '_source_url' keys so callers can map them back to server identifiers.
+        Emby:     GET /LiveTv/Recordings?IsInProgress=true — ChannelNumber on each item.
+        Jellyfin: GET /LiveTv/Timers — filter Status=InProgress, ChannelNumber is nested
+                  under ProgramInfo.
+
+        Returns a list of dicts with 'channel_number' and '_source_url' keys.
         """
         servers = self._get_media_server_configs()
         if not servers:
             return []
         results = []
         for url, api_key, _ in servers:
-            endpoint = f"{url}/LiveTv/Recordings?IsInProgress=true&Fields=ChannelNumber&Limit=200"
+            server_info = getattr(self, "_server_info", {}).get(url)
+            server_type = server_info[0] if server_info else None
+            is_jellyfin = server_type == "Jellyfin"
+
+            if is_jellyfin:
+                endpoint = f"{url}/LiveTv/Timers?IsActive=true"
+            else:
+                endpoint = f"{url}/LiveTv/Recordings?IsInProgress=true&Fields=ChannelNumber&Limit=200"
+
             try:
                 req = urllib.request.Request(endpoint, headers={
                     "Accept": "application/json",
@@ -336,7 +346,12 @@ class StreamMonitor:
                     data = json.loads(resp.read().decode("utf-8"))
                     items = data.get("Items", []) if isinstance(data, dict) else []
                     for item in items:
-                        ch_num = item.get("ChannelNumber")
+                        if is_jellyfin:
+                            if item.get("Status") != "InProgress":
+                                continue
+                            ch_num = (item.get("ProgramInfo") or {}).get("ChannelNumber")
+                        else:
+                            ch_num = item.get("ChannelNumber")
                         if ch_num:
                             ch_num = str(ch_num).strip()
                             try:
@@ -346,7 +361,8 @@ class StreamMonitor:
                                 pass
                             results.append({"channel_number": ch_num, "_source_url": url})
             except Exception as e:
-                logger.debug(f"Could not fetch active recordings from media server: {e}")
+                safe = str(e).replace(api_key, "***") if api_key else str(e)
+                logger.warning(f"Could not fetch active recordings from media server: {safe}")
         return results
 
     @staticmethod

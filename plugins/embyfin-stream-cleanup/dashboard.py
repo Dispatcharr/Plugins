@@ -608,7 +608,7 @@ def render_landing_page(monitor):
     plugin_name = PLUGIN_CONFIG.get('name', 'Emby Stream Cleanup')
     plugin_version = PLUGIN_CONFIG.get('version', 'unknown version').lstrip('-')
     plugin_description = PLUGIN_CONFIG.get('description', '')
-    repo_url = PLUGIN_CONFIG.get('repo_url', 'https://github.com/sethwv/emby-stream-cleanup')
+    repo_url = PLUGIN_CONFIG.get('repo_url', 'https://github.com/swvn-dispatch/embyfin-stream-cleanup')
 
     monitor_status = "Running" if monitor.is_running() else "Stopped"
 

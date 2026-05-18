@@ -212,6 +212,23 @@ Version increments are enforced by the validation workflow. You cannot submit a 
 
 All other fields - including `name`, `author`, `license`, `source_url`, `source_type`, and any code changes - require a version bump.
 
+> **Changing the license?** A version bump is required because the license you publish under is binding for that release. Users who installed the previous version hold rights under the old license and those cannot be revoked. The new version carries the new license going forward.
+
 ## Licensing
 
 All plugins must be distributed under an [OSI-approved open source license](https://opensource.org/licenses). The `license` field is required in `plugin.json` and must be a valid [SPDX identifier](https://spdx.org/licenses/).
+
+By submitting a PR you confirm that you have the rights to distribute the plugin under the license you specify. This is binding for the version being published. Users who downloaded a version hold rights under its license permanently - those rights are not affected if the version is later removed from the registry. To change the license going forward, bump the version. The old version stays under its original license.
+
+## Version Removal
+
+Plugin authors and maintainers can request that a specific version be removed from the registry. Reasons might include a critical bug, a security issue, a mistaken publish, or a license correction.
+
+To request a removal, [open an issue](../../issues/new/choose) using the **Version Removal Request** template. A maintainer will run the yank workflow on your behalf.
+
+What happens when a version is yanked:
+
+- The versioned ZIP and its manifest entry are removed from the releases branch.
+- If it was the latest version, the previous version is automatically promoted to latest and a PR is opened against the source branch to roll back `plugin.json` to match.
+- If it was the only version, the plugin is fully removed from the registry and a PR is opened to remove its source folder.
+- Users who already downloaded the version are unaffected.

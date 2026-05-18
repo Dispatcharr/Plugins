@@ -62,7 +62,7 @@ def _clean_json_text(s):
 
 
 class PluginConfig:
-    PLUGIN_VERSION = "1.26.1091027"
+    PLUGIN_VERSION = "1.26.1370103"
 
     DEFAULT_FUZZY_MATCH_THRESHOLD = 80
     DEFAULT_PRIORITIZE_QUALITY = True
@@ -268,7 +268,7 @@ class Plugin:
         # Discover M3U sources
         m3u_options = [{"value": "_all", "label": "All sources"}]
         try:
-            for acc in M3UAccount.objects.all().values('id', 'name'):
+            for acc in M3UAccount.objects.filter(is_active=True).values('id', 'name'):
                 m3u_options.append({"value": acc['name'], "label": acc['name']})
         except Exception:
             pass
@@ -679,10 +679,16 @@ class Plugin:
     def _resolve_m3u_sources(self, settings, logger):
         """Resolve M3U source names to account IDs. Returns (valid_ids, m3u_priority_map, warnings)."""
         m3u_str = (settings.get("m3u_sources") or "").strip()
+        active_ids = list(
+            M3UAccount.objects.filter(is_active=True).values_list('id', flat=True)
+        )
         if not m3u_str or m3u_str == "_all":
-            return None, {}, []
+            return active_ids, {}, []
 
-        all_accounts = {a['name']: a['id'] for a in M3UAccount.objects.all().values('id', 'name')}
+        all_accounts = {
+            a['name']: a['id']
+            for a in M3UAccount.objects.filter(is_active=True).values('id', 'name')
+        }
         source_names = [s.strip() for s in m3u_str.split(",") if s.strip()]
 
         valid_ids = []
@@ -705,7 +711,7 @@ class Plugin:
         valid_ids, priority_map, _ = self._resolve_m3u_sources(settings, logger)
 
         qs = Stream.objects.all().values('id', 'name', 'm3u_account', 'stream_stats')
-        if valid_ids:
+        if valid_ids is not None:
             qs = qs.filter(m3u_account__in=valid_ids)
 
         streams = list(qs)
@@ -970,7 +976,7 @@ class Plugin:
                     m3u_val = settings.get('m3u_sources', '_all')
                     try:
                         if m3u_val == '_all':
-                            m3u_names = [acc['name'] for acc in M3UAccount.objects.all().values('name')]
+                            m3u_names = [acc['name'] for acc in M3UAccount.objects.filter(is_active=True).values('name')]
                             f.write(f"# M3U Sources: {', '.join(m3u_names) or '(none)'} (all)\n")
                         else:
                             f.write(f"# M3U Sources: {m3u_val}\n")
@@ -1310,7 +1316,9 @@ class Plugin:
         try:
             numbering_mode = self._resolve_numbering_mode(settings)
             use_number_boost = (numbering_mode == "lineup")
-            lineup = self._load_lineup(settings, logger)
+            lineup = self._load_filtered_lineup(settings, logger)
+            if lineup.get("status") == "error":
+                return lineup
             matcher = self._init_fuzzy_matcher(settings, logger)
             alias_map = self._build_alias_map(settings, logger)
             streams = self._get_all_streams(settings, logger)
@@ -1726,7 +1734,9 @@ class Plugin:
                 build_logo_url,
             )
 
-            lineup = self._load_lineup(settings, logger)
+            lineup = self._load_filtered_lineup(settings, logger)
+            if lineup.get("status") == "error":
+                return lineup
             prefix = self._get_group_prefix(settings, lineup)
             lineup_file = settings.get("lineup_file", "")
             cc, _ = self._parse_lineup_filename(lineup_file)
@@ -1902,17 +1912,80 @@ class Plugin:
                 "message": f"Stream match error: {e}"
             })
 
+    def _filter_lineup_to_channel(self, lineup, raw_name, logger):
+        """Return a name-filtered copy of `lineup`, or an error result dict.
+
+        Returns `{"status": "error", ...}` on an empty or unmatched
+        `raw_name`; the caller must return that dict verbatim. Never
+        mutates the input lineup.
+        """
+        target = raw_name.strip().casefold()
+        if not target:
+            return {"status": "error", "message": "Channel name must not be empty."}
+        src_categories = lineup.get("categories", {})
+
+        filtered_categories = {}
+        match_count = 0
+        for category, entries in src_categories.items():
+            kept = [e for e in entries
+                    if str(e.get("name", "")).strip().casefold() == target]
+            if kept:
+                filtered_categories[category] = kept
+                match_count += len(kept)
+
+        if match_count == 0:
+            hints = []
+            for entries in src_categories.values():
+                for e in entries:
+                    nm = str(e.get("name", "")).strip()
+                    if target in nm.casefold():
+                        hints.append(nm)
+                        if len(hints) >= 10:
+                            break
+                if len(hints) >= 10:
+                    break
+            msg = f"No lineup channel named '{raw_name}' found."
+            if hints:
+                msg += " Did you mean: " + ", ".join(hints) + "?"
+            logger.warning(f"{LOG_PREFIX} Single-channel filter: {msg}")
+            return {"status": "error", "message": msg}
+
+        suffix = "y" if match_count == 1 else "ies"
+        logger.info(
+            f"{LOG_PREFIX} Single-channel filter: processing "
+            f"{match_count} entr{suffix} named '{raw_name}'"
+        )
+        new_lineup = dict(lineup)
+        new_lineup["categories"] = filtered_categories
+        return new_lineup
+
+    def _load_filtered_lineup(self, settings, logger):
+        """Load the lineup, then narrow it to `single_channel_name` if set.
+
+        Returns the (possibly filtered) lineup dict, or the helper's
+        error result dict on no match. Callers must return the result
+        verbatim when it is an error dict (status == "error").
+        """
+        lineup = self._load_lineup(settings, logger)
+        single_name = (settings.get("single_channel_name") or "").strip()
+        if single_name:
+            return self._filter_lineup_to_channel(lineup, single_name, logger)
+        return lineup
+
     def _do_apply_stream_match(self, settings, logger):
         """Core stream matching logic (called from thread)."""
         dry_run = settings.get("dry_run_mode", False)
         use_number_boost = (self._resolve_numbering_mode(settings) == "lineup")
         prioritize_quality = settings.get("prioritize_quality", PluginConfig.DEFAULT_PRIORITIZE_QUALITY)
+        preserve = settings.get("preserve_existing_streams", False)
 
         if not self._acquire_lock(logger):
             return {"status": "error", "message": "Another operation is in progress. Try again later."}
 
         try:
-            lineup = self._load_lineup(settings, logger)
+            lineup = self._load_filtered_lineup(settings, logger)
+            if lineup.get("status") == "error":
+                return lineup
             prefix = self._get_group_prefix(settings, lineup)
             matcher = self._init_fuzzy_matcher(settings, logger)
             alias_map = self._build_alias_map(settings, logger)
@@ -1997,30 +2070,72 @@ class Plugin:
                                 matched_stream_objs.append(stream_obj_copy)
 
                         sorted_streams = self._sort_streams_by_quality(matched_stream_objs, prioritize_quality)
+                        attached_count = len(sorted_streams)
 
                         if not dry_run:
-                            try:
-                                # Atomic: delete old + create new in single transaction
-                                with transaction.atomic():
-                                    ChannelStream.objects.filter(channel_id=channel_id).delete()
-                                    for idx, stream in enumerate(sorted_streams):
-                                        ChannelStream.objects.create(
-                                            channel_id=channel_id,
-                                            stream_id=stream['id'],
-                                            order=idx
-                                        )
-                                total_streams_attached += len(sorted_streams)
-                            except Exception as e:
-                                logger.error(f"{LOG_PREFIX} Failed to attach streams to '{ch_name}': {e}")
+                            if preserve:
+                                try:
+                                    existing = list(
+                                        ChannelStream.objects.filter(
+                                            channel_id=channel_id
+                                        ).values_list('stream_id', 'order')
+                                    )
+                                    existing_ids = {sid for sid, _ in existing}
+                                    next_order = max((o for _, o in existing), default=-1) + 1
+                                    new_streams = [
+                                        s for s in sorted_streams
+                                        if s['id'] not in existing_ids
+                                    ]
+                                    with transaction.atomic():
+                                        for idx, stream in enumerate(new_streams):
+                                            ChannelStream.objects.create(
+                                                channel_id=channel_id,
+                                                stream_id=stream['id'],
+                                                order=next_order + idx
+                                            )
+                                    total_streams_attached += len(new_streams)
+                                    attached_count = len(new_streams)
+                                except Exception as e:
+                                    attached_count = 0
+                                    logger.error(f"{LOG_PREFIX} Failed to append streams to '{ch_name}': {e}")
+                            else:
+                                try:
+                                    # Atomic: delete old + create new in single transaction
+                                    with transaction.atomic():
+                                        ChannelStream.objects.filter(channel_id=channel_id).delete()
+                                        for idx, stream in enumerate(sorted_streams):
+                                            ChannelStream.objects.create(
+                                                channel_id=channel_id,
+                                                stream_id=stream['id'],
+                                                order=idx
+                                            )
+                                    total_streams_attached += len(sorted_streams)
+                                except Exception as e:
+                                    logger.error(f"{LOG_PREFIX} Failed to attach streams to '{ch_name}': {e}")
                         else:
-                            total_streams_attached += len(sorted_streams)
+                            if preserve:
+                                # Read-only dedupe so the dry-run CSV reports the
+                                # count a real preserve run would actually append.
+                                existing_ids = set(
+                                    ChannelStream.objects.filter(
+                                        channel_id=channel_id
+                                    ).values_list('stream_id', flat=True)
+                                )
+                                new_streams = [
+                                    s for s in sorted_streams
+                                    if s['id'] not in existing_ids
+                                ]
+                                total_streams_attached += len(new_streams)
+                                attached_count = len(new_streams)
+                            else:
+                                total_streams_attached += len(sorted_streams)
 
                         channels_matched += 1
                         csv_rows.append({
                             "Channel": ch_name,
                             "Number": ch_number if ch_number else "",
                             "Category": category,
-                            "Streams Attached": len(sorted_streams),
+                            "Streams Attached": attached_count,
                             "Best Match": matches[0][0],
                             "Best Score": matches[0][1],
                             "Match Type": matches[0][2],
@@ -2067,9 +2182,11 @@ class Plugin:
                 "dry_run": dry_run,
             }, logger)
 
-            # Cleanup: remove channels with no streams in Lineuparr-managed groups
+            # Cleanup: remove channels with no streams in Lineuparr-managed groups.
+            # Skipped in preserve mode: a no-match channel may still hold streams
+            # from another source the user explicitly asked us not to disturb.
             cleanup_count = 0
-            if not dry_run and channels_unmatched > 0:
+            if not dry_run and channels_unmatched > 0 and not preserve:
                 lineup = self._load_lineup(settings, logger)
                 prefix = self._get_group_prefix(settings, lineup)
                 lineuparr_group_names = [
@@ -2132,7 +2249,9 @@ class Plugin:
 
         try:
             use_number_boost = (self._resolve_numbering_mode(settings) == "lineup")
-            lineup = self._load_lineup(settings, logger)
+            lineup = self._load_filtered_lineup(settings, logger)
+            if lineup.get("status") == "error":
+                return lineup
             prefix = self._get_group_prefix(settings, lineup)
             matcher = self._init_fuzzy_matcher(settings, logger)
             alias_map = self._build_alias_map(settings, logger)
@@ -2423,6 +2542,11 @@ class Plugin:
     def _do_full_sync(self, settings, logger):
         """Background thread for full sync."""
         try:
+            # Full Sync is whole-lineup by contract. Its sub-steps route
+            # through the same _do_apply_* methods that honor
+            # single_channel_name, so neutralize it on a local copy here
+            # rather than threading a flag through four signatures.
+            settings = {**settings, "single_channel_name": ""}
             logger.info(f"{LOG_PREFIX} === FULL SYNC STARTED ===")
             sync_start = time.time()
             send_websocket_update('updates', 'update', {

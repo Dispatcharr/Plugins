@@ -170,7 +170,8 @@ jobs:
           chmod +x .github/scripts/validate/*.sh
           .github/scripts/validate/detect-changes.sh \
             "${{ github.event.pull_request.user.login }}" \
-            "${{ github.event.pull_request.base.ref }}"
+            "${{ github.event.pull_request.base.ref }}" \
+            "${{ github.event.pull_request.head.ref }}"
 
       - name: Check author and plugin blacklists
         id: blacklist
@@ -313,7 +314,7 @@ jobs:
   # --------------------------------------------------------------------------
   validate-title:
     needs: [detect-changes]
-    if: github.event.pull_request.draft == false && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false'
+    if: github.event.pull_request.draft == false && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false' && needs.detect-changes.outputs.skip_validation != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
