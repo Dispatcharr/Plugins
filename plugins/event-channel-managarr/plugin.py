@@ -41,7 +41,7 @@ _scheduler_lock = threading.Lock()  # Prevent concurrent scheduler starts
 class PluginConfig:
     """Centralized configuration constants for Event Channel Managarr."""
 
-    PLUGIN_VERSION = "1.26.1362004"
+    PLUGIN_VERSION = "1.26.1401103"
 
     # Default timezone for scheduling
     DEFAULT_TIMEZONE = "America/Chicago"
@@ -1177,15 +1177,15 @@ class Plugin:
             meridiem = meridiem.upper()
             if meridiem == "AM":
                 return 0 if hour == 12 else hour
-            # PM
-            return hour if hour == 12 else hour + 12
+            else:
+                return hour if hour == 12 else hour + 12
 
         # Pattern 0: start:YYYY-MM-DD HH:MM:SS[ AM/PM] or stop:YYYY-MM-DD HH:MM:SS[ AM/PM]
         for prefix in ["start:", "stop:"]:
-            pattern0 = re.search(rf'{prefix}(\d{{4}})-(\d{{2}})-(\d{{2}})\s+(\d{{1,2}}):(\d{{2}}):(\d{{2}})\s*([AaPp][Mm])?', channel_name)
+            pattern0 = re.search(rf'{prefix}(\d{{4}})-(\d{{2}})-(\d{{2}})\s+(\d{{1,2}}):(\d{{2}}):(\d{{2}})\s*(?P<ap>[AaPp][Mm])?', channel_name)
             if pattern0:
                 year, month, day, hour, minute, second = map(int, pattern0.groups()[:6])
-                hour = _apply_meridiem(hour, pattern0.group(7))
+                hour = _apply_meridiem(hour, pattern0.group("ap"))
                 try:
                     extracted_date = datetime(year, month, day, hour, minute, second)
                     logger.debug(f"Extracted datetime {extracted_date} from pattern {prefix}YYYY-MM-DD HH:MM:SS[ AM/PM] in '{channel_name}'")
@@ -1194,10 +1194,10 @@ class Plugin:
                     pass
 
         # Pattern 0a: (YYYY-MM-DD HH:MM:SS[ AM/PM]) in parentheses
-        pattern0a = re.search(r'\((\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s*([AaPp][Mm])?\)', channel_name)
+        pattern0a = re.search(r'\((\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s*(?P<ap>[AaPp][Mm])?\)', channel_name)
         if pattern0a:
             year, month, day, hour, minute, second = map(int, pattern0a.groups()[:6])
-            hour = _apply_meridiem(hour, pattern0a.group(7))
+            hour = _apply_meridiem(hour, pattern0a.group("ap"))
             try:
                 extracted_date = datetime(year, month, day, hour, minute, second)
                 logger.debug(f"Extracted datetime {extracted_date} from pattern (YYYY-MM-DD HH:MM:SS[ AM/PM]) in '{channel_name}'")
@@ -1331,13 +1331,24 @@ class Plugin:
             now_in_tz = datetime.now(local_tz)
             today_day = now_in_tz.weekday()
 
+            # ±1 day tolerance: a channel named for a US/EU day can roll over the
+            # viewer's local calendar (e.g. "Monday Night Football" is Tuesday in
+            # Australia). Earth's TZ span is UTC-12..UTC+14, so the named day will
+            # always be within ±1 of the viewer's day for any live event.
+            allowed_days = {(today_day - 1) % 7, today_day, (today_day + 1) % 7}
+
             day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
             extracted_day_name = day_names[extracted_day]
             today_day_name = day_names[today_day]
 
-            if extracted_day != today_day:
+            if extracted_day not in allowed_days:
                 return True, f"[WrongDayOfWeek] Channel is for {extracted_day_name}, but today is {today_day_name}"
 
+            if extracted_day != today_day:
+                logger.debug(
+                    f"[WrongDayOfWeek] allowing '{channel_name}': named day {extracted_day_name} "
+                    f"is within ±1 of today ({today_day_name}) in {tz_str} — cross-TZ rollover tolerance"
+                )
             return False, None
 
         elif rule_name == "NoEventPattern":
