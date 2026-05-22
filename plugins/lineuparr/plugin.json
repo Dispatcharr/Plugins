@@ -1,120 +1,27 @@
 {
   "name": "Lineuparr",
-  "version": "1.26.1370103",
+  "version": "1.26.1421711",
   "description": "Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them.",
   "author": "PiratesIRC",
   "license": "MIT",
   "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin",
   "min_dispatcharr_version": "v0.20.0",
-  "fields": [
-    {
-      "id": "lineup_file",
-      "label": "Lineup File",
-      "type": "string",
-      "default": "US_DirecTV-Premier_lineup.json"
-    },
-    {
-      "id": "m3u_sources",
-      "label": "M3U Source",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "id": "channel_profiles",
-      "label": "Channel Profile",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "id": "group_prefix",
-      "label": "Channel Group Prefix",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "id": "match_sensitivity",
-      "label": "Match Sensitivity",
-      "type": "select",
-      "default": "normal",
-      "options": [
-        { "value": "relaxed", "label": "Relaxed \u2014 more matches, more false positives" },
-        { "value": "normal", "label": "Normal \u2014 balanced" },
-        { "value": "strict", "label": "Strict \u2014 fewer matches, high confidence" },
-        { "value": "exact", "label": "Exact \u2014 near-exact matches only" }
-      ]
-    },
-    {
-      "id": "channel_numbering",
-      "label": "Channel Numbering",
-      "type": "select",
-      "default": "lineup",
-      "options": [
-        { "value": "lineup", "label": "Use Channel Database Numbers" },
-        { "value": "auto_next", "label": "Auto-Assign Next Available" },
-        { "value": "auto_highest", "label": "Auto-Assign After Highest" },
-        { "value": "specific", "label": "Use Specific Number" }
-      ]
-    },
-    {
-      "id": "starting_channel_number",
-      "label": "Starting Channel Number",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "id": "prioritize_quality",
-      "label": "\u2b50 Order Matched Streams by Quality",
-      "type": "boolean",
-      "default": true
-    },
-    {
-      "id": "preserve_existing_streams",
-      "label": "\u267b Preserve Existing Streams",
-      "type": "boolean",
-      "default": false,
-      "help_text": "When on, newly matched streams are appended to channels without deleting existing streams, duplicates are skipped, and unmatched channels are not deleted. Use this to add a second M3U source non-destructively."
-    },
-    {
-      "id": "single_channel_name",
-      "label": "\u2316 Single Channel Match",
-      "type": "string",
-      "default": "",
-      "help_text": "When set, Preview Stream Match, Apply Stream Match, Apply EPG Match, and Assign Logos operate ONLY on the lineup channel(s) whose name equals this value (case-insensitive). Leave blank to process the whole lineup. Full Sync ignores this setting."
-    },
-    {
-      "id": "rate_limiting",
-      "label": "\u23f3 Rate Limiting",
-      "type": "select",
-      "default": "none",
-      "options": [
-        { "value": "none", "label": "None \u2014 fastest" },
-        { "value": "low", "label": "Low \u2014 slight delay" },
-        { "value": "medium", "label": "Medium \u2014 moderate delay" },
-        { "value": "high", "label": "High \u2014 slowest, gentlest on API" }
-      ]
-    },
-    {
-      "id": "custom_aliases",
-      "label": "Custom Channel Aliases (JSON)",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "id": "epg_sources",
-      "label": "EPG Sources",
-      "type": "select",
-      "default": "_all",
-      "options": [
-        { "value": "_all", "label": "All EPG sources" }
-      ]
-    }
-  ],
+  "_fields_note": "Settings fields are defined dynamically by the Plugin.fields property in plugin.py (the single source of truth \u2014 it builds live dropdowns for lineups, M3U/EPG sources and profiles). Dispatcharr only falls back to a manifest 'fields' array when the plugin provides none, so it is intentionally omitted here to prevent drift.",
+  "fields": [],
   "actions": [
     {
       "id": "validate_settings",
       "label": "Validate Settings",
       "button_label": "\u2705 Validate",
       "description": "Check all settings, show lineup summary and available profiles",
+      "button_variant": "outline",
+      "button_color": "blue"
+    },
+    {
+      "id": "plugin_status",
+      "label": "Show Status",
+      "button_label": "📊 Status",
+      "description": "Show progress of the current operation, or the result of the last one, without checking the logs",
       "button_variant": "outline",
       "button_color": "blue"
     },

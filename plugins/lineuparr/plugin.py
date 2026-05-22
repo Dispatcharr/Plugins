@@ -19,6 +19,7 @@ from django.db import transaction
 
 from .fuzzy_matcher import FuzzyMatcher
 from .aliases import CHANNEL_ALIASES
+from .progress_status import save_progress_atomic, load_progress, build_status_message
 
 from apps.channels.models import Channel, ChannelGroup, ChannelProfile, ChannelProfileMembership, ChannelStream, Stream
 from apps.m3u.models import M3UAccount
@@ -62,7 +63,7 @@ def _clean_json_text(s):
 
 
 class PluginConfig:
-    PLUGIN_VERSION = "1.26.1370103"
+    PLUGIN_VERSION = "1.26.1421711"
 
     DEFAULT_FUZZY_MATCH_THRESHOLD = 80
     DEFAULT_PRIORITIZE_QUALITY = True
@@ -103,6 +104,7 @@ class PluginConfig:
     DATA_DIR = "/data"
     EXPORTS_DIR = "/data/exports"
     STATE_FILE = "/data/lineuparr_state.json"
+    PROGRESS_FILE = "/data/lineuparr_progress.json"
     OPERATION_LOCK_FILE = "/data/lineuparr_operation.lock"
     OPERATION_LOCK_TIMEOUT_MINUTES = 10
 
@@ -155,6 +157,7 @@ class ProgressTracker:
             "type": "plugin", "plugin": "Lineuparr",
             "message": f"🔄 {action_id}: Starting ({total_items} items)"
         })
+        self._publish("running")
 
     def update(self, items_processed=1):
         self.processed_items += items_processed
@@ -170,8 +173,9 @@ class ProgressTracker:
                 "type": "plugin", "plugin": "Lineuparr",
                 "message": f"🔄 {self.action_id}: {pct:.0f}% ({self.processed_items}/{self.total_items}) - ⏱️ ETA: {eta_str}"
             })
+            self._publish("running")
 
-    def finish(self):
+    def finish(self, summary=None):
         elapsed = time.time() - self.start_time
         eta_str = self._format_eta(elapsed)
         self.logger.info(f"{LOG_PREFIX} [{self.action_id}] Complete: {self.processed_items}/{self.total_items} in {eta_str}")
@@ -179,6 +183,27 @@ class ProgressTracker:
             "type": "plugin", "plugin": "Lineuparr",
             "message": f"✅ {self.action_id}: Complete ({self.processed_items}/{self.total_items}) in {eta_str}"
         })
+        self._publish("done", summary=summary)
+
+    def _publish(self, status, summary=None):
+        """Write the progress state file (best-effort — a write failure is
+        logged but never interrupts the operation)."""
+        record = {
+            "status": status,
+            "action": self.action_id,
+            "current": self.processed_items,
+            "total": self.total_items,
+            "start_time": self.start_time,
+            "updated_at": time.time(),
+        }
+        if status == "done":
+            record["finished_at"] = record["updated_at"]
+            if summary:
+                record["summary"] = summary
+        try:
+            save_progress_atomic(PluginConfig.PROGRESS_FILE, record)
+        except Exception as e:
+            self.logger.warning(f"{LOG_PREFIX} Could not write progress file: {e}")
 
     def _format_eta(self, seconds):
         return ProgressTracker._format_eta_static(seconds)
@@ -223,6 +248,10 @@ class Plugin:
         self._stop_event = threading.Event()
         self._lineup_cache = None
         self._lineup_cache_file = None
+        # Set True while a multi-step operation (Full Sync) runs so its
+        # sub-steps don't each fire a channel-list refresh; the parent
+        # operation fires exactly one refresh when it finishes.
+        self._suppress_refresh = False
 
     def _try_start_thread(self, target, args):
         """Atomically check if a thread is running and start a new one.
@@ -262,6 +291,8 @@ class Plugin:
                     }
             except Exception:
                 pass
+        # Show the dropdown alphabetically by its visible label
+        lineup_options.sort(key=lambda o: o["label"].lower())
         if not lineup_options:
             lineup_options = [{"value": "_none", "label": "No lineup files found"}]
 
@@ -272,6 +303,8 @@ class Plugin:
                 m3u_options.append({"value": acc['name'], "label": acc['name']})
         except Exception:
             pass
+        # Alphabetize discovered sources, keeping "All sources" pinned first
+        m3u_options[1:] = sorted(m3u_options[1:], key=lambda o: o["label"].lower())
 
         # Discover EPG sources
         epg_source_options = [{"value": "_all", "label": "All EPG sources"}]
@@ -281,6 +314,8 @@ class Plugin:
                     epg_source_options.append({"value": src['name'], "label": src['name']})
             except Exception:
                 pass
+        # Alphabetize (case-insensitive), keeping "All EPG sources" pinned first
+        epg_source_options[1:] = sorted(epg_source_options[1:], key=lambda o: o["label"].lower())
 
         # Discover channel profiles
         profile_options = [{"value": "_none", "label": "None (don't enable in profiles)"}]
@@ -289,8 +324,17 @@ class Plugin:
                 profile_options.append({"value": p['name'], "label": p['name']})
         except Exception:
             pass
+        # Alphabetize discovered profiles, keeping "None" pinned first
+        profile_options[1:] = sorted(profile_options[1:], key=lambda o: o["label"].lower())
 
         return [
+            # --- Section: Lineup & Sources ---
+            {
+                "id": "_sec_sources",
+                "type": "info",
+                "label": "Lineup & Sources",
+                "help_text": "Choose the lineup to mirror and where streams and EPG data come from.",
+            },
             {
                 "id": "lineup_file",
                 "label": "Lineup File",
@@ -308,6 +352,14 @@ class Plugin:
                 "help_text": "Which M3U source to match streams from. 'All' uses every available source.",
             },
             {
+                "id": "epg_sources",
+                "label": "EPG Sources for Matching",
+                "type": "select",
+                "default": "_all",
+                "options": epg_source_options,
+                "help_text": "Which EPG source to match against. 'All' uses every source, ordered by the priority configured in Dispatcharr.",
+            },
+            {
                 "id": "channel_profiles",
                 "label": "Channel Profile",
                 "type": "select",
@@ -315,11 +367,19 @@ class Plugin:
                 "options": profile_options,
                 "help_text": "Automatically enable matched channels in this profile after sync.",
             },
+            # --- Section: Channel Groups & Numbering ---
+            {
+                "id": "_sec_groups",
+                "type": "info",
+                "label": "Channel Groups & Numbering",
+                "help_text": "How channels are grouped and numbered when they are created.",
+            },
             {
                 "id": "group_prefix",
                 "label": "Channel Group Prefix",
                 "type": "string",
                 "default": "",
+                "placeholder": "blank = auto  |  none = no prefix  |  e.g. US ",
                 "help_text": "Blank = auto from lineup name. 'none' = no prefix. Add trailing separator to control format (e.g. 'US ' or 'DTV-').",
             },
             {
@@ -336,19 +396,6 @@ class Plugin:
                 "help_text": "Controls how lineup categories are grouped. Refined merges into 6, Simple into 7, Normal keeps all original categories.",
             },
             {
-                "id": "match_sensitivity",
-                "label": "Match Sensitivity",
-                "type": "select",
-                "default": "normal",
-                "options": [
-                    {"value": "relaxed", "label": "Relaxed - more matches, more false positives"},
-                    {"value": "normal", "label": "Normal - balanced"},
-                    {"value": "strict", "label": "Strict - fewer matches, high confidence"},
-                    {"value": "exact", "label": "Exact - near-exact matches only"},
-                ],
-                "help_text": "How closely stream and EPG names must match channel names. Lower = more matches but more errors.",
-            },
-            {
                 "id": "channel_numbering",
                 "label": "Channel Numbering",
                 "type": "select",
@@ -363,21 +410,72 @@ class Plugin:
             },
             {
                 "id": "starting_channel_number",
-                "label": "Starting Channel Number",
+                "label": "Starting Channel Number (Specific mode only)",
                 "type": "string",
                 "default": "",
+                "placeholder": "e.g. 1000",
                 "help_text": "Starting channel number for 'Use Specific Number' mode. Channels are numbered sequentially from this value.",
+            },
+            # --- Section: Stream & EPG Matching ---
+            {
+                "id": "_sec_matching",
+                "type": "info",
+                "label": "Stream & EPG Matching",
+                "help_text": "Controls how streams and EPG entries are matched to lineup channels.",
+            },
+            {
+                "id": "match_sensitivity",
+                "label": "Match Sensitivity",
+                "type": "select",
+                "default": "normal",
+                "options": [
+                    {"value": "relaxed", "label": "Relaxed - more matches, more false positives"},
+                    {"value": "normal", "label": "Normal - balanced"},
+                    {"value": "strict", "label": "Strict - fewer matches, high confidence"},
+                    {"value": "exact", "label": "Exact - near-exact matches only"},
+                ],
+                "help_text": "How closely stream and EPG names must match channel names. Lower = more matches but more errors.",
             },
             {
                 "id": "prioritize_quality",
-                "label": "\u2b50 Order Matched Streams by Quality",
+                "label": "Order Matched Streams by Quality",
                 "type": "boolean",
                 "default": True,
                 "help_text": "Sort attached streams by quality (4K > UHD > FHD > HD > SD). Uses probed resolution if available.",
             },
             {
+                "id": "preserve_existing_streams",
+                "label": "Preserve Existing Streams",
+                "type": "boolean",
+                "default": False,
+                "help_text": "When on, newly matched streams are appended to channels without deleting existing streams, duplicates are skipped, and unmatched channels are not deleted. Use this to add a second M3U source non-destructively.",
+            },
+            {
+                "id": "single_channel_name",
+                "label": "Single Channel Match",
+                "type": "string",
+                "default": "",
+                "placeholder": "e.g. CNN  (blank = whole lineup)",
+                "help_text": "When set, Preview Stream Match, Apply Stream Match, Apply EPG Match, and Assign Logos operate ONLY on the lineup channel(s) whose name equals this value (case-insensitive). Leave blank to process the whole lineup. Full Sync ignores this setting.",
+            },
+            {
+                "id": "custom_aliases",
+                "label": "Custom Channel Aliases (advanced)",
+                "type": "text",
+                "default": "",
+                "placeholder": "{\"Channel Name\": [\"alias 1\", \"alias 2\"]}",
+                "help_text": "JSON object mapping a lineup channel name to extra alias names (a bare string is accepted as a single alias). Leave blank to use built-in aliases only.",
+            },
+            # --- Section: Advanced ---
+            {
+                "id": "_sec_advanced",
+                "type": "info",
+                "label": "Advanced",
+                "help_text": "Performance tuning - most setups can leave this at the default.",
+            },
+            {
                 "id": "rate_limiting",
-                "label": "\u23f3 Rate Limiting",
+                "label": "Rate Limiting",
                 "type": "select",
                 "default": "none",
                 "options": [
@@ -388,21 +486,6 @@ class Plugin:
                 ],
                 "help_text": "Add delays between API calls during sync. Use if Dispatcharr becomes unresponsive during operations.",
             },
-            {
-                "id": "custom_aliases",
-                "label": "Custom Channel Aliases (advanced)",
-                "type": "string",
-                "default": "",
-                "help_text": "JSON mapping extra names to lineup channels. Leave blank to use built-in aliases only.",
-            },
-            {
-                "id": "epg_sources",
-                "label": "EPG Sources for Matching",
-                "type": "select",
-                "default": "_all",
-                "options": epg_source_options,
-                "help_text": "Select which EPG source to match against, or 'All' to use every available source.",
-            },
         ]
 
     def run(self, action, params, context):
@@ -412,6 +495,7 @@ class Plugin:
         try:
             action_map = {
                 "validate_settings": self._validate_settings,
+                "plugin_status": self._plugin_status,
                 "scan_lineups": self._scan_lineups,
                 "preview_stream_match": self._preview_stream_match,
                 "full_sync": self._full_sync,
@@ -466,6 +550,14 @@ class Plugin:
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=5)
         logger.info(f"{LOG_PREFIX} Plugin stopped.")
+
+    def _plugin_status(self, settings, logger):
+        """Report current/last operation status from the progress file, so
+        the user can check progress on demand without reading the logs."""
+        progress = load_progress(PluginConfig.PROGRESS_FILE)
+        message = build_status_message(progress)
+        logger.info(f"{LOG_PREFIX} Status requested: {message.splitlines()[0]}")
+        return {"status": "ok", "message": message}
 
     # ========================================================================
     # HELPERS
@@ -534,10 +626,16 @@ class Plugin:
                         mapped_originals.add(orig)
                 if merged:
                     merged_cats[group_name] = merged
-            # Preserve any categories not in the mapping
+            # Fold any category not covered by the map into the broad
+            # Entertainment catch-all, so Refined/Simple yield only their
+            # documented fixed set of groups. A lineup with non-standard
+            # categories (e.g. UK lineups carrying Adult / Radio /
+            # International / HD) must not leak those through as their own
+            # groups -- that defeats the whole point of Refined/Simple.
+            catchall = "Entertainment" if detail == "refined" else "Entertainment & Lifestyle"
             for orig_name, channels in original_cats.items():
                 if orig_name not in mapped_originals and channels:
-                    merged_cats[orig_name] = channels
+                    merged_cats.setdefault(catchall, []).extend(channels)
             result["categories"] = merged_cats
             return result
 
@@ -730,16 +828,50 @@ class Plugin:
         if custom_str:
             try:
                 custom = json.loads(custom_str)
-                if isinstance(custom, dict):
-                    for k, v in custom.items():
-                        if isinstance(v, list):
-                            if k in alias_map:
-                                alias_map[k] = list(dict.fromkeys(alias_map[k] + v))
-                            else:
-                                alias_map[k] = v
-                    logger.info(f"{LOG_PREFIX} Merged {len(custom)} custom aliases")
             except json.JSONDecodeError as e:
                 logger.warning(f"{LOG_PREFIX} Failed to parse custom_aliases JSON: {e}")
+                custom = None
+
+            if isinstance(custom, dict):
+                merged = 0
+                for k, v in custom.items():
+                    # Accept a list of aliases, or a bare string as a single
+                    # alias. Anything else is a mistake — warn instead of
+                    # silently dropping it (silent drops were a known
+                    # source of "my aliases don't work" complaints).
+                    if isinstance(v, str):
+                        aliases = [v]
+                    elif isinstance(v, list):
+                        aliases = v
+                    else:
+                        logger.warning(
+                            f"{LOG_PREFIX} custom_aliases: ignoring '{k}' — value "
+                            f"must be a string or list, got {type(v).__name__}"
+                        )
+                        continue
+                    # Keep only non-empty string aliases.
+                    clean = [a.strip() for a in aliases
+                             if isinstance(a, str) and a.strip()]
+                    if not clean:
+                        logger.warning(
+                            f"{LOG_PREFIX} custom_aliases: ignoring '{k}' — no "
+                            f"usable (non-empty string) aliases"
+                        )
+                        continue
+                    if k in alias_map:
+                        alias_map[k] = list(dict.fromkeys(alias_map[k] + clean))
+                    else:
+                        alias_map[k] = clean
+                    merged += 1
+                logger.info(
+                    f"{LOG_PREFIX} Merged {merged} custom alias "
+                    f"{'entry' if merged == 1 else 'entries'}"
+                )
+            elif custom is not None:
+                logger.warning(
+                    f"{LOG_PREFIX} custom_aliases must be a JSON object mapping "
+                    f"channel names to aliases, got {type(custom).__name__} — ignored"
+                )
 
         return alias_map
 
@@ -754,6 +886,22 @@ class Plugin:
 
         epg_sources_str = (settings.get("epg_sources") or "").strip()
         if not epg_sources_str or epg_sources_str == "_all":
+            # "All" selected: order EPG entries by Dispatcharr's per-source
+            # priority (EPGSource.priority — higher number = higher priority)
+            # so downstream consumers that take the first match honor the
+            # priority the user configured in Dispatcharr.
+            priority_by_id = {
+                src['id']: (src['priority'] or 0)
+                for src in EPGSource.objects.all().values('id', 'priority')
+            }
+            all_epg.sort(
+                key=lambda e: priority_by_id.get(e.get('epg_source'), 0),
+                reverse=True,
+            )
+            logger.info(
+                f"{LOG_PREFIX} EPG 'All': {len(all_epg)} entries ordered by "
+                f"source priority ({len(priority_by_id)} sources)"
+            )
             return all_epg
 
         # Map source names to IDs (case-insensitive)
@@ -1019,14 +1167,24 @@ class Plugin:
             logger.error(f"{LOG_PREFIX} Failed to save state: {e}")
 
     def _trigger_frontend_refresh(self, logger):
-        """Notify frontend of channel updates via WebSocket."""
+        """Tell the Dispatcharr UI to refetch the channel list.
+
+        The frontend re-queries channels and streams when it receives a
+        'channels_created' websocket event -- verified against Dispatcharr's
+        own handler, which calls requeryChannels()/requeryStreams() for that
+        type. A generic plugin toast does NOT refresh the list, so this emits
+        the same event shape Dispatcharr itself sends after creating channels
+        (see apps/channels/api_views.py). count is omitted, so the frontend
+        shows "...created multiple channel(s)"; Lineuparr's own completion
+        notification carries the exact numbers."""
+        if self._suppress_refresh:
+            return  # a multi-step op (Full Sync) fires one refresh at the end
         try:
             send_websocket_update('updates', 'update', {
-                "type": "plugin", "plugin": "Lineuparr",
-                "message": "Channels updated"
+                "type": "channels_created",
             })
         except Exception as e:
-            logger.error(f"{LOG_PREFIX} WebSocket update failed: {e}")
+            logger.error(f"{LOG_PREFIX} WebSocket refresh failed: {e}")
 
     # ========================================================================
     # NON-DESTRUCTIVE ACTIONS
@@ -1307,7 +1465,7 @@ class Plugin:
             return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
-            "message": f"Preview started: matching {total_channels} channels against {stream_count} streams. ETA: ~{eta_str}. Check notifications for progress.",
+            "message": f"Preview started: matching {total_channels} channels against {stream_count} streams. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
             "background": True,
         }
 
@@ -1404,8 +1562,6 @@ class Plugin:
 
                     progress.update()
 
-            progress.finish()
-
             if lineup_cc and matcher.country_filter_drops:
                 logger.info(
                     f"{LOG_PREFIX} Country filter dropped "
@@ -1428,6 +1584,7 @@ class Plugin:
                 f"{unmatched_count} unmatched. "
                 f"Types: {type_breakdown}. CSV exported."
             )
+            progress.finish(summary=msg)
             logger.info(f"{LOG_PREFIX} {msg}")
             send_websocket_update('updates', 'update', {
                 "type": "plugin", "plugin": "Lineuparr",
@@ -1505,7 +1662,7 @@ class Plugin:
             return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
-            "message": f"Sync Channels started: {total_channels} channels. ETA: ~{eta_str}. Check notifications for progress.",
+            "message": f"Sync Channels started: {total_channels} channels. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
             "background": True,
         }
 
@@ -1645,7 +1802,7 @@ class Plugin:
             return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
-            "message": f"Stream matching started for {total_channels} channels. ETA: ~{eta_str}. Check notifications for progress.",
+            "message": f"Stream matching started for {total_channels} channels. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
             "background": True,
         }
 
@@ -1672,7 +1829,7 @@ class Plugin:
             return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
-            "message": f"EPG matching started for {total_channels} channels. ETA: ~{eta_str}. Check notifications for progress.",
+            "message": f"EPG matching started for {total_channels} channels. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
             "background": True,
         }
 
@@ -1699,7 +1856,7 @@ class Plugin:
             return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
-            "message": f"Logo assignment started for {total_channels} channels. ETA: ~{eta_str}. Check notifications for progress.",
+            "message": f"Logo assignment started for {total_channels} channels. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
             "background": True,
         }
 
@@ -2535,12 +2692,15 @@ class Plugin:
             return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
-            "message": f"Full Sync started: groups, channels, stream matching, EPG matching, and logo assignment.{eta_msg} Check notifications for progress.",
+            "message": f"Full Sync started: groups, channels, stream matching, EPG matching, and logo assignment.{eta_msg} Click 📊 Status to watch progress.",
             "background": True,
         }
 
     def _do_full_sync(self, settings, logger):
         """Background thread for full sync."""
+        # Sub-steps each call _trigger_frontend_refresh; suppress those so a
+        # Full Sync emits exactly one channel-list refresh, at the end.
+        self._suppress_refresh = True
         try:
             # Full Sync is whole-lineup by contract. Its sub-steps route
             # through the same _do_apply_* methods that honor
@@ -2632,6 +2792,7 @@ class Plugin:
             elapsed = time.time() - sync_start
             elapsed_str = ProgressTracker._format_eta_static(elapsed)
             logger.info(f"{LOG_PREFIX} === FULL SYNC COMPLETE ({elapsed_str}) ===")
+            self._suppress_refresh = False
             self._trigger_frontend_refresh(logger)
             send_websocket_update('updates', 'update', {
                 "type": "plugin", "plugin": "Lineuparr",
@@ -2644,6 +2805,10 @@ class Plugin:
                 "type": "plugin", "plugin": "Lineuparr",
                 "message": f"❌ Full sync error: {e}"
             })
+        finally:
+            # Always clear the flag -- including on early returns (cancel/
+            # abort) and exceptions -- so later operations refresh normally.
+            self._suppress_refresh = False
 
     def _clear_csv_exports(self, settings, logger):
         """Delete all Lineuparr CSV export files."""

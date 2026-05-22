@@ -10,7 +10,7 @@ import re
 import logging
 import unicodedata
 
-__version__ = "1.0.0"
+__version__ = "1.3.1"
 
 LOGGER = logging.getLogger("plugins.lineuparr.fuzzy_matcher")
 if not LOGGER.handlers:
@@ -52,6 +52,11 @@ GEOGRAPHIC_PATTERNS = [
 # Enhanced provider prefix patterns for IPTV-specific naming
 PROVIDER_PREFIX_PATTERNS = [
     r'^(?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\s*[:\-\|]\s*',
+    # Bare country tag + whitespace, no separator (e.g. "US Racer Network").
+    # Restricted to the 2-letter US/UK/CA/AU codes so it cannot eat a real
+    # channel name: "USA Network" (USA != US + space) and "In Country
+    # Television" ("IN") are both safe from this pattern.
+    r'^(?:US|UK|CA|AU)\s+',
     r'^\s*\((?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\)\s*',
     r'\s*\|\s*(?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\s*$',
 ]
@@ -83,12 +88,15 @@ _PLUTO_COUNTRY_MAP = {
     # "LATIN"/"EUROPE" etc. intentionally omitted — ambiguous region.
 }
 
-# Country pairs that share enough cross-border channels (CBS, ABC, ESPN, A&E,
-# TSN, etc.) that users consider them interchangeable. A US lineup should still
-# accept a `(CA) ESPN` stream and vice versa.
+# Country pairs that share enough cross-border channels that users consider
+# them interchangeable. US<->CA share CBS/ABC/ESPN/A&E/TSN etc.; US<->MX share
+# the US Spanish-language networks (Univision, Telemundo, Galavision, NBC
+# Universo), whose M3U feeds are frequently tagged MEX. A US lineup should
+# accept a `(CA) ESPN` or `MEX: Galavision` stream, and vice versa.
 _COMPATIBLE_COUNTRIES = {
-    "US": {"CA"},
+    "US": {"CA", "MX"},
     "CA": {"US"},
+    "MX": {"US"},
 }
 
 
@@ -145,6 +153,8 @@ class FuzzyMatcher:
         # match_all_streams calls. Callers reset this before a matching loop
         # and read it after, so they can log a summary.
         self.country_filter_drops = 0
+        # Cache for callsign extraction: raw_name -> (callsign|None, is_high_conf)
+        self._callsign_cache = {}
 
     def precompute_normalizations(self, names, user_ignored_tags=None):
         """
@@ -155,6 +165,7 @@ class FuzzyMatcher:
         self._norm_cache.clear()
         self._norm_nospace_cache.clear()
         self._processed_cache.clear()
+        self._callsign_cache.clear()
 
         for name in names:
             norm = self.normalize_name(name, user_ignored_tags)
@@ -206,6 +217,17 @@ class FuzzyMatcher:
 
         # Normalize hyphens to spaces
         name = re.sub(r'-', ' ', name)
+
+        # Preserve parenthesized East/West -- and the (E)/(W) abbreviations --
+        # as bare words so they survive both the leading-parenthetical strip
+        # below and the generic parenthetical strip (MISC_PATTERNS). Bare
+        # "East"/"West" are intentionally kept (they distinguish separate
+        # feeds); the parenthesized forms must be kept too, or a zoned lineup
+        # channel cannot match a zoned stream (e.g. "Cartoon Network (W)" vs
+        # "US: Cartoon Network West"). Only E/W are converted -- the other
+        # single letters (A/S/H/F/X/D) are stream source/quality tags.
+        name = re.sub(r'\(\s*(?:east|e)\s*\)', ' East ', name, flags=re.IGNORECASE)
+        name = re.sub(r'\(\s*(?:west|w)\s*\)', ' West ', name, flags=re.IGNORECASE)
 
         # Remove leading parenthetical prefixes
         while name.lstrip().startswith('('):
@@ -354,6 +376,16 @@ class FuzzyMatcher:
         tokens = sorted([token for token in cleaned_s.split() if token])
         return " ".join(tokens)
 
+    @staticmethod
+    def _trailing_number(name):
+        """Return the integer value of a space-separated, purely-numeric
+        trailing token, or None. 'HBO 2' -> 2, 'DIRECTV 4K Live 1' -> 1,
+        'ESPN' -> None, 'ESPN2' -> None (digit not space-separated). Used to
+        reject 'Foo 1' vs 'Foo 2' false positives -- different channels that
+        otherwise fuzzy-match almost perfectly."""
+        m = re.search(r'(?:^|\s)(\d{1,4})\s*$', name or "")
+        return int(m.group(1)) if m else None
+
     def _channel_number_boost(self, stream_name, expected_number):
         """
         Check if a stream name contains the expected channel number.
@@ -370,6 +402,96 @@ class FuzzyMatcher:
         if re.search(r'(?:^|[\s\[\(])' + re.escape(number_str) + r'(?:$|[\s\]\)])', stream_name):
             return 5
         return 0
+
+    # Words that match the callsign regex shape but are never US broadcast
+    # callsigns. A US callsign (K/W + 2-4 letters) is shape-identical to many
+    # common English words, so the loose Priority-4 pattern mis-extracts them —
+    # e.g. "with" in "Bizarre Foods with Andrew Zimmern" becomes callsign
+    # "WITH". Regex alone cannot tell "WITH" from "WABC"; frequent K/W-initial
+    # words are denied explicitly so they never extract as a callsign. WWE/WWF/
+    # WCW stop wrestling show names extracting as false-positive callsigns.
+    _CALLSIGN_DENYLIST = frozenset({
+        'WWE', 'WWF', 'WCW', 'EAST',
+        'WAR', 'WARS', 'WARM', 'WASH', 'WATCH', 'WAVE', 'WAVES', 'WAY', 'WAYS',
+        'WEB', 'WEEK', 'WELL', 'WENT', 'WERE', 'WEST', 'WHAT', 'WHEN', 'WHERE',
+        'WHICH', 'WHILE', 'WHITE', 'WHO', 'WHY', 'WIDE', 'WIFE', 'WILD', 'WILL',
+        'WIND', 'WINE', 'WING', 'WINGS', 'WINS', 'WIRE', 'WISE', 'WISH', 'WITH',
+        'WOLF', 'WOMAN', 'WOMEN', 'WOOD', 'WORD', 'WORDS', 'WORK', 'WORKS',
+        'WORLD', 'WORM', 'WORN', 'WRAP',
+        'KEEN', 'KEEP', 'KEPT', 'KEY', 'KEYS', 'KICK', 'KID', 'KIDS', 'KILL',
+        'KIND', 'KING', 'KINGS', 'KISS', 'KITE', 'KNEE', 'KNEW', 'KNOW', 'KNOWN',
+    })
+
+    def _compute_callsign_with_confidence(self, channel_name):
+        """
+        Extract US TV callsign with a confidence flag.
+
+        Returns (callsign, is_high_confidence). High confidence =
+        Priorities 1-3 (parenthesized / suffixed-paren / end-of-name).
+        Priority 4 (any loose word) is low confidence. (None, False)
+        when nothing extractable.
+        """
+        # Remove common provider prefixes
+        channel_name = re.sub(r'^D\d+-', '', channel_name)
+        channel_name = re.sub(r'^USA?\s*[^a-zA-Z0-9]*\s*', '', channel_name, flags=re.IGNORECASE)
+
+        # Priority 1: Callsigns in parentheses (most reliable)
+        paren_match = re.search(r'\(([KW][A-Z]{3})(?:-[A-Z\s]+)?\)', channel_name, re.IGNORECASE)
+        if paren_match:
+            callsign = paren_match.group(1).upper()
+            if callsign not in self._CALLSIGN_DENYLIST:
+                return callsign, True
+
+        # Priority 2: Callsigns with suffix in parentheses
+        paren_suffix_match = re.search(r'\(([KW][A-Z]{2,4}-(?:TV|CD|LP|DT|LD))\)', channel_name, re.IGNORECASE)
+        if paren_suffix_match:
+            return paren_suffix_match.group(1).upper(), True
+
+        # Priority 3: Callsigns at the end
+        end_match = re.search(r'\b([KW][A-Z]{2,4}(?:-(?:TV|CD|LP|DT|LD))?)\s*(?:\.[a-z]+)?\s*$', channel_name, re.IGNORECASE)
+        if end_match:
+            callsign = end_match.group(1).upper()
+            if callsign not in self._CALLSIGN_DENYLIST:
+                return callsign, True
+
+        # Priority 4: Any word matching callsign pattern (low confidence)
+        word_match = re.search(r'\b([KW][A-Z]{2,4}(?:-(?:TV|CD|LP|DT|LD))?)\b', channel_name, re.IGNORECASE)
+        if word_match:
+            callsign = word_match.group(1).upper()
+            if callsign not in self._CALLSIGN_DENYLIST:
+                return callsign, False
+
+        return None, False
+
+    def _extract_callsign_with_confidence(self, channel_name):
+        """
+        Cached wrapper around _compute_callsign_with_confidence.
+
+        Extraction is pure in channel_name, so results are memoized — the
+        anchor calls this once per stream over a fixed candidate list, which
+        is otherwise massively redundant across the per-channel matching
+        loop. Cache is cleared by precompute_normalizations.
+        """
+        cached = self._callsign_cache.get(channel_name)
+        if cached is not None:
+            return cached
+        result = self._compute_callsign_with_confidence(channel_name)
+        self._callsign_cache[channel_name] = result
+        return result
+
+    def extract_callsign(self, channel_name):
+        """
+        Extract US TV callsign from channel name with priority order.
+        Returns None if common false positives appear alone.
+        """
+        callsign, _ = self._extract_callsign_with_confidence(channel_name)
+        return callsign
+
+    def normalize_callsign(self, callsign):
+        """Remove the broadcast suffix (-TV/-CD/-LP/-DT/-LD) from a callsign."""
+        if callsign:
+            callsign = re.sub(r'-(?:TV|CD|LP|DT|LD)$', '', callsign)
+        return callsign
 
     def alias_match(self, lineup_name, candidate_names, alias_map, user_ignored_tags=None):
         """
@@ -573,6 +695,13 @@ class FuzzyMatcher:
         if user_ignored_tags is None:
             user_ignored_tags = []
 
+        # Callsign anchor (asymmetric): extract the lineup channel's US
+        # broadcast callsign up front. Used after the fuzzy stages to floor
+        # high-confidence callsign agreement and hard-reject disagreement.
+        query_callsign, query_cs_hc = self._extract_callsign_with_confidence(lineup_name or "")
+        query_callsign_norm = self.normalize_callsign(query_callsign) if query_callsign else None
+        callsign_anchored = set()  # candidate names exempt from the region filter
+
         all_matches = {}  # stream_name -> (score, match_type)
 
         # Stage 0: Alias matching
@@ -588,6 +717,10 @@ class FuzzyMatcher:
             normalized_query_lower = normalized_query.lower()
             normalized_query_nospace = re.sub(r'[\s&\-]+', '', normalized_query_lower)
             processed_query = self.process_string_for_matching(normalized_query)
+            # A differing space-separated trailing number means a different
+            # channel ("DIRECTV 4K Live 1" vs "... Live 2") -- used to skip
+            # those near-identical false positives in the fuzzy stages below.
+            query_trailing_num = self._trailing_number(normalized_query_lower)
 
             for candidate in candidate_names:
                 if candidate in all_matches:
@@ -597,6 +730,11 @@ class FuzzyMatcher:
                 candidate_lower, candidate_nospace = self._get_cached_norm(candidate, user_ignored_tags)
                 if not candidate_lower:
                     continue
+
+                if query_trailing_num is not None:
+                    cand_trailing_num = self._trailing_number(candidate_lower)
+                    if cand_trailing_num is not None and cand_trailing_num != query_trailing_num:
+                        continue  # "Foo 1" vs "Foo 2" -- different channel
 
                 score = 0
                 mtype = None
@@ -641,6 +779,26 @@ class FuzzyMatcher:
                     boost = self._channel_number_boost(candidate, channel_number)
                     all_matches[candidate] = (min(score + boost, 100), mtype)
 
+        # Callsign anchor: a shared high-confidence callsign rescues an
+        # otherwise-unmatched stream (floored at 95) and a disagreeing one
+        # hard-rejects a false positive. BOTH the floor and the reject require
+        # BOTH callsigns to be high-confidence (parenthesized or end-of-name).
+        # A loose mid-name word that merely has callsign shape (e.g. "WITH")
+        # is not a reliable callsign and must not floor or reject.
+        if query_callsign_norm and query_cs_hc:
+            for candidate in candidate_names:
+                cand_cs, cand_hc = self._extract_callsign_with_confidence(candidate)
+                if not cand_cs or not cand_hc:
+                    continue
+                if self.normalize_callsign(cand_cs) == query_callsign_norm:
+                    existing = all_matches.get(candidate)
+                    if existing is None or existing[0] < 95:
+                        all_matches[candidate] = (95, "callsign")
+                    callsign_anchored.add(candidate)
+                else:
+                    # High-confidence callsign disagreement → hard reject.
+                    all_matches.pop(candidate, None)
+
         # Filter out wrong-country matches. A stream whose name carries a
         # recognized country marker (e.g. "UK: Discovery Channel", "(IN) Bloomberg",
         # "(PLUTO Brazil) MTV") and that marker differs from the lineup's country
@@ -665,8 +823,9 @@ class FuzzyMatcher:
 
         # Filter out wrong-region matches (East vs West vs Pacific)
         # Check both normalized query AND original name for regional indicators.
-        # normalize_name strips parentheticals like (E)/(W) before we get here,
-        # so we must detect abbreviated regional suffixes from the original name.
+        # normalize_name converts (E)/(W) to bare East/West and strips other
+        # parentheticals, so detect abbreviated regional suffixes (incl. the
+        # Pacific (P) abbreviation it does drop) from the original name.
         query_lower = (normalized_query or "").lower()
         original_lower = (lineup_name or "").lower()
         # Detect (e)/(w)/(p) abbreviations in the original name
@@ -684,6 +843,9 @@ class FuzzyMatcher:
         if query_has_east or query_has_west or query_has_pacific:
             filtered = {}
             for stream_name, (score, mtype) in all_matches.items():
+                if stream_name in callsign_anchored:
+                    filtered[stream_name] = (score, mtype)
+                    continue
                 sn_lower = stream_name.lower()
                 stream_has_east = "east" in sn_lower
                 stream_has_west = "west" in sn_lower and "western" not in sn_lower
@@ -718,6 +880,9 @@ class FuzzyMatcher:
             # Regionless channel: prefer regionless EPG entries, reject Pacific/West
             filtered = {}
             for stream_name, (score, mtype) in all_matches.items():
+                if stream_name in callsign_anchored:
+                    filtered[stream_name] = (score, mtype)
+                    continue
                 sn_lower = stream_name.lower()
                 stream_has_pacific = "pacific" in sn_lower
                 stream_has_west = "west" in sn_lower and "western" not in sn_lower
