@@ -1,0 +1,10 @@
+{
+  "name": "YouTubearr",
+  "version": "1.19.0",
+  "description": "Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering",
+  "author": "jeff-gooch",
+  "license": "Unlicense",
+  "min_dispatcharr_version": "v0.20.0",
+  "help_url": "https://github.com/jeff-gooch/youtubearr",
+  "repo_url": "https://github.com/jeff-gooch/youtubearr"
+}

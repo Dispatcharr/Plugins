@@ -85,7 +85,7 @@ sign_manifest() {
     gpg_opts+=(--passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback)
   fi
   local sig
-  sig=$(jq -c '.manifest' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null) || true
+  sig=$(jq -ca '.manifest' "$file" | gpg "${gpg_opts[@]}" 2>/dev/null) || true
   if [[ -z "$sig" ]]; then
     echo "::warning::GPG signing failed for ${file} - all signatures will be removed."
     gpg_signing_failed=1
@@ -110,6 +110,9 @@ for plugin_dir in plugins/*/; do
   [[ ! -f "$plugin_file" ]] && continue
   plugin_name=$(basename "$plugin_dir")
   plugin_key=${plugin_name//-/_}
+  current_version=$(jq -r '.version' "$plugin_file")
+  min_da_version=$(jq -r '.min_dispatcharr_version // ""' "$plugin_file")
+  max_da_version=$(jq -r '.max_dispatcharr_version // ""' "$plugin_file")
   unlisted=false
   [[ "$(jq -r '.unlisted // false' "$plugin_file")" == "true" ]] && unlisted=true
 
@@ -149,7 +152,20 @@ for plugin_dir in plugins/*/; do
 
     if [[ "$metadata" != "{}" ]]; then
       versioned_zips=$(jq --arg url "$zip_url" --argjson metadata "$metadata" --argjson size "$zip_size_kb" \
-        '. + [($metadata + {url: $url, size: $size})]' <<< "$versioned_zips")
+        '. + [{
+          version: $metadata.version,
+          commit_sha: $metadata.commit_sha,
+          commit_sha_short: $metadata.commit_sha_short,
+          build_timestamp: $metadata.build_timestamp,
+          last_updated: $metadata.last_updated,
+          checksum_md5: $metadata.checksum_md5,
+          checksum_sha256: $metadata.checksum_sha256,
+          min_dispatcharr_version: $metadata.min_dispatcharr_version,
+          max_dispatcharr_version: $metadata.max_dispatcharr_version,
+          source_url: $metadata.source_url,
+          url: $url,
+          size: $size
+        } | with_entries(select(.value != null))]' <<< "$versioned_zips")
       if [[ "$latest_metadata" == "{}" ]]; then
         latest_metadata="$metadata"
       fi
@@ -160,6 +176,19 @@ for plugin_dir in plugins/*/; do
   done < <(ls -1 "zips/$plugin_name/${plugin_name}"-*.zip 2>/dev/null \
       | grep -v latest | sort -t- -k2 -V -r)
 
+  # Overwrite min/max_dispatcharr_version for the current version's entry from plugin.json,
+  # so metadata-only updates (no version bump) are reflected without a rebuild.
+  versioned_zips=$(jq \
+    --arg v "$current_version" \
+    --arg min "$min_da_version" \
+    --arg max "$max_da_version" \
+    'map(if .version == $v then
+      . + {
+        min_dispatcharr_version: (if $min != "" then $min else null end),
+        max_dispatcharr_version: (if $max != "" then $max else null end)
+      } | with_entries(select(.value != null))
+    else . end)' <<< "$versioned_zips")
+
   plugin_entry=$(jq \
     --arg plugin_name "$plugin_name" \
     --arg latest_url "$latest_url" \
@@ -168,24 +197,38 @@ for plugin_dir in plugins/*/; do
     --argjson versioned_zips "$versioned_zips" \
     --argjson latest_metadata "$latest_metadata" \
     --argjson latest_size_kb "$latest_size_kb" \
-    'with_entries(select(.key | IN(
-      "name","description","author","maintainers",
-      "deprecated","repo_url","discord_thread","license"
-    ))) + {
+    '{
       slug: $plugin_name,
+      name: .name,
+      description: (.description // null),
+      author: (.author // null),
+      maintainers: (.maintainers // null),
+      license: (.license // null),
+      deprecated: (if .deprecated == true then true else null end),
+      source_type: (if .source_type == "external" then "external" else null end),
+      source_url: (.source_url // null),
+      repo_url: (.repo_url // null),
+      discord_thread: (.discord_thread // null),
       registry_url: $registry_url,
       registry_name: $registry_name,
-      versions: $versioned_zips
-    } + (
-      if ($latest_metadata | length > 0) then {
+      last_updated: ($latest_metadata.last_updated // null),
+      latest: (if ($latest_metadata | length > 0) then {
+        version: $latest_metadata.version,
+        commit_sha: $latest_metadata.commit_sha,
+        commit_sha_short: $latest_metadata.commit_sha_short,
+        build_timestamp: $latest_metadata.build_timestamp,
         last_updated: $latest_metadata.last_updated,
-        latest: ($latest_metadata + {
-          latest_url: $latest_url,
-          url: $versioned_zips[0].url,
-          size: $latest_size_kb
-        })
-      } else {} end
-    )' \
+        checksum_md5: $latest_metadata.checksum_md5,
+        checksum_sha256: $latest_metadata.checksum_sha256,
+        min_dispatcharr_version: (.min_dispatcharr_version // null),
+        max_dispatcharr_version: (.max_dispatcharr_version // null),
+        source_url: $latest_metadata.source_url,
+        latest_url: $latest_url,
+        url: $versioned_zips[0].url,
+        size: $latest_size_kb
+      } | with_entries(select(.value != null)) else null end),
+      versions: $versioned_zips
+    } | with_entries(select(.value != null))' \
     "$plugin_file")
 
   if write_manifest_if_changed "zips/$plugin_name/manifest.json" "$plugin_entry"; then
@@ -219,6 +262,8 @@ for plugin_dir in plugins/*/; do
     --arg license "$(jq -r '.license // ""' "$plugin_file")" \
     --argjson deprecated "$(jq 'if .deprecated == true then true else null end' "$plugin_file")" \
     --argjson latest_size_kb "$latest_size_kb" \
+    --arg min_da_version "$min_da_version" \
+    --arg max_da_version "$max_da_version" \
     '{
       slug: $slug,
       name: $name,
@@ -233,8 +278,8 @@ for plugin_dir in plugins/*/; do
       latest_sha256: ($latest_metadata.checksum_sha256 // null),
       latest_url: ($versioned_zips[0].url // null),
       latest_size: (if $latest_size_kb > 0 then $latest_size_kb else null end),
-      min_dispatcharr_version: ($latest_metadata.min_dispatcharr_version // null),
-      max_dispatcharr_version: ($latest_metadata.max_dispatcharr_version // null)
+      min_dispatcharr_version: (if $min_da_version != "" then $min_da_version else null end),
+      max_dispatcharr_version: (if $max_da_version != "" then $max_da_version else null end)
     } | with_entries(select(.value != null))')
   root_entries+=("$root_entry")
 done

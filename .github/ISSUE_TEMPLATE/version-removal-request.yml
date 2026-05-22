@@ -1,0 +1,50 @@
+name: Version Removal Request
+description: Request that a specific published version of a plugin be removed from the registry.
+labels: ["Rollback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to request that a specific version be yanked from the registry. A maintainer will review and run the yank workflow on your behalf.
+
+        Only plugin authors and listed maintainers may request removal of their own plugin versions. Maintainers with write access to this repository can request removal of any version.
+
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin slug
+      description: The folder name of the plugin (e.g. `dispatcharr-exporter`).
+      placeholder: my-plugin
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version to remove
+      description: The exact version string as it appears in `plugin.json` (e.g. `1.2.3`).
+      placeholder: "1.2.3"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Reason for removal
+      options:
+        - Critical bug
+        - Security vulnerability
+        - Mistaken publish (wrong version, wrong files)
+        - License correction
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Describe what is wrong with this version and why it should be removed.
+      placeholder: Briefly explain the issue.
+    validations:
+      required: true

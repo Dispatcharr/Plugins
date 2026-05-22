@@ -23,12 +23,17 @@ on:
   workflow_dispatch:
     inputs:
       force_rebuild:
-        description: 'Wipe and recreate the releases branch from scratch. WARNING: purges all version history - only the latest version of each plugin will be retained.'
+        description: 'Check this to clear and rebuild plugin ZIPs from scratch. Scope is controlled by force_rebuild_plugin below. Requires CONFIRM in force_rebuild_confirm.'
         type: boolean
         default: false
         required: false
+      force_rebuild_plugin:
+        description: 'Optional: plugin slug to target (e.g. dispatcharr-exporter). Only that plugin is cleared and rebuilt - all others are untouched. Leave blank to wipe and rebuild the entire releases branch (WARNING: purges all version history).'
+        type: string
+        default: ''
+        required: false
       force_rebuild_confirm:
-        description: 'Type CONFIRM to proceed with force rebuild (required when force_rebuild is true)'
+        description: 'Required when force_rebuild is checked: type CONFIRM to proceed. Leave blank at all other times.'
         type: string
         default: ''
         required: false
@@ -86,6 +91,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           FORCE_REBUILD: ${{ inputs.force_rebuild }}
           FORCE_REBUILD_CONFIRM: ${{ inputs.force_rebuild_confirm }}
+          FORCE_REBUILD_PLUGIN: ${{ inputs.force_rebuild_plugin }}
         run: |
           set -o pipefail
           if [[ "${FORCE_REBUILD}" == "true" && "${FORCE_REBUILD_CONFIRM}" != "CONFIRM" ]]; then

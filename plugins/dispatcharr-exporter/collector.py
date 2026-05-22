@@ -7,7 +7,12 @@ and returns the complete metrics output in Prometheus text format.
 import logging
 import time
 
-from apps.proxy.ts_proxy.constants import ChannelMetadataField
+try:
+    from apps.proxy.live_proxy.constants import ChannelMetadataField
+    _CHANNEL_KEY_PREFIX = "live"
+except ImportError:
+    from apps.proxy.ts_proxy.constants import ChannelMetadataField
+    _CHANNEL_KEY_PREFIX = "ts_proxy"
 
 from .config import PLUGIN_CONFIG, PLUGIN_FIELDS, DEFAULT_PORT
 from .utils import escape_label, get_dispatcharr_version
@@ -217,7 +222,7 @@ class PrometheusMetricsCollector:
                                 channel = Channel.objects.get(id=int(channel_id))
                                 channel_uuid = str(channel.uuid)
 
-                                metadata_key = f"ts_proxy:channel:{channel_uuid}:metadata"
+                                metadata_key = f"{_CHANNEL_KEY_PREFIX}:channel:{channel_uuid}:metadata"
                                 metadata = self.redis_client.hgetall(metadata_key) or {}
 
                                 def get_metadata(field, default=None):
@@ -408,7 +413,7 @@ class PrometheusMetricsCollector:
                                             logo_url = logo_path
                                     logo_url = logo_url.replace('"', '\\"').replace('\\', '\\\\')
 
-                                    metadata_key = f"ts_proxy:channel:{channel_uuid}:metadata"
+                                    metadata_key = f"{_CHANNEL_KEY_PREFIX}:channel:{channel_uuid}:metadata"
                                     metadata = self.redis_client.hgetall(metadata_key) or {}
 
                                     def get_metadata(field, default="0"):
@@ -455,7 +460,7 @@ class PrometheusMetricsCollector:
                                     total_mb = round(total_bytes / 1024 / 1024, 2)
                                     avg_bitrate_bps = round((total_bytes * 8 / uptime_seconds), 2) if uptime_seconds > 0 else 0
 
-                                    client_set_key = f"ts_proxy:channel:{channel_uuid}:clients"
+                                    client_set_key = f"{_CHANNEL_KEY_PREFIX}:channel:{channel_uuid}:clients"
                                     active_clients = self.redis_client.scard(client_set_key) or 0
 
                                     current_bitrate_bps = 0.0
@@ -464,7 +469,7 @@ class PrometheusMetricsCollector:
                                         for client_id_bytes in client_ids:
                                             try:
                                                 client_id = client_id_bytes.decode('utf-8') if isinstance(client_id_bytes, bytes) else client_id_bytes
-                                                client_key = f"ts_proxy:channel:{channel_uuid}:clients:{client_id}"
+                                                client_key = f"{_CHANNEL_KEY_PREFIX}:channel:{channel_uuid}:clients:{client_id}"
                                                 client_data = self.redis_client.hgetall(client_key)
                                                 if client_data and 'current_rate_KBps' in client_data:
                                                     current_rate_kb = float(client_data['current_rate_KBps'])
@@ -1039,7 +1044,7 @@ class PrometheusMetricsCollector:
             while True:
                 cursor, keys = self.redis_client.scan(
                     cursor,
-                    match="ts_proxy:channel:*:clients",
+                    match=f"{_CHANNEL_KEY_PREFIX}:channel:*:clients",
                     count=100,
                 )
                 for client_set_key in keys:
@@ -1062,7 +1067,7 @@ class PrometheusMetricsCollector:
                         for client_id_bytes in client_ids:
                             try:
                                 client_id = client_id_bytes.decode('utf-8') if isinstance(client_id_bytes, bytes) else client_id_bytes
-                                client_key = f"ts_proxy:channel:{channel_uuid}:clients:{client_id}"
+                                client_key = f"{_CHANNEL_KEY_PREFIX}:channel:{channel_uuid}:clients:{client_id}"
                                 client_data = self.redis_client.hgetall(client_key)
 
                                 if not client_data:
@@ -1285,7 +1290,7 @@ class PrometheusMetricsCollector:
             if not redis:
                 raise RuntimeError("Redis client not available")
             # Live client keys
-            for key in redis.scan_iter(match="ts_proxy:channel:*:clients:*", count=1000):
+            for key in redis.scan_iter(match=f"{_CHANNEL_KEY_PREFIX}:channel:*:clients:*", count=1000):
                 parts = key.split(':')
                 if len(parts) >= 5:
                     uid_str = redis.hget(key, 'user_id')

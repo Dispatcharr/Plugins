@@ -41,7 +41,7 @@ _scheduler_lock = threading.Lock()  # Prevent concurrent scheduler starts
 class PluginConfig:
     """Centralized configuration constants for Event Channel Managarr."""
 
-    PLUGIN_VERSION = "1.26.1172336"
+    PLUGIN_VERSION = "1.26.1401103"
 
     # Default timezone for scheduling
     DEFAULT_TIMEZONE = "America/Chicago"
@@ -1170,25 +1170,37 @@ class Plugin:
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         date_format = (settings or {}).get("date_format", "Auto")
 
-        # Pattern 0: start:YYYY-MM-DD HH:MM:SS or stop:YYYY-MM-DD HH:MM:SS
+        def _apply_meridiem(hour, meridiem):
+            """Convert a 12-hour clock hour to 24-hour given an optional AM/PM token."""
+            if not meridiem:
+                return hour
+            meridiem = meridiem.upper()
+            if meridiem == "AM":
+                return 0 if hour == 12 else hour
+            else:
+                return hour if hour == 12 else hour + 12
+
+        # Pattern 0: start:YYYY-MM-DD HH:MM:SS[ AM/PM] or stop:YYYY-MM-DD HH:MM:SS[ AM/PM]
         for prefix in ["start:", "stop:"]:
-            pattern0 = re.search(rf'{prefix}(\d{{4}})-(\d{{2}})-(\d{{2}})\s+(\d{{2}}):(\d{{2}}):(\d{{2}})', channel_name)
+            pattern0 = re.search(rf'{prefix}(\d{{4}})-(\d{{2}})-(\d{{2}})\s+(\d{{1,2}}):(\d{{2}}):(\d{{2}})\s*(?P<ap>[AaPp][Mm])?', channel_name)
             if pattern0:
-                year, month, day, hour, minute, second = map(int, pattern0.groups())
+                year, month, day, hour, minute, second = map(int, pattern0.groups()[:6])
+                hour = _apply_meridiem(hour, pattern0.group("ap"))
                 try:
                     extracted_date = datetime(year, month, day, hour, minute, second)
-                    logger.debug(f"Extracted datetime {extracted_date} from pattern {prefix}YYYY-MM-DD HH:MM:SS in '{channel_name}'")
+                    logger.debug(f"Extracted datetime {extracted_date} from pattern {prefix}YYYY-MM-DD HH:MM:SS[ AM/PM] in '{channel_name}'")
                     return extracted_date
                 except ValueError:
                     pass
 
-        # Pattern 0a: (YYYY-MM-DD HH:MM:SS) in parentheses
-        pattern0a = re.search(r'\((\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})\)', channel_name)
+        # Pattern 0a: (YYYY-MM-DD HH:MM:SS[ AM/PM]) in parentheses
+        pattern0a = re.search(r'\((\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s*(?P<ap>[AaPp][Mm])?\)', channel_name)
         if pattern0a:
-            year, month, day, hour, minute, second = map(int, pattern0a.groups())
+            year, month, day, hour, minute, second = map(int, pattern0a.groups()[:6])
+            hour = _apply_meridiem(hour, pattern0a.group("ap"))
             try:
                 extracted_date = datetime(year, month, day, hour, minute, second)
-                logger.debug(f"Extracted datetime {extracted_date} from pattern (YYYY-MM-DD HH:MM:SS) in '{channel_name}'")
+                logger.debug(f"Extracted datetime {extracted_date} from pattern (YYYY-MM-DD HH:MM:SS[ AM/PM]) in '{channel_name}'")
                 return extracted_date
             except ValueError:
                 pass
@@ -1319,13 +1331,24 @@ class Plugin:
             now_in_tz = datetime.now(local_tz)
             today_day = now_in_tz.weekday()
 
+            # ±1 day tolerance: a channel named for a US/EU day can roll over the
+            # viewer's local calendar (e.g. "Monday Night Football" is Tuesday in
+            # Australia). Earth's TZ span is UTC-12..UTC+14, so the named day will
+            # always be within ±1 of the viewer's day for any live event.
+            allowed_days = {(today_day - 1) % 7, today_day, (today_day + 1) % 7}
+
             day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
             extracted_day_name = day_names[extracted_day]
             today_day_name = day_names[today_day]
 
-            if extracted_day != today_day:
+            if extracted_day not in allowed_days:
                 return True, f"[WrongDayOfWeek] Channel is for {extracted_day_name}, but today is {today_day_name}"
 
+            if extracted_day != today_day:
+                logger.debug(
+                    f"[WrongDayOfWeek] allowing '{channel_name}': named day {extracted_day_name} "
+                    f"is within ±1 of today ({today_day_name}) in {tz_str} — cross-TZ rollover tolerance"
+                )
             return False, None
 
         elif rule_name == "NoEventPattern":
@@ -2122,6 +2145,57 @@ class Plugin:
         
         return duplicate_hide_list
 
+    def _localized_template_props(self, settings):
+        """
+        Returns overrides for the three rewritable title templates plus
+        `output_timezone` for the managed dummy EPG source.
+
+        - When source TZ == display TZ, or either TZ is invalid/empty:
+          returns DEFAULTS (plain templates) and writes
+          `output_timezone=""` so any previously-saved value is cleared
+          (the diff-and-save loop never deletes keys).
+        - Otherwise: returns localized templates with the date placeholder
+          driven by `date_format` (US/Auto -> {month}/{day};
+          EU -> {day}/{month}) and a TZ abbreviation suffix computed for
+          "now" in the display TZ. If %Z returns a numeric offset
+          (e.g., +0530), the suffix is omitted but time conversion still
+          happens via Dispatcharr's output_timezone.
+
+        `fallback_title_template` is set in the base `managed_props` and
+        is never overridden here.
+        """
+        DEFAULTS = {
+            "output_timezone": "",
+            "title_template": "{title}",
+            "upcoming_title_template": "Upcoming at {starttime}: {title}",
+            "ended_title_template": "Ended at {endtime}: {title}",
+        }
+
+        source_tz_name = str(settings.get("dummy_epg_event_timezone", "")).strip()
+        display_tz_name = str(settings.get("timezone", "")).strip()
+
+        if not source_tz_name or not display_tz_name or source_tz_name == display_tz_name:
+            return DEFAULTS
+
+        try:
+            pytz.timezone(source_tz_name)  # validate only; renderer resolves source TZ itself
+            display_tz = pytz.timezone(display_tz_name)
+        except pytz.exceptions.UnknownTimeZoneError:
+            return DEFAULTS
+
+        abbrev = datetime.now(display_tz).strftime("%Z")
+        suffix = f" {abbrev}" if abbrev and abbrev.isalpha() else ""
+
+        fmt = str(settings.get("date_format", "Auto")).strip().upper()
+        date_ph = "{day}/{month}" if fmt == "EU" else "{month}/{day}"
+
+        return {
+            "output_timezone": display_tz_name,
+            "title_template": f"{{title}} {date_ph} {{starttime}}{suffix}",
+            "upcoming_title_template": f"Upcoming at {date_ph} {{starttime}}{suffix}: {{title}}",
+            "ended_title_template": f"Ended at {date_ph} {{endtime}}{suffix}: {{title}}",
+        }
+
     def _get_or_create_managed_epg_source(self, settings, logger):
         """Create (if missing) or refresh the shared plugin-managed dummy EPGSource.
 
@@ -2174,6 +2248,8 @@ class Plugin:
             "include_date": False,
             "managed_by": "event-channel-managarr",
         }
+
+        managed_props.update(self._localized_template_props(settings))
 
         try:
             source, created = EPGSource.objects.get_or_create(
