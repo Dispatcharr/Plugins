@@ -7,7 +7,6 @@
   "categories": {
     "News": [
       { "name": "Sky News", "number": 103 },
-      { "name": "Sky News HD", "number": 600 },
       { "name": "Sky News Weather", "number": 601 },
       { "name": "Sky News Extra", "number": 603 },
       { "name": "Sky News UK", "number": 604 },

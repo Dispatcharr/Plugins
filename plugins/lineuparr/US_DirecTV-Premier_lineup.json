@@ -12,7 +12,6 @@
       { "name": "Bloomberg TV", "number": 353 },
       { "name": "Cheddar News", "number": 354 },
       { "name": "CNN", "number": 202 },
-      { "name": "CNN En Español", "number": 419 },
       { "name": "CNNi", "number": 358 },
       { "name": "CNBC", "number": 355 },
       { "name": "CNBC World", "number": 357 },
@@ -353,7 +352,6 @@
       { "name": "CNN En Español", "number": 419 },
       { "name": "Galavisión", "number": 404 },
       { "name": "Somos Novelas", "number": 4720 },
-      { "name": "TUDN", "number": 464 },
       { "name": "UniMás", "number": 408 },
       { "name": "UNIVERSO", "number": 410 },
       { "name": "Univision (Este)", "number": 402 }

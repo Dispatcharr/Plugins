@@ -25,7 +25,6 @@
     ],
     "Sports": [
       { "name": "beIN SPORT", "number": 392 },
-      { "name": "beIN SPORT", "number": 781 },
       { "name": "beIN SPORTS en Español", "number": 873, "addon": "Multi-Sport Pack" },
       { "name": "Bases Loaded / Buzzer Beater / Goal Line", "number": 403, "addon": "Multi-Sport Pack" },
       { "name": "CBS Sports Network", "number": 158 },
@@ -46,9 +45,7 @@
       { "name": "Olympic Channel", "number": 389 },
       { "name": "Outside TV", "number": 390, "addon": "Multi-Sport Pack" },
       { "name": "Pac-12 Network", "number": 406, "addon": "Multi-Sport Pack" },
-      { "name": "Pac-12 Network", "number": 409, "addon": "Multi-Sport Pack" },
       { "name": "SEC Network", "number": 404, "addon": "Multi-Sport Pack" },
-      { "name": "SEC Network", "number": 408, "addon": "Multi-Sport Pack" },
       { "name": "Tennis Channel", "number": 400 },
       { "name": "TV Games Network", "number": 399, "addon": "National Action Pack" },
       { "name": "TVG2", "number": 398, "addon": "National Action Pack" }
@@ -56,7 +53,6 @@
     "Regional Sports": [
       { "name": "Regional Sports Networks (market-based)", "number": 412, "addon": "Multi-Sport Pack", "notes": "Varies by ZIP code. Hopper receivers only. All other receivers 409-437." },
       { "name": "Big 10 Network", "number": 405, "addon": "Multi-Sport Pack" },
-      { "name": "Big 10 Network", "number": 410, "addon": "Multi-Sport Pack" },
       { "name": "Longhorn Network", "number": 407, "addon": "Multi-Sport Pack" }
     ],
     "Movies": [
@@ -215,9 +211,15 @@
       { "name": "MTV Live", "number": 369 },
       { "name": "mtvU", "number": 366 },
       { "name": "VH1", "number": 162 },
-      { "name": "DISH Music Channels", "number": "923-946" },
+      {
+        "name": "DISH Music Channels",
+        "number": "923-946"
+      },
       { "name": "SiriusXM Music Channels (Hopper/Wally/Joey)", "number": 99 },
-      { "name": "SiriusXM Music Channels (all other receivers)", "number": "6002-6096" }
+      {
+        "name": "SiriusXM Music Channels (all other receivers)",
+        "number": "6002-6096"
+      }
     ],
     "Shopping": [
       { "name": "BeautyIQ", "number": 73 },
@@ -225,13 +227,10 @@
       { "name": "HSN", "number": 74 },
       { "name": "HSN2", "number": 226 },
       { "name": "Jewelry Television", "number": 83 },
-      { "name": "Jewelry Television", "number": 227 },
       { "name": "QVC", "number": 137 },
       { "name": "QVC 2", "number": 255 },
       { "name": "Sale", "number": 225 },
-      { "name": "ShopLC", "number": 88 },
-      { "name": "ShopLC", "number": 274 },
-      { "name": "ShopLC", "number": 882 }
+      { "name": "ShopLC", "number": 88 }
     ],
     "Spanish": [
       { "name": "Caracol TV", "number": 842, "addon": "Latino Bonus Pack" },
@@ -245,7 +244,6 @@
       { "name": "NBC Universo", "number": 838 },
       { "name": "Telemundo", "number": 835, "addon": "Latino Bonus Pack" },
       { "name": "UniMas", "number": 271 },
-      { "name": "UniMas", "number": 830, "addon": "Latino Bonus Pack" },
       { "name": "Univision Deportes", "number": 856 },
       { "name": "Univision East", "number": 270 },
       { "name": "Univision West", "number": 828 },

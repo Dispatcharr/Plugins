@@ -3,7 +3,7 @@
   "date": "2026-05-22",
   "description": "Consolidated US channel lineup merged and de-duplicated from DIRECTV Premier, DISH Top 250, and Verizon FiOS.",
   "source": "DIRECTV Premier + DISH Top 250 + Verizon FiOS",
-  "notes": "This lineup is a de-duplicated union of three US packages, renumbered with category-blocked numbering (News 100s, Sports 200s, and so on through Food & Travel 1600s).",
+  "notes": "This lineup is a de-duplicated union of three US packages, renumbered with category-blocked numbering (News 100s, Sports 200s, and so on through Food & Travel 1600s). 509 channels after collapsing duplicate names and HD/SD variants.",
   "categories": {
     "News": [
       {
@@ -25,14 +25,6 @@
       {
         "name": "BBC World News",
         "number": 105
-      },
-      {
-        "name": "Bloomberg",
-        "number": 106
-      },
-      {
-        "name": "Bloomberg Television",
-        "number": 107
       },
       {
         "name": "Bloomberg TV",
@@ -75,20 +67,12 @@
         "number": 117
       },
       {
-        "name": "CNNi",
-        "number": 118
-      },
-      {
         "name": "FOX Business Network",
         "number": 119
       },
       {
         "name": "Fox News",
         "number": 120
-      },
-      {
-        "name": "FOX News Channel",
-        "number": 121
       },
       {
         "name": "FOX Weather",
@@ -105,10 +89,6 @@
       {
         "name": "i24NEWS",
         "number": 125
-      },
-      {
-        "name": "MS Now",
-        "number": 126
       },
       {
         "name": "MSNBC",
@@ -261,14 +241,6 @@
         "number": 228
       },
       {
-        "name": "FS1",
-        "number": 229
-      },
-      {
-        "name": "FS2",
-        "number": 230
-      },
-      {
         "name": "FUEL TV",
         "number": 231
       },
@@ -295,10 +267,6 @@
       {
         "name": "MLB Network Strike Zone",
         "number": 238
-      },
-      {
-        "name": "MLB Strike Zone",
-        "number": 239
       },
       {
         "name": "NBA FAST Channel",
@@ -449,10 +417,6 @@
       {
         "name": "Altitude Sports",
         "number": 301
-      },
-      {
-        "name": "Big 10 Network",
-        "number": 302
       },
       {
         "name": "Chicago Sports Network",
@@ -621,16 +585,8 @@
         "number": 404
       },
       {
-        "name": "Cinemax East",
-        "number": 405
-      },
-      {
         "name": "Cinemax Hits HD",
         "number": 406
-      },
-      {
-        "name": "EPIX 1",
-        "number": 407
       },
       {
         "name": "EPIX 2",
@@ -685,16 +641,8 @@
         "number": 420
       },
       {
-        "name": "HBO Comedy East HD",
-        "number": 421
-      },
-      {
         "name": "HBO Drama HD East",
         "number": 422
-      },
-      {
-        "name": "HBO East",
-        "number": 423
       },
       {
         "name": "HBO Family",
@@ -731,10 +679,6 @@
       {
         "name": "Lionsgate Collection",
         "number": 432
-      },
-      {
-        "name": "MGM",
-        "number": 433
       },
       {
         "name": "MGM+",
@@ -777,10 +721,6 @@
         "number": 443
       },
       {
-        "name": "Paramount+ with SHOWTIME EAST",
-        "number": 444
-      },
-      {
         "name": "PixL",
         "number": 445
       },
@@ -807,10 +747,6 @@
       {
         "name": "Showtime 2",
         "number": 451
-      },
-      {
-        "name": "SHOWTIME 2 East",
-        "number": 452
       },
       {
         "name": "Showtime Beyond",
@@ -841,10 +777,6 @@
         "number": 459
       },
       {
-        "name": "STARZ (E)",
-        "number": 460
-      },
-      {
         "name": "STARZ (W)",
         "number": 461
       },
@@ -853,32 +785,16 @@
         "number": 462
       },
       {
-        "name": "STARZ Cinema East HD",
-        "number": 463
-      },
-      {
         "name": "STARZ Comedy",
         "number": 464
-      },
-      {
-        "name": "STARZ Comedy East HD",
-        "number": 465
       },
       {
         "name": "STARZ Edge",
         "number": 466
       },
       {
-        "name": "STARZ Edge East HD",
-        "number": 467
-      },
-      {
         "name": "Starz Encore",
         "number": 468
-      },
-      {
-        "name": "STARZ Encore (E)",
-        "number": 469
       },
       {
         "name": "STARZ Encore (W)",
@@ -897,10 +813,6 @@
         "number": 473
       },
       {
-        "name": "STARZ ENCORE East",
-        "number": 474
-      },
-      {
         "name": "STARZ ENCORE Family",
         "number": 475
       },
@@ -909,20 +821,12 @@
         "number": 476
       },
       {
-        "name": "STARZ ENCORE West",
-        "number": 477
-      },
-      {
         "name": "STARZ ENCORE Westerns",
         "number": 478
       },
       {
         "name": "STARZ In Black",
         "number": 479
-      },
-      {
-        "name": "STARZ In Black East HD",
-        "number": 480
       },
       {
         "name": "STARZ Kids & Family",
@@ -941,20 +845,12 @@
         "number": 485
       },
       {
-        "name": "The Movie Channel (E)",
-        "number": 486
-      },
-      {
         "name": "The Movie Channel (W)",
         "number": 487
       },
       {
         "name": "The Movie Channel Xtra",
         "number": 488
-      },
-      {
-        "name": "The Movie Channel Xtra (E)",
-        "number": 489
       },
       {
         "name": "Thriller Max",
@@ -979,10 +875,6 @@
         "number": 502
       },
       {
-        "name": "BabyFirstTV",
-        "number": 504
-      },
-      {
         "name": "Boomerang",
         "number": 505
       },
@@ -991,32 +883,16 @@
         "number": 506
       },
       {
-        "name": "Cartoon Network (E)",
-        "number": 507
-      },
-      {
         "name": "Cartoon Network (W)",
         "number": 508
-      },
-      {
-        "name": "Cartoon Network East",
-        "number": 509
       },
       {
         "name": "Disney Channel",
         "number": 510
       },
       {
-        "name": "Disney Channel (E)",
-        "number": 511
-      },
-      {
         "name": "Disney Channel (W)",
         "number": 512
-      },
-      {
-        "name": "Disney Channel East",
-        "number": 513
       },
       {
         "name": "Disney Junior",
@@ -1057,10 +933,6 @@
       {
         "name": "Nickelodeon",
         "number": 524
-      },
-      {
-        "name": "Nickelodeon East",
-        "number": 525
       },
       {
         "name": "Nicktoons",
@@ -1129,10 +1001,6 @@
         "number": 613
       },
       {
-        "name": "E!",
-        "number": 614
-      },
-      {
         "name": "E! Entertainment Television",
         "number": 615
       },
@@ -1173,10 +1041,6 @@
         "number": 624
       },
       {
-        "name": "GSN",
-        "number": 625
-      },
-      {
         "name": "Hallmark Channel",
         "number": 626
       },
@@ -1201,10 +1065,6 @@
         "number": 631
       },
       {
-        "name": "ION East HD",
-        "number": 632
-      },
-      {
         "name": "LAFF TV",
         "number": 633
       },
@@ -1213,20 +1073,12 @@
         "number": 634
       },
       {
-        "name": "Lifetime Movie Network",
-        "number": 635
-      },
-      {
         "name": "LMN",
         "number": 636
       },
       {
         "name": "Logo",
         "number": 637
-      },
-      {
-        "name": "Logo TV",
-        "number": 639
       },
       {
         "name": "MeTV",
@@ -1253,16 +1105,8 @@
         "number": 645
       },
       {
-        "name": "Pop TV",
-        "number": 646
-      },
-      {
         "name": "REELZ",
         "number": 647
-      },
-      {
-        "name": "ReelzChannel",
-        "number": 648
       },
       {
         "name": "Revolt",
@@ -1309,10 +1153,6 @@
         "number": 659
       },
       {
-        "name": "TV One (HD only)",
-        "number": 660
-      },
-      {
         "name": "UP",
         "number": 661
       },
@@ -1323,10 +1163,6 @@
       {
         "name": "USA",
         "number": 663
-      },
-      {
-        "name": "USA Network",
-        "number": 664
       },
       {
         "name": "VICE",
@@ -1371,10 +1207,6 @@
         "number": 706
       },
       {
-        "name": "DIY",
-        "number": 707
-      },
-      {
         "name": "E! Keeping Up",
         "number": 708
       },
@@ -1397,10 +1229,6 @@
       {
         "name": "Million Dollar Listing Vault",
         "number": 713
-      },
-      {
-        "name": "OWN",
-        "number": 714
       },
       {
         "name": "Real Housewives Vault",
@@ -1429,10 +1257,6 @@
       {
         "name": "TLC",
         "number": 721
-      },
-      {
-        "name": "UPTV",
-        "number": 722
       }
     ],
     "Comedy": [
@@ -1563,16 +1387,8 @@
         "number": 908
       },
       {
-        "name": "Discovery",
-        "number": 909
-      },
-      {
         "name": "Discovery Channel",
         "number": 910
-      },
-      {
-        "name": "Discovery Family",
-        "number": 911
       },
       {
         "name": "Discovery Family Channel",
@@ -1609,14 +1425,6 @@
       {
         "name": "History & Warfare",
         "number": 920
-      },
-      {
-        "name": "History Channel",
-        "number": 921
-      },
-      {
-        "name": "HISTORY Channel, The",
-        "number": 922
       },
       {
         "name": "How To",
@@ -1667,10 +1475,6 @@
         "number": 934
       },
       {
-        "name": "National Geographic",
-        "number": 935
-      },
-      {
         "name": "National Geographic Channel",
         "number": 936
       },
@@ -1705,10 +1509,6 @@
         "number": 1003
       },
       {
-        "name": "Crime & Investigation",
-        "number": 1004
-      },
-      {
         "name": "Crime & Investigation Network",
         "number": 1005
       },
@@ -1731,10 +1531,6 @@
       {
         "name": "Investigation Discovery",
         "number": 1010
-      },
-      {
-        "name": "Justice Central",
-        "number": 1011
       },
       {
         "name": "Justice Network",
@@ -2117,10 +1913,6 @@
       {
         "name": "Pets.TV",
         "number": 1515
-      },
-      {
-        "name": "Pursuit",
-        "number": 1516
       },
       {
         "name": "Pursuit Channel",

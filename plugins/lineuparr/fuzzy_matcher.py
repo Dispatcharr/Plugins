@@ -218,6 +218,37 @@ class FuzzyMatcher:
         # Normalize hyphens to spaces
         name = re.sub(r'-', ' ', name)
 
+        # Replace dots between word chars with spaces (e.g. "JusticeCentral.TV"
+        # → "JusticeCentral TV"). Keeps the dot-suffix variant equivalent to
+        # the spaced form for matching purposes.
+        name = re.sub(r'(?<=\w)\.(?=\w)', ' ', name)
+
+        # Normalize number-words to digits so "BBC Three" and "BBC 3" share
+        # tokens. Critical for cases like "Three Angels Broadcasting Network"
+        # vs "3 Angels Broadcasting Network", and for BBC One/Two/Three/Four
+        # vs BBC 1/2/3/4. Bounded by word boundaries so brand names with
+        # embedded letters (e.g. "Onesimus") aren't corrupted.
+        _NUM_WORDS = {
+            "one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
+            "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10",
+            "eleven": "11", "twelve": "12",
+        }
+        def _num_repl(m):
+            return _NUM_WORDS[m.group(0).lower()]
+        name = re.sub(
+            r'\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b',
+            _num_repl, name, flags=re.IGNORECASE,
+        )
+
+        # Split CamelCase boundaries so "JusticeCentral" becomes "Justice
+        # Central" and "DangerTV" becomes "Danger TV". Two separate patterns:
+        #   1. lower → Upper followed by lower  (Justice|Central, Danger|Iq → no, etc.)
+        #   2. lower(4+) → UPPER acronym at word boundary  (Danger|TV, Beauty|IQ)
+        # The 4-char floor on rule 2 protects short brand names like "MeTV" and
+        # "truTV" whose existing EPG matches rely on the un-split form.
+        name = re.sub(r'([a-z])([A-Z][a-z])', r'\1 \2', name)
+        name = re.sub(r'([a-z]{4,})([A-Z]{2,})\b', r'\1 \2', name)
+
         # Preserve parenthesized East/West -- and the (E)/(W) abbreviations --
         # as bare words so they survive both the leading-parenthetical strip
         # below and the generic parenthetical strip (MISC_PATTERNS). Bare
@@ -340,19 +371,82 @@ class FuzzyMatcher:
         half of the smaller set overlaps. Catches false positives like
         "america racing" vs "america bbc" while allowing single-token matches.
         """
-        common_words = {"the", "and", "of", "in", "on", "at", "to", "for", "a", "an"}
+        # "network"/"channel"/"television" are generic brand-suffix words, not
+        # distinctive — treat as common so the subset guard does not reject
+        # cases like "FanDuel Sports Cincinnati" vs "FanDuel Sports Network
+        # Cincinnati". (They're already stripped from end-of-string by
+        # normalize_name; this catches mid-string occurrences.)
+        common_words = {
+            "the", "and", "of", "in", "on", "at", "to", "for", "a", "an",
+            "network", "channel", "television",
+        }
 
         if require_majority:
-            # Use all meaningful tokens (>= 2 chars) for stricter checking
-            tokens_a = {t for t in str_a.split() if t not in common_words and len(t) >= 2}
-            tokens_b = {t for t in str_b.split() if t not in common_words and len(t) >= 2}
+            # Use all meaningful tokens (>= 2 chars) for stricter checking.
+            # Single-digit tokens (1, 2, 3, ...) are kept because they're
+            # channel-distinguishing (BBC 1 vs BBC 2, ESPN 1 vs ESPN 2 etc.)
+            # even though they're only 1 char.
+            def _meaningful(t):
+                if t in common_words:
+                    return False
+                return len(t) >= 2 or t.isdigit()
+            tokens_a = {t for t in str_a.split() if _meaningful(t)}
+            tokens_b = {t for t in str_b.split() if _meaningful(t)}
             if not tokens_a or not tokens_b:
                 return True
             shared = tokens_a & tokens_b
             if not shared:
                 return False
             smaller = min(len(tokens_a), len(tokens_b))
-            return len(shared) > smaller / 2
+            if not len(shared) > smaller / 2:
+                return False
+
+            unique_a = tokens_a - tokens_b
+            unique_b = tokens_b - tokens_a
+
+            # Subset guard: when one side is a strict subset of the other and
+            # the larger side has a distinctive (>=5 char) token the smaller
+            # lacks, the candidate is a more specific channel than the query
+            # and the high fuzzy score is a false positive. Catches e.g.
+            # "In Country Television" {country, television} vs "Country Music
+            # Television" {country, music, television} — "music" distinguishes
+            # them. Short extras like "live"/"two" do not trigger this guard,
+            # preserving legitimate matches like "ABC News" → "ABC News Live".
+            if not unique_a:
+                if any(len(t) >= 5 for t in unique_b):
+                    return False
+            elif not unique_b:
+                if any(len(t) >= 5 for t in unique_a):
+                    return False
+
+            # Divergent guard: when BOTH sides have unique tokens AND at least
+            # one of those unique tokens is a distinctive (>=4 char) word, the
+            # strings describe different brands and the fuzzy score is
+            # misleading. Catches "Sky Cinema Disney" vs "Sky Cinema Decades"
+            # (decades = 7 chars), "Sky Cinema Fast" vs "Sky Cinema Family",
+            # and "BBC One vs BBC Two" once number-words become digits earlier.
+            # Number-word→digit normalization (in normalize_name) reduces this
+            # guard's risk: "Three Angels" / "3 Angels" both become "3 angels"
+            # before reaching here, so they never trigger this case.
+            if unique_a and unique_b:
+                if any(len(t) >= 4 for t in unique_a | unique_b):
+                    return False
+
+            # Numeric/ordinal divergent guard: when BOTH sides have a numeric
+            # or ordinal token unique to them, they are sibling channels
+            # distinguished by number (BBC One vs BBC Two; ESPN 1 vs ESPN 2).
+            # Short tokens like "one"/"two" wouldn't trip the divergent guard
+            # above so they need their own check.
+            _NUMERIC = {
+                "one", "two", "three", "four", "five", "six", "seven", "eight",
+                "nine", "ten", "eleven", "twelve",
+                "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+                "first", "second", "third", "fourth", "fifth",
+            }
+            if (unique_a & _NUMERIC) and (unique_b & _NUMERIC):
+                return False
+
+            return True
 
         # Basic mode: at least one long token shared
         tokens_a = {t for t in str_a.split() if t not in common_words and len(t) >= min_token_len}
@@ -619,7 +713,7 @@ class FuzzyMatcher:
                 return candidate, 100, "exact"
 
             ratio = self.calculate_similarity(normalized_query_lower, candidate_lower, min_ratio=0.97)
-            if ratio >= 0.97 and ratio > best_ratio:
+            if ratio >= 0.97 and ratio > best_ratio and self._has_token_overlap(normalized_query_lower, candidate_lower, require_majority=True):
                 best_match = candidate
                 best_ratio = ratio
                 best_match_type = "exact"
@@ -745,7 +839,7 @@ class FuzzyMatcher:
                     mtype = "exact"
                 else:
                     ratio = self.calculate_similarity(normalized_query_lower, candidate_lower, min_ratio=0.97)
-                    if ratio >= 0.97:
+                    if ratio >= 0.97 and self._has_token_overlap(normalized_query_lower, candidate_lower, require_majority=True):
                         score = int(ratio * 100)
                         mtype = "exact"
 
@@ -893,8 +987,22 @@ class FuzzyMatcher:
             if filtered:
                 all_matches = filtered
 
-        # Convert to sorted list
+        # Convert to sorted list. Primary key is score (desc); secondary key is
+        # the overlap between the candidate's ORIGINAL tokens and the lineup
+        # channel's ORIGINAL tokens. The secondary key disambiguates ties caused
+        # by normalize_name collapsing brand-name timezones (e.g. "Comedy TV"
+        # and "Comedy Central" both normalize to "comedy") — without it, the
+        # winner is whichever candidate happened to appear first in the EPG
+        # source list. The original-token overlap correctly prefers
+        # "USA: Comedy TV" over "(US) Comedy Central (S)" when matching
+        # lineup "Comedy TV".
+        lineup_tokens = set(re.findall(r'[a-z0-9]+', (lineup_name or "").lower()))
+
+        def _orig_overlap(candidate_name):
+            cand_tokens = set(re.findall(r'[a-z0-9]+', candidate_name.lower()))
+            return len(lineup_tokens & cand_tokens)
+
         results = [(name, score, mtype) for name, (score, mtype) in all_matches.items()]
-        results.sort(key=lambda x: x[1], reverse=True)
+        results.sort(key=lambda x: (x[1], _orig_overlap(x[0])), reverse=True)
         return results
 

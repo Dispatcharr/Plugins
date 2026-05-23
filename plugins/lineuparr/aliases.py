@@ -22,7 +22,8 @@ CHANNEL_ALIASES = {
     "FOX News Channel": ["Fox News", "FNC", "FOX NEWS", "Fox News Channel"],
     "E! Entertainment Television": ["E!", "E Entertainment", "E! Entertainment", "E! Entertainment Television"],
     "FOX Weather": ["Fox Weather"],
-    "HLN": ["HLN", "Headline News"],
+    "HLN": ["HLN", "Headline News", "Headline News Network", "HLN Headline News", "HLN Headline News Network", "CNN HLN", "CNN Headline News"],
+    "HLN Headline News Network": ["HLN", "Headline News", "Headline News Network", "CNN HLN", "CNN Headline News"],
     "MS Now": ["MSNBC", "MSNBC Now", "MS Now"],
     "MSNBC": ["MSNBC", "MS Now", "MSNBC Now"],
     "Newsmax": ["Newsmax", "Newsmax TV"],
@@ -39,20 +40,12 @@ CHANNEL_ALIASES = {
     "ESPNEWS": ["ESPN News", "ESPNEWS", "ESPNews"],
     "ESPNU": ["ESPNU"],
     "FanDuel TV": ["FanDuel TV", "FanDuel", "TVG"],
-    "FanDuel Sports Cincinnati": ["FanDuel TV Extra"],
-    "FanDuel Sports Detroit": ["FanDuel TV Extra"],
-    "FanDuel Sports Florida": ["FanDuel TV Extra"],
-    "FanDuel Sports Midwest": ["FanDuel TV Extra"],
-    "FanDuel Sports North": ["FanDuel TV Extra"],
-    "FanDuel Sports Ohio": ["FanDuel TV Extra"],
-    "FanDuel Sports Oklahoma": ["FanDuel TV Extra"],
-    "FanDuel Sports SoCal": ["FanDuel TV Extra"],
-    "FanDuel Sports South": ["FanDuel TV Extra"],
-    "FanDuel Sports Southeast": ["FanDuel TV Extra"],
-    "FanDuel Sports Southwest": ["FanDuel TV Extra"],
-    "FanDuel Sports Sun": ["FanDuel TV Extra"],
-    "FanDuel Sports West": ["FanDuel TV Extra"],
-    "FanDuel Sports Wisconsin": ["FanDuel TV Extra"],
+    # NOTE: Do NOT alias regional FanDuel Sports feeds (Cincinnati, Detroit,
+    # Florida, Midwest, North, Ohio, Oklahoma, SoCal, South, Southeast,
+    # Southwest, Sun, West, Wisconsin) to "FanDuel TV Extra". That fallback
+    # gave every regional sports channel the same generic FanDuel EPG when
+    # no regional EPG existed — worse than NO MATCH. Regions with a real
+    # regional EPG (e.g. Midwest, Southwest, West) match by direct name.
     "FS1": ["Fox Sports 1", "FS1", "FS 1", "Fox Sport 1"],
     "Fox Sports 1": ["Fox Sports 1", "FS1", "FS 1", "Fox Sport 1"],
     "FS2": ["Fox Sports 2", "FS2", "FS 2", "Fox Sport 2"],
@@ -66,7 +59,8 @@ CHANNEL_ALIASES = {
     "NHL Network": ["NHL Network", "NHL Net", "NHLN"],
     "SEC Network": ["SEC Network", "SECN"],
     "Tennis Channel HD": ["Tennis Channel", "Tennis Ch"],
-    "TUDN": ["TUDN", "Univision Deportes"],
+    "TUDN": ["TUDN", "Univision Deportes", "Univision Deportes Network", "UDN"],
+    "Univision Deportes": ["TUDN", "Univision Deportes", "Univision Deportes Network"],
 
     # --- Movies ---
     "Cinemax": ["Cinemax", "Cinemax US"],
@@ -204,6 +198,14 @@ CHANNEL_ALIASES = {
     "MotorTrend": ["MotorTrend", "Motor Trend", "Velocity"],
     "Travel Channel": ["Travel Channel", "Travel Ch"],
 
+    # --- Faith (rebrands) ---
+    # Hillsong Channel rebranded to TBN Inspire on 2022-01-01 in the US.
+    "Hillsong Channel": ["Hillsong Channel", "TBN Inspire", "Hillsong", "The Church Channel"],
+
+    # --- Movies (rebrands / discontinued) ---
+    # Showtime Beyond was rebranded SHO×BET on 2020-07-15.
+    "Showtime Beyond": ["Showtime Beyond", "SHO×BET", "SHO BET", "SHOxBET", "Showtime BET", "SHO X BET"],
+
     # --- UK: News ---
     "Al Jazeera English": ["Al Jazeera English", "Al Jazeera English HD", "Al Jazeera HD"],
     "NDTV World": ["NDTV 24x7", "UKSD NDTV 24x7", "UK: NDTV 24X7 SD"],
@@ -237,6 +239,10 @@ CHANNEL_ALIASES = {
     "Baby TV": ["Baby Tv", "Baby TV", "BabyTV"],
 
     # --- UK: UKTV / Entertainment ---
+    # UKTV rebranded all channels under the "U" masterbrand on 16 July 2024
+    # (Dave/Drama/Yesterday/W) and 7 November 2024 (Gold/alibi). Reverse
+    # aliases let lineups using the pre-rebrand short names match the
+    # current EPG entries (U&Dave, U&Drama, etc.).
     "BBC Scotland": ["BBCScotlandHD", "UKHD BBC SCOTLAND", "UKSD BBC SCOTLAND"],
     "Sky Showcase": ["NEW UKHD Sky Showcase", "UKSD: Sky Showcase +1"],
     "U&Dave": ["HEVC HD U&Dave", "U and Dave HD", "UK: Dave", "Dave"],
@@ -245,6 +251,19 @@ CHANNEL_ALIASES = {
     "U&YESTERDAY": ["U and YESTERDAY", "UK FHD YESTERDAY", "Yesterday"],
     "U&alibi": ["U and alibi HD", "alibi+1", "UK: alibi", "Alibi"],
     "U&Drama": ["U and Drama", "U and Drama HD", "U and Drama +1"],
+    # Reverse aliases — lineup uses pre-rebrand short name, EPG has U& prefix.
+    "Dave": ["U&Dave", "U&Dave HD", "Dave"],
+    "Drama": ["U&Drama", "U&Drama HD", "Drama"],
+    "Drama +1": ["U&Drama+1", "U&Drama +1", "Drama +1"],
+    "Yesterday": ["U&Yesterday", "U&Yesterday HD", "U&YESTERDAY", "Yesterday"],
+    "W": ["U&W", "U&W HD", "W"],
+    "Gold": ["U&GOLD", "U&GOLD HD", "U&Gold", "Gold"],
+    "alibi": ["U&alibi", "U&alibi HD", "Alibi"],
+    "Eden": ["U&Eden", "U&Eden HD", "Eden"],
+    "Really": ["U&Really", "U&Really HD", "Really"],
+    "Really +1": ["U&Really+1", "U&Really +1", "Really +1"],
+    "Home": ["U&Home", "U&Home HD", "Home"],
+    "Dave ja vu": ["Dave ja vu", "U&Dave ja vu"],
 
     # --- UK: Factual ---
     "Discovery History": ["Disc.History", "Disc.History+1", "UK: Discovery History"],
