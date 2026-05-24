@@ -19,6 +19,8 @@ from requests.adapters import HTTPAdapter
 
 log = logging.getLogger(__name__)
 
+__version__ = "1.7.1"
+
 '''
 DASHDRM plugin for Dispatchwrapparr & Streamlink
 Requires: Streamlink >= 8.4.0
@@ -90,8 +92,13 @@ class MPEGDASHDRM(Plugin):
                     self.session.options[option] = self._process_keys()
                     # Force Streamlink to accept encrypted streams
                     self.session.set_option("stream-passthrough-encrypted", True)
+                if self.get_option('ignore-mup'):
+                    # increase the stream-segmented-queue-deadline when ignoring
+                    # minimumUpdatePeriod so streams don't bomb out prematurely
+                    # arbitrarily suggest 2 minutes of 5 second refreshs (24)
+                    self.session.set_option("stream-segmented-queue-deadline", 24)
                 if self.get_option('dash-segment-stream-data'):
-                    # Increase connection pool size if streaming)
+                    # Increase connection pool size if streaming
                     adapter = HTTPAdapter(pool_connections=25, pool_maxsize=25)
                     self.session.http.mount('https://', adapter)
                     self.session.http.mount('http://', adapter)
