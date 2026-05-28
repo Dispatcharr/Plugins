@@ -220,7 +220,7 @@ class StreamMonitor:
                 # Note identifiers shared with lower-numbered servers (allowed — pools are unioned)
                 dupes = idents & seen_idents
                 if dupes:
-                    logger.info(
+                    logger.debug(
                         f"Server {n}: identifier(s) {', '.join(sorted(dupes))} also on a "
                         "lower-numbered server — pools will be combined for those identifiers"
                     )
