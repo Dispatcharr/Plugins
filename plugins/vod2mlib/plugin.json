@@ -1,0 +1,12 @@
+{
+  "name": "VOD to Media Library",
+  "version": "1.14.3",
+  "description": "Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries.",
+  "author": "R3XCHRIS",
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.24.0",
+  "repo_url": "https://github.com/R3XCHRIS/VOD2MLIB",
+  "help_url": "https://github.com/R3XCHRIS/VOD2MLIB#readme",
+  "source_type": "external",
+  "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v{version}/plugin-vod2mlib-v{version}.zip"
+}
