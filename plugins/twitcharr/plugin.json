@@ -1,0 +1,11 @@
+{
+  "name": "Twitcharr",
+  "version": "1.2.25",
+  "description": "Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback.",
+  "author": "eliasbruno124-dev",
+  "maintainers": ["eliasbruno124-dev"],
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v{version}/twitcharr.zip",
+  "repo_url": "https://github.com/eliasbruno124-dev/Twitcharr"
+}
