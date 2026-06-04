@@ -6,6 +6,7 @@
 
   "version": "0.1.0",
   "min_dispatcharr_version": "v0.22.0",
+  "max_dispatcharr_version": "v0.25.1",
 
   "discord_thread": "https://discord.com/channels/1340492560220684331/1509200002407465001",
   "repo_url": "https://github.com/swvn-dispatch/dispatcharr-multiview",
