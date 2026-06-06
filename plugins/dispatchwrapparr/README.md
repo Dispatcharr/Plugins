@@ -15,6 +15,7 @@
 ✅ **Extended Stream Type Detection** — Fallback option that checks MIME type of stream URL for streamlink plugin selection\
 ✅ **Streaming Radio Support with Song Information** — Play streaming radio to your TV with song information displayed on your screen for ICY and HLS stream types\
 ✅ **Automated Stream Variant Detection** — Detects streams with no video or no audio and muxes in the missing components for compatibility with most players\
+✅ **Packed audio support for HLS streams** — Automatically extracts timestamp data from Apple ID3 metadata in muxed HLS streams to ensure correct playback\
 ✅ **Support for SSAI/DAI** — Supports streams using SCTE-35 type discontinuities for Server-Side or Dynamic Ad Injection
 
 ---
@@ -172,7 +173,7 @@ For streams where the video and audio use different clearkeys, place them in a c
 
 You do not need to use Dispatchwrapparr in order to use the DASH and HLS DRM plugins. If you wish, you can use the `dashdrm.py` and `hlsdrm.py` plugins on their own with Streamlink.
 
-Credit: A huge thanks to [titus-au](https://github.com/titus-au/streamlink-plugin-dashdrm) whose dashdrm plugin 
+Credit to [titus-au](https://github.com/titus-au/streamlink-plugin-dashdrm) whose work with DASH DRM and streamlink provided the basis by which the Dispatchwrapparr plugins are created.
 
 ## ‼️ Troubleshooting
 
@@ -182,21 +183,15 @@ In Jellyfin there are a number of settings related to m3u8 manifests.
 
 Make sure that all options ("Allow fMP4 transcoding container", "Allow stream sharing", "Auto-loop live streams", "Ignore DTS (decoding timestamp)", and "Read input at native frame rate") are unticked/disabled.
 
-### My stream only plays audio or won't start
-
-Sometimes broadcasters don't include timestamps in the audio stream. Since version 1.6.2, Dispatchwrapparr tells ffmpeg to copy timestamps by default when muxing. There may be occasions where you may need to disable this feature.
-
-See the `-ffmpeg_nocopyts` option or `#ffmpeg_nocopyts=true` url fragment options for more details.
-
 ### My streams stop on ad breaks, why?
 
 This is a technology called SCTE-35 (aka. SSAI or DAI) which injects ads/commercial breaks into streams based on parameters such as geolocation and demographics etc.
 
 While dispatchwrapparr has had some success in dealing with these types of streams, due to the way that some broadcasters implement SCTE-35 it may not always be stable.
 
-### Can I use a custom Streamlink plugin?
+### Can I use a custom Streamlink plugin? (ie. one not included in Streamlink by default)
 
-Yes, maybe. Pass the `-streamlink_plugins` option to Dispatchwrapparr, specifying a custom directory to look for plugins in. In some circumstances, plugins may require Chromium based browsers for session tokens, and/or require additional arguments which Dispatchwrapparr will not pass through. The best option here is to just use Streamlink directly.
+Yes, maybe, but it depends on if you need to pass any custom arguments to it. Pass the `-streamlink_plugins` option to Dispatchwrapparr, specifying a custom directory to look for plugins in. In some circumstances, plugins may require Chromium based browsers for session tokens, and/or require additional arguments which Dispatchwrapparr will not pass through. The best option here is to just use Streamlink directly.
 
 ---
 
