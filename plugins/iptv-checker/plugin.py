@@ -282,7 +282,7 @@ class Plugin:
     
     # Explicitly set the plugin key
     key = "iptv_checker"
-    version = "1.26.1421301"
+    version = "1.26.1582047"
 
     # Fields and actions are defined in plugin.json (single source of truth)
     def __init__(self):
@@ -734,12 +734,17 @@ class Plugin:
         return {"current": 0, "total": 0, "status": "idle", "start_time": None}
 
     def _save_progress(self):
-        """Save check progress to persistent storage"""
-        try:
-            with open(self.progress_file, 'w') as f:
-                json.dump(self.check_progress, f)
-        except Exception as e:
-            LOGGER.error(f"Failed to save progress file: {e}")
+        """Save check progress to persistent storage.
+
+        Uses the atomic tmp-file + os.replace helper rather than a plain
+        open(path, 'w'). A direct write fails with EACCES when an existing
+        progress file is owned by root and not group-writable (e.g. TrueNAS
+        SCALE, where the app runs as uid 568 — see issue #21). The atomic
+        path writes a fresh temp file owned by the current user and renames
+        it over the target, which only requires write permission on the
+        parent directory, so it succeeds regardless of the old file's owner.
+        """
+        self._save_json_file(self.progress_file, self.check_progress)
 
     def _load_json_file(self, filepath):
         """Safely load a JSON file, returning None if corrupted or missing."""
@@ -1581,20 +1586,39 @@ class Plugin:
         dead = sum(1 for r in results if r.get('status') == 'Dead')
         skipped = sum(1 for r in results if r.get('status') == 'Skipped')
 
-        payload = json.dumps({
-            "plugin": self.key,
-            "event": "check_complete",
-            "total": len(results),
-            "alive": alive,
-            "dead": dead,
-            "skipped": skipped,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
-        }).encode('utf-8')
+        # Discord webhooks reject the plugin's custom JSON shape (they only render
+        # {"content": ...} / {"embeds": [...]}). Detect a Discord host and send a
+        # native readable summary instead. Everything else keeps the original
+        # machine-readable payload for backward compatibility with existing consumers.
+        host = (urllib.parse.urlparse(webhook_url).hostname or '').lower()
+        is_discord = host in ('discord.com', 'discordapp.com') or host.endswith('.discord.com')
 
+        if is_discord:
+            content = (
+                f"**IPTV Checker — check complete**\n"
+                f"Total: {len(results)}  •  ✅ Alive: {alive}  •  ❌ Dead: {dead}  •  ⏭️ Skipped: {skipped}"
+            )
+            payload = json.dumps({"content": content}).encode('utf-8')
+        else:
+            payload = json.dumps({
+                "plugin": self.key,
+                "event": "check_complete",
+                "total": len(results),
+                "alive": alive,
+                "dead": dead,
+                "skipped": skipped,
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+            }).encode('utf-8')
+
+        # Always set an explicit User-Agent. Discord's Cloudflare edge 403s the
+        # default "Python-urllib/3.x" UA, which silently dropped every webhook.
         req = urllib.request.Request(
             webhook_url,
             data=payload,
-            headers={"Content-Type": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": f"Dispatcharr-IPTV-Checker/{self.version}",
+            },
             method="POST",
         )
 
