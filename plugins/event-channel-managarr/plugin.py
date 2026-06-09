@@ -7,7 +7,7 @@ Automatically hides channels with no events and shows channels with events
 
 import logging
 import json
-import csv
+import csvh
 try:
     import fcntl
 except ImportError:
@@ -1227,6 +1227,33 @@ class Plugin:
             try:
                 extracted_date = datetime(year, month, day, hour, minute, second)
                 logger.debug(f"Extracted datetime {extracted_date} from pattern (YYYY-MM-DD HH:MM:SS[ AM/PM]) in '{channel_name}'")
+                return extracted_date
+            except ValueError:
+                pass
+
+        # Pattern 0b: (YYYY MM DD HH:MM:SS[ AM/PM]) — space-separated datetime in parentheses.
+        # Matches formats like: Channel Name (2026 06 09 20:00:00) or Channel Name (2026 06 09 08:00:00 AM)
+        pattern0b = re.search(r'\((\d{4})\s+(\d{2})\s+(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s*(?P<ap>[AaPp][Mm])?\)', channel_name)
+        if pattern0b:
+            year, month, day, hour, minute, second = map(int, pattern0b.groups()[:6])
+            hour = _apply_meridiem(hour, pattern0b.group("ap"))
+            try:
+                extracted_date = datetime(year, month, day, hour, minute, second)
+                logger.debug(f"Extracted datetime {extracted_date} from pattern (YYYY MM DD HH:MM:SS[ AM/PM]) in '{channel_name}'")
+                return extracted_date
+            except ValueError:
+                pass
+
+        # Pattern 0c: YYYY MM DD HH:MM:SS[ AM/PM] — space-separated datetime inline (no parentheses).
+        # Matches formats like: Peacock Events 048: Upcoming (France v. England | 2026 05 17 11:45:00 AM) | 2026 04 29 06:01 AM EDT
+        # Uses the first match so the event date (earlier in the name) is preferred over any trailing timestamp.
+        pattern0c = re.search(r'(?<!\d)(\d{4})\s+(\d{2})\s+(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s*(?P<ap>[AaPp][Mm])?(?!\d)', channel_name)
+        if pattern0c:
+            year, month, day, hour, minute, second = map(int, pattern0c.groups()[:6])
+            hour = _apply_meridiem(hour, pattern0c.group("ap"))
+            try:
+                extracted_date = datetime(year, month, day, hour, minute, second)
+                logger.debug(f"Extracted datetime {extracted_date} from pattern YYYY MM DD HH:MM:SS[ AM/PM] in '{channel_name}'")
                 return extracted_date
             except ValueError:
                 pass
