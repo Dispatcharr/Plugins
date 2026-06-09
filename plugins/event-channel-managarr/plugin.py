@@ -7,7 +7,7 @@ Automatically hides channels with no events and shows channels with events
 
 import logging
 import json
-import csvh
+import csv
 try:
     import fcntl
 except ImportError:
