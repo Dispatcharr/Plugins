@@ -32,6 +32,15 @@ from core.utils import send_websocket_update
 LOGGER = logging.getLogger("plugins.event_channel_managarr")
 LOG_PREFIX = "[EventChannelManagarr]"
 
+# Single source of truth for the `start:`/`stop:YYYY-MM-DD HH:MM:SS[ AM/PM]` event
+# timestamps. Compiled once and shared by both the date extractor (Pattern 0) and the
+# [PastDate] stop-time check so the two can never drift apart.
+_EVENT_TS_SUFFIX = r"(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s*(?P<ap>[AaPp][Mm])?"
+_EVENT_TS_RE = {
+    "start:": re.compile("start:" + _EVENT_TS_SUFFIX),
+    "stop:": re.compile("stop:" + _EVENT_TS_SUFFIX),
+}
+
 # Background scheduling globals
 _bg_thread = None
 _stop_event = threading.Event()
@@ -41,7 +50,7 @@ _scheduler_lock = threading.Lock()  # Prevent concurrent scheduler starts
 class PluginConfig:
     """Centralized configuration constants for Event Channel Managarr."""
 
-    PLUGIN_VERSION = "1.26.1401103"
+    PLUGIN_VERSION = "1.26.1600157"
 
     # Default timezone for scheduling
     DEFAULT_TIMEZONE = "America/Chicago"
@@ -1160,8 +1169,23 @@ class Plugin:
             except ValueError:
                 return None
 
-    def _extract_date_from_channel_name(self, channel_name, logger, settings=None):
-        """Extract date from channel name using various patterns, including hour if present"""
+    def _name_has_stop_timestamp(self, channel_name):
+        """True if the channel name carries an explicit `stop:YYYY-MM-DD HH:MM:SS`
+        event-end timestamp. [PastDate] uses this to compare the real end time rather
+        than just the calendar date (issue #22)."""
+        if not channel_name:
+            return False
+        return bool(_EVENT_TS_RE["stop:"].search(channel_name))
+
+    def _extract_date_from_channel_name(self, channel_name, logger, settings=None, prefer="start"):
+        """Extract date from channel name using various patterns, including hour if present.
+
+        When a name carries both `start:` and `stop:` timestamps, `prefer` selects which one
+        Pattern 0 returns: `prefer="start"` (default) for rules asking "when does it start /
+        how far out is it" ([FutureDate], [UndatedAge], NoEPG); `prefer="stop"` for [PastDate],
+        which asks "has the event ended?" (issue #22). Falls back to the other prefix when the
+        preferred one is absent, so single-timestamp names are unaffected.
+        """
         if not channel_name:
             return None
         from dateutil import parser as dateutil_parser
@@ -1181,8 +1205,10 @@ class Plugin:
                 return hour if hour == 12 else hour + 12
 
         # Pattern 0: start:YYYY-MM-DD HH:MM:SS[ AM/PM] or stop:YYYY-MM-DD HH:MM:SS[ AM/PM]
-        for prefix in ["start:", "stop:"]:
-            pattern0 = re.search(rf'{prefix}(\d{{4}})-(\d{{2}})-(\d{{2}})\s+(\d{{1,2}}):(\d{{2}}):(\d{{2}})\s*(?P<ap>[AaPp][Mm])?', channel_name)
+        # Order by caller preference so [PastDate] can evaluate against stop: (issue #22).
+        prefixes = ["stop:", "start:"] if prefer == "stop" else ["start:", "stop:"]
+        for prefix in prefixes:
+            pattern0 = _EVENT_TS_RE[prefix].search(channel_name)
             if pattern0:
                 year, month, day, hour, minute, second = map(int, pattern0.groups()[:6])
                 hour = _apply_meridiem(hour, pattern0.group("ap"))
@@ -1460,7 +1486,9 @@ class Plugin:
             return False, None
 
         elif rule_name == "PastDate":
-            extracted_date = self._extract_date_from_channel_name(channel_name, logger, settings)
+            # Use the event's stop: time when present ("has it ended?"), falling back to
+            # start:/other date patterns otherwise (issue #22).
+            extracted_date = self._extract_date_from_channel_name(channel_name, logger, settings, prefer="stop")
             if extracted_date is None:
                 return False, None  # Skip rule if no date found
 
@@ -1484,18 +1512,28 @@ class Plugin:
                 local_tz = pytz.timezone(self.DEFAULT_TIMEZONE)
 
             now_in_tz = datetime.now(local_tz)
-            now_adjusted = now_in_tz - timedelta(hours=grace_hours)
-            today = now_adjusted.date()
 
             # Make extracted_date timezone-aware for correct comparison if it's naive
             if extracted_date.tzinfo is None:
                 extracted_date = local_tz.localize(extracted_date)
 
+            # When the name carries an explicit stop: timestamp, compare the actual event
+            # end datetime so an event that ended earlier *today* is hidden once stop: +
+            # grace has elapsed, instead of staying visible until the next calendar day
+            # (issue #22). extracted_date is already the stop: time here (prefer="stop").
+            # Names without stop: keep the original day-granularity behaviour.
+            if self._name_has_stop_timestamp(channel_name):
+                cutoff = extracted_date + timedelta(days=days_threshold, hours=grace_hours)
+                if now_in_tz > cutoff:
+                    return True, f"[PastDate:{days_threshold}] Event ended {extracted_date.strftime('%m/%d/%Y %I:%M %p')} (past stop: + {days_threshold}d/{grace_hours}h grace)"
+                return False, None
+
+            now_adjusted = now_in_tz - timedelta(hours=grace_hours)
             days_diff = (now_adjusted.date() - extracted_date.date()).days
-            
+
             if days_diff > days_threshold:
                 return True, f"[PastDate:{days_threshold}] Event date {extracted_date.strftime('%m/%d/%Y')} is {days_diff} days in the past (grace period: {grace_hours}h)"
-            
+
             return False, None
         
         elif rule_name == "FutureDate":
@@ -2189,9 +2227,18 @@ class Plugin:
         fmt = str(settings.get("date_format", "Auto")).strip().upper()
         date_ph = "{day}/{month}" if fmt == "EU" else "{month}/{day}"
 
+        # The main (currently-live) title stays plain "{title}". The inline
+        # {month}/{day} {starttime} placeholders only resolve when the channel
+        # name carries a parseable date AND time; event channels without one
+        # (e.g. "LIVE EVENT 31 - GOBI Live From Coachella 2026") would otherwise
+        # render the literal placeholder text. The program's start/end slot is
+        # still TZ-converted via output_timezone, so the guide shows the right
+        # time column. upcoming/ended templates keep the localized date/time —
+        # they only render when date_info AND time_info both matched, so their
+        # placeholders are always filled.
         return {
             "output_timezone": display_tz_name,
-            "title_template": f"{{title}} {date_ph} {{starttime}}{suffix}",
+            "title_template": "{title}",
             "upcoming_title_template": f"Upcoming at {date_ph} {{starttime}}{suffix}: {{title}}",
             "ended_title_template": f"Ended at {date_ph} {{endtime}}{suffix}: {{title}}",
         }
@@ -2222,18 +2269,31 @@ class Plugin:
         #   "LIVE EVENT 01   9:45am Suslenkov v Mann"           -> title="Suslenkov v Mann"
         #   "PPV EVENT 25: OUTDOOR THEATRE Live From Coachella" -> title="OUTDOOR THEATRE Live From Coachella"
         #   "PPV02 | UFC 327: English Apr 14 4:30 PM"           -> title="UFC 327: English"
+        #   "LIVE EVENT 31 - GOBI Live From Coachella 2026"     -> title="GOBI Live From Coachella 2026"
         # The title capture stops at the first of: " (", a time token, or a month-name token.
         # leading_time handles names where the time appears BEFORE the event text (LIVE format).
+        # The separator class includes '-' so " - " between the event number and the
+        # title is consumed (otherwise the leading dash leaks into {title}).
+        #
+        # Named groups use JS-style (?<name>) rather than Python (?P<name>): Dispatcharr's
+        # frontend Pattern Configuration validator is JavaScript and rejects (?P<name>) with
+        # "Invalid group" (issue #21), while its renderer converts (?<name>) -> (?P<name>)
+        # server-side. The renderer accepts either form; the JS form keeps the UI test panel
+        # happy so users can validate their own patterns.
+        title_pattern = (
+            r"(?:PPV|LIVE)\s*(?:EVENT\s*)?\d+\s*[:|\-\s]\s*"
+            r"(?:(?<leading_time>\d{1,2}(?::\d{2})?\s*[AaPp][Mm])\s+)?"
+            r"(?<title>.+?)"
+            r"(?=\s*\(|\s+\d{1,2}(?::\d{2})?\s*[AaPp][Mm]|"
+            r"\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d+|$)"
+        )
+        time_pattern = r"(?<hour>\d{1,2})(?::(?<minute>\d{2}))?\s*(?<ampm>[AaPp][Mm])"
+        date_pattern = r"\b(?<month>\d{1,2})[./](?<day>\d{1,2})(?:[./](?<year>\d{2,4}))?\b"
+
         managed_props = {
-            "title_pattern": (
-                r"(?:PPV|LIVE)\s*(?:EVENT\s*)?\d+\s*[:|\s]\s*"
-                r"(?:(?P<leading_time>\d{1,2}(?::\d{2})?\s*[AaPp][Mm])\s+)?"
-                r"(?P<title>.+?)"
-                r"(?=\s*\(|\s+\d{1,2}(?::\d{2})?\s*[AaPp][Mm]|"
-                r"\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d+|$)"
-            ),
-            "time_pattern": r"(?P<hour>\d{1,2})(?::(?P<minute>\d{2}))?\s*(?P<ampm>[AaPp][Mm])",
-            "date_pattern": r"\b(?P<month>\d{1,2})[./](?P<day>\d{1,2})(?:[./](?P<year>\d{2,4}))?\b",
+            "title_pattern": title_pattern,
+            "time_pattern": time_pattern,
+            "date_pattern": date_pattern,
             "title_template": "{title}",
             # Informative pre/post-event titles using Dispatcharr's
             # auto-computed {starttime}/{endtime} placeholders plus the
@@ -2242,7 +2302,16 @@ class Plugin:
             #   Ended at 11:00 PM: Cage Fury FC 153
             "upcoming_title_template": "Upcoming at {starttime}: {title}",
             "ended_title_template": "Ended at {endtime}: {title}",
-            "fallback_title_template": "{channel_name}",
+            # Dispatcharr's dummy renderer uses fallback_title_template VERBATIM —
+            # it never substitutes {channel_name} (see apps/output/views.py
+            # generate_fallback_programs: `title = fallback_title if fallback_title
+            # else channel_name`). An empty title therefore makes the renderer fall
+            # back to the real channel name. A non-empty description is required to
+            # enter the fallback path at all, because generate_dummy_programs gates on
+            # `if fallback_title or fallback_description`. So: empty title (-> real
+            # name) + static description.
+            "fallback_title_template": "",
+            "fallback_description_template": "Live event — guide information is currently unavailable.",
             "program_duration": duration_hours * 60,
             "timezone": tz_value,
             "include_date": False,
@@ -2250,6 +2319,40 @@ class Plugin:
         }
 
         managed_props.update(self._localized_template_props(settings))
+
+        # Pattern keys are user-customizable via Dispatcharr's Pattern Configuration UI.
+        # Issue #21: enforcing them on every run clobbered users whose channel names don't
+        # match the PPV/LIVE default. On refresh we only (re)apply our default to a pattern
+        # the user hasn't touched — one that is absent or still equals a default this plugin
+        # has shipped. `stock_patterns` must therefore list EVERY historically-shipped
+        # default so stock installs (the source is created once, very early for some users)
+        # still auto-upgrade while genuine user customizations are preserved across runs.
+        # _py_named() covers the (?P<name>) variants of the current defaults; the pre-'-'-
+        # separator title and the original mandatory-:minute title/time defaults are listed
+        # explicitly. When the defaults change, append the previous default here.
+        PATTERN_KEYS = ("title_pattern", "time_pattern", "date_pattern")
+
+        def _py_named(p):
+            return p.replace("(?<", "(?P<")
+
+        # Original shipped defaults (commit b1ef257-era): mandatory ":minute" leading time
+        # and optional am/pm. Carried by ~22 early releases' source rows.
+        _orig_title = (
+            r"(?:PPV|LIVE)\s*(?:EVENT\s*)?\d+\s*[:|\s]\s*"
+            r"(?:(?P<leading_time>\d{1,2}:\d{2}\s*[AaPp][Mm])\s+)?"
+            r"(?P<title>.+?)"
+            r"(?=\s*\(|\s+\d{1,2}(?::\d{2})?\s*[AaPp][Mm]|"
+            r"\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d+|$)"
+        )
+        _orig_time = r"(?P<hour>\d{1,2}):(?P<minute>\d{2})\s*(?P<ampm>[AaPp][Mm])?"
+
+        stock_patterns = {
+            "title_pattern": {title_pattern, _py_named(title_pattern),
+                              _py_named(title_pattern).replace(r"[:|\-\s]", r"[:|\s]"),
+                              _orig_title},
+            "time_pattern": {time_pattern, _py_named(time_pattern), _orig_time},
+            "date_pattern": {date_pattern, _py_named(date_pattern)},
+        }
 
         try:
             source, created = EPGSource.objects.get_or_create(
@@ -2273,6 +2376,12 @@ class Plugin:
         current = dict(source.custom_properties or {})
         changed = False
         for k, v in managed_props.items():
+            if k in PATTERN_KEYS:
+                cur = current.get(k)
+                # Preserve a user-customized pattern; only (re)apply our default to a
+                # pattern that is unset or still on a plugin-shipped default (issue #21).
+                if cur is not None and cur not in stock_patterns[k]:
+                    continue
             if current.get(k) != v:
                 current[k] = v
                 changed = True
