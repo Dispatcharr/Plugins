@@ -27,7 +27,7 @@ This branch contains all published plugin releases.
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
 | [`Tickarr`](#tickarr) | `0.1.01` | jstevenscl | MIT | Dynamic text overlays for IPTV channels - SiriusXM Now Playing, Sports Ticker, Custom Text |
 | [`Twitcharr`](#twitcharr) | `1.2.25` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
-| [`VOD to Media Library`](#vod-to-media-library) | `1.15.1` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
+| [`VOD to Media Library`](#vod-to-media-library) | `1.15.2` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
 | [`Waybill`](#waybill) | `1.3.0` | Matthew-Beckett | MIT | Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control. |
 | [`YouTubearr`](#youtubearr) | `1.20.0` | jeff-gooch | Unlicense | Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering |
 
@@ -313,7 +313,7 @@ Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV gu
 
 ### [VOD to Media Library](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/vod2mlib/README.md)
 
-**Version:** `1.15.1` | **Author:** R3XCHRIS | **Last Updated:** Jun 05 2026, 16:49 UTC
+**Version:** `1.15.2` | **Author:** R3XCHRIS | **Last Updated:** Jun 11 2026, 14:01 UTC
 
 Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries.
 
@@ -322,10 +322,10 @@ Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD cata
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.24.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.15.1`)](https://github.com/Dispatcharr/Plugins/releases/download/vod2mlib-1.15.1/vod2mlib-1.15.1.zip)
-- [All Versions (3 available)](./metadata/vod2mlib)
+- [Latest Release (`1.15.2`)](https://github.com/Dispatcharr/Plugins/releases/download/vod2mlib-1.15.2/vod2mlib-1.15.2.zip)
+- [All Versions (4 available)](./metadata/vod2mlib)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/vod2mlib) | **Last Change:** [`c3df2a3`](https://github.com/Dispatcharr/Plugins/commit/c3df2a35d89fa79c6acaf600c2909684a7fb4c61)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/vod2mlib) | **Last Change:** [`142c867`](https://github.com/Dispatcharr/Plugins/commit/142c8676b719565bb8453c4c3cfa3bd2efd053ff)
 
 ---
 
@@ -375,4 +375,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 11 2026, 14:01 UTC*
+*Last updated: Jun 11 2026, 14:02 UTC*
