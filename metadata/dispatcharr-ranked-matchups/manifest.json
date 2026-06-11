@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-06-11T14:01:15Z",
+  "manifest": {
+    "slug": "dispatcharr-ranked-matchups",
+    "name": "Ranked Matchups (Top Games)",
+    "description": "Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching.",
+    "author": "Jacob-Lasky",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v{version}/plugin.zip",
+    "repo_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-06-11T14:01:07Z",
+    "latest": {
+      "version": "1.2.0",
+      "build_timestamp": "2026-06-11T14:01:07Z",
+      "last_updated": "2026-06-11T14:01:07Z",
+      "checksum_md5": "8fab111209b40779e2ac0b56152958b0",
+      "checksum_sha256": "818597f921d7307256cb2eae618c786e490d981a8b555e55d25f40f4a62dc345",
+      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.2.0/plugin.zip",
+      "latest_url": "dispatcharr-ranked-matchups-1.2.0/dispatcharr-ranked-matchups-1.2.0.zip",
+      "url": "dispatcharr-ranked-matchups-1.2.0/dispatcharr-ranked-matchups-1.2.0.zip",
+      "size": 303
+    },
+    "versions": [
+      {
+        "version": "1.2.0",
+        "build_timestamp": "2026-06-11T14:01:07Z",
+        "last_updated": "2026-06-11T14:01:07Z",
+        "checksum_md5": "8fab111209b40779e2ac0b56152958b0",
+        "checksum_sha256": "818597f921d7307256cb2eae618c786e490d981a8b555e55d25f40f4a62dc345",
+        "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.2.0/plugin.zip",
+        "url": "dispatcharr-ranked-matchups-1.2.0/dispatcharr-ranked-matchups-1.2.0.zip",
+        "size": 303
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaiq/rAAKCRB+wDprTCI0\nznFGAP9UMjwLID2KEWTHVJbI1welkExDF1Vzw0o3uI4ikhNf4wEAriThhrqQvHrY\nGDeykgNugJLAhcSQsk3Aj9gNE9oSjAQ=\n=/D1j\n-----END PGP SIGNATURE-----"
+}
