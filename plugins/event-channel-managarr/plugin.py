@@ -32,14 +32,21 @@ from core.utils import send_websocket_update
 LOGGER = logging.getLogger("plugins.event_channel_managarr")
 LOG_PREFIX = "[EventChannelManagarr]"
 
-# Single source of truth for the `start:`/`stop:YYYY-MM-DD HH:MM:SS[ AM/PM]` event
-# timestamps. Compiled once and shared by both the date extractor (Pattern 0) and the
-# [PastDate] stop-time check so the two can never drift apart.
-_EVENT_TS_SUFFIX = r"(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s*(?P<ap>[AaPp][Mm])?"
-_EVENT_TS_RE = {
-    "start:": re.compile("start:" + _EVENT_TS_SUFFIX),
-    "stop:": re.compile("stop:" + _EVENT_TS_SUFFIX),
-}
+# Pure parsing logic lives in the Django-free sibling module `ecm_parsing` so it
+# can be unit-tested without a running container. Dispatcharr loads plugin.py as a
+# submodule but does NOT put the plugin's own directory on sys.path, so add it here
+# to make the sibling import resolve regardless of loader internals.
+import sys as _sys
+_PLUGIN_DIR = os.path.dirname(os.path.abspath(__file__))
+if _PLUGIN_DIR not in _sys.path:
+    _sys.path.insert(0, _PLUGIN_DIR)
+import ecm_parsing
+
+# Backwards-compatible aliases: existing references to these names elsewhere in
+# plugin.py (e.g. the [PastDate] stop-time check) keep working, now backed by the
+# shared module so the extractor and the rule can never drift apart.
+_EVENT_TS_SUFFIX = ecm_parsing.EVENT_TS_SUFFIX
+_EVENT_TS_RE = ecm_parsing.EVENT_TS_RE
 
 # Background scheduling globals
 _bg_thread = None
@@ -50,10 +57,10 @@ _scheduler_lock = threading.Lock()  # Prevent concurrent scheduler starts
 class PluginConfig:
     """Centralized configuration constants for Event Channel Managarr."""
 
-    PLUGIN_VERSION = "1.26.1600157"
+    PLUGIN_VERSION = "1.26.1641827"
 
-    # Default timezone for scheduling
-    DEFAULT_TIMEZONE = "America/Chicago"
+    # Fallback timezone when Dispatcharr's global time zone is unset/invalid.
+    DEFAULT_TIMEZONE = "UTC"
 
     # Default name source for channel matching
     DEFAULT_NAME_SOURCE = "Channel_Name"  # Options: "Channel_Name" or "Stream_Name"
@@ -73,6 +80,10 @@ class PluginConfig:
     # Default CSV export for scheduled runs
     DEFAULT_SCHEDULED_CSV_EXPORT = False
 
+    # Auto-rescan after each M3U refresh (re-hides channels that Dispatcharr's
+    # Auto Channel Sync re-enables). Opt-in, default off — no behavior change on upgrade.
+    DEFAULT_AUTO_RESCAN_ON_M3U_REFRESH = False
+
     # Default keep duplicates setting
     DEFAULT_KEEP_DUPLICATES = False
 
@@ -80,6 +91,7 @@ class PluginConfig:
     DEFAULT_MANAGE_DUMMY_EPG = False
     DEFAULT_EVENT_DURATION_HOURS = "3"
     DEFAULT_DUMMY_EPG_TIMEZONE = "US/Eastern"
+    DEFAULT_DUMMY_EPG_CHANNEL_FORMAT = "US"
 
     # Pacing for per-channel ORM writes ("none", "low", "medium", "high")
     DEFAULT_RATE_LIMITING = "none"
@@ -96,6 +108,10 @@ class PluginConfig:
     # File paths
     LAST_RUN_FILE = "/data/event_channel_managarr_last_run.json"
     SCAN_LOCK_FILE = "/data/event_channel_managarr_scan.lock"
+    # A real scan finishes in seconds. If the scan flock is held but its file is
+    # older than this, the holder is assumed dead/leaked (e.g. an fd inherited by
+    # a forked uwsgi/celery worker that never released it) and the lock is broken.
+    SCAN_LOCK_STALE_SECONDS = 900  # 15 min
     SETTINGS_FILE = "/data/event_channel_managarr_settings.json"
     RESULTS_FILE = "/data/event_channel_managarr_results.json"
     VERSION_CHECK_FILE = "/data/event_channel_managarr_version_check.json"
@@ -233,10 +249,12 @@ class Plugin:
     DEFAULT_PAST_DATE_GRACE_HOURS = PluginConfig.DEFAULT_PAST_DATE_GRACE_HOURS
     DEFAULT_AUTO_REMOVE_EPG = PluginConfig.DEFAULT_AUTO_REMOVE_EPG
     DEFAULT_SCHEDULED_CSV_EXPORT = PluginConfig.DEFAULT_SCHEDULED_CSV_EXPORT
+    DEFAULT_AUTO_RESCAN_ON_M3U_REFRESH = PluginConfig.DEFAULT_AUTO_RESCAN_ON_M3U_REFRESH
     DEFAULT_KEEP_DUPLICATES = PluginConfig.DEFAULT_KEEP_DUPLICATES
     DEFAULT_MANAGE_DUMMY_EPG = PluginConfig.DEFAULT_MANAGE_DUMMY_EPG
     DEFAULT_EVENT_DURATION_HOURS = PluginConfig.DEFAULT_EVENT_DURATION_HOURS
     DEFAULT_DUMMY_EPG_TIMEZONE = PluginConfig.DEFAULT_DUMMY_EPG_TIMEZONE
+    DEFAULT_DUMMY_EPG_CHANNEL_FORMAT = PluginConfig.DEFAULT_DUMMY_EPG_CHANNEL_FORMAT
     DEFAULT_RATE_LIMITING = PluginConfig.DEFAULT_RATE_LIMITING
     VERSION_CHECK_INTERVAL = PluginConfig.VERSION_CHECK_INTERVAL
     SCHEDULER_CHECK_INTERVAL = PluginConfig.SCHEDULER_CHECK_INTERVAL
@@ -335,14 +353,6 @@ class Plugin:
                 "label": "📍 Scope",
                 "type": "info",
                 "description": "Which channels this plugin monitors and how it identifies them."
-            },
-            {
-                "id": "timezone",
-                "label": "🌍 Timezone",
-                "type": "select",
-                "default": self.DEFAULT_TIMEZONE,
-                "help_text": "Timezone for scheduled runs. Select the timezone for scheduling. Only one can be selected.",
-                "options": self._load_timezones_from_file()
             },
             {
                 "id": "channel_profile_name",
@@ -474,6 +484,17 @@ class Plugin:
                 "help_text": "If enabled, visible channels with no EPG assigned will be bound to a plugin-managed dummy EPG source. The guide shows the extracted event during its time window (and 'Offline' outside it), or the channel name as a 24-hour fallback if no time is parseable.",
             },
             {
+                "id": "dummy_epg_channel_format",
+                "label": "📡 Channel Name Format",
+                "type": "select",
+                "default": self.DEFAULT_DUMMY_EPG_CHANNEL_FORMAT,
+                "help_text": "How channel names are structured for the dummy EPG parser. US = 'PPV EVENT 12: Title (MM.DD HH:MM AM/PM TZ)'. SE = 'PREFIX | Event Title | DDD DD Mon HH:MM TZ | extras | channel name' — the last segment (e.g. 'SE: VIAPLAY PPV 20') is stored as the EPG display name so the guide channel list shows the broadcaster instead of the full stream name.",
+                "options": [
+                    {"label": "US  –  PPV/LIVE EVENT ##: Title (MM.DD HH:MM AM/PM TZ)",             "value": "US"},
+                    {"label": "SE  –  PREFIX | Title | DDD DD Mon HH:MM TZ | extras | channel name", "value": "SE"},
+                ]
+            },
+            {
                 "id": "dummy_epg_event_duration_hours",
                 "label": "⏱️ Event Duration (hours)",
                 "type": "number",
@@ -485,7 +506,7 @@ class Plugin:
                 "label": "📺 Channel Name Event Timezone",
                 "type": "select",
                 "default": self.DEFAULT_DUMMY_EPG_TIMEZONE,
-                "help_text": "Timezone encoded in the event times inside channel names (e.g., US/Eastern for channels like '(4.17 8:30 PM ET)'). Different from the scheduler timezone above.",
+                "help_text": "Timezone encoded in the event times inside channel names (e.g., US/Eastern for channels like '(4.17 8:30 PM ET)'). Independent of Dispatcharr's display time zone.",
                 "options": self._load_timezones_from_file()
             },
             {
@@ -508,6 +529,13 @@ class Plugin:
                 "type": "boolean",
                 "default": self.DEFAULT_SCHEDULED_CSV_EXPORT,
                 "help_text": "If enabled, a CSV file of the scan results will be created when the plugin runs on a schedule. If disabled, no CSV will be created for scheduled runs.",
+            },
+            {
+                "id": "auto_rescan_on_m3u_refresh",
+                "label": "🔄 Auto-rescan after M3U refresh",
+                "type": "boolean",
+                "default": self.DEFAULT_AUTO_RESCAN_ON_M3U_REFRESH,
+                "help_text": "If enabled, the plugin re-runs its visibility scan automatically after each M3U account refresh. Dispatcharr's Auto Channel Sync re-enables (un-hides) channels in synced groups on every refresh; this re-hides them right after. Leave off if you do not use Auto Channel Sync.",
             },
             {
                 "id": "_section_advanced",
@@ -540,6 +568,7 @@ class Plugin:
         {"id": "update_schedule", "label": "Update Schedule", "description": "Save settings and update the scheduled run times", "button_label": "💾 Save Schedule", "button_variant": "filled", "button_color": "green"},
         {"id": "dry_run", "label": "Dry Run (Export to CSV)", "description": "Preview which channels would be hidden/shown without making changes", "button_label": "👁️ Dry Run", "button_variant": "outline", "button_color": "cyan"},
         {"id": "run_now", "label": "Run Now", "description": "Immediately scan and update channel visibility based on current EPG data", "button_label": "▶️ Run Now", "button_variant": "filled", "button_color": "green", "confirm": {"message": "This will apply visibility changes and (if enabled) attach/detach managed EPG. Continue?"}},
+        {"id": "on_m3u_refresh", "label": "Auto-rescan after M3U refresh", "description": "Runs a visibility scan automatically after each M3U refresh when '🔄 Auto-rescan after M3U refresh' is enabled in settings.", "events": ["m3u_refresh"]},
         {"id": "remove_epg_from_hidden", "label": "Remove EPG from Hidden Channels", "description": "Remove all EPG data from channels that are disabled/hidden in the selected profile", "button_label": "🧹 Remove EPG from Hidden", "button_variant": "filled", "button_color": "red", "confirm": {"message": "This will CLEAR EPG data from every hidden channel in the selected profile. Cannot be undone by this plugin. Continue?"}},
         {"id": "clear_csv_exports", "label": "Clear CSV Exports", "description": "Delete all CSV export files created by this plugin", "button_label": "🗑️ Clear CSV Exports", "button_variant": "filled", "button_color": "red", "confirm": {"message": "This will delete every CSV file in /data/exports created by this plugin. Continue?"}},
         {"id": "cleanup_periodic_tasks", "label": "Cleanup Orphaned Tasks", "description": "Remove any orphaned Celery periodic tasks from old plugin versions", "button_label": "🧼 Cleanup Orphaned Tasks", "button_variant": "outline", "button_color": "orange", "confirm": {"message": "This removes orphaned Celery periodic tasks left by older plugin versions. Continue?"}},
@@ -754,6 +783,7 @@ class Plugin:
                 "update_schedule": self.update_schedule_action,
                 "dry_run": self.dry_run_action,
                 "run_now": self.run_now_action,
+                "on_m3u_refresh": self.on_m3u_refresh_action,
                 "remove_epg_from_hidden": self.remove_epg_from_hidden_action,
                 "clear_csv_exports": self.clear_csv_exports_action,
                 "cleanup_periodic_tasks": self.cleanup_periodic_tasks_action,
@@ -959,6 +989,9 @@ class Plugin:
             if "enable_scheduled_csv_export" not in settings:
                 LOGGER.info(f"  Setting missing 'enable_scheduled_csv_export', adding default: {self.DEFAULT_SCHEDULED_CSV_EXPORT}")
                 settings["enable_scheduled_csv_export"] = self.DEFAULT_SCHEDULED_CSV_EXPORT
+            if "auto_rescan_on_m3u_refresh" not in settings:
+                LOGGER.info(f"  Setting missing 'auto_rescan_on_m3u_refresh', adding default: {self.DEFAULT_AUTO_RESCAN_ON_M3U_REFRESH}")
+                settings["auto_rescan_on_m3u_refresh"] = self.DEFAULT_AUTO_RESCAN_ON_M3U_REFRESH
             if "keep_duplicates" not in settings:
                 settings["keep_duplicates"] = self.DEFAULT_KEEP_DUPLICATES
             if "auto_set_dummy_epg_on_hide" not in settings:
@@ -969,6 +1002,8 @@ class Plugin:
                 settings["dummy_epg_event_duration_hours"] = self.DEFAULT_EVENT_DURATION_HOURS
             if "dummy_epg_event_timezone" not in settings:
                 settings["dummy_epg_event_timezone"] = self.DEFAULT_DUMMY_EPG_TIMEZONE
+            if "dummy_epg_channel_format" not in settings:
+                settings["dummy_epg_channel_format"] = self.DEFAULT_DUMMY_EPG_CHANNEL_FORMAT
             if "rate_limiting" not in settings:
                 settings["rate_limiting"] = self.DEFAULT_RATE_LIMITING
 
@@ -1145,37 +1180,15 @@ class Plugin:
         """Resolve a (first, second) numeric pair into a datetime using the configured format.
 
         date_format: "US" → MM/DD, "EU" → DD/MM, "Auto" → MM/DD with DD/MM fallback if month > 12.
-        Returns datetime or None if the pair can't form a valid date.
+        Returns datetime or None if the pair can't form a valid date. Delegates to ecm_parsing.
         """
-        fmt = (date_format or "Auto").strip()
-        if fmt == "EU":
-            day, month = first, second
-            try:
-                return datetime(current_year, month, day)
-            except ValueError:
-                return None
-        if fmt == "US":
-            month, day = first, second
-            try:
-                return datetime(current_year, month, day)
-            except ValueError:
-                return None
-        # Auto: MM/DD first; if month > 12 (or invalid), retry DD/MM.
-        try:
-            return datetime(current_year, first, second)
-        except ValueError:
-            try:
-                return datetime(current_year, second, first)
-            except ValueError:
-                return None
+        return ecm_parsing.resolve_numeric_date_pair(first, second, current_year, date_format)
 
     def _name_has_stop_timestamp(self, channel_name):
         """True if the channel name carries an explicit `stop:YYYY-MM-DD HH:MM:SS`
         event-end timestamp. [PastDate] uses this to compare the real end time rather
-        than just the calendar date (issue #22)."""
-        if not channel_name:
-            return False
-        return bool(_EVENT_TS_RE["stop:"].search(channel_name))
+        than just the calendar date (issue #22). Delegates to ecm_parsing."""
+        return ecm_parsing.name_has_stop_timestamp(channel_name)
 
     def _extract_date_from_channel_name(self, channel_name, logger, settings=None, prefer="start"):
         """Extract date from channel name using various patterns, including hour if present.
@@ -1186,115 +1199,10 @@ class Plugin:
         which asks "has the event ended?" (issue #22). Falls back to the other prefix when the
         preferred one is absent, so single-timestamp names are unaffected.
         """
-        if not channel_name:
-            return None
-        from dateutil import parser as dateutil_parser
-
-        current_year = datetime.now().year
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         date_format = (settings or {}).get("date_format", "Auto")
-
-        def _apply_meridiem(hour, meridiem):
-            """Convert a 12-hour clock hour to 24-hour given an optional AM/PM token."""
-            if not meridiem:
-                return hour
-            meridiem = meridiem.upper()
-            if meridiem == "AM":
-                return 0 if hour == 12 else hour
-            else:
-                return hour if hour == 12 else hour + 12
-
-        # Pattern 0: start:YYYY-MM-DD HH:MM:SS[ AM/PM] or stop:YYYY-MM-DD HH:MM:SS[ AM/PM]
-        # Order by caller preference so [PastDate] can evaluate against stop: (issue #22).
-        prefixes = ["stop:", "start:"] if prefer == "stop" else ["start:", "stop:"]
-        for prefix in prefixes:
-            pattern0 = _EVENT_TS_RE[prefix].search(channel_name)
-            if pattern0:
-                year, month, day, hour, minute, second = map(int, pattern0.groups()[:6])
-                hour = _apply_meridiem(hour, pattern0.group("ap"))
-                try:
-                    extracted_date = datetime(year, month, day, hour, minute, second)
-                    logger.debug(f"Extracted datetime {extracted_date} from pattern {prefix}YYYY-MM-DD HH:MM:SS[ AM/PM] in '{channel_name}'")
-                    return extracted_date
-                except ValueError:
-                    pass
-
-        # Pattern 0a: (YYYY-MM-DD HH:MM:SS[ AM/PM]) in parentheses
-        pattern0a = re.search(r'\((\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s*(?P<ap>[AaPp][Mm])?\)', channel_name)
-        if pattern0a:
-            year, month, day, hour, minute, second = map(int, pattern0a.groups()[:6])
-            hour = _apply_meridiem(hour, pattern0a.group("ap"))
-            try:
-                extracted_date = datetime(year, month, day, hour, minute, second)
-                logger.debug(f"Extracted datetime {extracted_date} from pattern (YYYY-MM-DD HH:MM:SS[ AM/PM]) in '{channel_name}'")
-                return extracted_date
-            except ValueError:
-                pass
-
-        # Pattern 1: M/D/YYYY or M/D/YY — interpreted per date_format setting.
-        pattern1 = re.search(r'\b(\d{1,2})/(\d{1,2})/(\d{2,4})\b', channel_name)
-        if pattern1:
-            first, second, year = map(int, pattern1.groups())
-            if year < 100:
-                year += 2000
-            extracted_date = self._resolve_numeric_date_pair(first, second, year, date_format)
-            if extracted_date is not None:
-                logger.debug(f"Extracted date {extracted_date.date()} from pattern M/D/YYYY ({date_format}) in '{channel_name}'")
-                return extracted_date
-
-        # Pattern 2c: DDth MONTH e.g., "28th Apr"
-        pattern2c = re.search(r'\b(\d{1,2})(?:st|nd|rd|th)?\s+(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\b', channel_name, re.IGNORECASE)
-        if pattern2c:
-            day, month_str = pattern2c.groups()
-            try:
-                temp_date = dateutil_parser.parse(f"{month_str} {day} {current_year}")
-                extracted_date = datetime(temp_date.year, temp_date.month, temp_date.day)
-                if (today - extracted_date).days > 180:
-                    extracted_date = datetime(current_year + 1, temp_date.month, temp_date.day)
-                logger.debug(f"Extracted date {extracted_date.date()} from pattern DDth MONTH in '{channel_name}'")
-                return extracted_date
-            except (ValueError, dateutil_parser.ParserError):
-                pass
-
-        # Pattern 2b: MONTH DD e.g., "Nov 8" or "Nov 8 16:00"
-        pattern2b = re.search(r'\b(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s+(\d{1,2})(?:\s+(\d{1,2}:\d{2}))?', channel_name, re.IGNORECASE)
-        if pattern2b:
-            month_str, day, hour_minute = pattern2b.groups()
-            try:
-                date_str = f"{month_str} {day} {current_year}"
-                if hour_minute:
-                    date_str += f" {hour_minute}"
-                temp_date = dateutil_parser.parse(date_str)
-                extracted_date = datetime(temp_date.year, temp_date.month, temp_date.day, temp_date.hour, temp_date.minute)
-                if (today - extracted_date).days > 180:
-                    extracted_date = datetime(current_year + 1, temp_date.month, temp_date.day, temp_date.hour, temp_date.minute)
-                logger.debug(f"Extracted date {extracted_date} from pattern MONTH DD[ HH:MM] in '{channel_name}'")
-                return extracted_date
-            except (ValueError, dateutil_parser.ParserError):
-                pass
-
-        # Pattern 3: M.D without year e.g., "10.25" — interpreted per date_format setting.
-        pattern3 = re.search(r'\b(\d{1,2})\.(\d{1,2})\b', channel_name)
-        if pattern3:
-            first, second = map(int, pattern3.groups())
-            extracted_date = self._resolve_numeric_date_pair(first, second, current_year, date_format)
-            if extracted_date is not None:
-                logger.debug(f"Extracted date {extracted_date.date()} from pattern M.D ({date_format}) in '{channel_name}'")
-                return extracted_date
-
-        # Pattern 4: M/D without year e.g., "10/27" or "15/04" — interpreted per date_format setting.
-        # Lookahead excludes "/" (year follows, handled by Pattern 1) and ":" (time
-        # range like "1/3:30pm" — second number is hours, not a day).
-        pattern4 = re.search(r'\b(\d{1,2})/(\d{1,2})\b(?![/:])', channel_name)
-        if pattern4:
-            first, second = map(int, pattern4.groups())
-            extracted_date = self._resolve_numeric_date_pair(first, second, current_year, date_format)
-            if extracted_date is not None:
-                logger.debug(f"Extracted date {extracted_date.date()} from pattern M/D ({date_format}) in '{channel_name}'")
-                return extracted_date
-
-        logger.debug(f"No date found in channel name: '{channel_name}'")
-        return None
+        return ecm_parsing.extract_date_from_channel_name(
+            channel_name, date_format=date_format, prefer=prefer, logger=logger
+        )
 
 
     def _check_hide_rule(self, rule_name, rule_param, channel, channel_name, logger, settings):
@@ -1761,6 +1669,7 @@ class Plugin:
         """
         global _bg_thread
         try:
+            settings["timezone"] = self._dispatcharr_timezone()
             # --- This worker's scheduler thread ---
             worker_pid = os.getpid()
             scheduler_threads = [t for t in threading.enumerate() if "event-channel-managarr-scheduler" in t.name]
@@ -1840,6 +1749,7 @@ class Plugin:
     def update_schedule_action(self, settings, logger):
         """Save settings and update scheduled tasks"""
         try:
+            settings["timezone"] = self._dispatcharr_timezone()
             scheduled_times_str = settings.get("scheduled_times", "").strip()
             logger.info(f"Update Schedule - scheduled_times value: '{scheduled_times_str}'")
 
@@ -1869,6 +1779,26 @@ class Plugin:
         except Exception as e:
             logger.error(f"Error updating schedule: {e}")
             return {"status": "error", "message": f"Error updating schedule: {e}"}
+
+    def _dispatcharr_timezone(self):
+        """Resolve the effective timezone from Dispatcharr's global setting.
+
+        Reads Dispatcharr's General Settings -> Time Zone, which is stored in
+        core.models.CoreSettings under the "system_settings" group (NOT the
+        unused apps.dashboard.models.Settings table). Uses the official
+        CoreSettings.get_system_time_zone() accessor, which itself falls back
+        to Django's TIME_ZONE then "UTC". Returns "UTC" when the value is
+        missing, blank, or invalid, or if anything raises (e.g. running
+        outside Dispatcharr, or the DB is unavailable during migrations).
+        Validation and the UTC fallback live in ecm_parsing.coerce_timezone
+        (Django-free, unit-tested).
+        """
+        try:
+            from core.models import CoreSettings
+            return ecm_parsing.coerce_timezone(CoreSettings.get_system_time_zone())
+        except Exception as e:
+            LOGGER.debug(f"{LOG_PREFIX} Could not read Dispatcharr timezone, using UTC: {e}")
+            return "UTC"
 
     def _get_system_timezone(self, settings):
         """Get the system timezone from settings"""
@@ -1900,6 +1830,10 @@ class Plugin:
     def _start_background_scheduler(self, settings):
         """Start background scheduler thread"""
         global _bg_thread, _scheduler_lock
+
+        # Source the timezone from Dispatcharr BEFORE the thread captures it:
+        # scheduler_loop computes local_tz once from this dict and never re-reads.
+        settings["timezone"] = self._dispatcharr_timezone()
 
         # Use lock to prevent concurrent scheduler starts
         with _scheduler_lock:
@@ -2188,10 +2122,13 @@ class Plugin:
         Returns overrides for the three rewritable title templates plus
         `output_timezone` for the managed dummy EPG source.
 
-        - When source TZ == display TZ, or either TZ is invalid/empty:
-          returns DEFAULTS (plain templates) and writes
-          `output_timezone=""` so any previously-saved value is cleared
+        - When source TZ is invalid/empty: returns DEFAULTS (plain templates,
+          `output_timezone=""`) so any previously-saved value is cleared
           (the diff-and-save loop never deletes keys).
+        - When display TZ is empty or equal to source TZ: returns plain
+          templates but with `output_timezone=source_tz_name` so Dispatcharr
+          formats {starttime}/{endtime} in the correct locale (e.g. 24h for
+          European zones instead of defaulting to 12h AM/PM).
         - Otherwise: returns localized templates with the date placeholder
           driven by `date_format` (US/Auto -> {month}/{day};
           EU -> {day}/{month}) and a TZ abbreviation suffix computed for
@@ -2210,16 +2147,28 @@ class Plugin:
         }
 
         source_tz_name = str(settings.get("dummy_epg_event_timezone", "")).strip()
-        display_tz_name = str(settings.get("timezone", "")).strip()
+        # Display tz comes from Dispatcharr (already injected into settings by the
+        # caller via _dispatcharr_timezone); _get_system_timezone is the reader.
+        display_tz_name = self._get_system_timezone(settings)
 
-        if not source_tz_name or not display_tz_name or source_tz_name == display_tz_name:
+        if not source_tz_name:
             return DEFAULTS
 
         try:
             pytz.timezone(source_tz_name)  # validate only; renderer resolves source TZ itself
-            display_tz = pytz.timezone(display_tz_name)
         except pytz.exceptions.UnknownTimeZoneError:
             return DEFAULTS
+
+        # No display TZ configured, or same as source: no time conversion needed,
+        # but still pass output_timezone so Dispatcharr formats {starttime}/{endtime}
+        # in the correct locale (e.g. 24h for European zones rather than 12h AM/PM).
+        if not display_tz_name or source_tz_name == display_tz_name:
+            return {**DEFAULTS, "output_timezone": source_tz_name}
+
+        try:
+            display_tz = pytz.timezone(display_tz_name)
+        except pytz.exceptions.UnknownTimeZoneError:
+            return {**DEFAULTS, "output_timezone": source_tz_name}
 
         abbrev = datetime.now(display_tz).strftime("%Z")
         suffix = f" {abbrev}" if abbrev and abbrev.isalpha() else ""
@@ -2264,7 +2213,14 @@ class Plugin:
                                     self.DEFAULT_DUMMY_EPG_TIMEZONE)).strip() or self.DEFAULT_DUMMY_EPG_TIMEZONE
 
         # Keys the plugin owns. Any other keys on the source are left untouched.
-        # Regexes validated against these four real channel names:
+        #
+        # Named groups use JS-style (?<name>) rather than Python (?P<name>): Dispatcharr's
+        # frontend Pattern Configuration validator is JavaScript and rejects (?P<name>) with
+        # "Invalid group" (issue #21), while its renderer converts (?<name>) -> (?P<name>)
+        # server-side. The renderer accepts either form; the JS form keeps the UI test panel
+        # happy so users can validate their own patterns.
+        #
+        # Format: "US" (default). Regexes validated against these real channel names:
         #   "PPV EVENT 12: Cage Fury FC 153 (4.17 8:30 PM ET)"  -> title="Cage Fury FC 153"
         #   "LIVE EVENT 01   9:45am Suslenkov v Mann"           -> title="Suslenkov v Mann"
         #   "PPV EVENT 25: OUTDOOR THEATRE Live From Coachella" -> title="OUTDOOR THEATRE Live From Coachella"
@@ -2274,21 +2230,36 @@ class Plugin:
         # leading_time handles names where the time appears BEFORE the event text (LIVE format).
         # The separator class includes '-' so " - " between the event number and the
         # title is consumed (otherwise the leading dash leaks into {title}).
-        #
-        # Named groups use JS-style (?<name>) rather than Python (?P<name>): Dispatcharr's
-        # frontend Pattern Configuration validator is JavaScript and rejects (?P<name>) with
-        # "Invalid group" (issue #21), while its renderer converts (?<name>) -> (?P<name>)
-        # server-side. The renderer accepts either form; the JS form keeps the UI test panel
-        # happy so users can validate their own patterns.
-        title_pattern = (
+        us_title_pattern = (
             r"(?:PPV|LIVE)\s*(?:EVENT\s*)?\d+\s*[:|\-\s]\s*"
             r"(?:(?<leading_time>\d{1,2}(?::\d{2})?\s*[AaPp][Mm])\s+)?"
             r"(?<title>.+?)"
             r"(?=\s*\(|\s+\d{1,2}(?::\d{2})?\s*[AaPp][Mm]|"
             r"\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d+|$)"
         )
-        time_pattern = r"(?<hour>\d{1,2})(?::(?<minute>\d{2}))?\s*(?<ampm>[AaPp][Mm])"
-        date_pattern = r"\b(?<month>\d{1,2})[./](?<day>\d{1,2})(?:[./](?<year>\d{2,4}))?\b"
+        us_time_pattern = r"(?<hour>\d{1,2})(?::(?<minute>\d{2}))?\s*(?<ampm>[AaPp][Mm])"
+        us_date_pattern = r"\b(?<month>\d{1,2})[./](?<day>\d{1,2})(?:[./](?<year>\d{2,4}))?\b"
+
+        # Format: "SE" (pipe-delimited, 24h time, named month):
+        #   "LIVE | GIRONA - REAL SOCIEDAD | Thu 14 May 19:55 CEST (SE) | 8K EXCLUSIVE | SE: TV4 PLAY PPV 7"
+        #    prefix ^  title ^              ^ air time                   ^ extras        ^ channel name
+        #     -> title="GIRONA - REAL SOCIEDAD"
+        # The date pattern's day/month groups feed Dispatcharr's renderer, which accepts
+        # a textual month under the "month" group name.
+        se_title_pattern = r"\|\s*(?<title>[^|]+?)\s*\|"
+        se_time_pattern = r"(?<hour>\d{1,2}):(?<minute>\d{2})"
+        se_date_pattern = (
+            r"\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+"
+            r"(?<day>\d{1,2})\s+"
+            r"(?<month>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b"
+        )
+
+        channel_format = str(settings.get("dummy_epg_channel_format",
+                                          self.DEFAULT_DUMMY_EPG_CHANNEL_FORMAT)).strip().upper()
+        if channel_format == "SE":
+            title_pattern, time_pattern, date_pattern = se_title_pattern, se_time_pattern, se_date_pattern
+        else:
+            title_pattern, time_pattern, date_pattern = us_title_pattern, us_time_pattern, us_date_pattern
 
         managed_props = {
             "title_pattern": title_pattern,
@@ -2325,11 +2296,12 @@ class Plugin:
         # match the PPV/LIVE default. On refresh we only (re)apply our default to a pattern
         # the user hasn't touched — one that is absent or still equals a default this plugin
         # has shipped. `stock_patterns` must therefore list EVERY historically-shipped
-        # default so stock installs (the source is created once, very early for some users)
-        # still auto-upgrade while genuine user customizations are preserved across runs.
-        # _py_named() covers the (?P<name>) variants of the current defaults; the pre-'-'-
-        # separator title and the original mandatory-:minute title/time defaults are listed
-        # explicitly. When the defaults change, append the previous default here.
+        # default (across both the US and SE channel-name formats) so stock installs (the
+        # source is created once, very early for some users) still auto-upgrade — including
+        # on a US<->SE format switch — while genuine user customizations are preserved
+        # across runs. _py_named() covers the (?P<name>) variants of the current defaults;
+        # the pre-'-'-separator title and the original mandatory-:minute title/time defaults
+        # are listed explicitly. When the defaults change, append the previous default here.
         PATTERN_KEYS = ("title_pattern", "time_pattern", "date_pattern")
 
         def _py_named(p):
@@ -2347,11 +2319,14 @@ class Plugin:
         _orig_time = r"(?P<hour>\d{1,2}):(?P<minute>\d{2})\s*(?P<ampm>[AaPp][Mm])?"
 
         stock_patterns = {
-            "title_pattern": {title_pattern, _py_named(title_pattern),
-                              _py_named(title_pattern).replace(r"[:|\-\s]", r"[:|\s]"),
-                              _orig_title},
-            "time_pattern": {time_pattern, _py_named(time_pattern), _orig_time},
-            "date_pattern": {date_pattern, _py_named(date_pattern)},
+            "title_pattern": {us_title_pattern, _py_named(us_title_pattern),
+                              _py_named(us_title_pattern).replace(r"[:|\-\s]", r"[:|\s]"),
+                              _orig_title,
+                              se_title_pattern, _py_named(se_title_pattern)},
+            "time_pattern": {us_time_pattern, _py_named(us_time_pattern), _orig_time,
+                             se_time_pattern, _py_named(se_time_pattern)},
+            "date_pattern": {us_date_pattern, _py_named(us_date_pattern),
+                             se_date_pattern, _py_named(se_date_pattern)},
         }
 
         try:
@@ -2398,48 +2373,74 @@ class Plugin:
                 return None
         return source
 
-    def _attach_managed_epg(self, channels, managed_source, logger, rate_limiter=None):
-        """Bind each channel in `channels` to the managed dummy source via an EPGData row.
+    def _extract_se_display_name(self, channel_name):
+        """Return the last pipe-separated segment of an SE-format channel name.
+        Falls back to the full name if no pipe is found (e.g. already renamed)."""
+        m = re.search(r'\|\s*([^|]+?)\s*$', channel_name)
+        return m.group(1) if m else channel_name
 
-        Only touches channels where epg_data IS NULL. Returns list of channel IDs that
-        were attached (for result reporting).
+    def _attach_managed_epg(self, channels, managed_source, logger, settings=None, rate_limiter=None):
+        """Bind each channel in `channels` to the managed dummy source via an EPGData row,
+        and keep EPGData.name in sync with the desired display name.
+
+        For US format, the desired name is the full channel name. For SE format, it's
+        the last pipe-segment (broadcaster name, e.g. "SE: VIAPLAY PPV 20") via
+        `_extract_se_display_name`, so the guide's channel list shows the broadcaster
+        instead of the full stream name.
+
+        Channels with epg_data already set are only checked for a name update (no new
+        EPGData row is created). Returns list of channel IDs newly attached (for result
+        reporting).
         """
         from apps.epg.models import EPGData
 
+        channel_format = str((settings or {}).get(
+            "dummy_epg_channel_format", self.DEFAULT_DUMMY_EPG_CHANNEL_FORMAT)).strip().upper()
+
         attached_ids = []
         channels_to_update = []
+        epg_data_to_update = []
 
         # Wrap the entire get_or_create + bulk_update cycle in one transaction so a
         # bulk_update failure doesn't leave orphan EPGData rows pointing nowhere.
         with transaction.atomic():
             for channel in channels:
-                if channel.epg_data_id is not None:
-                    continue
-                try:
-                    epg_data, _ = EPGData.objects.get_or_create(
-                        tvg_id=str(channel.uuid),
-                        epg_source=managed_source,
-                        defaults={"name": channel.name},
-                    )
-                    # Keep EPGData.name in sync with the channel name so {channel_name}
-                    # in the dummy source's fallback template renders correctly.
-                    if epg_data.name != channel.name:
-                        epg_data.name = channel.name
-                        epg_data.save(update_fields=["name"])
-                except Exception as e:
-                    logger.warning(f"{LOG_PREFIX} Failed to get_or_create EPGData for channel {channel.id}: {e}")
-                    continue
+                desired_name = (self._extract_se_display_name(channel.name)
+                                 if channel_format == "SE" else channel.name)
 
-                channel.epg_data = epg_data
-                channels_to_update.append(channel)
-                attached_ids.append(channel.id)
+                if channel.epg_data_id is None:
+                    try:
+                        epg_data, _ = EPGData.objects.get_or_create(
+                            tvg_id=str(channel.uuid),
+                            epg_source=managed_source,
+                            defaults={"name": desired_name},
+                        )
+                    except Exception as e:
+                        logger.warning(f"{LOG_PREFIX} Failed to get_or_create EPGData for channel {channel.id}: {e}")
+                        continue
 
-                if rate_limiter is not None:
-                    rate_limiter.wait()
+                    channel.epg_data = epg_data
+                    channels_to_update.append(channel)
+                    attached_ids.append(channel.id)
+
+                    if rate_limiter is not None:
+                        rate_limiter.wait()
+                else:
+                    epg_data = channel.epg_data
+
+                # Keep EPGData.name in sync with the desired display name so
+                # {channel_name} in the dummy source's fallback template, and the
+                # guide's channel list, render correctly.
+                if epg_data.name != desired_name:
+                    epg_data.name = desired_name
+                    epg_data_to_update.append(epg_data)
 
             if channels_to_update:
                 Channel.objects.bulk_update(channels_to_update, ["epg_data"])
                 logger.info(f"{LOG_PREFIX} Attached managed EPG to {len(channels_to_update)} channel(s)")
+            if epg_data_to_update:
+                EPGData.objects.bulk_update(epg_data_to_update, ["name"])
+                logger.info(f"{LOG_PREFIX} Updated EPG display name for {len(epg_data_to_update)} channel(s)")
         return attached_ids
 
     def _detach_managed_epg(self, managed_source, keep_channel_ids, logger):
@@ -2517,8 +2518,20 @@ class Plugin:
             no_epg_channels = list(Channel.objects.filter(
                 id__in=enabled_channel_ids, epg_data__isnull=True
             ))
+            channels_for_epg = no_epg_channels
+            channel_format = str(settings.get(
+                "dummy_epg_channel_format", self.DEFAULT_DUMMY_EPG_CHANNEL_FORMAT)).strip().upper()
+            if channel_format == "SE":
+                # SE display names are derived from the live channel name, which can
+                # change between runs (e.g. a different broadcaster pipe-segment) —
+                # also resync EPGData.name for channels already bound to managed_source.
+                already_attached = list(Channel.objects.filter(
+                    id__in=enabled_channel_ids, epg_data__epg_source=managed_source
+                ).select_related("epg_data"))
+                channels_for_epg = no_epg_channels + already_attached
             rate_limiter = SmartRateLimiter(settings.get("rate_limiting", self.DEFAULT_RATE_LIMITING))
-            attached_ids = self._attach_managed_epg(no_epg_channels, managed_source, logger, rate_limiter=rate_limiter)
+            attached_ids = self._attach_managed_epg(channels_for_epg, managed_source, logger,
+                                                       settings=settings, rate_limiter=rate_limiter)
 
         keep_ids = set(enabled_channel_ids) if toggle_on else set()
         detached_ids = self._detach_managed_epg(managed_source, keep_ids, logger)
@@ -2540,19 +2553,82 @@ class Plugin:
             logger.warning(f"Error getting visibility for channel {channel_id}: {e}")
             return False
 
+    def _acquire_scan_lock(self, logger):
+        """Acquire the cross-worker scan flock, breaking a stale/leaked lock.
+
+        Returns an open, flock-held file object on success, or None if a *live*
+        scan currently holds the lock. If the lock is held but its file mtime is
+        older than SCAN_LOCK_STALE_SECONDS, the holder is assumed dead or leaked
+        (e.g. an fd inherited by a forked uwsgi/celery worker that never released
+        it) and the lock is forcibly broken by unlinking the file and acquiring
+        on a fresh inode. The old, orphaned flock then refers to an unlinked
+        inode and blocks nothing.
+
+        The lock file is opened in append mode (never truncates, and opening does
+        not touch mtime), so a failed acquire by a waiter does NOT reset the
+        staleness clock. On success we stamp mtime to mark this holder's start.
+        """
+        path = PluginConfig.SCAN_LOCK_FILE
+        for attempt in (1, 2):
+            try:
+                fd = open(path, 'a')
+            except OSError as e:
+                logger.warning(f"{LOG_PREFIX} Could not open scan lock file {path}: {e}")
+                return None
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except (OSError, IOError):
+                fd.close()
+                stale = False
+                age = None
+                try:
+                    mtime = os.path.getmtime(path)
+                    now = time.time()
+                    age = now - mtime
+                    stale = ecm_parsing.lock_is_stale(
+                        mtime, now, PluginConfig.SCAN_LOCK_STALE_SECONDS
+                    )
+                except OSError:
+                    stale = False
+                if attempt == 1 and stale:
+                    logger.warning(
+                        f"{LOG_PREFIX} Breaking stale scan lock (age {age:.0f}s > "
+                        f"{PluginConfig.SCAN_LOCK_STALE_SECONDS}s); previous holder "
+                        f"likely crashed or leaked the lock fd"
+                    )
+                    try:
+                        os.unlink(path)
+                    except OSError:
+                        pass
+                    continue  # retry once on a fresh inode
+                return None
+            # Acquired. Stamp mtime so staleness reflects THIS holder's start time
+            # (a leaked holder never stamps again, so its lock ages out).
+            # NOTE: mtime is stamped once here and NOT refreshed during the scan.
+            # A real scan finishes in seconds, so SCAN_LOCK_STALE_SECONDS (900s)
+            # is never reached by a live scan. If the scan body ever gains slow
+            # work (e.g. an external HTTP/EPG fetch) that could exceed that, add a
+            # periodic os.utime(path) heartbeat or raise the threshold — otherwise
+            # a waiter could break a still-running scan and run a second one.
+            try:
+                os.utime(path, None)
+            except OSError:
+                pass
+            return fd
+        return None
+
     def _scan_and_update_channels(self, settings, logger, dry_run=True, is_scheduled_run=False):
         """Scan channels and update visibility based on hide rules priority"""
+        # Source the timezone from Dispatcharr's global setting (overwrites any
+        # stale/absent disk value). MUST stay first: every per-channel date rule
+        # and _localized_template_props below reads settings["timezone"].
+        settings["timezone"] = self._dispatcharr_timezone()
         # Cross-worker serialization: one scan at a time across all uwsgi workers.
         # Covers manual Run Now / Dry Run as well as scheduled runs.
         lock_fd = None
         if fcntl:
-            try:
-                lock_fd = open(PluginConfig.SCAN_LOCK_FILE, 'w')
-                fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except (OSError, IOError):
-                if lock_fd:
-                    lock_fd.close()
-                lock_fd = None
+            lock_fd = self._acquire_scan_lock(logger)
+            if lock_fd is None:
                 msg = "Another scan is already running in this or another worker. Skipping."
                 if is_scheduled_run:
                     logger.info(f"{LOG_PREFIX} {msg}")
@@ -2954,9 +3030,15 @@ class Plugin:
                     "manage_dummy_epg",
                     "dummy_epg_event_duration_hours",
                     "dummy_epg_event_timezone",
+                    "dummy_epg_channel_format",
                     "scheduled_times",
                     "enable_scheduled_csv_export",
                 ]
+                # The plugin no longer owns a timezone setting; the scheduler/display
+                # timezone is sourced from Dispatcharr's General Settings -> Time Zone
+                # (injected into settings["timezone"] at scan start). Label it so the
+                # self-describing CSV makes the source obvious.
+                settings_labels = {"timezone": "timezone (from Dispatcharr)"}
                 header_lines.append("Settings:")
                 for k in settings_keys:
                     v = settings.get(k, "")
@@ -2964,7 +3046,7 @@ class Plugin:
                         v_str = "(empty)"
                     else:
                         v_str = str(v)
-                    header_lines.append(f"  {k}: {v_str}")
+                    header_lines.append(f"  {settings_labels.get(k, k)}: {v_str}")
 
                 fieldnames = ['channel_id', 'channel_name', 'channel_number', 'channel_group',
                             'current_visibility', 'action', 'reason', 'hide_rule', 'has_epg',
@@ -3186,6 +3268,48 @@ class Plugin:
         summary = self._compact_scan_summary("Run Now", result)
         if summary:
             result["message"] = summary
+        return result
+
+    def on_m3u_refresh_action(self, settings, logger):
+        """Re-run the visibility scan after an M3U refresh.
+
+        Wired to Dispatcharr's 'm3u_refresh' connect event via the action's
+        "events": ["m3u_refresh"]. Dispatcharr calls run() with
+        params={"event": "m3u_refresh", "payload": {...}}, which run() merges
+        into settings -- so settings.get("event") tells us event vs manual click.
+
+        Event path is gated on the opt-in setting and mirrors the scheduler's
+        direct synchronous call to _scan_and_update_channels (the event fires in
+        a Celery worker; no UI spinner thread needed). The cross-process
+        SCAN_LOCK_FILE flock inside _scan_and_update_channels serializes against
+        manual/scheduled runs.
+        """
+        triggered_by_event = settings.get("event") == "m3u_refresh"
+
+        if triggered_by_event and not self._get_bool_setting(
+            settings, "auto_rescan_on_m3u_refresh", self.DEFAULT_AUTO_RESCAN_ON_M3U_REFRESH
+        ):
+            # Disabled: no-op. Return None (not a dict) so run() does NOT emit a
+            # per-refresh WebSocket notification -- avoids UI noise on every refresh.
+            logger.debug(f"{LOG_PREFIX} [m3u_refresh] auto-rescan disabled, skipping")
+            return None
+
+        if triggered_by_event:
+            payload = settings.get("payload") or {}
+            # The real m3u_refresh payload carries the account under 'account_name'.
+            account = payload.get("account_name") or payload.get("account") or "unknown"
+            logger.info(f"{LOG_PREFIX} [m3u_refresh] Auto-rescan triggered by account '{account}'")
+        else:
+            logger.info(f"{LOG_PREFIX} Manual rescan (Rescan Now) requested")
+
+        result = self._scan_and_update_channels(
+            settings, logger, dry_run=False, is_scheduled_run=True
+        )
+
+        if isinstance(result, dict):
+            summary = self._compact_scan_summary("M3U Rescan", result)
+            if summary:
+                result["message"] = summary
         return result
 
     def remove_epg_from_hidden_action(self, settings, logger):
