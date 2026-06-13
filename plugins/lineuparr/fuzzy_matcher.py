@@ -10,7 +10,7 @@ import re
 import logging
 import unicodedata
 
-__version__ = "1.3.1"
+__version__ = "1.3.4"
 
 LOGGER = logging.getLogger("plugins.lineuparr.fuzzy_matcher")
 if not LOGGER.handlers:
@@ -21,16 +21,48 @@ LOGGER.setLevel(logging.DEBUG)
 
 # --- Pattern categories for normalization ---
 
+# Unicode categories considered decorative/badge characters by IPTV providers.
+# So = Other Symbol (◉), No = Other Number (², ³), Lm = Modifier Letter
+# (ᴿᴬᵂ, ᴴᴰ, ⱽᴵᴾ superscripts), Sk = Modifier Symbol.
+# Accented letters (é, î, ü…) are Ll/Lu and are NOT in this set.
+# Sm (Math Symbol) is intentionally EXCLUDED: it contains "+", which is a
+# meaningful, channel-distinguishing character (Canal+, Three Stooges+,
+# Comedy Central+). Stripping it regresses those matches.
+_DECORATOR_CATS = frozenset({'So', 'No', 'Lm', 'Sk'})
+
+# Tokens that are non-distinctive stream-label variants (e.g. "ABC News Live"
+# should still match "ABC News"). Used by the subset/divergent guards.
+_NON_DISTINCTIVE_TOKENS = frozenset({"live", "now", "new"})
+
+def _is_distinctive(t):
+    """Return True if token t is distinctive enough to matter in subset/divergent guards."""
+    return t not in _NON_DISTINCTIVE_TOKENS and (len(t) >= 4 or (t.isdigit() and len(t) >= 2))
+
+# Matches "+1" / "+2" time-shift suffixes in the ORIGINAL (pre-normalization)
+# channel name. Must be checked before normalization because "+" is in the Sm
+# category and gets stripped, making "+1" indistinguishable from "1" afterward.
+_PLUS_SHIFT_RE = re.compile(r'\+\s{0,2}\d{1,2}\b')
+
 QUALITY_PATTERNS = [
-    r'\s*\[(4K|8K|UHD|FHD|HD|SD|FD|Unknown|Unk|Slow|Dead|Backup)\]\s*',
-    r'\s*\((4K|8K|UHD|FHD|HD|SD|FD|Unknown|Unk|Slow|Dead|Backup)\)\s*',
-    r'^\s*(4K|8K|UHD|FHD|HD|SD|FD|Unknown|Unk|Slow|Dead)\b\s*',
-    r'\s*\b(4K|8K|UHD|FHD|HD|SD|FD|Unknown|Unk|Slow|Dead)$',
-    r'\s+\b(4K|8K|UHD|FHD|HD|SD|FD|Unknown|Unk|Slow|Dead)\b\s+',
+    r'\s*\[(4K|8K|UHD|FHD|HD|HDR|HEVC|SD|FD|Unknown|Unk|Slow|Dead|Backup)\]\s*',
+    r'\s*\((4K|8K|UHD|FHD|HD|HDR|HEVC|SD|FD|Unknown|Unk|Slow|Dead|Backup)\)\s*',
+    r'^\s*(4K|8K|UHD|FHD|HD|HDR|HEVC|SD|FD|Unknown|Unk|Slow|Dead)\b\s*',
+    r'\s*\b(4K|8K|UHD|FHD|HD|HDR|HEVC|SD|FD|Unknown|Unk|Slow|Dead)$',
+    r'\s+\b(4K|8K|UHD|FHD|HD|HDR|HEVC|SD|FD|Unknown|Unk|Slow|Dead)\b\s+',
 ]
 
+# Quality markers that distinguish an upgrade-tier channel from its standard twin.
+# HD/FHD/HEVC are intentionally excluded - they don't create a separate twin channel.
+_UPGRADE_QUALITY_RE = re.compile(r'\b(?:4K|8K|UHD|HDR)\b|ᵁᴴᴰ', re.IGNORECASE)
+
+
+def has_upgrade_quality(name: str) -> bool:
+    """Return True if name contains an upgrade quality marker (4K/8K/UHD/HDR)."""
+    return bool(_UPGRADE_QUALITY_RE.search(name))
+
+
 REGIONAL_PATTERNS = [
-    # East/West are intentionally NOT stripped — they distinguish separate channel feeds
+    # East/West are intentionally NOT stripped - they distinguish separate channel feeds
     # (e.g., "HBO East" and "HBO West" are different channels)
     r'\s[Pp][Aa][Cc][Ii][Ff][Ii][Cc]',
     r'\s[Cc][Ee][Nn][Tt][Rr][Aa][Ll]',
@@ -52,13 +84,32 @@ GEOGRAPHIC_PATTERNS = [
 # Enhanced provider prefix patterns for IPTV-specific naming
 PROVIDER_PREFIX_PATTERNS = [
     r'^(?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\s*[:\-\|]\s*',
-    # Bare country tag + whitespace, no separator (e.g. "US Racer Network").
-    # Restricted to the 2-letter US/UK/CA/AU codes so it cannot eat a real
-    # channel name: "USA Network" (USA != US + space) and "In Country
-    # Television" ("IN") are both safe from this pattern.
-    r'^(?:US|UK|CA|AU)\s+',
+    # Bare country tag + whitespace, no separator (e.g. "US Racer Network",
+    # "FR beIN SPORTS MAX", "MEX Bein Sports"). Restricted to a curated set so
+    # it cannot eat a real channel name: "USA Network" (USA != US + space),
+    # "In Country Television" ("IN") and "IT Crowd" ("IT") are all safe too.
+    # Keep this set in sync with detect_stream_country()'s bare-space branch.
+    r'^(?:US|UK|CA|AU|FR|DE|MX|MEX|FRA|GER)\s+',
+    # "USA " space prefix as a US country tag ("USA  ABC", "USA BET"). A
+    # negative lookahead for NETWORK protects the real channel "USA Network"
+    # (these feeds tag that one as "US ..."/"US: ...", never bare "USA ").
+    # Keep in sync with detect_stream_country()'s USA branch.
+    r'^USA\s+(?!NETWORK\b)',
+    # Country code glued directly to a quality tag with no separator
+    # ("UKSD: Sky Sports", "UKHD ESPN", "USFHD ..."). Detection mirrors this
+    # in detect_stream_country() so these can't leak as wildcards.
+    r'^(?:US|UK)(?:SD|HD|FHD|UHD|FD|HEVC|4K|8K)\b\s*[:\-\|]?\s*',
     r'^\s*\((?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\)\s*',
     r'\s*\|\s*(?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\s*$',
+    # Content-category group prefixes used by some IPTV providers.
+    r'^(?:ADULT|EROTIC|PRIME|GOLD)\s*[:\-\|]\s*',
+    # FAST streaming-platform source tags (Roku, Tubi, Pluto, etc.). These mark
+    # the distribution platform, not the channel or its country, so strip them
+    # for matching ("RK: beIN Sports Xtra" -> "beIN Sports Xtra"). A separator
+    # is required so this can't eat real names like "GOLF" or "PLEX TV Movies".
+    # NOT a country signal: detect_stream_country() ignores these (correctly,
+    # since a platform like Roku spans US/CA/UK).
+    r'^(?:RK|GO|TUBI|PLUTO|XUMO|PLEX|STIRR|FREEVEE|GLANCE)\s*[:\-\|]\s*',
 ]
 
 MISC_PATTERNS = [
@@ -70,12 +121,35 @@ MISC_PATTERNS = [
 _KNOWN_COUNTRY_CODES = {
     "US", "UK", "CA", "AU", "DE", "FR", "IT", "ES", "NL", "BR", "MX", "IN",
     "IE", "SE", "NO", "DK", "PT", "PL", "AT", "CH", "BE", "FI",
+    # Codes seen as colon-prefixes in provider feeds (e.g. "TR: 24 TV",
+    # "GR: ...", "IR: IRIB ...", "AL: DigitalB"). normalize_name() already
+    # strips a 2-3 letter colon prefix via GEOGRAPHIC_PATTERNS, so detection
+    # must recognize these too or the streams match cleanly yet evade the
+    # country filter and leak as wildcards (the bug-064 asymmetry). "AR" is
+    # deliberately excluded: in these feeds it tags Arabic-language channels,
+    # not Argentina, so mapping it to a country would be wrong.
+    "TR", "GR", "IR", "AL",
+    # Second batch (2026-06-07): foreign feeds that were leaking in as BACKUP
+    # streams on globally-named channels (CNN, BBC) in a US lineup preview.
+    # Each was confirmed against real stream content (e.g. RO=Acasa, RU=2X2,
+    # AZ=Baku TV, MK=24 Vesti, IL=Kan 11/13/14, CO=Cable Noticias, CR=FUTV).
+    # Provider tags (HUB/AMP/STC/OSN/MEO/MXC) and regions (LA/AFR/AF) are NOT
+    # added: HUB/AMP carry US channels, the rest are not single countries.
+    "BG", "RO", "RU", "AZ", "HR", "TH", "RS", "MK", "IL", "CO", "CR", "CY",
+    # Lower-volume but unambiguous ISO-2 countries also seen as colon-prefixes
+    # (JP=Animax/BS, KR=Arirang, CZ/HU=European feeds, PH=GMA/Manila, NZ).
+    "JP", "KR", "CZ", "HU", "NZ", "PH",
+    # Singletons confirmed from feed content (VN=Vietnam, PK=92 News/8XM,
+    # SI=Arena Sport, ET=Ethiopia via "ETH: Addis TV"). "MT" is NOT added: in
+    # these feeds it tags theme channels (Cooking/Clubbing 4K), not Malta.
+    "VN", "PK", "SI", "ET",
 }
 
 # ISO-3 or colloquial codes seen in M3U streams → ISO-2.
 _ISO3_TO_ISO2 = {
     "USA": "US", "MEX": "MX", "IRE": "IE", "GER": "DE", "FRA": "FR",
     "ITA": "IT", "ESP": "ES", "NLD": "NL", "BRA": "BR", "IND": "IN",
+    "ETH": "ET",
 }
 
 # (PLUTO <COUNTRY>) full-name variants seen in the M3U.
@@ -85,19 +159,43 @@ _PLUTO_COUNTRY_MAP = {
     "GERMANY": "DE", "SPAIN": "ES", "FRANCE": "FR", "ITALY": "IT",
     "CANADA": "CA", "MEXICO": "MX", "INDIA": "IN", "IRELAND": "IE",
     "AUSTRALIA": "AU", "NETHERLANDS": "NL",
-    # "LATIN"/"EUROPE" etc. intentionally omitted — ambiguous region.
+    # "LATIN"/"EUROPE" etc. intentionally omitted - ambiguous region.
 }
 
-# Country pairs that share enough cross-border channels that users consider
-# them interchangeable. US<->CA share CBS/ABC/ESPN/A&E/TSN etc.; US<->MX share
-# the US Spanish-language networks (Univision, Telemundo, Galavision, NBC
-# Universo), whose M3U feeds are frequently tagged MEX. A US lineup should
-# accept a `(CA) ESPN` or `MEX: Galavision` stream, and vice versa.
-_COMPATIBLE_COUNTRIES = {
-    "US": {"CA", "MX"},
-    "CA": {"US"},
-    "MX": {"US"},
+# Cross-border country matching is STRICT by default: a lineup accepts only
+# streams tagged with its own country (plus untagged streams, which can't be
+# proven wrong). Blanket compatibility was removed - it wrongly merged
+# channels that merely share a name across a border (Food Network US != Food
+# Network CA; ESPN US != ESPN MX).
+#
+# The ONLY cross-border exceptions are specific channels that are genuinely the
+# SAME feed on both sides. Keyed by the unordered country pair (frozenset), so
+# the rule applies in both directions. Values are comparison keys produced by
+# _fold_key() (accent-folded, lowercased, alphanumerics only).
+#
+# US<->MX: the US Spanish-language networks, whose M3U feeds are frequently
+# tagged MEX/(MX) even though they are the US feed. To add a genuinely-shared
+# channel, fold its name the same way (e.g. "NBC Universo" -> "nbcuniverso").
+_CROSS_BORDER_SHARED = {
+    frozenset({"US", "MX"}): frozenset({
+        "univision", "unimas", "telemundo", "galavision", "universo",
+        "nbcuniverso", "tudn", "telexitos", "bandamax", "tlnovelas",
+        "univisiontlnovelas", "telemundodeportes", "universonbc",
+    }),
 }
+
+
+def _fold_key(name):
+    """Accent-fold, lowercase, and strip to alphanumerics for set membership.
+
+    "Univisión" -> "univision", "NBC Universo" -> "nbcuniverso". Used to test a
+    channel name against _CROSS_BORDER_SHARED regardless of accents/spacing.
+    """
+    if not name:
+        return ""
+    name = unicodedata.normalize('NFD', name)
+    name = ''.join(c for c in name if unicodedata.category(c) != 'Mn')
+    return re.sub(r'[^a-z0-9]', '', name.lower())
 
 
 def _normalize_country_token(tok):
@@ -132,11 +230,103 @@ def detect_stream_country(name):
     if m:
         return _normalize_country_token(m.group(1))
 
-    m = re.match(r'^\s*([A-Za-z]{2,3})\s*[:|]', name)
+    m = re.match(r'^\s*([A-Za-z]{2,3})\s*[-:|]', name)
+    if m:
+        return _normalize_country_token(m.group(1))
+
+    # Bare country tag + whitespace, no separator (e.g. "US beIN SPORTS (S)",
+    # "CA TSN 1 HD", "FR beIN SPORTS MAX", "MEX Bein Sports"). normalize_name()
+    # strips this exact prefix via PROVIDER_PREFIX_PATTERNS, so the country
+    # filter must recognize it too, otherwise these match a foreign lineup
+    # cleanly but can't be proven wrong-country, and leak in as backup streams.
+    # Restricted to a curated set of unambiguous codes (same set as the prefix
+    # stripper) so it can't eat "USA Network" (USA, not US+space), "IN Country
+    # Television" (IN), or "IT Crowd" (IT). MEX/FRA/GER 3-letter aliases are
+    # included and folded to ISO-2 via _normalize_country_token.
+    m = re.match(r'^\s*(US|UK|CA|AU|FR|DE|MX|MEX|FRA|GER)\s+', name, re.IGNORECASE)
+    if m:
+        return _normalize_country_token(m.group(1))
+
+    # Country code glued directly to a quality tag, no separator ("UKSD: Sky
+    # Sports", "UKHD ESPN", "USFHD ..."). normalize_name() strips this via
+    # PROVIDER_PREFIX_PATTERNS, so detection must match it too, otherwise these
+    # match a foreign lineup cleanly but can't be proven wrong-country and leak
+    # in as backup streams (same asymmetry as bug-064).
+    m = re.match(r'^\s*(US|UK)(?:SD|HD|FHD|UHD|FD|HEVC|4K|8K)\b', name, re.IGNORECASE)
+    if m:
+        return _normalize_country_token(m.group(1))
+
+    # "USA " as a US country tag ("USA  ABC", "USA BET"). The real channel
+    # "USA Network" is tagged "US ..."/"US: ..." in these feeds, never bare
+    # "USA ", so a NETWORK lookahead keeps it from being misread as country=US.
+    m = re.match(r'^\s*USA\s+(?!NETWORK\b)', name, re.IGNORECASE)
+    if m:
+        return "US"
+
+    return None
+
+
+def detect_category_country(category_name):
+    """Detect an ISO-2 country code from a lineup category-name prefix.
+
+    Single-country lineups carry one country code in the filename and use plain
+    theme categories ("News", "Sports", "Movies"). Mixed-country lineups instead
+    encode each channel's country in the category name, e.g. "AU| AUSTRALIA VIP",
+    "UK: Sports", "NZ Movies", "US News". This lets the country filter run
+    per-category when the filename has no single country (e.g.
+    "AU-NZ-UK_Test_Mixed_lineup.json").
+
+    Returns a whitelisted ISO-2 code, or None for ordinary theme categories so
+    the caller falls back to the lineup-level code. Only the curated
+    _KNOWN_COUNTRY_CODES are accepted, so a category like "Sci-Fi" (token "SCI")
+    or "On-Demand" (token "ON") is not misread as a country.
+
+    Two branches with deliberately different breadth:
+      - delimiter branch ("XX:"/"XX-"/"XX|"): accepts ANY code in the full
+        _KNOWN_COUNTRY_CODES set, so a mixed lineup can prefix categories with
+        ES/IT/etc. A theme category that happens to start "XX<delim>" where XX
+        is a real country code (e.g. "IT: ...") IS read as that country - this
+        is intended for the mixed-lineup use case, and such category names do
+        not occur in single-country theme lineups.
+      - bare-space branch ("XX Movies"): restricted to a small curated set so a
+        plain word cannot be eaten by a space-separated token.
+    """
+    if not category_name:
+        return None
+
+    # Country code followed by a delimiter: "AU| ...", "UK: ...", "US-...".
+    m = re.match(r'^\s*([A-Za-z]{2,3})\s*[-:|]', category_name)
+    if m:
+        return _normalize_country_token(m.group(1))
+
+    # Bare country tag + whitespace ("NZ Movies", "US News"). Restricted to a
+    # curated set so an ordinary theme word can't be eaten.
+    m = re.match(r'^\s*(US|UK|CA|AU|NZ|FR|DE|MX|MEX|FRA|GER)\s+', category_name, re.IGNORECASE)
     if m:
         return _normalize_country_token(m.group(1))
 
     return None
+
+
+def country_codes_in_text(text):
+    """Return the set of whitelisted ISO-2 country codes that appear as whole
+    tokens anywhere in `text`.
+
+    A "token" is a maximal run of letters bounded by anything non-alpha (start,
+    end, whitespace, separators like - : |, or wildcards * ?). Only 2-3 letter
+    tokens are considered, and only those that resolve to a known country code
+    (via _normalize_country_token, which folds ISO-3 like USA->US). This is used
+    to warn when a group prefix or EPG source filter targets a country other
+    than the lineup's, e.g. "UK*", "UK-*", "*-UK", "UK Jesmann" all yield {"UK"};
+    "AU:" / "AU " yield {"AU"}; "EPG Share", "Jessman", "DTV-" yield set().
+    """
+    codes = set()
+    for tok in re.split(r'[^A-Za-z]+', text or ""):
+        if 2 <= len(tok) <= 3:
+            cc = _normalize_country_token(tok)
+            if cc:
+                codes.add(cc)
+    return codes
 
 
 class FuzzyMatcher:
@@ -168,6 +358,8 @@ class FuzzyMatcher:
         self._callsign_cache.clear()
 
         for name in names:
+            if self._is_group_header(name):
+                continue
             norm = self.normalize_name(name, user_ignored_tags)
             if norm and len(norm) >= 2:
                 norm_lower = norm.lower()
@@ -206,10 +398,22 @@ class FuzzyMatcher:
 
         original_name = name
 
-        # Quality patterns FIRST (before space normalization)
+        # Strip IPTV provider prefixes BEFORE hyphen normalization so that
+        # "FR - Canal+ FHD" loses its "FR - " while the hyphen is still a
+        # hyphen. After hyphen normalization the separator would become a space
+        # and the pattern would fail to match, leaving "FR" as a stray token.
+        for pattern in PROVIDER_PREFIX_PATTERNS:
+            name = re.sub(pattern, '', name, flags=re.IGNORECASE)
+
+        # Quality patterns (before space normalization). Loop until stable so
+        # chained suffixes like "4K HDR" or "UHD HDR" are fully stripped in
+        # successive passes (each pass may expose a token for the next).
         if ignore_quality:
-            for pattern in QUALITY_PATTERNS:
-                name = re.sub(pattern, '', name, flags=re.IGNORECASE)
+            prev = None
+            while prev != name:
+                prev = name
+                for pattern in QUALITY_PATTERNS:
+                    name = re.sub(pattern, '', name, flags=re.IGNORECASE)
 
         # Normalize spacing around numbers
         name = re.sub(r'([a-zA-Z])(\d)', r'\1 \2', name)
@@ -249,16 +453,19 @@ class FuzzyMatcher:
         name = re.sub(r'([a-z])([A-Z][a-z])', r'\1 \2', name)
         name = re.sub(r'([a-z]{4,})([A-Z]{2,})\b', r'\1 \2', name)
 
-        # Preserve parenthesized East/West -- and the (E)/(W) abbreviations --
-        # as bare words so they survive both the leading-parenthetical strip
-        # below and the generic parenthetical strip (MISC_PATTERNS). Bare
-        # "East"/"West" are intentionally kept (they distinguish separate
-        # feeds); the parenthesized forms must be kept too, or a zoned lineup
-        # channel cannot match a zoned stream (e.g. "Cartoon Network (W)" vs
-        # "US: Cartoon Network West"). Only E/W are converted -- the other
-        # single letters (A/S/H/F/X/D) are stream source/quality tags.
-        name = re.sub(r'\(\s*(?:east|e)\s*\)', ' East ', name, flags=re.IGNORECASE)
-        name = re.sub(r'\(\s*(?:west|w)\s*\)', ' West ', name, flags=re.IGNORECASE)
+        # Strip region tokens (East / Eastern / West and the (E)/(W)
+        # abbreviations) for SCORING. Region CORRECTNESS - East vs West vs
+        # Pacific - is enforced separately by the post-match region filter in
+        # match_all_streams, which reads the ORIGINAL un-normalized names, not
+        # this output. Stripping here lets a regionless lineup channel
+        # ("Food Network") still score-match a region-tagged stream
+        # ("Food Network Eastern" / "... East") instead of being dragged below
+        # threshold by the extra token; the filter then accepts it (regionless
+        # defaults to East). "Western"/"Westerns" is a movie genre, NOT a
+        # region, so bare "west" is stripped only on a word boundary (\bwest\b
+        # does not match inside "western") and "western" is never touched.
+        name = re.sub(r'\(\s*(?:eastern|east|e|west|w)\s*\)', ' ', name, flags=re.IGNORECASE)
+        name = re.sub(r'\b(?:eastern|east|west)\b', ' ', name, flags=re.IGNORECASE)
 
         # Remove leading parenthetical prefixes
         while name.lstrip().startswith('('):
@@ -266,10 +473,6 @@ class FuzzyMatcher:
             if new_name == name:
                 break
             name = new_name
-
-        # Remove IPTV provider prefixes (enhanced for Lineuparr)
-        for pattern in PROVIDER_PREFIX_PATTERNS:
-            name = re.sub(pattern, '', name, flags=re.IGNORECASE)
 
         # Build pattern list based on flags
         patterns_to_apply = []
@@ -308,6 +511,15 @@ class FuzzyMatcher:
         name = re.sub(r'\s+Network\s*$', '', name, flags=re.IGNORECASE)
         name = re.sub(r'\s+Channel\s*$', '', name, flags=re.IGNORECASE)
         name = re.sub(r'\s+TV\s*$', '', name, flags=re.IGNORECASE)
+
+        # Strip decorative Unicode markers (◉, ², superscript letters ᴿᴬᵂ…)
+        # that some IPTV providers append as quality/status badges. Only
+        # characters in decorator categories are removed; accented letters
+        # (é, î, ü…) are in Ll/Lu and are preserved.
+        name = ''.join(
+            ' ' if unicodedata.category(c) in _DECORATOR_CATS else c
+            for c in name
+        )
 
         # Clean up whitespace
         name = re.sub(r'\s+', ' ', name).strip()
@@ -372,7 +584,7 @@ class FuzzyMatcher:
         "america racing" vs "america bbc" while allowing single-token matches.
         """
         # "network"/"channel"/"television" are generic brand-suffix words, not
-        # distinctive — treat as common so the subset guard does not reject
+        # distinctive - treat as common so the subset guard does not reject
         # cases like "FanDuel Sports Cincinnati" vs "FanDuel Sports Network
         # Cincinnati". (They're already stripped from end-of-string by
         # normalize_name; this catches mid-string occurrences.)
@@ -405,18 +617,19 @@ class FuzzyMatcher:
             unique_b = tokens_b - tokens_a
 
             # Subset guard: when one side is a strict subset of the other and
-            # the larger side has a distinctive (>=5 char) token the smaller
-            # lacks, the candidate is a more specific channel than the query
-            # and the high fuzzy score is a false positive. Catches e.g.
-            # "In Country Television" {country, television} vs "Country Music
-            # Television" {country, music, television} — "music" distinguishes
-            # them. Short extras like "live"/"two" do not trigger this guard,
-            # preserving legitimate matches like "ABC News" → "ABC News Live".
+            # the larger side has a distinctive token the smaller lacks, the
+            # candidate is a more specific channel than the query and the high
+            # fuzzy score is a false positive. Catches e.g. "Nickelodeon" vs
+            # "Nickelodeon Teen". Threshold is >=4 chars; "live"/"now" are
+            # explicitly non-distinctive (stream label variants) so "ABC News"
+            # still matches "ABC News Live". Pure-digit tokens >=2 chars
+            # (e.g. "360") are also distinctive: "Canal+Sport" must not match
+            # "Canal+Sport 360".
             if not unique_a:
-                if any(len(t) >= 5 for t in unique_b):
+                if any(_is_distinctive(t) for t in unique_b):
                     return False
             elif not unique_b:
-                if any(len(t) >= 5 for t in unique_a):
+                if any(_is_distinctive(t) for t in unique_a):
                     return False
 
             # Divergent guard: when BOTH sides have unique tokens AND at least
@@ -471,6 +684,15 @@ class FuzzyMatcher:
         return " ".join(tokens)
 
     @staticmethod
+    def _is_group_header(name):
+        """Return True for M3U playlist group/section separators like '##### EUROSPORT #####'
+        or '## 24/7 COMEDY ##'. These are not real stream names and must be
+        excluded from matching. A run of 2+ #/=/* is decorative (no real channel
+        name contains "##"/"=="/"**"); pipes need a run of 3+ since a single "|"
+        is a common in-name separator ("001 | Team A vs Team B")."""
+        return bool(re.search(r'[#=*]{2,}|\|{3,}', name or ""))
+
+    @staticmethod
     def _trailing_number(name):
         """Return the integer value of a space-separated, purely-numeric
         trailing token, or None. 'HBO 2' -> 2, 'DIRECTV 4K Live 1' -> 1,
@@ -499,7 +721,7 @@ class FuzzyMatcher:
 
     # Words that match the callsign regex shape but are never US broadcast
     # callsigns. A US callsign (K/W + 2-4 letters) is shape-identical to many
-    # common English words, so the loose Priority-4 pattern mis-extracts them —
+    # common English words, so the loose Priority-4 pattern mis-extracts them -
     # e.g. "with" in "Bizarre Foods with Andrew Zimmern" becomes callsign
     # "WITH". Regex alone cannot tell "WITH" from "WABC"; frequent K/W-initial
     # words are denied explicitly so they never extract as a callsign. WWE/WWF/
@@ -561,7 +783,7 @@ class FuzzyMatcher:
         """
         Cached wrapper around _compute_callsign_with_confidence.
 
-        Extraction is pure in channel_name, so results are memoized — the
+        Extraction is pure in channel_name, so results are memoized - the
         anchor calls this once per stream over a fixed candidate list, which
         is otherwise massively redundant across the per-channel matching
         loop. Cache is cleared by precompute_normalizations.
@@ -612,7 +834,7 @@ class FuzzyMatcher:
 
         matches = []
 
-        # Normalize all aliases — track spaced and nospace versions separately
+        # Normalize all aliases - track spaced and nospace versions separately
         alias_lookup = {}  # normalized_lower -> alias (for exact matching, includes both forms)
         alias_spaced = []  # only the spaced (original) normalized forms (for similarity matching)
         for alias in aliases:
@@ -630,6 +852,8 @@ class FuzzyMatcher:
             return []
 
         for candidate in candidate_names:
+            if self._is_group_header(candidate):
+                continue
             candidate_lower, candidate_nospace = self._get_cached_norm(candidate, user_ignored_tags)
             if not candidate_lower:
                 continue
@@ -655,12 +879,18 @@ class FuzzyMatcher:
             effective_threshold = self._length_scaled_threshold(self.match_threshold, best_alias_len)
 
             if score >= effective_threshold and score < 100:
-                # Aliases are short/curated — a fuzzy alias match must share a
+                # Aliases are short/curated - a fuzzy alias match must share a
                 # majority of tokens, not just one. This rejects false positives
                 # like alias "ABC News" vs stream "BBC News" (93%, shares only
                 # "news"; the 3-char call sign "abc"/"bbc" is below the basic
                 # overlap guard's 4-char token floor).
-                if not self._has_token_overlap(best_alias_norm, candidate_lower, require_majority=True):
+                # Use process_string_for_matching (NFD) so accented tokens like
+                # "chérie" match their unaccented stream form "cherie".
+                if not self._has_token_overlap(
+                    self.process_string_for_matching(best_alias_norm),
+                    self.process_string_for_matching(candidate_lower),
+                    require_majority=True,
+                ):
                     continue
 
             if score >= effective_threshold:
@@ -768,7 +998,7 @@ class FuzzyMatcher:
         return None, 0, None
 
     def match_all_streams(self, lineup_name, candidate_names, alias_map, channel_number=None,
-                          user_ignored_tags=None, lineup_country=None):
+                          user_ignored_tags=None, lineup_country=None, quality_aware=False):
         """
         Full matching pipeline for Lineuparr: alias → exact → substring → fuzzy, with number boost.
         Returns ALL matching streams sorted by score.
@@ -779,6 +1009,9 @@ class FuzzyMatcher:
             alias_map: Alias dict
             channel_number: Expected channel number for boost
             user_ignored_tags: Tags to strip
+            quality_aware: When True, upgrade streams (4K/8K/UHD/HDR) are excluded
+                from standard channels. Streams listed in alias_map for this channel bypass
+                the filter (e.g. "France 2": ["FRANCE 2 4K HDR"] allows that specific stream).
 
         Returns:
             List of (stream_name, score, match_type) tuples sorted by score desc.
@@ -788,6 +1021,32 @@ class FuzzyMatcher:
 
         if user_ignored_tags is None:
             user_ignored_tags = []
+
+        # Quality-aware pre-filtering (opt-in via quality_aware).
+        # Both tiers are gated: upgrade channels only match upgrade streams,
+        # standard channels only match standard streams. Streams listed in
+        # alias_map for either tier bypass the filter.
+        if quality_aware:
+            lineup_is_upgrade = has_upgrade_quality(lineup_name or "")
+            explicit_bypass = set()
+            if alias_map:
+                raw = alias_map.get(lineup_name, [])
+                alias_list = [raw] if isinstance(raw, str) else list(raw)
+                norm_aliases = {
+                    self.normalize_name(a, ignore_quality=False).lower()
+                    for a in alias_list
+                    if self.normalize_name(a, ignore_quality=False)
+                }
+                for c in candidate_names:
+                    norm_c = self.normalize_name(c, ignore_quality=False)
+                    if norm_c and norm_c.lower() in norm_aliases:
+                        explicit_bypass.add(c)
+            candidate_names = [
+                c for c in candidate_names
+                if has_upgrade_quality(c) == lineup_is_upgrade or c in explicit_bypass
+            ]
+            if not candidate_names:
+                return []
 
         # Callsign anchor (asymmetric): extract the lineup channel's US
         # broadcast callsign up front. Used after the fuzzy stages to floor
@@ -815,15 +1074,26 @@ class FuzzyMatcher:
             # channel ("DIRECTV 4K Live 1" vs "... Live 2") -- used to skip
             # those near-identical false positives in the fuzzy stages below.
             query_trailing_num = self._trailing_number(normalized_query_lower)
+            # Detect "+1"/"+2" time-shift suffix so shift channels never match
+            # non-shift streams and vice versa ("Nickelodeon+1" vs "Nickelodeon").
+            # Must check the ORIGINAL name: normalize_name strips "+" (Sm category)
+            # so "+1" becomes "1" post-normalization and would be undetectable.
+            query_is_shift = bool(_PLUS_SHIFT_RE.search(lineup_name or ""))
 
             for candidate in candidate_names:
                 if candidate in all_matches:
                     continue  # Already matched via alias
+                if self._is_group_header(candidate):
+                    continue  # Skip M3U group/section separators
 
                 # Use cached normalizations for performance
                 candidate_lower, candidate_nospace = self._get_cached_norm(candidate, user_ignored_tags)
                 if not candidate_lower:
                     continue
+
+                cand_is_shift = bool(_PLUS_SHIFT_RE.search(candidate))
+                if query_is_shift != cand_is_shift:
+                    continue  # Shift channel (+1/+2) must only match shift streams
 
                 if query_trailing_num is not None:
                     cand_trailing_num = self._trailing_number(candidate_lower)
@@ -896,42 +1166,48 @@ class FuzzyMatcher:
         # Filter out wrong-country matches. A stream whose name carries a
         # recognized country marker (e.g. "UK: Discovery Channel", "(IN) Bloomberg",
         # "(PLUTO Brazil) MTV") and that marker differs from the lineup's country
-        # is dropped. Streams without a country marker are kept — we can't prove
+        # is dropped. Streams without a country marker are kept - we can't prove
         # they're wrong and over-filtering breaks lineups whose M3U sources don't
-        # tag country at all. Countries in _COMPATIBLE_COUNTRIES (US↔CA) are
-        # treated as a single compatibility class.
+        # tag country at all.
+        #
+        # Matching is STRICT by default: only the lineup's own country passes.
+        # The single exception is a channel that is genuinely the same feed
+        # across a border (e.g. US Spanish networks tagged MEX) - see
+        # _CROSS_BORDER_SHARED. This deliberately rejects same-name-different-
+        # channel cases like "(CA) Food Network" or "(MX) ESPN" for a US lineup.
         if lineup_country:
             lc = lineup_country.upper()
             # Defensive: if caller passes an unrecognized code, skip filtering
             # rather than drop every country-marked candidate.
             if lc in _KNOWN_COUNTRY_CODES:
-                accepted = _COMPATIBLE_COUNTRIES.get(lc, set()) | {lc}
+                nq_fold = _fold_key(normalized_query)
                 kept = {}
                 for name, val in all_matches.items():
                     sc = detect_stream_country(name)
-                    if sc is None or sc in accepted:
+                    if sc is None or sc == lc:
                         kept[name] = val
-                    else:
-                        self.country_filter_drops += 1
+                        continue
+                    shared = _CROSS_BORDER_SHARED.get(frozenset({lc, sc}))
+                    if shared and nq_fold in shared:
+                        kept[name] = val  # genuinely-shared cross-border feed
+                        continue
+                    self.country_filter_drops += 1
                 all_matches = kept
 
-        # Filter out wrong-region matches (East vs West vs Pacific)
-        # Check both normalized query AND original name for regional indicators.
-        # normalize_name converts (E)/(W) to bare East/West and strips other
-        # parentheticals, so detect abbreviated regional suffixes (incl. the
-        # Pacific (P) abbreviation it does drop) from the original name.
-        query_lower = (normalized_query or "").lower()
+        # Filter out wrong-region matches (East vs West vs Pacific).
+        # Detect the lineup channel's region from the ORIGINAL un-normalized
+        # name: normalize_name now strips East/West/Eastern (and Pacific via
+        # REGIONAL_PATTERNS) for scoring, so the normalized form no longer
+        # carries the region word. "east" as a substring also catches the
+        # adjective "Eastern"; for west we require the word but exclude the
+        # "western"/"westerns" genre.
         original_lower = (lineup_name or "").lower()
         # Detect (e)/(w)/(p) abbreviations in the original name
         _has_abbrev_east = bool(re.search(r'\(\s*e\s*\)', original_lower))
         _has_abbrev_west = bool(re.search(r'\(\s*w\s*\)', original_lower))
         _has_abbrev_pacific = bool(re.search(r'\(\s*p\s*\)', original_lower))
-        query_has_east = "east" in query_lower or _has_abbrev_east
-        query_has_west = ("west" in query_lower and "western" not in query_lower) or _has_abbrev_west
-        # REGIONAL_PATTERNS strips the full word "pacific" during normalize_name
-        # (unlike east/west which are preserved), so we must detect it from the
-        # original lineup name. Without this, "Sportsnet Pacific" normalizes to
-        # "Sportsnet" and wrongly matches a regionless "Sportsnet" stream.
+        query_has_east = "east" in original_lower or _has_abbrev_east
+        query_has_west = ("west" in original_lower and "western" not in original_lower) or _has_abbrev_west
         query_has_pacific = ("pacific" in original_lower) or _has_abbrev_pacific
 
         if query_has_east or query_has_west or query_has_pacific:
@@ -991,7 +1267,7 @@ class FuzzyMatcher:
         # the overlap between the candidate's ORIGINAL tokens and the lineup
         # channel's ORIGINAL tokens. The secondary key disambiguates ties caused
         # by normalize_name collapsing brand-name timezones (e.g. "Comedy TV"
-        # and "Comedy Central" both normalize to "comedy") — without it, the
+        # and "Comedy Central" both normalize to "comedy") - without it, the
         # winner is whichever candidate happened to appear first in the EPG
         # source list. The original-token overlap correctly prefers
         # "USA: Comedy TV" over "(US) Comedy Central (S)" when matching
@@ -1002,7 +1278,26 @@ class FuzzyMatcher:
             cand_tokens = set(re.findall(r'[a-z0-9]+', candidate_name.lower()))
             return len(lineup_tokens & cand_tokens)
 
+        # Secondary sort key: prefer streams whose country marker matches the
+        # lineup country (score 1) over streams with an unrecognized prefix like
+        # AF:, TS:, MEO: that pass the hard country filter but should rank below
+        # FR: streams (score 0). Streams with a recognized but wrong country
+        # (already dropped by the filter) would score -1.
+        _sort_lc = lineup_country.upper() if lineup_country else None
+        _sort_active = bool(_sort_lc and _sort_lc in _KNOWN_COUNTRY_CODES)
+
+        def _country_key(candidate_name):
+            if _sort_active:
+                sc = detect_stream_country(candidate_name)
+                # Streams tagged with the lineup's own country rank first; any
+                # surviving cross-border-shared or untagged stream ranks below.
+                return 1 if sc == _sort_lc else 0
+            return 0
+
         results = [(name, score, mtype) for name, (score, mtype) in all_matches.items()]
-        results.sort(key=lambda x: (x[1], _orig_overlap(x[0])), reverse=True)
+        results.sort(
+            key=lambda x: (x[1], _country_key(x[0]), _orig_overlap(x[0])),
+            reverse=True,
+        )
         return results
 

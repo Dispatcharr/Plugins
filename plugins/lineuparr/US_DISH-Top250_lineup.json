@@ -19,7 +19,6 @@
       { "name": "MSNBC", "number": 209 },
       { "name": "NASA", "number": 286 },
       { "name": "Newsmax", "number": 216 },
-      { "name": "Russia Today", "number": 280 },
       { "name": "Weather Channel", "number": 214 },
       { "name": "WeatherNation", "number": 215 }
     ],
@@ -38,13 +37,10 @@
       { "name": "MLB Network", "number": 152, "addon": "Multi-Sport Pack" },
       { "name": "MLB Strike Zone", "number": 153, "addon": "Multi-Sport Pack" },
       { "name": "NBA TV", "number": 156, "addon": "Multi-Sport Pack" },
-      { "name": "NBCSN", "number": 159 },
       { "name": "NFL Network", "number": 154, "addon": "Multi-Sport Pack" },
       { "name": "NFL RedZone", "number": 155, "addon": "Multi-Sport Pack" },
       { "name": "NHL Network", "number": 157, "addon": "Multi-Sport Pack" },
-      { "name": "Olympic Channel", "number": 389 },
       { "name": "Outside TV", "number": 390, "addon": "Multi-Sport Pack" },
-      { "name": "Pac-12 Network", "number": 406, "addon": "Multi-Sport Pack" },
       { "name": "SEC Network", "number": 404, "addon": "Multi-Sport Pack" },
       { "name": "Tennis Channel", "number": 400 },
       { "name": "TV Games Network", "number": 399, "addon": "National Action Pack" },
@@ -52,8 +48,7 @@
     ],
     "Regional Sports": [
       { "name": "Regional Sports Networks (market-based)", "number": 412, "addon": "Multi-Sport Pack", "notes": "Varies by ZIP code. Hopper receivers only. All other receivers 409-437." },
-      { "name": "Big 10 Network", "number": 405, "addon": "Multi-Sport Pack" },
-      { "name": "Longhorn Network", "number": 407, "addon": "Multi-Sport Pack" }
+      { "name": "Big 10 Network", "number": 405, "addon": "Multi-Sport Pack" }
     ],
     "Movies": [
       { "name": "EPIX Drive-In", "number": 292 },
@@ -157,7 +152,6 @@
       { "name": "TV Land", "number": 106 },
       { "name": "Uplifting Entertainment", "number": 188 },
       { "name": "USA", "number": 105 },
-      { "name": "Viceland", "number": 121 },
       { "name": "WE tv", "number": 128 },
       { "name": "WGN America", "number": 239 }
     ],
@@ -185,8 +179,7 @@
     "Crime": [
       { "name": "Crime & Investigation", "number": 249, "addon": "Movie Pack" },
       { "name": "Investigation Discovery", "number": 192 },
-      { "name": "Justice Central", "number": 240 },
-      { "name": "Justice Network", "number": 252 }
+      { "name": "Justice Central", "number": 240 }
     ],
     "Faith": [
       { "name": "Christian Television Network", "number": 267 },
@@ -263,8 +256,7 @@
     ],
     "Food & Travel": [
       { "name": "Cooking Channel", "number": 113 },
-      { "name": "Food Network", "number": 110 },
-      { "name": "Z Living", "number": 191 }
+      { "name": "Food Network", "number": 110 }
     ]
   }
 }

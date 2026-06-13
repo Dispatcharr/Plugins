@@ -3,7 +3,7 @@
   "date": "2026-05-22",
   "description": "Consolidated US channel lineup merged and de-duplicated from DIRECTV Premier, DISH Top 250, and Verizon FiOS.",
   "source": "DIRECTV Premier + DISH Top 250 + Verizon FiOS",
-  "notes": "This lineup is a de-duplicated union of three US packages, renumbered with category-blocked numbering (News 100s, Sports 200s, and so on through Food & Travel 1600s). 509 channels after collapsing duplicate names and HD/SD variants.",
+  "notes": "This lineup is a de-duplicated union of three US packages, renumbered with category-blocked numbering (News 100s, Sports 200s, and so on through Food & Travel 1600s). 477 channels after collapsing duplicate names and HD/SD variants, removing discontinued channels (NBCSN, Olympic Channel, Pac-12 Network, Longhorn Network, HBO Family, Movie Max, Outer Max, Thriller Max), and deduping post-rebrand pairs where both old and new names were present (WGN America→NewsNation, Hallmark Movies & Mysteries→Hallmark Mystery, HBO 2→HBO Hits, HBO Signature→HBO Drama, HBO Zone→HBO Movies, EPIX Hits→MGM+ Hits, Action Max→Cinemax Action, Five Star Max→Cinemax Classics, More Max→Cinemax Hits).",
   "categories": {
     "News": [
       {
@@ -83,10 +83,6 @@
         "number": 123
       },
       {
-        "name": "HLN Headline News Network",
-        "number": 124
-      },
-      {
         "name": "i24NEWS",
         "number": 125
       },
@@ -109,10 +105,6 @@
       {
         "name": "NewsNation",
         "number": 131
-      },
-      {
-        "name": "Russia Today",
-        "number": 132
       },
       {
         "name": "Scripps News",
@@ -285,10 +277,6 @@
         "number": 243
       },
       {
-        "name": "NBCSN",
-        "number": 244
-      },
-      {
         "name": "NFL Network",
         "number": 245
       },
@@ -301,16 +289,8 @@
         "number": 248
       },
       {
-        "name": "Olympic Channel",
-        "number": 249
-      },
-      {
         "name": "Outside TV",
         "number": 250
-      },
-      {
-        "name": "Pac-12 Network",
-        "number": 251
       },
       {
         "name": "Pickleball TV",
@@ -479,10 +459,6 @@
         "number": 317
       },
       {
-        "name": "Longhorn Network",
-        "number": 318
-      },
-      {
         "name": "Marquee Sports Network",
         "number": 319
       },
@@ -559,19 +535,11 @@
         "number": 338
       },
       {
-        "name": "YES National",
-        "number": 339
-      },
-      {
         "name": "YES Network",
         "number": 340
       }
     ],
     "Movies": [
-      {
-        "name": "Action Max",
-        "number": 401
-      },
       {
         "name": "Cinemax",
         "number": 402
@@ -597,16 +565,8 @@
         "number": 409
       },
       {
-        "name": "EPIX Hits",
-        "number": 410
-      },
-      {
         "name": "Family Movie Classics (FMC)",
         "number": 411
-      },
-      {
-        "name": "Five Star Max",
-        "number": 412
       },
       {
         "name": "FLIX",
@@ -617,14 +577,6 @@
         "number": 414
       },
       {
-        "name": "FXM",
-        "number": 415
-      },
-      {
-        "name": "Hallmark Movies & Mysteries",
-        "number": 416
-      },
-      {
         "name": "Hallmark Mystery",
         "number": 417
       },
@@ -633,20 +585,12 @@
         "number": 418
       },
       {
-        "name": "HBO 2",
-        "number": 419
-      },
-      {
         "name": "HBO Comedy",
         "number": 420
       },
       {
         "name": "HBO Drama HD East",
         "number": 422
-      },
-      {
-        "name": "HBO Family",
-        "number": 424
       },
       {
         "name": "HBO Hits HD East",
@@ -659,14 +603,6 @@
       {
         "name": "HBO Movies HD",
         "number": 427
-      },
-      {
-        "name": "HBO Signature",
-        "number": 428
-      },
-      {
-        "name": "HBO Zone",
-        "number": 429
       },
       {
         "name": "HDNet Movies",
@@ -689,16 +625,8 @@
         "number": 435
       },
       {
-        "name": "More Max",
-        "number": 436
-      },
-      {
         "name": "Movie Favorites by Lifetime",
         "number": 437
-      },
-      {
-        "name": "Movie Max",
-        "number": 438
       },
       {
         "name": "MoviePlex",
@@ -711,10 +639,6 @@
       {
         "name": "MovieSphere Gold",
         "number": 441
-      },
-      {
-        "name": "Outer Max",
-        "number": 442
       },
       {
         "name": "Paramount+ with SHOWTIME",
@@ -853,16 +777,8 @@
         "number": 488
       },
       {
-        "name": "Thriller Max",
-        "number": 490
-      },
-      {
         "name": "Tribeca Festival+",
         "number": 491
-      },
-      {
-        "name": "Turner Classic Movies",
-        "number": 492
       }
     ],
     "Kids": [
@@ -921,10 +837,6 @@
       {
         "name": "Nick Jr.",
         "number": 520
-      },
-      {
-        "name": "Nick/Nick at Nite (E)",
-        "number": 522
       },
       {
         "name": "Nick/Nick at Nite (W)",
@@ -1033,10 +945,6 @@
         "number": 622
       },
       {
-        "name": "GET",
-        "number": 623
-      },
-      {
         "name": "getTV",
         "number": 624
       },
@@ -1091,10 +999,6 @@
       {
         "name": "OWN: Oprah Winfrey Network",
         "number": 642
-      },
-      {
-        "name": "Oxygen",
-        "number": 643
       },
       {
         "name": "Paramount Network",
@@ -1169,16 +1073,8 @@
         "number": 665
       },
       {
-        "name": "Viceland",
-        "number": 666
-      },
-      {
         "name": "WE tv",
         "number": 667
-      },
-      {
-        "name": "WGN America",
-        "number": 668
       }
     ],
     "Reality & Lifestyle": [
@@ -1533,10 +1429,6 @@
         "number": 1010
       },
       {
-        "name": "Justice Network",
-        "number": 1012
-      },
-      {
         "name": "JusticeCentral.TV",
         "number": 1013
       },
@@ -1883,10 +1775,6 @@
         "number": 1506
       },
       {
-        "name": "Great American Country",
-        "number": 1507
-      },
-      {
         "name": "Great American Family",
         "number": 1508
       },
@@ -1943,10 +1831,6 @@
         "number": 1523
       },
       {
-        "name": "Speedvision",
-        "number": 1524
-      },
-      {
         "name": "Sweet Escapes",
         "number": 1525
       },
@@ -2001,16 +1885,8 @@
         "number": 1607
       },
       {
-        "name": "Tastemade Home",
-        "number": 1608
-      },
-      {
         "name": "Tastemade Travel",
         "number": 1609
-      },
-      {
-        "name": "Z Living",
-        "number": 1610
       }
     ]
   }

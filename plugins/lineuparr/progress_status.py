@@ -134,16 +134,16 @@ def build_status_message(progress, now=None):
         updated = progress.get("updated_at")
         if updated is not None and (now - updated) > STALE_AFTER_SECONDS:
             ago = format_eta(now - updated)
-            return (f"⚠️ {label} — {cur}/{total} ({pct:.0f}%), "
+            return (f"⚠️ {label} - {cur}/{total} ({pct:.0f}%), "
                     f"no progress update in {ago}. The operation may have "
-                    f"stopped — check the container logs.")
+                    f"stopped - check the container logs.")
         start = progress.get("start_time")
         if start is not None and cur > 0:
             remaining = ((now - start) / cur) * (total - cur)
             eta = f"ETA {format_eta(remaining)}"
         else:
             eta = "ETA calculating…"
-        return f"\U0001f504 {label} — {cur}/{total} ({pct:.0f}%) · {eta}"
+        return f"\U0001f504 {label} - {cur}/{total} ({pct:.0f}%) · {eta}"
 
     if status == "done":
         label = _action_label(progress.get("action"))
