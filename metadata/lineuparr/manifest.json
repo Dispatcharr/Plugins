@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-06T22:35:54Z",
+  "generated_at": "2026-06-13T13:21:37Z",
   "manifest": {
     "slug": "lineuparr",
     "name": "Lineuparr",
@@ -9,21 +9,33 @@
     "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-05-23T13:06:27-04:00",
+    "last_updated": "2026-06-13T09:21:14-04:00",
     "latest": {
-      "version": "1.26.1431300",
-      "commit_sha": "3924cbe182e994de221ef776a7c151c5e7bc2c2e",
-      "commit_sha_short": "3924cbe",
-      "build_timestamp": "2026-05-23T17:06:43Z",
-      "last_updated": "2026-05-23T13:06:27-04:00",
-      "checksum_md5": "af2833e8cfe169abdb2ff90bd2abde63",
-      "checksum_sha256": "7bd89d15e308243c501321718e2dacc1613a43951ef1ce9d99f0956b372db429",
+      "version": "1.26.1641222",
+      "commit_sha": "c9b8a7bca055605d573865e1016d073155bbc31e",
+      "commit_sha_short": "c9b8a7b",
+      "build_timestamp": "2026-06-13T13:21:33Z",
+      "last_updated": "2026-06-13T09:21:14-04:00",
+      "checksum_md5": "6f65dd312bb036ab5fa5fa6372ad5bac",
+      "checksum_sha256": "2ca2b96acfcd00db6ad84fcbcdd675c69ee08d37de576e7c96ed6d006a650f5c",
       "min_dispatcharr_version": "v0.20.0",
-      "latest_url": "lineuparr-1.26.1431300/lineuparr-1.26.1431300.zip",
-      "url": "lineuparr-1.26.1431300/lineuparr-1.26.1431300.zip",
-      "size": 270
+      "latest_url": "lineuparr-1.26.1641222/lineuparr-1.26.1641222.zip",
+      "url": "lineuparr-1.26.1641222/lineuparr-1.26.1641222.zip",
+      "size": 289
     },
     "versions": [
+      {
+        "version": "1.26.1641222",
+        "commit_sha": "c9b8a7bca055605d573865e1016d073155bbc31e",
+        "commit_sha_short": "c9b8a7b",
+        "build_timestamp": "2026-06-13T13:21:33Z",
+        "last_updated": "2026-06-13T09:21:14-04:00",
+        "checksum_md5": "6f65dd312bb036ab5fa5fa6372ad5bac",
+        "checksum_sha256": "2ca2b96acfcd00db6ad84fcbcdd675c69ee08d37de576e7c96ed6d006a650f5c",
+        "min_dispatcharr_version": "v0.20.0",
+        "url": "lineuparr-1.26.1641222/lineuparr-1.26.1641222.zip",
+        "size": 289
+      },
       {
         "version": "1.26.1431300",
         "commit_sha": "3924cbe182e994de221ef776a7c151c5e7bc2c2e",
@@ -86,5 +98,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaiSgzgAKCRB+wDprTCI0\nzliDAP4rWB/19pFE1ymN79PqCF+p5szha1GDAdEm2KMlQGkhhgD+M7ldE6RyV0Fb\nQXkoAO2fkGjflYQJJBqUNMXlLOkUXwY=\n=wOYi\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCai1ZYwAKCRB+wDprTCI0\nzvJzAP0VajCXD7B1a0RWaVW6QS51zRIBOlk1LQAwenH96gOVggD+OjLUw7pLI6OU\nKR+GkM2AMu1jveiTBq+7/1SJVO358A4=\n=g9HN\n-----END PGP SIGNATURE-----"
 }
