@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-11T14:01:15Z",
+  "generated_at": "2026-06-13T13:21:09Z",
   "manifest": {
     "slug": "dispatcharr-ranked-matchups",
     "name": "Ranked Matchups (Top Games)",
-    "description": "Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching.",
+    "description": "Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings.",
     "author": "Jacob-Lasky",
     "license": "MIT",
     "source_type": "external",
@@ -11,19 +11,29 @@
     "repo_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-06-11T14:01:07Z",
+    "last_updated": "2026-06-13T13:21:01Z",
     "latest": {
-      "version": "1.2.0",
-      "build_timestamp": "2026-06-11T14:01:07Z",
-      "last_updated": "2026-06-11T14:01:07Z",
-      "checksum_md5": "8fab111209b40779e2ac0b56152958b0",
-      "checksum_sha256": "818597f921d7307256cb2eae618c786e490d981a8b555e55d25f40f4a62dc345",
-      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.2.0/plugin.zip",
-      "latest_url": "dispatcharr-ranked-matchups-1.2.0/dispatcharr-ranked-matchups-1.2.0.zip",
-      "url": "dispatcharr-ranked-matchups-1.2.0/dispatcharr-ranked-matchups-1.2.0.zip",
-      "size": 303
+      "version": "1.4.0",
+      "build_timestamp": "2026-06-13T13:21:01Z",
+      "last_updated": "2026-06-13T13:21:01Z",
+      "checksum_md5": "45e24aef9b1864f5629f8c8a054ac5e0",
+      "checksum_sha256": "dcb1e12325d9346a0948b3699f4cb1b9eafd5030c4ebe94a21d9dcd121d5ce8a",
+      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.4.0/plugin.zip",
+      "latest_url": "dispatcharr-ranked-matchups-1.4.0/dispatcharr-ranked-matchups-1.4.0.zip",
+      "url": "dispatcharr-ranked-matchups-1.4.0/dispatcharr-ranked-matchups-1.4.0.zip",
+      "size": 312
     },
     "versions": [
+      {
+        "version": "1.4.0",
+        "build_timestamp": "2026-06-13T13:21:01Z",
+        "last_updated": "2026-06-13T13:21:01Z",
+        "checksum_md5": "45e24aef9b1864f5629f8c8a054ac5e0",
+        "checksum_sha256": "dcb1e12325d9346a0948b3699f4cb1b9eafd5030c4ebe94a21d9dcd121d5ce8a",
+        "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.4.0/plugin.zip",
+        "url": "dispatcharr-ranked-matchups-1.4.0/dispatcharr-ranked-matchups-1.4.0.zip",
+        "size": 312
+      },
       {
         "version": "1.2.0",
         "build_timestamp": "2026-06-11T14:01:07Z",
@@ -36,5 +46,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaiq/rAAKCRB+wDprTCI0\nznFGAP9UMjwLID2KEWTHVJbI1welkExDF1Vzw0o3uI4ikhNf4wEAriThhrqQvHrY\nGDeykgNugJLAhcSQsk3Aj9gNE9oSjAQ=\n=/D1j\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCai1ZRgAKCRB+wDprTCI0\nzsVDAQDkpZpbTzwTXI0Dz41THSUETd8YsaHpuS2qbe82i6zbpQD9Em7aUZSb9HOr\nViYcJbd7naHFkIM5ZmJgoVUSunhIYwE=\n=fHcU\n-----END PGP SIGNATURE-----"
 }
