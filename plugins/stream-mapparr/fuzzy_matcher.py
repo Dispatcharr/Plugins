@@ -19,7 +19,7 @@ except ImportError:
     _USE_RAPIDFUZZ = False
 
 # Version: YY.DDD.HHMM (Julian date format: Year.DayOfYear.Time)
-__version__ = "26.095.0100"
+__version__ = "26.165.0009"
 
 # Setup logging
 LOGGER = logging.getLogger("plugins.fuzzy_matcher")
@@ -48,6 +48,17 @@ QUALITY_PATTERNS = [
     
     # Standalone quality tags in MIDDLE (with word boundaries on both sides)
     r'\s+\b(4K|8K|UHD|FHD|HD|SD|FD|Unknown|Unk|Slow|Dead)\b\s+',
+]
+
+# Numeric resolution markers the keyword QUALITY_PATTERNS miss: 720p, 1080p/i, 2160p,
+# 3840P, 480p, etc. — a 3-4 digit run glued directly to p/i. The 3-digit lower bound
+# excludes 2-digit noise; the 4-digit upper bound excludes 5-digit numbers (10800p won't
+# match). The p/i must be GLUED to the digits (no space): real markers are always written
+# "720P"/"3840P", and requiring the glue avoids stripping a spaced standalone P/I such as a
+# roman numeral ("Volume 100 I"). The p/i \b anchor keeps bare numbers (1080, "Channel 4")
+# intact. Applied with re.IGNORECASE in the ignore_quality block, like QUALITY_PATTERNS.
+RESOLUTION_PATTERNS = [
+    r'\b\d{3,4}[pi]\b',
 ]
 
 # Regional indicator patterns: East, West, Pacific, Central, Mountain, Atlantic
@@ -106,6 +117,100 @@ MISC_PATTERNS = [
     # Remove ALL content within parentheses (e.g., (CX), (B), (PRIME), (Backup), etc.)
     r'\s*\([^)]*\)\s*',
 ]
+
+
+# --------------------------------------------------------------------------- #
+# Stylized-Unicode decoration stripping
+# --------------------------------------------------------------------------- #
+# Streams tag names with stylized-Unicode tier/format markers (superscript
+# "WEATHERNATION RAW", small-cap "FHD", bullet-prefixed "CNN") that the ASCII tag
+# regexes below cannot see. We drop whole tokens that are pure decoration BEFORE
+# the ASCII pipeline runs. Detection is by Unicode character *name* (not code-point
+# ranges), so it covers superscripts, "modifier letter" superscript capitals, and
+# Latin small-caps wherever they live (e.g. small-cap H is U+029C in IPA Extensions
+# and modifier V is U+2C7D in Latin-Ext-C, both outside the obvious blocks).
+
+# Ornament glyphs whose Unicode name carries no decoration keyword.
+_DECORATIVE_SYMBOLS = frozenset("◉")  # FISHEYE; add individual chars (not strings) here
+
+
+def _is_decorative_char(ch):
+    """True for a stylized letterform/ornament that carries no semantic content in a
+    channel name (superscripts, subscripts, modifier-letter superscript capitals,
+    Latin small-capitals, curated bullets). ASCII and ordinary letters return False."""
+    if ch.isascii():
+        return False
+    if ch in _DECORATIVE_SYMBOLS:
+        return True
+    try:
+        nm = unicodedata.name(ch)
+    except ValueError:
+        # unnamed code point (control char / lone surrogate) -> not decoration
+        return False
+    return ('SUPERSCRIPT' in nm or 'SUBSCRIPT' in nm
+            or 'SMALL CAPITAL' in nm or 'MODIFIER LETTER' in nm)
+
+
+def _strip_stylized_tokens(name):
+    """Drop whitespace tokens that are pure stylized decoration, then NFKD-canonicalize
+    the remainder. A token is decoration when it has >=1 decorative char, no ASCII
+    alphanumeric, and every char is decorative or ASCII punctuation (so a bullet glued
+    to a colon, or "HD/RAW" written in superscripts, are dropped too). Real ASCII words
+    (Gold/VIP) and non-Latin letters (Arabic/Cyrillic/CJK) are always kept. ASCII-only
+    input is returned unchanged via the fast path (no per-char work; NFKD is a no-op
+    on ASCII, so skipping it changes nothing)."""
+    if name.isascii():
+        return name
+    kept = []
+    for tok in name.split():
+        has_decorative = any(_is_decorative_char(c) for c in tok)
+        has_ascii_alnum = any(c.isascii() and c.isalnum() for c in tok)
+        only_decorative_or_punct = all(
+            _is_decorative_char(c) or (c.isascii() and not c.isalnum()) for c in tok
+        )
+        if has_decorative and only_decorative_or_punct and not has_ascii_alnum:
+            continue  # pure decoration -> drop the whole token
+        kept.append(tok)
+    return unicodedata.normalize('NFKD', ' '.join(kept))
+
+
+# --------------------------------------------------------------------------- #
+# Emoji-as-letter + emoji decoration normalization
+# --------------------------------------------------------------------------- #
+# Some streams use an emoji AS A LETTER inside a word: "SP⚽RTS" / "Sp⚽rts" where the
+# soccer ball stands in for 'o' (= SPORTS, the beIN family). _strip_stylized_tokens keeps
+# the token (it has ASCII alnum) and process_string_for_matching would turn the ball into a
+# space ("sp rts"), so it never matches "sports". We substitute the glyph for the letter it
+# replaces (only when flanked by ASCII letters) and strip emoji used purely as decoration.
+
+# Emoji that visually replace an ASCII letter when embedded in a word. Extensible.
+_EMOJI_LETTER_MAP = {'⚽': 'o'}            # SOCCER BALL = 'o'  (SP⚽RTS -> SPORTS)
+# Pictographic ornaments to delete. NOTE: ⚽ is intentionally in BOTH maps — the letter
+# map handles it mid-word (-> 'o'); here it catches any ⚽ NOT flanked by ASCII letters
+# (standalone/edge), which the substitution above leaves untouched.
+_EMOJI_ORNAMENTS = frozenset('♬☾⚽')       # beamed notes, last-quarter moon, soccer ball
+# Zero-width / invisible code points that only add noise to a name.
+_ZERO_WIDTH = ('️', '‍')         # VARIATION SELECTOR-16, ZERO WIDTH JOINER
+
+
+def _normalize_emoji(name):
+    """Map emoji-as-letters to their letter and strip emoji decoration.
+
+    The letter substitution fires ONLY when the glyph is flanked by ASCII letters
+    (so "SP⚽RTS" -> "SPoRTS" but a standalone/edge "⚽" is treated as decoration and
+    dropped). Zero-width selectors and ornament pictographs are deleted outright.
+    ASCII-only input is returned unchanged (no emoji possible)."""
+    if name.isascii():
+        return name
+    for zw in _ZERO_WIDTH:
+        if zw in name:
+            name = name.replace(zw, '')
+    for glyph, letter in _EMOJI_LETTER_MAP.items():
+        if glyph in name:
+            name = re.sub(r'(?<=[A-Za-z])' + re.escape(glyph) + r'(?=[A-Za-z])', letter, name)
+    if any(c in _EMOJI_ORNAMENTS for c in name):
+        name = ''.join(c for c in name if c not in _EMOJI_ORNAMENTS)
+    return name
 
 
 class FuzzyMatcher:
@@ -449,12 +554,29 @@ class FuzzyMatcher:
         # Store original for logging
         original_name = name
 
+        # Map emoji-as-letters (⚽ = 'o' in "SP⚽RTS") and strip emoji decoration, before
+        # the stylized-Unicode strip and ASCII regexes below — so "beIN SP⚽RTS" -> "beIN sports".
+        name = _normalize_emoji(name)
+
+        # Strip stylized-Unicode decoration (superscript/small-cap tier markers,
+        # bullets) up front so the ASCII tag regexes below see plain text. Runs
+        # unconditionally: a token written in superscript/small-caps is decoration
+        # regardless of tag_handling, and it would otherwise block matches
+        # (e.g. a superscript-RAW suffix never matches channel "WeatherNation").
+        name = _strip_stylized_tokens(name)
+
         # CRITICAL FIX (v25.019.0100): Apply quality patterns FIRST, before space normalization
         # This prevents space normalization from breaking quality tags like "4K" -> "4 K"
         # which would then fail to match quality patterns looking for "4K"
         # Bug: Streams with "4K" suffix were not matching because "4K" was split to "4 K"
         # by the space normalization step, then quality patterns couldn't find "4K" at end
         if ignore_quality:
+            # Strip numeric resolution markers (3840P/2160P/1080P/720P/...) before the
+            # digit/letter spacer below would split "3840P" into "3840 P".
+            # Must run before QUALITY_PATTERNS so that removing " 4K " does not glue
+            # "SPoRTS" to "3840P" and break the word-boundary anchor.
+            for pattern in RESOLUTION_PATTERNS:
+                name = re.sub(pattern, '', name, flags=re.IGNORECASE)
             for pattern in QUALITY_PATTERNS:
                 name = re.sub(pattern, '', name, flags=re.IGNORECASE)
 
@@ -664,16 +786,22 @@ class FuzzyMatcher:
             cutoff = threshold if threshold is not None else 0.0
             return _rf_lev.normalized_similarity(str1, str2, score_cutoff=cutoff)
 
-        # Pure Python fallback with optional early termination
+        # Pure Python fallback with optional early termination.
+        # bug-026: this MUST match rapidfuzz Levenshtein.normalized_similarity,
+        # which is 1 - distance / max(len). The previous formula
+        # (len1 + len2 - distance) / (len1 + len2) scored higher for the same
+        # edit distance, so results depended on whether rapidfuzz was installed
+        # (at threshold 95, "Fox Sports 1" vs "Fox Sports 2" flipped the match
+        # decision). Production runs the rapidfuzz path; this aligns the fallback.
         if len(str1) < len(str2):
             str1, str2 = str2, str1
 
-        total_len = len(str1) + len(str2)
+        max_len = len(str1)  # the longer string after the swap
 
-        # Early rejection: if strings differ in length too much, max possible
-        # similarity is bounded. Check before doing the full DP.
+        # Early rejection: the minimum possible edit distance is the length
+        # difference, so similarity can never exceed (max_len - diff) / max_len.
         if threshold is not None:
-            max_possible = (total_len - abs(len(str1) - len(str2))) / total_len
+            max_possible = (max_len - (len(str1) - len(str2))) / max_len
             if max_possible < threshold:
                 return 0.0
 
@@ -687,21 +815,20 @@ class FuzzyMatcher:
                 substitutions = previous_row[j] + (c1 != c2)
                 current_row.append(min(insertions, deletions, substitutions))
 
-            # Early termination: check if minimum possible distance in this row
-            # already makes it impossible to meet the threshold
+            # Early termination: a lower bound on the final distance is the
+            # current row minimum minus the str1 chars still unprocessed.
             if threshold is not None:
                 min_distance_so_far = min(current_row)
-                # Best case: remaining chars all match perfectly
                 remaining = len(str1) - i - 1
                 best_possible_distance = max(0, min_distance_so_far - remaining)
-                best_possible_ratio = (total_len - best_possible_distance) / total_len
+                best_possible_ratio = (max_len - best_possible_distance) / max_len
                 if best_possible_ratio < threshold:
                     return 0.0
 
             previous_row = current_row
 
         distance = previous_row[-1]
-        return (total_len - distance) / total_len
+        return (max_len - distance) / max_len
     
     def process_string_for_matching(self, s):
         """
@@ -772,14 +899,27 @@ class FuzzyMatcher:
         
         if not normalized_query:
             return None, 0
-        
+
         # Process query for token-sort matching
         processed_query = self.process_string_for_matching(normalized_query)
+
+        # Numeric-sibling guard: when the query contains digit-only tokens (e.g. "Fox Sports 1"),
+        # the discriminating digit becomes a single-char edit under token-sort Levenshtein and
+        # long shared prefixes mask it — FS1 vs FS2 scores 25/26 = 96% and slips past threshold 95.
+        # Require any candidate with digits to share at least one with the query.
+        query_digit_tokens = {t for t in normalized_query.split() if t.isdigit()}
 
         best_score = -1.0
         best_match = None
 
         for candidate in candidate_names:
+            if query_digit_tokens:
+                candidate_lower, _ = self._get_cached_norm(candidate, user_ignored_tags)
+                if candidate_lower:
+                    cand_digit_tokens = {t for t in candidate_lower.split() if t.isdigit()}
+                    if not cand_digit_tokens or not (query_digit_tokens & cand_digit_tokens):
+                        continue
+
             # Use cached processed string when available
             processed_candidate = self._get_cached_processed(candidate, user_ignored_tags)
             if not processed_candidate:
@@ -809,6 +949,50 @@ class FuzzyMatcher:
         
         return None, 0
     
+    def alias_lookup(self, query_name, candidate_names, alias_map,
+                     user_ignored_tags=None, ignore_quality=True, ignore_regional=True,
+                     ignore_geographic=True, ignore_misc=True):
+        """Exact-normalized alias match.
+
+        Returns the list of candidate_names whose normalized form (spaced OR
+        punctuation-stripped) exactly equals the normalized form of any alias
+        variant of query_name. Pure; no fuzzy/similarity. Empty list when the
+        map is empty or the channel has no alias entry.
+        """
+        if not alias_map or not candidate_names:
+            return []
+        variants = alias_map.get(query_name)
+        if not variants:
+            return []
+
+        def _forms(s):
+            n = self.normalize_name(
+                s, user_ignored_tags, ignore_quality=ignore_quality,
+                ignore_regional=ignore_regional, ignore_geographic=ignore_geographic,
+                ignore_misc=ignore_misc)
+            if not n:
+                return None, None
+            low = n.lower()
+            return low, re.sub(r'[\s&\-]+', '', low)
+
+        alias_low, alias_nospace = set(), set()
+        for v in variants:
+            low, nospace = _forms(v)
+            if low:
+                alias_low.add(low)
+                alias_nospace.add(nospace)
+        if not alias_low:
+            return []
+
+        hits = []
+        for cand in candidate_names:
+            # Reuse the precompute cache for candidates (mirrors how fuzzy_match
+            # normalizes candidates) — avoids re-normalizing every stream name.
+            low, nospace = self._get_cached_norm(cand, user_ignored_tags)
+            if low and (low in alias_low or nospace in alias_nospace):
+                hits.append(cand)
+        return hits
+
     def fuzzy_match(self, query_name, candidate_names, user_ignored_tags=None, remove_cinemax=False,
                     ignore_quality=True, ignore_regional=True, ignore_geographic=True, ignore_misc=True):
         """
@@ -843,11 +1027,17 @@ class FuzzyMatcher:
         
         if not normalized_query:
             return None, 0, None
-        
+
+        # Numeric-sibling guard: when the query contains digit-only tokens (e.g. "Fox Sports 1"),
+        # the discriminating digit becomes a single-char edit under token-sort Levenshtein and
+        # long shared prefixes mask it — FS1 vs FS2 scores 25/26 = 96% and slips past threshold 95.
+        # Mirrors the inline guard in plugin.py (~2329). Applied to every stage for defense in depth.
+        query_digit_tokens = {t for t in normalized_query.split() if t.isdigit()}
+
         best_match = None
         best_ratio = 0
         match_type = None
-        
+
         # Stage 1: Exact match (after normalization)
         normalized_query_lower = normalized_query.lower()
         normalized_query_nospace = re.sub(r'[\s&\-]+', '', normalized_query_lower)
@@ -857,6 +1047,11 @@ class FuzzyMatcher:
             candidate_lower, candidate_nospace = self._get_cached_norm(candidate, user_ignored_tags)
             if not candidate_lower:
                 continue
+
+            if query_digit_tokens:
+                cand_digit_tokens = {t for t in candidate_lower.split() if t.isdigit()}
+                if not cand_digit_tokens or not (query_digit_tokens & cand_digit_tokens):
+                    continue
 
             # Exact match (space/punctuation insensitive)
             if normalized_query_nospace == candidate_nospace:
@@ -879,6 +1074,11 @@ class FuzzyMatcher:
             if not candidate_lower:
                 continue
 
+            if query_digit_tokens:
+                cand_digit_tokens = {t for t in candidate_lower.split() if t.isdigit()}
+                if not cand_digit_tokens or not (query_digit_tokens & cand_digit_tokens):
+                    continue
+
             # Check if one is a substring of the other
             if normalized_query_lower in candidate_lower or candidate_lower in normalized_query_lower:
                 length_ratio = min(len(normalized_query_lower), len(candidate_lower)) / max(len(normalized_query_lower), len(candidate_lower))
@@ -900,6 +1100,13 @@ class FuzzyMatcher:
         threshold_ratio = self.match_threshold / 100.0
 
         for candidate in candidate_names:
+            if query_digit_tokens:
+                candidate_lower, _ = self._get_cached_norm(candidate, user_ignored_tags)
+                if candidate_lower:
+                    cand_digit_tokens = {t for t in candidate_lower.split() if t.isdigit()}
+                    if not cand_digit_tokens or not (query_digit_tokens & cand_digit_tokens):
+                        continue
+
             # Use cached processed string when available
             processed_candidate = self._get_cached_processed(candidate, user_ignored_tags)
             if not processed_candidate:

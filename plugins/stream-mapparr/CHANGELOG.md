@@ -1,5 +1,147 @@
 # Stream-Mapparr CHANGELOG
 
+## Unreleased
+
+_Nothing yet._
+
+---
+
+## v1.26.1650009 (June 13, 2026)
+
+**Type**: Feature + bugfix release — matcher robustness (stylized-Unicode / emoji / resolution-marker normalization), Phase-1 channel-name alias matching, Dispatcharr-sourced timezone, multi-source stream dedup, CSV source labeling, plus the project's first automated test suite & CI. Consolidates the work shipped across `1.26.1641824`–`1.26.1650009`.
+
+### Matching & normalization
+
+Three normalization passes were added to the top of `FuzzyMatcher.normalize_name` so stylized stream names match their plain channel names. Each was validated by an old-vs-new corpus diff over the real ~54k-name stream pool **and** all channel databases, asserting **0 harmful changes** (no real ASCII or non-Latin name altered).
+
+**Stylized-Unicode decoration stripping** (`bug-048`):
+- Streams decorate names with stylized-Unicode tier/format markers — superscripts (`RK: WEATHERNATION ᴿᴬᵂ`, `… ⁶⁰ᶠᵖˢ`, `… ⱽᴵᴾ`, `… ³⁸⁴⁰ᴾ`), Latin small-caps (`… ꜰʜᴅ`), and bullets (`◉`). The ASCII tag regexes couldn't see them, so `RK: WEATHERNATION ᴿᴬᵂ` never matched channel **WeatherNation** (0 matches).
+- **Fix**: `normalize_name` now drops whole tokens that are pure stylized decoration, then NFKD-canonicalizes the rest. Decoration is detected by Unicode character **name** (`SUPERSCRIPT` / `SUBSCRIPT` / `SMALL CAPITAL` / `MODIFIER LETTER`), **not** hard-coded code-point ranges — real markers fall outside the obvious blocks (small-cap `H`=U+029C, modifier `V`=U+2C7D). Collision-safe (ASCII `Gold`/`VIP` untouched) and non-Latin-safe (Arabic/Cyrillic/CJK preserved). Runs unconditionally; punctuation-glued ornaments (`◉:`, superscript `HD/RAW`) are handled too.
+
+**Emoji-as-letter substitution** (`bug-051`):
+- Some streams use an emoji **as a letter**: `beIN SP⚽RTS` / `Sp⚽rts` (the soccer ball stands in for `o` = SPORTS, the beIN family, ~682 names). Previously the ball became a space (`sp rts`) and never matched `sports`.
+- **Fix**: `normalize_name` maps an emoji to the letter it replaces **only when flanked by ASCII letters** (`SP⚽RTS`→`SPORTS`), and strips emoji used purely as decoration (`♬`, `☾`, standalone `⚽`, and zero-width `U+FE0F`/ZWJ). Recovers the base `beIN Sports` feed when its streams are present in the selected sources.
+
+**Numeric resolution-marker stripping** (`bug-055`):
+- Resolution tags the keyword quality patterns missed — `3840P`, `2160P`, `1080P`/`1080i`, `720P` — are now stripped via `RESOLUTION_PATTERNS` (`\b\d{3,4}[pi]\b`, gated by quality stripping, applied **before** the keyword patterns to avoid space-gluing). Requires the `p`/`i` glued to the digits, so bare numbers and single-digit channel numbers (`Channel 4`, `Studio 1080`) are untouched.
+
+**Matcher score depended on whether `rapidfuzz` was installed** (`bug-026`):
+- `FuzzyMatcher.calculate_similarity` had two implementations — a rapidfuzz fast path returning `1 - distance / max(len)`, and a pure-Python fallback returning `(len1 + len2 - distance) / (len1 + len2)`. They disagreed: at threshold 95, `Fox Sports 1` vs `Fox Sports 2` scored **0.917** (rapidfuzz) vs **0.958** (pure-Python), flipping the match decision.
+- **Fix**: the pure-Python branch (and its early-termination bounds) now use `1 - distance / max(len)`, matching rapidfuzz exactly. Production runs the rapidfuzz path, so live behavior is unchanged — only the no-rapidfuzz fallback was corrected. Enforced by an automated parity test.
+
+### Features
+
+- **Phase-1 channel-name alias matching**: an exact-normalized alias layer (`FuzzyMatcher.alias_lookup` + a built-in US alias table) force-includes known aliases into a channel's matches, independent of the fuzzy threshold. A new **Custom Aliases** setting accepts a JSON object of additional `"channel": ["alias", …]` mappings (merged with the built-ins; invalid entries are logged and skipped).
+- **Timezone now follows Dispatcharr's global setting**: the plugin's own *Timezone* dropdown was **removed**. Scheduled runs read the timezone from Dispatcharr (`CoreSettings.get_system_time_zone()`), validated via `pytz`, with a `UTC` fallback. One less setting to keep in sync.
+- **CSV stream-source labeling**: every stream name in a CSV export is now tagged with its M3U source (e.g. `GO: CNN [streamq.tv-bk15]`), so identical names from different providers are distinguishable in reports.
+- **Multi-source stream dedup** (GitHub #28 / #29): deduplication is keyed on `(name, m3u_account)`, so the same channel name from **different** providers both survive (multi-source failover); only true same-source duplicates collapse. Runs after the quality sort, so the kept copy is the best one.
+- **Norwegian (NO) channel database** (GitHub #30).
+
+### Internal & tooling
+
+- **First automated test suite** (`tests/`, **176 passing**): `fuzzy_matcher` matching/normalization (incl. the three new normalizers, with collision/non-Latin guards), `plugin.py` pure helpers (via a Django-stubbing conftest), channel-database schema validation, and version-sync. Cases are regression locks derived from the bug history — every fix above ships with one.
+- **CI** (`.github/workflows/ci.yml`): py_compile + version-sync + database validation + pytest on every push/PR, with a least-privilege `permissions` block and `pytz` installed for the timezone tests.
+- **Pre-commit gate** (`.githooks/pre-commit`, opt-in) and helper scripts (`scripts/check_version_sync.py`, `scripts/validate_databases.py`).
+- **`docs/DEVELOPMENT.md`** + design specs/plans under `docs/`.
+- **Deploy process corrected**: `plugin.json` mtime hot-reload proved unreliable in practice — always `docker restart dispatcharr` after copying, and copy **every** changed file (incl. `fuzzy_matcher.py` and new modules like `aliases.py`).
+
+### Notes
+- `fuzzy_matcher.py` bumped to **v26.165.0009**.
+- The three normalization fixes are matcher-shared; port guides for the sibling plugins (Channel-Maparr, EPG-Janitor, Lineuparr, Metadata-Trackarr) are kept as local `MATCHER-NORMALIZATION-PORT.md` references.
+
+---
+
+## v1.26.1511211 (May 31, 2026)
+**Type**: Bugfix release — numeric-sibling false-positive in fuzzy matcher.
+
+### Bugfix
+
+**Same-prefix numbered channels false-match at threshold 95** (e.g. `Fox Sports 1` pulling in `Fox Sports 2` streams):
+- Under Stage 3 token-sort Levenshtein, the discriminating digit is a single-character edit. With long shared prefixes the score sails past threshold — `"1 fox sports"` vs `"2 fox sports"` is edit-distance 1 over total-length 26 = **96.15%**, above the default 95.
+- A numeric-token discriminator guard already existed inline in `plugin.py:2329` but not in the two public `FuzzyMatcher` methods, so every caller routed through `fuzzy_match` / `find_best_match` was unprotected.
+- **Fix**: mirror the guard into `fuzzy_matcher.fuzzy_match` (all three stages) and `fuzzy_matcher.find_best_match`. When the normalized query contains digit-only tokens, candidates must (a) have at least one digit token and (b) share at least one with the query. Queries without digits are unconstrained (no behavior change for the common case).
+- Math sanity: `Channel 4` vs `Channel 4K` is safe because `4K` is stripped by quality patterns before this code sees it. `ESPN 2 HD` vs `ESPN HD` (digit-asymmetric) now correctly rejects.
+
+### Notes
+- `fuzzy_matcher.py` bumped to **v26.151.1208** (was 26.095.0100).
+- **Stale data caveat**: pre-existing wrong assignments from earlier runs (ESPN2/ESPN+, C-SPAN2/C-SPAN3, FS1/FS2, Discovery Turbo +1) are not cleaned up by this fix. Run `add_streams_to_channels` with `overwrite_streams=true` to re-match and replace polluted assignments.
+- QA-reviewed (`pr-review-toolkit:code-reviewer`): zero blocking findings.
+
+---
+
+## v1.26.1362122 (May 16, 2026)
+**Type**: Feature + bugfix release — audio-aware stream sorting (fixes GitHub #27) and profile-dropdown loading fix (fixes GitHub #26).
+
+### Bugfixes
+
+**Cannot load channels — "validation failed" when no profiles exist** (fixes GitHub #26):
+- The Channel Profile dropdown built a placeholder option with a blank `value` when the Dispatcharr instance had zero `ChannelProfile` rows. Dispatcharr's plugin-field serializer rejects blank option values (`This field may not be blank`) and **dropped the entire `profile_name` field**, so affected users could never select a profile and every run failed with an opaque "Cannot load channels - validation failed."
+- The placeholder now uses a non-blank `_none` sentinel; all five `profile_name` read paths (`_validate_plugin_settings`, `load_process_channels`, the secondary load path, `sort_streams`, `probe_throughput`) normalize `_none` back to "not configured".
+- `load_process_channels` now surfaces the specific failed validation check (e.g. `Cannot load channels - Profile Name: Not configured`) instead of the generic message.
+
+### Features
+
+**Audio priority dimensions in the quality sort** (addresses "two equal-resolution streams, one 5.1 one stereo" — surround should win):
+- Two new opt-in settings, each a comma-separated list ordered most-preferred-first, left to right:
+  - `audio_channels_priority` (e.g. `7.1, 5.1, stereo, mono`)
+  - `audio_codec_priority` (e.g. `eac3, ac3, aac, mp2`)
+- Matching is **case-insensitive substring**. Anything not listed (or with missing audio info) sorts last.
+- Audio is factored into `_sort_streams_by_quality` **after** the video resolution/FPS tier and **before** the pixel/FPS tiebreaker. Channel layout is ranked **before** codec.
+- Data source is `Stream.stream_stats` (`audio_channels` / `audio_codec`, populated by IPTV Checker) — no probing is performed.
+
+### Notes
+- Both settings default to empty (disabled). When blank, the sort is unchanged — **no behavior change on upgrade**.
+- Internal: priority-list parsing delegates to the existing quote-aware `_parse_tags` helper instead of a duplicate splitter.
+
+---
+
+## v1.26.1171629 (April 27, 2026)
+**Type**: Bugfix series after the v1.26.1171458 throughput-sort feature went live.
+
+### Bugfixes (rolled up from 1171545 → 1171547 → 1171558 → 1171604 → 1171629)
+- **`timezone.utc` removed in Django 5** — the probe action used `datetime.now(timezone.utc)` from `django.utils.timezone`. Switched to `timezone.now()` (Django's aware-UTC) and aliased the stdlib's `datetime.timezone` as `dt_timezone` for the `_is_probe_fresh` parser. Same latent bug exists at `_fire_webhook` line 2543 — left for a follow-up since it doesn't fire today.
+- **Probe scope ignored `selected_groups`** — clicking *Probe Stream Throughput* with `Movies` selected pulled all 3,425 streams in the profile (45-minute estimate). Probe action now narrows to `Channel.objects.filter(channel_group__name__in=...)` like the other actions.
+- **`UserAgent` model passed to `urllib.Request`** — `M3UAccount.user_agent` is a ForeignKey to a `UserAgent` row, not a string. The helper now dives into `.user_agent / .value / .string / .name` on the related instance to extract the actual UA.
+- **Failed probes locked re-probing for a TTL window** — `_is_probe_fresh` returned True when a cache entry had a fresh timestamp but `throughput_mbps == None`. After the all-failures run, the entire group was un-re-probable for 30 minutes. Now: any null-mbps entry is treated as never-fresh.
+- **Tiny-fast reads no longer report fake 0 Mbps** — if a probe returns under 64 KB in under 1 second, we record null instead of computing a tiny denominator-driven Mbps. Also prepares for HLS-aware probing (`.m3u8` playlists fall in this band today).
+- **Probe failures elevated to WARNING** — exception class + message are logged so an "all probes failed" run is diagnosable from normal log output.
+- **Sort CSV gains `tiers`, `throughput_mbps`, `edge_ips` columns** — semicolon-joined, indices aligned with `stream_names`. Lets you eyeball which sources got demoted by throughput vs which were simply lower resolution.
+
+### Verified end-to-end on real STL OTA streams
+- 33 streams probed, 31 measured. Edge IPs visible (`206.53.1.100`, `213.178.142.x`, etc.).
+- KDNL (ABC) had three sources at 0.00 / 8.81 / 13.05 Mbps on three different edges — the broken one was correctly demoted from equal-rank to `insufficient` in the live sort.
+- KMOV (CBS): 5 healthy + 1 marginal + 1 unknown + 3 insufficient — tiers slot in exactly as the spec describes.
+
+---
+
+## v1.26.1171458 (April 27, 2026)
+**Type**: Feature Release — throughput-based stream sorting.
+
+### Features
+
+**Measured-throughput sort dimension** (addresses the "two 720p60 streams, wildly different real bitrate" problem):
+- New `probe_throughput` action: opens a short HTTP GET to each stream currently assigned to a channel in the selected profile, sums bytes over a fixed window (default 8s), and records Mbps + final-URL host (`edge_ip`) in `/data/stream_mapparr_throughput_cache.json`.
+- Probes are **serialized per M3U account** with a 1-second per-account gap and a global cap of `probe_rate_per_minute` (default 6).
+- Cached probes are reused for `probe_cache_ttl_minutes` minutes (default 30); only stale or missing entries are re-probed.
+- A tier dimension is **prepended** to the existing `_sort_streams_by_quality` sort key:
+  - `healthy` (≥ nominal × 1.5), `marginal` (≥ nominal × `bitrate_safety_margin`), `unknown` (no fresh probe), `insufficient` (below margin).
+  - When all candidates are `unknown`, the prepended dimension collapses and the existing resolution/FPS/M3U-priority order is preserved — feature degrades cleanly if no probes have run.
+- Nominal bitrate is estimated from `stream_stats.width/height/source_fps` against a heuristic table (1080p60 ≈ 6 Mbps, 720p60 ≈ 4, etc.) — `PluginConfig.NOMINAL_BITRATE_TABLE`.
+
+### New settings (additive; defaults preserve current behavior when probes haven't run)
+- `enable_throughput_sorting` (bool, default `true`)
+- `probe_duration_seconds` (default `8`)
+- `probe_cache_ttl_minutes` (default `30`)
+- `probe_rate_per_minute` (default `6`)
+- `bitrate_safety_margin` (default `1.10`)
+
+### Notes
+- Probing is opt-in per run via the new action button — sort never blocks on a probe; it always reads the cache.
+- Cache file: `/data/stream_mapparr_throughput_cache.json`. Per-stream entry: `{throughput_mbps, throughput_measured_at, edge_ip, nominal_bitrate_mbps, probe_duration_s}`.
+- Real-time mid-stream degradation detection is explicitly **out of scope** — that's a ts_proxy concern.
+
+---
+
 ## v1.26.1082140 (April 18, 2026)
 **Type**: Feature + Performance + UX Release. Version scheme switches to calver (`1.MAJOR.DDDHHMM`, UTC day-of-year + HHMM) to match the Lineuparr / Channel-Mapparr / EPG-Janitor / IPTV Checker cohort. Use `Stream-Mapparr/bump_version.py` to keep `plugin.json` and `plugin.py` versions in sync.
 
