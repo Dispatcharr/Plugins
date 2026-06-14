@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-13T13:21:09Z",
+  "generated_at": "2026-06-14T02:51:41Z",
   "manifest": {
     "slug": "dispatcharr-ranked-matchups",
     "name": "Ranked Matchups (Top Games)",
@@ -11,19 +11,29 @@
     "repo_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-06-13T13:21:01Z",
+    "last_updated": "2026-06-14T02:51:33Z",
     "latest": {
-      "version": "1.4.0",
-      "build_timestamp": "2026-06-13T13:21:01Z",
-      "last_updated": "2026-06-13T13:21:01Z",
-      "checksum_md5": "45e24aef9b1864f5629f8c8a054ac5e0",
-      "checksum_sha256": "dcb1e12325d9346a0948b3699f4cb1b9eafd5030c4ebe94a21d9dcd121d5ce8a",
-      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.4.0/plugin.zip",
-      "latest_url": "dispatcharr-ranked-matchups-1.4.0/dispatcharr-ranked-matchups-1.4.0.zip",
-      "url": "dispatcharr-ranked-matchups-1.4.0/dispatcharr-ranked-matchups-1.4.0.zip",
-      "size": 312
+      "version": "1.5.0",
+      "build_timestamp": "2026-06-14T02:51:33Z",
+      "last_updated": "2026-06-14T02:51:33Z",
+      "checksum_md5": "74b5c647079e1947ca49f6fbaca1f039",
+      "checksum_sha256": "829bcb6964bfb443f982fb816f82240a8c26f6afa08e503011ce3d695732b7a5",
+      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.5.0/plugin.zip",
+      "latest_url": "dispatcharr-ranked-matchups-1.5.0/dispatcharr-ranked-matchups-1.5.0.zip",
+      "url": "dispatcharr-ranked-matchups-1.5.0/dispatcharr-ranked-matchups-1.5.0.zip",
+      "size": 317
     },
     "versions": [
+      {
+        "version": "1.5.0",
+        "build_timestamp": "2026-06-14T02:51:33Z",
+        "last_updated": "2026-06-14T02:51:33Z",
+        "checksum_md5": "74b5c647079e1947ca49f6fbaca1f039",
+        "checksum_sha256": "829bcb6964bfb443f982fb816f82240a8c26f6afa08e503011ce3d695732b7a5",
+        "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.5.0/plugin.zip",
+        "url": "dispatcharr-ranked-matchups-1.5.0/dispatcharr-ranked-matchups-1.5.0.zip",
+        "size": 317
+      },
       {
         "version": "1.4.0",
         "build_timestamp": "2026-06-13T13:21:01Z",
@@ -46,5 +56,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCai1ZRgAKCRB+wDprTCI0\nzsVDAQDkpZpbTzwTXI0Dz41THSUETd8YsaHpuS2qbe82i6zbpQD9Em7aUZSb9HOr\nViYcJbd7naHFkIM5ZmJgoVUSunhIYwE=\n=fHcU\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCai4XPQAKCRB+wDprTCI0\nztjDAQDbDQiin69yzq9Y9aRz7U6uHEI/tq21+AJm+eqXRUfn3AEAmqe85XxY2MBW\nqSfvdG5Ryb1QaB/4sYejcBcY0Y6hSwE=\n=8Q2i\n-----END PGP SIGNATURE-----"
 }
