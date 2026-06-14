@@ -44,7 +44,7 @@ PROGRESS_FILE = "/data/channel_mapparr_progress.json"
 class PluginConfig:
     """Configuration constants for Channel Maparr."""
 
-    PLUGIN_VERSION = "1.26.1430910"
+    PLUGIN_VERSION = "1.26.1651015"
 
     # Channel Database Settings
     DEFAULT_CHANNEL_DATABASES = "US"
@@ -76,6 +76,7 @@ class PluginConfig:
         "GB": "united-kingdom", "AU": "australia", "DE": "germany",
         "FR": "france", "IT": "italy", "ES": "spain", "MX": "mexico",
         "BR": "brazil", "IN": "india", "IE": "ireland", "NL": "netherlands",
+        "NO": "norway",
     }
 
     # Rate Limiting
