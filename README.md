@@ -11,7 +11,7 @@ This branch contains all published plugin releases.
 
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
-| [`Channel Mapparr`](#channel-mapparr) | `1.26.1430910` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
+| [`Channel Mapparr`](#channel-mapparr) | `1.26.1651015` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.0.1` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.7.0` | Jacob-Lasky | MIT | Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.3` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
@@ -35,7 +35,7 @@ This branch contains all published plugin releases.
 
 ### [Channel Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-mapparr/README.md)
 
-**Version:** `1.26.1430910` | **Author:** PiratesIRC | **Last Updated:** May 23 2026, 17:06 UTC
+**Version:** `1.26.1651015` | **Author:** PiratesIRC | **Last Updated:** Jun 14 2026, 17:07 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries.
 
@@ -44,10 +44,10 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.1430910`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.1430910/channel-mapparr-1.26.1430910.zip)
-- [All Versions (2 available)](./metadata/channel-mapparr)
+- [Latest Release (`1.26.1651015`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.1651015/channel-mapparr-1.26.1651015.zip)
+- [All Versions (3 available)](./metadata/channel-mapparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | **Last Change:** [`309559e`](https://github.com/Dispatcharr/Plugins/commit/309559e7795e3c0447f90067e0c011d8c1eb9d45)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | **Last Change:** [`7a91063`](https://github.com/Dispatcharr/Plugins/commit/7a910634c7472b5b43c8bf7cff854541cb4be4df)
 
 ---
 
@@ -375,4 +375,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 14 2026, 12:50 UTC*
+*Last updated: Jun 14 2026, 17:08 UTC*
