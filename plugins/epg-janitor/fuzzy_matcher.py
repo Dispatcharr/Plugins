@@ -19,13 +19,23 @@ A future refactor may split the two subsystems into separate modules.
 """
 
 import json
+import logging
 import os
 import re
-import logging
 import unicodedata
 from glob import glob
 
-__version__ = "1.26.1420824"
+# Optional C-accelerated Levenshtein. When present, the matcher uses rapidfuzz's
+# normalized_similarity (1 - distance/max(len)); the pure-Python fallback below
+# computes the identical value (bug-026). rapidfuzz is an OPTIONAL runtime dep —
+# absence simply falls back to pure Python. (dev/CI installs it via requirements-dev.txt.)
+try:
+    from rapidfuzz.distance import Levenshtein as _rf_lev
+    _USE_RAPIDFUZZ = True
+except ImportError:
+    _USE_RAPIDFUZZ = False
+
+__version__ = "1.26.1660712"
 
 LOGGER = logging.getLogger("plugins.epg_janitor.fuzzy_matcher")
 if not LOGGER.handlers:
@@ -53,6 +63,23 @@ QUALITY_PATTERNS = [
     # Trailing colon form: "HD:", "4K:"
     r'\b(?:4K|8K|UHD|FHD|HD|SD|FD|Unknown|Unk|Slow|Dead):\s',
 ]
+
+# Numeric resolution markers the keyword QUALITY_PATTERNS miss: 720p, 1080p/i, 2160p,
+# 3840P, 480p, etc. — a 3-4 digit run glued directly to p/i. The 3-digit lower bound
+# excludes 2-digit noise; the 4-digit upper bound excludes 5-digit numbers (10800p won't
+# match). The p/i must be GLUED to the digits (no space): real markers are always written
+# "720P"/"3840P", and requiring the glue avoids stripping a spaced standalone P/I such as a
+# roman numeral ("Volume 100 I"). The p/i \b anchor keeps bare numbers (1080, "Channel 4")
+# intact. Applied with re.IGNORECASE in the ignore_quality block, like QUALITY_PATTERNS.
+RESOLUTION_PATTERNS = [
+    r'\b\d{3,4}[pi]\b',
+]
+
+
+# Matches "+1"/"+2" time-shift suffixes in the ORIGINAL (pre-normalization) name.
+# Must be checked before normalization because "+" is preserved differently across
+# paths. \d{1,2} excludes brand "+" like "Discovery+"/"Disney+". Ported from Lineuparr.
+_PLUS_SHIFT_RE = re.compile(r'\+\s{0,2}\d{1,2}\b')
 
 REGIONAL_PATTERNS = [
     # Always stripped when ignore_regional=True; these never distinguish separate feeds.
@@ -82,15 +109,28 @@ GEOGRAPHIC_PATTERNS = [
     r'\b[A-Z]{2,3}\s*-\s*',
     r'\|[A-Z]{2,3}\|\s*',
     r'\[[A-Z]{2,3}\]\s*',
-    # EPG-Janitor legacy: bare "US " / "USA " at word boundary
-    r'\bUSA?:\s',
-    r'\bUSA?\s',
+    # EPG-Janitor legacy: bare "US " / "USA " at word boundary. The NETWORK
+    # negative-lookahead protects the real channel "USA Network" (was mis-stripped
+    # to "Network"). Case-insensitive because GEOGRAPHIC_PATTERNS run with re.IGNORECASE.
+    r'\bUSA?:\s(?!network\b|open\b)',
+    r'\bUSA?\s(?!network\b|open\b)',
 ]
 
 PROVIDER_PREFIX_PATTERNS = [
     r'^(?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\s*[:\-\|]\s*',
     r'^\s*\((?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\)\s*',
     r'\s*\|\s*(?:US|USA|UK|CA|AU|FR|DE|ES|IT|NL|BR|MX|IN)\s*$',
+    # Country code glued to a quality tag, no separator word
+    # ("UKSD: Sky Sports", "UKHD ESPN"). Ported from Lineuparr.
+    r'^(?:US|UK)(?:SD|HD|FHD|UHD|FD|HEVC|4K|8K)\b\s*[:\-\|]?\s*',
+    # Bare country tag + whitespace, no separator ("US Racer", "FR beIN SPORTS").
+    # TRIMMED set: UK/CA/DE/AU dropped (collide with "UK Gold"); FRA/GER dropped
+    # (zero real-DB hits, risk over-stripping "GER TV"). US guards "US Open" — a
+    # tennis brand, not a country tag (the only real bare-US-prefixed DB brand).
+    r'^(?:US(?!\s+open\b)|FR|MX|MEX)\s+',
+    # FAST streaming-platform source tags. Separator REQUIRED so it can't eat
+    # "GOLF"/"PLEX TV Movies". Ported from Lineuparr.
+    r'^(?:RK|GO|TUBI|PLUTO|XUMO|PLEX|STIRR|FREEVEE|GLANCE)\s*[:\-\|]\s*',
 ]
 
 MISC_PATTERNS = [
@@ -101,6 +141,114 @@ MISC_PATTERNS = [
     # Any remaining parenthesized group (broad Lineuparr-style fallback)
     r'\s*\([^)]*\)\s*',
 ]
+
+
+# Spelled-out number -> digit, so "BBC Three" matches "BBC 3" and
+# "Three Angels Broadcasting" matches "3 Angels Broadcasting". Word boundaries
+# protect brand names with embedded letters ("Onesimus"). Ported from Channel-Maparr.
+NUM_WORDS = {
+    "one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
+    "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10",
+    "eleven": "11", "twelve": "12",
+}
+NUM_WORDS_RE = re.compile(
+    r'\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b',
+    re.IGNORECASE,
+)
+
+
+# --------------------------------------------------------------------------- #
+# Stylized-Unicode decoration stripping
+# --------------------------------------------------------------------------- #
+# Streams tag names with stylized-Unicode tier/format markers (superscript
+# "WEATHERNATION RAW", small-cap "FHD", bullet-prefixed "CNN") that the ASCII tag
+# regexes below cannot see. We drop whole tokens that are pure decoration BEFORE
+# the ASCII pipeline runs. Detection is by Unicode character *name* (not code-point
+# ranges), so it covers superscripts, "modifier letter" superscript capitals, and
+# Latin small-caps wherever they live (e.g. small-cap H is U+029C in IPA Extensions
+# and modifier V is U+2C7D in Latin-Ext-C, both outside the obvious blocks).
+
+# Ornament glyphs whose Unicode name carries no decoration keyword.
+_DECORATIVE_SYMBOLS = frozenset("◉")  # FISHEYE; add individual chars (not strings) here
+
+
+def _is_decorative_char(ch):
+    """True for a stylized letterform/ornament that carries no semantic content in a
+    channel name (superscripts, subscripts, modifier-letter superscript capitals,
+    Latin small-capitals, curated bullets). ASCII and ordinary letters return False."""
+    if ch.isascii():
+        return False
+    if ch in _DECORATIVE_SYMBOLS:
+        return True
+    try:
+        nm = unicodedata.name(ch)
+    except ValueError:
+        # unnamed code point (control char / lone surrogate) -> not decoration
+        return False
+    return ('SUPERSCRIPT' in nm or 'SUBSCRIPT' in nm
+            or 'SMALL CAPITAL' in nm or 'MODIFIER LETTER' in nm)
+
+
+def _strip_stylized_tokens(name):
+    """Drop whitespace tokens that are pure stylized decoration, then NFKD-canonicalize
+    the remainder. A token is decoration when it has >=1 decorative char, no ASCII
+    alphanumeric, and every char is decorative or ASCII punctuation (so a bullet glued
+    to a colon, or "HD/RAW" written in superscripts, are dropped too). Real ASCII words
+    (Gold/VIP) and non-Latin letters (Arabic/Cyrillic/CJK) are always kept. ASCII-only
+    input is returned unchanged via the fast path (no per-char work; NFKD is a no-op
+    on ASCII, so skipping it changes nothing)."""
+    if name.isascii():
+        return name
+    kept = []
+    for tok in name.split():
+        has_decorative = any(_is_decorative_char(c) for c in tok)
+        has_ascii_alnum = any(c.isascii() and c.isalnum() for c in tok)
+        only_decorative_or_punct = all(
+            _is_decorative_char(c) or (c.isascii() and not c.isalnum()) for c in tok
+        )
+        if has_decorative and only_decorative_or_punct and not has_ascii_alnum:
+            continue  # pure decoration -> drop the whole token
+        kept.append(tok)
+    return unicodedata.normalize('NFKD', ' '.join(kept))
+
+
+# --------------------------------------------------------------------------- #
+# Emoji-as-letter + emoji decoration normalization
+# --------------------------------------------------------------------------- #
+# Some streams use an emoji AS A LETTER inside a word: "SP⚽RTS" / "Sp⚽rts" where the
+# soccer ball stands in for 'o' (= SPORTS, the beIN family). _strip_stylized_tokens keeps
+# the token (it has ASCII alnum) and process_string_for_matching would turn the ball into a
+# space ("sp rts"), so it never matches "sports". We substitute the glyph for the letter it
+# replaces (only when flanked by ASCII letters) and strip emoji used purely as decoration.
+
+# Emoji that visually replace an ASCII letter when embedded in a word. Extensible.
+_EMOJI_LETTER_MAP = {'⚽': 'o'}            # SOCCER BALL = 'o'  (SP⚽RTS -> SPORTS)
+# Pictographic ornaments to delete. NOTE: ⚽ is intentionally in BOTH maps — the letter
+# map handles it mid-word (-> 'o'); here it catches any ⚽ NOT flanked by ASCII letters
+# (standalone/edge), which the substitution above leaves untouched.
+_EMOJI_ORNAMENTS = frozenset('♬☾⚽')       # beamed notes, last-quarter moon, soccer ball
+# Zero-width / invisible code points that only add noise to a name.
+_ZERO_WIDTH = ('️', '‍')         # VARIATION SELECTOR-16, ZERO WIDTH JOINER
+
+
+def _normalize_emoji(name):
+    """Map emoji-as-letters to their letter and strip emoji decoration.
+
+    The letter substitution fires ONLY when the glyph is flanked by ASCII letters
+    (so "SP⚽RTS" -> "SPoRTS" but a standalone/edge "⚽" is treated as decoration and
+    dropped). Zero-width selectors and ornament pictographs are deleted outright.
+    ASCII-only input is returned unchanged (no emoji possible)."""
+    if name.isascii():
+        return name
+    for zw in _ZERO_WIDTH:
+        if zw in name:
+            name = name.replace(zw, '')
+    for glyph, letter in _EMOJI_LETTER_MAP.items():
+        if glyph in name:
+            name = re.sub(r'(?<=[A-Za-z])' + re.escape(glyph) + r'(?=[A-Za-z])', letter, name)
+    if any(c in _EMOJI_ORNAMENTS for c in name):
+        name = ''.join(c for c in name if c not in _EMOJI_ORNAMENTS)
+    return name
 
 
 class FuzzyMatcher:
@@ -121,6 +269,7 @@ class FuzzyMatcher:
         self.premium_channels = []
         self.premium_channels_full = []
         self.channel_lookup = {}
+        self._known_callsigns = None  # lazily built allowlist of DB station callsigns
         self.country_codes = None
         self.ignore_quality = True
         self.ignore_regional = True
@@ -185,7 +334,7 @@ class FuzzyMatcher:
 
         for channel_file in channel_files:
             try:
-                with open(channel_file, 'r', encoding='utf-8') as f:
+                with open(channel_file, encoding='utf-8') as f:
                     data = json.load(f)
                     # Extract the channels array from the JSON structure
                     channels_list = data.get('channels', []) if isinstance(data, dict) else data
@@ -245,6 +394,7 @@ class FuzzyMatcher:
         self.premium_channels = []
         self.premium_channels_full = []
         self.channel_lookup = {}
+        self._known_callsigns = None  # rebuilt lazily from the freshly loaded DBs
 
         # Update country_codes tracking
         self.country_codes = country_codes
@@ -265,7 +415,7 @@ class FuzzyMatcher:
             channel_files = glob(pattern)
 
         if not channel_files:
-            self.logger.warning(f"No channel database files found to load")
+            self.logger.warning("No channel database files found to load")
             return False
 
         self.logger.info(f"Loading {len(channel_files)} channel database file(s): {[os.path.basename(f) for f in channel_files]}")
@@ -275,7 +425,7 @@ class FuzzyMatcher:
 
         for channel_file in channel_files:
             try:
-                with open(channel_file, 'r', encoding='utf-8') as f:
+                with open(channel_file, encoding='utf-8') as f:
                     data = json.load(f)
                     # Extract the channels array from the JSON structure
                     channels_list = data.get('channels', []) if isinstance(data, dict) else data
@@ -339,14 +489,39 @@ class FuzzyMatcher:
         'KIND', 'KING', 'KINGS', 'KISS', 'KITE', 'KNEE', 'KNEW', 'KNOW', 'KNOWN',
     })
 
+    def _get_known_callsigns(self):
+        """Allowlist of callsigns KNOWN from the loaded channel databases — the
+        leading callsign of any station-format DB name ("KGTV (ABC)", "WPLG-DT").
+        Used to validate that a leading callsign-shaped token is a REAL station
+        (not a callsign-shaped English word like "KILN"/"WHIP") before promoting
+        it to high confidence in Priority 3. Built lazily and cached; empty until
+        reload_databases() loads a country DB (then Priority 3 simply never fires,
+        which is the safe default). Station-format only — a callsign must be
+        followed by '(' or '-' so words like "WORLD Fishing Network" are excluded.
+        """
+        if self._known_callsigns is None:
+            cs = set()
+            for ch in (self.premium_channels_full or []):
+                name = (ch.get('channel_name') or '').upper() if isinstance(ch, dict) else str(ch).upper()
+                m = re.match(r'([KW][A-Z]{2,4})(?:-(?:TV|CD|LP|DT|LD)\d?)?\s*[(\-]', name)
+                if m:
+                    cs.add(m.group(1))
+            for ch in (self.broadcast_channels or []):
+                token = (ch.get('callsign') or ch.get('channel_name') or '').upper() if isinstance(ch, dict) else str(ch).upper()
+                m = re.match(r'([KW][A-Z]{2,4})\b', token)
+                if m:
+                    cs.add(m.group(1))
+            self._known_callsigns = cs
+        return self._known_callsigns
+
     def _compute_callsign_with_confidence(self, channel_name):
         """
         Extract US TV callsign with a confidence flag.
 
-        Returns (callsign, is_high_confidence). High confidence =
-        Priorities 1-3 (parenthesized / suffixed-paren / end-of-name).
-        Priority 4 (any loose word) is low confidence. (None, False)
-        when nothing extractable.
+        Returns (callsign, is_high_confidence). High confidence = Priorities 1-4
+        (parenthesized / suffixed-paren / leading-callsign-then-network /
+        end-of-name). Priority 5 (any loose word) is low confidence.
+        (None, False) when nothing extractable.
 
         Channel name is pre-processed to strip common provider prefixes
         (leading "D<digits>-" and "US"/"USA" prefixes) before matching.
@@ -367,14 +542,29 @@ class FuzzyMatcher:
         if paren_suffix_match:
             return paren_suffix_match.group(1).upper(), True
 
-        # Priority 3: Callsigns at the end
+        # Priority 3: leading callsign immediately followed by a parenthesized
+        # tag — "KSVI (ABC)", "WYTV-DT (ABC)" — the common EPG feed format (e.g.
+        # jesmann-US). Promote to HIGH confidence ONLY when the leading token is a
+        # KNOWN callsign from the loaded channel databases (a data-driven
+        # allowlist), so callsign-shaped English words ("KILN (ABC)", "WHIP
+        # (FOX)") are NOT promoted — a denylist cannot bound that open-ended set.
+        # The allowlist also rescues real stations whose callsign is an English
+        # word ("WAVE (NBC)"). The FULL callsign (incl. -DT2 subchannel suffix) is
+        # returned so normalize_callsign keeps subchannels distinct.
+        lead_net_match = re.match(
+            r'\s*(([KW][A-Z]{2,4})(?:-(?:TV|CD|LP|DT|LD)\d?)?)\s*\([A-Za-z0-9]+\)',
+            channel_name, re.IGNORECASE)
+        if lead_net_match and lead_net_match.group(2).upper() in self._get_known_callsigns():
+            return lead_net_match.group(1).upper(), True
+
+        # Priority 4: Callsigns at the end
         end_match = re.search(r'\b([KW][A-Z]{2,4}(?:-(?:TV|CD|LP|DT|LD))?)\s*(?:\.[a-z]+)?\s*$', channel_name, re.IGNORECASE)
         if end_match:
             callsign = end_match.group(1).upper()
             if callsign not in self._CALLSIGN_DENYLIST:
                 return callsign, True
 
-        # Priority 4: Any word matching callsign pattern (low confidence)
+        # Priority 5: Any word matching callsign pattern (low confidence)
         word_match = re.search(r'\b([KW][A-Z]{2,4}(?:-(?:TV|CD|LP|DT|LD))?)\b', channel_name, re.IGNORECASE)
         if word_match:
             callsign = word_match.group(1).upper()
@@ -433,8 +623,25 @@ class FuzzyMatcher:
 
         original_name = name
 
+        # Map emoji-as-letters (⚽ = 'o' in "SP⚽RTS") and strip emoji decoration, before
+        # the stylized-Unicode strip and ASCII regexes below — so "beIN SP⚽RTS" -> "beIN sports".
+        name = _normalize_emoji(name)
+
+        # Strip stylized-Unicode decoration (superscript/small-cap tier markers,
+        # bullets) up front so the ASCII tag regexes below see plain text. Runs
+        # unconditionally: a token written in superscript/small-caps is decoration
+        # regardless of tag_handling, and it would otherwise block matches
+        # (e.g. a superscript-RAW suffix never matches channel "WeatherNation").
+        name = _strip_stylized_tokens(name)
+
         # Quality patterns FIRST (before space normalization)
         if ignore_quality:
+            # Strip numeric resolution markers (3840P/2160P/1080P/720P/...) before the
+            # digit/letter spacer below would split "3840P" into "3840 P".
+            # Must run before QUALITY_PATTERNS so that removing " 4K " does not glue
+            # "SPoRTS" to "3840P" and break the word-boundary anchor.
+            for pattern in RESOLUTION_PATTERNS:
+                name = re.sub(pattern, '', name, flags=re.IGNORECASE)
             for pattern in QUALITY_PATTERNS:
                 name = re.sub(pattern, '', name, flags=re.IGNORECASE)
 
@@ -444,6 +651,22 @@ class FuzzyMatcher:
 
         # Normalize hyphens to spaces
         name = re.sub(r'-', ' ', name)
+
+        # Number-word -> digit (after hyphen normalization, before prefix strip).
+        name = NUM_WORDS_RE.sub(lambda m: NUM_WORDS[m.group(0).lower()], name)
+
+        # Dot between LETTERS -> space ("JusticeCentral.TV" -> "JusticeCentral TV",
+        # "Racing.com" -> "Racing com"). Restricted to letters on BOTH sides
+        # (Channel-Maparr uses \w) so radio frequencies like "97.2"/"102.3" in the
+        # CA DB are NOT split into "97 2".
+        name = re.sub(r'(?<=[A-Za-z])\.(?=[A-Za-z])', ' ', name)
+
+        # Split CamelCase: "JusticeCentral" -> "Justice Central", "DangerTV" ->
+        # "Danger TV". The 4-char floor on the acronym rule protects short brands
+        # like "MeTV"/"truTV"/"GameTV" whose existing matches depend on the
+        # un-split form. Ported from Channel-Maparr.
+        name = re.sub(r'([a-z])([A-Z][a-z])', r'\1 \2', name)
+        name = re.sub(r'([a-z]{4,})([A-Z]{2,})\b', r'\1 \2', name)
 
         # Remove leading parenthetical prefixes
         while name.lstrip().startswith('('):
@@ -518,6 +741,13 @@ class FuzzyMatcher:
             _stripped = re.sub(_suffix_pattern, '', name, flags=re.IGNORECASE).strip()
             if _stripped and len(_stripped.split()) >= 2:
                 name = _stripped
+
+        # Re-apply digit/letter spacing: the tag/paren/callsign removals above can
+        # glue a digit to an adjacent token once the parenthetical between them is
+        # stripped ("ABC 7 (KGO) SAN" -> "ABC 7SAN"), which breaks US OTA matching
+        # (network + OTA-number + (callsign) + city is the dominant US format).
+        name = re.sub(r'([a-zA-Z])(\d)', r'\1 \2', name)
+        name = re.sub(r'(\d)([a-zA-Z])', r'\1 \2', name)
 
         # Clean up whitespace
         name = re.sub(r'\s+', ' ', name).strip()
@@ -728,23 +958,38 @@ class FuzzyMatcher:
         return " ".join(parts)
 
     def calculate_similarity(self, str1, str2, min_ratio=0.0):
-        """Levenshtein distance-based similarity ratio (0.0 to 1.0).
-        If min_ratio > 0, returns 0.0 early when the result can't reach it."""
+        """Levenshtein similarity ratio (0.0-1.0), defined as 1 - distance/max(len).
+        If min_ratio > 0, returns 0.0 early when the result can't reach it.
+
+        bug-026: the ratio MUST be distance/max(len), matching rapidfuzz
+        Levenshtein.normalized_similarity. The old (len1+len2-distance)/(len1+len2)
+        formula scored higher for the same edit distance and let numbered siblings
+        ("Fox Sports 1" vs "2") pass threshold 95. EPG-Janitor ships no rapidfuzz,
+        so the pure-Python path ran on every call - this fixes it for both paths.
+        """
+        if len(str1) == 0 or len(str2) == 0:
+            return 0.0
+
+        # Fast path: C-accelerated rapidfuzz when available (same definition).
+        if _USE_RAPIDFUZZ:
+            # Return the true normalized similarity with NO score_cutoff:
+            # rapidfuzz's cutoff rounding zeroes a score landing exactly on
+            # min_ratio, but the pure-Python path returns it. Dropping the cutoff
+            # makes the two paths agree at the threshold boundary; callers apply
+            # their own >= comparison. (rapidfuzz is C-accelerated either way.)
+            return _rf_lev.normalized_similarity(str1, str2)
+
         if len(str1) < len(str2):
             str1, str2 = str2, str1
         len1, len2 = len(str1), len(str2)
-        if len2 == 0 or len1 == 0:
-            return 0.0
+        max_len = len1  # the longer string after the swap
 
-        total_len = len1 + len2
-        # Length-difference pre-check: even with 0 substitutions, the distance
-        # is at least (len1 - len2), so the max possible ratio is bounded.
+        # Length-difference pre-check: minimum possible distance is (len1 - len2),
+        # so the max possible ratio is (max_len - (len1 - len2)) / max_len.
         if min_ratio > 0:
-            max_possible = (total_len - (len1 - len2)) / total_len
+            max_possible = (max_len - (len1 - len2)) / max_len
             if max_possible < min_ratio:
                 return 0.0
-            # Max allowed distance to still meet min_ratio
-            max_distance = int(total_len * (1.0 - min_ratio))
 
         previous_row = list(range(len2 + 1))
         for i, c1 in enumerate(str1):
@@ -754,14 +999,19 @@ class FuzzyMatcher:
                 deletions = current_row[j] + 1
                 substitutions = previous_row[j] + (c1 != c2)
                 current_row.append(min(insertions, deletions, substitutions))
-            # Early termination: if the minimum value in this row already
-            # exceeds max_distance, no subsequent row can produce a valid result
-            if min_ratio > 0 and min(current_row) > max_distance:
-                return 0.0
+            # Early termination: a lower bound on the final distance is the current
+            # row minimum minus the str1 chars still unprocessed.
+            if min_ratio > 0:
+                min_distance_so_far = min(current_row)
+                remaining = len1 - i - 1
+                best_possible_distance = max(0, min_distance_so_far - remaining)
+                best_possible_ratio = (max_len - best_possible_distance) / max_len
+                if best_possible_ratio < min_ratio:
+                    return 0.0
             previous_row = current_row
 
         distance = previous_row[-1]
-        return (total_len - distance) / total_len
+        return (max_len - distance) / max_len
 
     @staticmethod
     def _length_scaled_threshold(base_threshold, shorter_len):
@@ -777,23 +1027,74 @@ class FuzzyMatcher:
         """Check that distinctive tokens are shared between two strings.
 
         Basic mode: at least one token (>= min_token_len) must be shared.
-        Majority mode: uses all tokens (>= 2 chars) and requires that more than
-        half of the smaller set overlaps. Catches false positives like
-        "america racing" vs "america bbc" while allowing single-token matches.
+        Majority mode: uses all meaningful tokens (>= 2 chars, plus single digits),
+        requires that more than half of the smaller set overlaps, and applies
+        subset/divergent/numeric guards to reject sibling-channel false positives
+        even when a fuzzy score is high. Ported from Channel-Maparr; catches:
+          - "ABC News" vs "BBC News"            (no shared distinctive token)
+          - "Sky Cinema Disney" vs "...Decades" (divergent unique tokens)
+          - "In Country Television" vs "Country Music Television" (subset)
+          - "BBC One" vs "BBC Two"              (numeric divergence)
+        "network"/"channel"/"television" are demoted to common - brand suffixes,
+        not distinguishing tokens.
         """
-        common_words = {"the", "and", "of", "in", "on", "at", "to", "for", "a", "an"}
+        common_words = {
+            "the", "and", "of", "in", "on", "at", "to", "for", "a", "an",
+            "network", "channel", "television",
+        }
 
         if require_majority:
-            # Use all meaningful tokens (>= 2 chars) for stricter checking
-            tokens_a = {t for t in str_a.split() if t not in common_words and len(t) >= 2}
-            tokens_b = {t for t in str_b.split() if t not in common_words and len(t) >= 2}
+            # Single-digit tokens (1,2,...) are channel-distinguishing
+            # (BBC 1 vs BBC 2) even though only 1 char, so keep them meaningful.
+            def _meaningful(t):
+                if t in common_words:
+                    return False
+                return len(t) >= 2 or t.isdigit()
+            tokens_a = {t for t in str_a.split() if _meaningful(t)}
+            tokens_b = {t for t in str_b.split() if _meaningful(t)}
             if not tokens_a or not tokens_b:
                 return True
             shared = tokens_a & tokens_b
             if not shared:
                 return False
             smaller = min(len(tokens_a), len(tokens_b))
-            return len(shared) > smaller / 2
+            if not len(shared) > smaller / 2:
+                return False
+
+            unique_a = tokens_a - tokens_b
+            unique_b = tokens_b - tokens_a
+
+            # Subset guard: one side strictly subset AND the larger side has a
+            # distinctive (>=5 char) token the smaller lacks -> more specific
+            # channel. "In Country Television" vs "Country Music Television".
+            # Short extras like "live"/"two" don't trigger this, preserving
+            # "ABC News" -> "ABC News Live".
+            if not unique_a:
+                if any(len(t) >= 5 for t in unique_b):
+                    return False
+            elif not unique_b:
+                if any(len(t) >= 5 for t in unique_a):
+                    return False
+
+            # Divergent guard: BOTH sides have unique tokens AND >=1 is a
+            # distinctive (>=4 char) word -> different brands.
+            # "Sky Cinema Disney" vs "Sky Cinema Decades".
+            if unique_a and unique_b:
+                if any(len(t) >= 4 for t in unique_a | unique_b):
+                    return False
+
+            # Numeric/ordinal divergent guard: BOTH sides have a unique
+            # numeric/ordinal token -> sibling channels (BBC One vs BBC Two).
+            _NUMERIC = {
+                "one", "two", "three", "four", "five", "six", "seven", "eight",
+                "nine", "ten", "eleven", "twelve",
+                "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+                "first", "second", "third", "fourth", "fifth",
+            }
+            if (unique_a & _NUMERIC) and (unique_b & _NUMERIC):
+                return False
+
+            return True
 
         # Basic mode: at least one long token shared
         tokens_a = {t for t in str_a.split() if t not in common_words and len(t) >= min_token_len}
@@ -835,6 +1136,14 @@ class FuzzyMatcher:
         if re.search(r'(?:^|[\s\[\(])' + re.escape(number_str) + r'(?:$|[\s\]\)])', stream_name):
             return 5
         return 0
+
+    @staticmethod
+    def _trailing_number(name):
+        """Integer value of a space-separated, purely-numeric trailing token,
+        or None. 'HBO 2' -> 2, 'ESPN' -> None, 'ESPN2' -> None (digit glued).
+        Used to reject 'Foo 1' vs 'Foo 2' false positives. Ported from Channel-Maparr."""
+        m = re.search(r'(?:^|\s)(\d{1,4})\s*$', name or "")
+        return int(m.group(1)) if m else None
 
     def alias_match(self, lineup_name, candidate_names, alias_map, user_ignored_tags=None):
         """
@@ -915,7 +1224,8 @@ class FuzzyMatcher:
                 # Levenshtein substitution ("ME TV" -> "WE tv"), a different
                 # channel — and the basic guard passes vacuously when every
                 # token is shorter than min_token_len.
-                need_majority = score < 90 or best_alias_len <= 8
+                # Always require majority so the subset/divergent/numeric guards run.
+                need_majority = True
                 if not self._has_token_overlap(best_alias_norm, candidate_lower, require_majority=need_majority):
                     continue
 
@@ -956,7 +1266,6 @@ class FuzzyMatcher:
         best_match = None
         best_ratio = 0
         best_match_type = None
-        best_match_candidate_lower = ""
 
         for candidate in candidate_names:
             # Use cache if available, otherwise normalize on the fly
@@ -973,7 +1282,6 @@ class FuzzyMatcher:
                 best_match = candidate
                 best_ratio = ratio
                 best_match_type = "exact"
-                best_match_candidate_lower = candidate_lower
                 continue
 
             # Stage 2: Substring match (only if no exact found yet)
@@ -986,7 +1294,7 @@ class FuzzyMatcher:
                             sub_score = int(sub_ratio * 100)
                             shorter_len = min(len(normalized_query_lower), len(candidate_lower))
                             effective_threshold = self._length_scaled_threshold(self.match_threshold, shorter_len)
-                            need_majority = sub_score < 90
+                            need_majority = True
                             if sub_score >= effective_threshold and self._has_token_overlap(normalized_query_lower, candidate_lower, require_majority=need_majority):
                                 best_match = candidate
                                 best_ratio = sub_ratio
@@ -1019,7 +1327,7 @@ class FuzzyMatcher:
         if percentage_score >= self.match_threshold:
             shorter_len = min(len(processed_query), len(best_fuzzy_proc_candidate))
             effective_threshold = self._length_scaled_threshold(self.match_threshold, shorter_len)
-            need_majority = percentage_score < 90
+            need_majority = True
             if percentage_score >= effective_threshold and self._has_token_overlap(processed_query, best_fuzzy_proc_candidate, require_majority=need_majority):
                 return best_fuzzy, percentage_score, f"fuzzy ({percentage_score})"
 
@@ -1068,6 +1376,9 @@ class FuzzyMatcher:
         if normalized_query:
             normalized_query_lower = normalized_query.lower()
             normalized_query_nospace = re.sub(r'[\s&\-]+', '', normalized_query_lower)
+            query_trailing_num = self._trailing_number(normalized_query_lower)
+            query_digit_tokens = {t for t in normalized_query_lower.split() if t.isdigit()}
+            query_is_shift = bool(_PLUS_SHIFT_RE.search(lineup_name or ""))
             processed_query = self.process_string_for_matching(normalized_query)
 
             for candidate in candidate_names:
@@ -1077,6 +1388,32 @@ class FuzzyMatcher:
                 # Use cached normalizations for performance
                 candidate_lower, candidate_nospace = self._get_cached_norm(candidate, user_ignored_tags)
                 if not candidate_lower:
+                    continue
+
+                # Sibling-number guard: "HBO 1" must not match "HBO 2". Only skips
+                # when BOTH sides carry a differing trailing number.
+                if query_trailing_num is not None:
+                    cand_trailing_num = self._trailing_number(candidate_lower)
+                    if cand_trailing_num is not None and cand_trailing_num != query_trailing_num:
+                        continue
+
+                # Digit-token guard (Stream-Mapparr, EPG-adapted): reject only on
+                # genuine number DISAGREEMENT — both sides numbered but sharing no
+                # number (a numbered sibling, e.g. "Sky Sports News 13" vs "14").
+                # Do NOT reject a numbered channel against an UNnumbered candidate:
+                # US OTA channels carry the broadcast number ("ABC 7 (KGO) San
+                # Francisco") but the matching EPG entry uses network+market/callsign
+                # with no number ("ABC San Francisco"). The trailing-number guard and
+                # the token-overlap numeric guard still cover the true sibling cases.
+                if query_digit_tokens:
+                    cand_digit_tokens = {t for t in candidate_lower.split() if t.isdigit()}
+                    if cand_digit_tokens and not (query_digit_tokens & cand_digit_tokens):
+                        continue
+
+                # Time-shift guard (Lineuparr): a "+1"/"+2" shift channel must only
+                # match shift streams, and vice-versa. Check the ORIGINAL candidate
+                # name (normalization alters the "+N" marker).
+                if query_is_shift != bool(_PLUS_SHIFT_RE.search(candidate)):
                     continue
 
                 score = 0
@@ -1101,7 +1438,7 @@ class FuzzyMatcher:
                             sub_score = int(ratio * 100)
                             shorter_len = min(len(normalized_query_lower), len(candidate_lower))
                             sub_threshold = self._length_scaled_threshold(self.match_threshold, shorter_len)
-                            need_majority = sub_score < 90
+                            need_majority = True
                             if sub_score >= sub_threshold and self._has_token_overlap(normalized_query_lower, candidate_lower, require_majority=need_majority):
                                 score = sub_score
                                 mtype = "substring"
@@ -1114,7 +1451,7 @@ class FuzzyMatcher:
                         fuzzy_score = int(ratio * 100)
                         shorter_len = min(len(processed_query), len(processed_candidate))
                         fuzzy_threshold = self._length_scaled_threshold(self.match_threshold, shorter_len)
-                        need_majority = fuzzy_score < 90
+                        need_majority = True
                         if fuzzy_score >= fuzzy_threshold and self._has_token_overlap(processed_query, processed_candidate, require_majority=need_majority):
                             score = fuzzy_score
                             mtype = f"fuzzy ({fuzzy_score})"
@@ -1215,9 +1552,16 @@ class FuzzyMatcher:
             if filtered:
                 all_matches = filtered
 
-        # Convert to sorted list, filter by min_score, and return
+        # Deterministic tie-break (Lineuparr): on equal score, prefer the
+        # candidate sharing more ORIGINAL-name tokens with the lineup name.
+        lineup_tokens = set(re.findall(r'[a-z0-9]+', (lineup_name or "").lower()))
+
+        def _orig_overlap(candidate_name):
+            cand_tokens = set(re.findall(r'[a-z0-9]+', candidate_name.lower()))
+            return len(lineup_tokens & cand_tokens)
+
         results = [(name, score, mtype) for name, (score, mtype) in all_matches.items()
                    if score >= min_score]
-        results.sort(key=lambda x: x[1], reverse=True)
+        results.sort(key=lambda x: (x[1], _orig_overlap(x[0])), reverse=True)
         return results
 
