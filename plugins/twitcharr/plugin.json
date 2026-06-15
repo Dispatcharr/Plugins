@@ -1,6 +1,6 @@
 {
   "name": "Twitcharr",
-  "version": "1.2.25",
+  "version": "1.3.0",
   "description": "Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback.",
   "author": "eliasbruno124-dev",
   "maintainers": ["eliasbruno124-dev"],
