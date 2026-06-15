@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-15T14:20:36Z",
+  "generated_at": "2026-06-15T14:21:20Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -234,12 +234,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/twitcharr/manifest.json",
         "author": "eliasbruno124-dev",
         "license": "MIT",
-        "last_updated": "2026-06-02T17:16:50Z",
-        "latest_version": "1.2.25",
-        "latest_md5": "34217d30accf77de447452a19e0b4e94",
-        "latest_sha256": "e81327c022583e58114d0bf81159f8c41c42e298c8d950eb389362bafa18bbfe",
-        "latest_url": "twitcharr-1.2.25/twitcharr-1.2.25.zip",
-        "latest_size": 51
+        "last_updated": "2026-06-15T10:20:31-04:00",
+        "latest_version": "1.3.0",
+        "latest_md5": "a86bcdb52fc0b178580787c8635d243a",
+        "latest_sha256": "d75a104aa0ec0383999f586c93c60d38f297256543f7a47c0fcddea8b3f8659a",
+        "latest_url": "twitcharr-1.3.0/twitcharr-1.3.0.zip",
+        "latest_size": 57
       },
       {
         "slug": "vod2mlib",
@@ -289,5 +289,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajAKOAAKCRB+wDprTCI0\nzkmkAQDPbHc2/UmHGGDCg9Yi/z1LfjgQuMp2muGl4rhnxB4PigEAlcnfKJSTTBiV\nzvD1roHf9Hfv1HaAhuJ2HmPiL7/v1gA=\n=ovDt\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajAKYwAKCRB+wDprTCI0\nztAZAQCpi/pv9UkP9iHau0rT2mq7D7kRs44FQDBX4Vj8qmQpFwEAy8KnVcnuDnXu\nkxqLEDhq8yADlVk9vV/i0NGutz76Sws=\n=9LHC\n-----END PGP SIGNATURE-----"
 }

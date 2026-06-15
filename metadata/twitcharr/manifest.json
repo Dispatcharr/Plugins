@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-06T22:35:54Z",
+  "generated_at": "2026-06-15T14:21:20Z",
   "manifest": {
     "slug": "twitcharr",
     "name": "Twitcharr",
@@ -14,19 +14,33 @@
     "repo_url": "https://github.com/eliasbruno124-dev/Twitcharr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-06-02T17:16:50Z",
+    "last_updated": "2026-06-15T10:20:31-04:00",
     "latest": {
-      "version": "1.2.25",
-      "build_timestamp": "2026-06-02T17:16:50Z",
-      "last_updated": "2026-06-02T17:16:50Z",
-      "checksum_md5": "34217d30accf77de447452a19e0b4e94",
-      "checksum_sha256": "e81327c022583e58114d0bf81159f8c41c42e298c8d950eb389362bafa18bbfe",
-      "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v1.2.25/twitcharr.zip",
-      "latest_url": "twitcharr-1.2.25/twitcharr-1.2.25.zip",
-      "url": "twitcharr-1.2.25/twitcharr-1.2.25.zip",
-      "size": 51
+      "version": "1.3.0",
+      "commit_sha": "f7bca5e4f5ce34958d6ec2b906e59d2cf81a54b7",
+      "commit_sha_short": "f7bca5e",
+      "build_timestamp": "2026-06-15T14:21:13Z",
+      "last_updated": "2026-06-15T10:20:31-04:00",
+      "checksum_md5": "a86bcdb52fc0b178580787c8635d243a",
+      "checksum_sha256": "d75a104aa0ec0383999f586c93c60d38f297256543f7a47c0fcddea8b3f8659a",
+      "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v1.3.0/twitcharr.zip",
+      "latest_url": "twitcharr-1.3.0/twitcharr-1.3.0.zip",
+      "url": "twitcharr-1.3.0/twitcharr-1.3.0.zip",
+      "size": 57
     },
     "versions": [
+      {
+        "version": "1.3.0",
+        "commit_sha": "f7bca5e4f5ce34958d6ec2b906e59d2cf81a54b7",
+        "commit_sha_short": "f7bca5e",
+        "build_timestamp": "2026-06-15T14:21:13Z",
+        "last_updated": "2026-06-15T10:20:31-04:00",
+        "checksum_md5": "a86bcdb52fc0b178580787c8635d243a",
+        "checksum_sha256": "d75a104aa0ec0383999f586c93c60d38f297256543f7a47c0fcddea8b3f8659a",
+        "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v1.3.0/twitcharr.zip",
+        "url": "twitcharr-1.3.0/twitcharr-1.3.0.zip",
+        "size": 57
+      },
       {
         "version": "1.2.25",
         "build_timestamp": "2026-06-02T17:16:50Z",
@@ -39,5 +53,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaiSgzwAKCRB+wDprTCI0\nzsKVAQDG7ZSMYwl9ZqNC4tJzX4UmMEyBlQIFRVZkR1XmjO789AEAqs0UwRP5DmNq\nkOA1yAk//aBEcssceygYtfMz8NZENwg=\n=ulkW\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajAKYgAKCRB+wDprTCI0\nzkMZAP4wpj0W65O60J9vEkv/9EhEj12DuMw2JpeXBHfTALMOTAEA/ZkefbUrBMY8\nBb39HUTQA9YZdPHZJiOCsLM9km1o6AQ=\n=yyAs\n-----END PGP SIGNATURE-----"
 }
