@@ -13,7 +13,7 @@ This branch contains all published plugin releases.
 |--------|---------|-------|---------|-------------|
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.1651015` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.0.1` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
-| [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.7.2` | Jacob-Lasky | MIT | Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings. |
+| [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.8.0` | Jacob-Lasky | MIT | Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.4` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
 | [`Embyfin Stream Cleanup`](#embyfin-stream-cleanup) | `1.2.0` | sethwv | MIT | Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections |
 | [`EPG Janitor`](#epg-janitor) | `1.26.1660712` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
@@ -71,17 +71,17 @@ Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitori
 
 ### [Ranked Matchups (Top Games)](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dispatcharr-ranked-matchups/README.md)
 
-**Version:** `1.7.2` | **Author:** Jacob-Lasky | **Last Updated:** Jun 15 2026, 02:11 UTC
+**Version:** `1.8.0` | **Author:** Jacob-Lasky | **Last Updated:** Jun 19 2026, 13:00 UTC
 
 Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups)
 
 **Downloads:**
-- [Latest Release (`1.7.2`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.7.2/dispatcharr-ranked-matchups-1.7.2.zip)
-- [All Versions (5 available)](./metadata/dispatcharr-ranked-matchups)
+- [Latest Release (`1.8.0`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.8.0/dispatcharr-ranked-matchups-1.8.0.zip)
+- [All Versions (6 available)](./metadata/dispatcharr-ranked-matchups)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-ranked-matchups) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dispatcharr-ranked-matchups/README.md) | **Last Change:** [`ed9c641`](https://github.com/Dispatcharr/Plugins/commit/ed9c641f6bc0bf5b70da688a971994d1d6b520e4)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-ranked-matchups) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dispatcharr-ranked-matchups/README.md) | **Last Change:** [`625294e`](https://github.com/Dispatcharr/Plugins/commit/625294e082158bfb51aed378dfcb33150595195c)
 
 ---
 
@@ -375,4 +375,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 15 2026, 16:11 UTC*
+*Last updated: Jun 19 2026, 13:01 UTC*

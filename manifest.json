@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-15T16:11:36Z",
+  "generated_at": "2026-06-19T13:01:19Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -42,12 +42,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/dispatcharr-ranked-matchups/manifest.json",
         "author": "Jacob-Lasky",
         "license": "MIT",
-        "last_updated": "2026-06-14T21:11:47-05:00",
-        "latest_version": "1.7.2",
-        "latest_md5": "af4b588393cf8510fcf867536422db48",
-        "latest_sha256": "9b20f5b02d57faa2d496e42db150d4406d715c9584b40c0ef5c58bae3f1e4d4e",
-        "latest_url": "dispatcharr-ranked-matchups-1.7.2/dispatcharr-ranked-matchups-1.7.2.zip",
-        "latest_size": 321
+        "last_updated": "2026-06-19T09:00:58-04:00",
+        "latest_version": "1.8.0",
+        "latest_md5": "9c10952be2c880b6c320dc0339e7d035",
+        "latest_sha256": "f53459c29a763f7c792b53882c6558b2e5f0d2eaaffdf97ae276461ce6661ed5",
+        "latest_url": "dispatcharr-ranked-matchups-1.8.0/dispatcharr-ranked-matchups-1.8.0.zip",
+        "latest_size": 325
       },
       {
         "slug": "dispatchwrapparr",
@@ -289,5 +289,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajAkPAAKCRB+wDprTCI0\nzoCxAP9dQa477UOL2SyJggQVQyw2pslCyQLtEZnlWihwyn5QNgD9Esg+j8WIA52x\nSD+vSGciqDV5elTNeWVwo4Dcy7gWuQ0=\n=30rR\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajU9ogAKCRB+wDprTCI0\nzrQpAQD6s+zGBZZzzjVfkDowxJVaKh22TX75AoJgSE7fq93hpQD/bp1nYzestOq3\n8NVpMG5k9RxG/llWBJ2szTJ+5ytv9wQ=\n=fHy5\n-----END PGP SIGNATURE-----"
 }
