@@ -18,7 +18,7 @@ This branch contains all published plugin releases.
 | [`Embyfin Stream Cleanup`](#embyfin-stream-cleanup) | `1.2.0` | sethwv | MIT | Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections |
 | [`EPG Janitor`](#epg-janitor) | `1.26.1660712` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`EPGeditARR`](#epgeditarr) | `0.2.07` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database. |
-| [`Event Channel Managarr`](#event-channel-managarr) | `1.26.1641827` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
+| [`Event Channel Managarr`](#event-channel-managarr) | `1.26.1711720` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.1582047` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
 | [`Lineuparr`](#lineuparr) | `1.26.1641222` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`Multiview`](#multiview) | `0.1.0` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
@@ -157,7 +157,7 @@ Transform and clean your EPG data using regex and find/replace rules. Creates vi
 
 ### [Event Channel Managarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/event-channel-managarr/README.md)
 
-**Version:** `1.26.1641827` | **Author:** PiratesIRC | **Last Updated:** Jun 13 2026, 19:03 UTC
+**Version:** `1.26.1711720` | **Author:** PiratesIRC | **Last Updated:** Jun 20 2026, 18:14 UTC
 
 Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG.
 
@@ -166,10 +166,10 @@ Automates channel visibility by hiding channels without events and showing those
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.1641827`)](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.1641827/event-channel-managarr-1.26.1641827.zip)
-- [All Versions (9 available)](./metadata/event-channel-managarr)
+- [Latest Release (`1.26.1711720`)](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.1711720/event-channel-managarr-1.26.1711720.zip)
+- [All Versions (10 available)](./metadata/event-channel-managarr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/event-channel-managarr) | **Last Change:** [`a89fb63`](https://github.com/Dispatcharr/Plugins/commit/a89fb636061e67819dfe9267df9f278a649c2fca)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/event-channel-managarr) | **Last Change:** [`786eefb`](https://github.com/Dispatcharr/Plugins/commit/786eefb3f2ef4df2ee30d52b3bcd16c9af58593f)
 
 ---
 
@@ -375,4 +375,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 20 2026, 02:06 UTC*
+*Last updated: Jun 20 2026, 18:15 UTC*
