@@ -1,6 +1,6 @@
 {
   "name": "IPTV Checker",
-  "version": "1.26.1582047",
+  "version": "1.26.1721834",
   "description": "A Dispatcharr Plugin that goes through a playlist to check IPTV channels",
   "author": "PiratesIRC",
   "logo": "logo.png",
@@ -24,6 +24,13 @@
       "help_text": "The name of the Dispatcharr Channel Group(s) to check. Supports wildcards: US-* matches US-Movies, US-Sports, etc. Leave blank to check all groups."
     },
     {
+      "id": "group_names_exclude",
+      "label": "\ud83d\udcc2 Group(s) to EXCLUDE (comma-separated, wildcards supported)",
+      "type": "string",
+      "default": "",
+      "help_text": "Groups to skip even if they match 'Group(s) to Check'. Supports wildcards (e.g. US-PPV-*). Applied AFTER the include filter; with a blank include this means 'all groups except these'. If a group matches both fields, exclude wins. Leave blank to exclude nothing."
+    },
+    {
       "id": "check_alternative_streams",
       "label": "\ud83d\udd04 Check Alternative Streams",
       "type": "boolean",
@@ -41,7 +48,7 @@
       "id": "_section_check_behavior",
       "label": "\ud83d\udd0d Check Behavior",
       "type": "info",
-      "description": "Timeouts, retries, concurrency, cooldown, and ffprobe analysis flags. Keep worker count below your provider's concurrent-connection limit."
+      "description": "Timeouts, retries, concurrency, and cooldown. Keep worker count below your provider's concurrent-connection limit."
     },
     {
       "id": "timeout",
@@ -86,27 +93,44 @@
       "help_text": "Cooldown each worker waits after finishing a stream check, before picking up the next. Prevents provider rate-limiting / slot-reuse errors when your account has a concurrent-connection limit. Default: 2. Retry passes use 3x this value."
     },
     {
-      "id": "ffprobe_flags",
-      "label": "\ud83d\udd0d FFprobe Analysis Flags",
-      "type": "string",
-      "default": "-show_streams,-show_packets,-loglevel error",
-      "placeholder": "-show_streams, -show_packets",
-      "help_text": "Comma-separated ffprobe flags for stream analysis. Options: -show_streams (basic validation), -show_packets (per-packet data; required for video bitrate calculation on live MPEG-TS streams), -loglevel error (errors only). Default: -show_streams,-show_packets,-loglevel error. Note: do not add -show_frames — when both -show_frames and -show_packets are passed, ffprobe returns a combined packets_and_frames array instead of separate packets[], which prevents the bitrate fallback from running."
+      "id": "_section_black_screen",
+      "label": "\u2b1b Blank-Screen Detection",
+      "type": "info",
+      "description": "Optionally decode a few seconds of each Alive stream with ffmpeg and mark it Dead if it is a pure blank (all-black) screen. Costs extra CPU/time per Alive stream."
     },
     {
-      "id": "ffprobe_analysis_duration",
-      "label": "\u23f1\ufe0f FFprobe Analysis Duration (seconds)",
+      "id": "black_screen_detection",
+      "label": "\u2b1b Detect Blank-Screen Streams",
+      "type": "boolean",
+      "default": false,
+      "help_text": "When ON, every stream that passes ffprobe is decoded for a few seconds with ffmpeg's blackdetect filter; pure-blank (all-black) streams are marked Dead and reported under the `Black Screen` error type so rename/move/delete actions handle them. Adds ~5-10s per Alive stream. Fail-open: if ffmpeg is missing or errors, the stream stays Alive. Very-dark-but-not-black 'no signal' slates are NOT detected."
+    },
+    {
+      "id": "black_screen_sample_seconds",
+      "label": "\u2b1b Blank-Screen Sample (seconds)",
       "type": "number",
-      "default": 8,
-      "help_text": "Duration to analyze stream when using -show_frames or -show_packets. Longer duration = more accurate bitrate/GOP analysis but slower checks. Probes that capture fewer than 30 video packets leave video_bitrate unset, so 8s gives slow-start streams enough room to clear the threshold. Default: 8 seconds"
+      "default": 6,
+      "help_text": "How many seconds of video to decode when testing for a blank screen. Longer = more reliable but slower. Default: 6"
     },
     {
-      "id": "streamlink_hosts",
-      "label": "\u23fc Streamlink-Only Hosts (skip ffprobe)",
-      "type": "string",
-      "default": "youtube.com, youtu.be, twitch.tv, kick.com",
-      "placeholder": "youtube.com, twitch.tv",
-      "help_text": "Comma-separated host suffixes that ffprobe cannot validate (served via Streamlink). Streams on these hosts are marked 'Skipped' instead of 'Dead' so rename/move/delete actions leave them alone. Use full domains (e.g. 'youtube.com', not 'youtube'). Leave blank to use the defaults."
+      "id": "black_screen_min_black_seconds",
+      "label": "\u2b1b Continuous Blank Required (seconds)",
+      "type": "number",
+      "default": 3,
+      "help_text": "Minimum continuous run of blank (all-black) video (within the sample) required to flag a stream as blank. Should be a few seconds less than the sample to allow for connection/keyframe latency. Default: 3"
+    },
+    {
+      "id": "black_screen_ffmpeg_timeout",
+      "label": "\u2b1b Blank-Screen ffmpeg Timeout (seconds)",
+      "type": "number",
+      "default": 20,
+      "help_text": "Hard wall-clock cap on the ffmpeg blank-screen decode (connection + sampling). If exceeded, the stream is left Alive. Default: 20"
+    },
+    {
+      "id": "_section_post_check",
+      "type": "info",
+      "label": "\ud83c\udff7\ufe0f Post-Check Actions",
+      "description": "What to do with channels after a check completes: rename / move them by category, and restore recovered ones. Configure the tags and destination groups below; enable auto-apply on a schedule in 'Scheduling & Automation'."
     },
     {
       "id": "_section_dead",
@@ -128,6 +152,27 @@
       "type": "string",
       "default": "Graveyard",
       "help_text": "Enter the name for the group to move dead channels into."
+    },
+    {
+      "id": "_section_black",
+      "label": "\u2b1b Blank-Screen Handling",
+      "type": "info",
+      "description": "How to rename and relocate channels detected as a pure blank (all-black) screen. Requires 'Detect Blank-Screen Streams' to be ON. These channels are handled separately from [DEAD] channels (excluded from the Dead rename/move actions)."
+    },
+    {
+      "id": "black_screen_rename_format",
+      "label": "\u2b1b Blank-Screen Channel Rename Format",
+      "type": "string",
+      "default": "{name} [Blank]",
+      "placeholder": "{name} [Blank]",
+      "help_text": "Format for renaming blank-screen channels. Use {name} as the placeholder. Blank-screen channels are excluded from the Dead rename/move actions so they are not double-tagged."
+    },
+    {
+      "id": "move_black_screen_group",
+      "label": "\u2b1b Move Blank-Screen Channels to Group",
+      "type": "string",
+      "default": "Black Screens",
+      "help_text": "Enter the name for the group to move blank-screen channels into."
     },
     {
       "id": "_section_low_fps",
@@ -164,6 +209,12 @@
       "help_text": "A comma-separated list of formats to add as a suffix (e.g., [HD]) to channel names."
     },
     {
+      "id": "_section_restore",
+      "label": "\u267b\ufe0f Restore Recovered Channels",
+      "type": "info",
+      "description": "Channels that come back Alive can be auto-cleaned: plugin name tags ([DEAD]/[Slow]/[Blank]/quality) are stripped and the channel is moved back to the original group captured when it was first moved. Use the 'Restore Recovered Channels' action or the scheduler toggle. NOTE: a channel parked in a managed group (Graveyard / Slow / blank-screen) is only re-checked (and thus restorable) if your scan scope includes that group."
+    },
+    {
       "id": "_section_webhook",
       "label": "\ud83d\udd17 Webhook",
       "type": "info",
@@ -189,1297 +240,52 @@
       "type": "string",
       "default": "",
       "placeholder": "0 4 * * *,0 3 1 * *",
-      "help_text": "Comma-separated cron expressions. Format: 'minute hour day month weekday' (weekday: 0=Sunday, 6=Saturday). Examples: '0 4 * * *' (daily at 4 AM), '0 3 * * 0' (Sundays at 3 AM), '0 2 */2 * *' (every 2 days at 2 AM). Leave blank to disable scheduling. 💾 After editing this field, click \"💾 Save Schedule\" below to apply the new schedule."
-    },
-    {
-      "id": "scheduler_timezone",
-      "label": "\ud83c\udf0d Scheduler Timezone",
-      "type": "select",
-      "default": "America/Chicago",
-      "options": [
-        {
-          "label": "Africa/Abidjan",
-          "value": "Africa/Abidjan"
-        },
-        {
-          "label": "Africa/Algiers",
-          "value": "Africa/Algiers"
-        },
-        {
-          "label": "Africa/Bissau",
-          "value": "Africa/Bissau"
-        },
-        {
-          "label": "Africa/Cairo",
-          "value": "Africa/Cairo"
-        },
-        {
-          "label": "Africa/Casablanca",
-          "value": "Africa/Casablanca"
-        },
-        {
-          "label": "Africa/Ceuta",
-          "value": "Africa/Ceuta"
-        },
-        {
-          "label": "Africa/El_Aaiun",
-          "value": "Africa/El_Aaiun"
-        },
-        {
-          "label": "Africa/Johannesburg",
-          "value": "Africa/Johannesburg"
-        },
-        {
-          "label": "Africa/Juba",
-          "value": "Africa/Juba"
-        },
-        {
-          "label": "Africa/Khartoum",
-          "value": "Africa/Khartoum"
-        },
-        {
-          "label": "Africa/Lagos",
-          "value": "Africa/Lagos"
-        },
-        {
-          "label": "Africa/Maputo",
-          "value": "Africa/Maputo"
-        },
-        {
-          "label": "Africa/Monrovia",
-          "value": "Africa/Monrovia"
-        },
-        {
-          "label": "Africa/Nairobi",
-          "value": "Africa/Nairobi"
-        },
-        {
-          "label": "Africa/Ndjamena",
-          "value": "Africa/Ndjamena"
-        },
-        {
-          "label": "Africa/Sao_Tome",
-          "value": "Africa/Sao_Tome"
-        },
-        {
-          "label": "Africa/Tripoli",
-          "value": "Africa/Tripoli"
-        },
-        {
-          "label": "Africa/Tunis",
-          "value": "Africa/Tunis"
-        },
-        {
-          "label": "Africa/Windhoek",
-          "value": "Africa/Windhoek"
-        },
-        {
-          "label": "America/Adak",
-          "value": "America/Adak"
-        },
-        {
-          "label": "America/Anchorage",
-          "value": "America/Anchorage"
-        },
-        {
-          "label": "America/Araguaina",
-          "value": "America/Araguaina"
-        },
-        {
-          "label": "America/Argentina/Buenos_Aires",
-          "value": "America/Argentina/Buenos_Aires"
-        },
-        {
-          "label": "America/Argentina/Catamarca",
-          "value": "America/Argentina/Catamarca"
-        },
-        {
-          "label": "America/Argentina/Cordoba",
-          "value": "America/Argentina/Cordoba"
-        },
-        {
-          "label": "America/Argentina/Jujuy",
-          "value": "America/Argentina/Jujuy"
-        },
-        {
-          "label": "America/Argentina/La_Rioja",
-          "value": "America/Argentina/La_Rioja"
-        },
-        {
-          "label": "America/Argentina/Mendoza",
-          "value": "America/Argentina/Mendoza"
-        },
-        {
-          "label": "America/Argentina/Rio_Gallegos",
-          "value": "America/Argentina/Rio_Gallegos"
-        },
-        {
-          "label": "America/Argentina/Salta",
-          "value": "America/Argentina/Salta"
-        },
-        {
-          "label": "America/Argentina/San_Juan",
-          "value": "America/Argentina/San_Juan"
-        },
-        {
-          "label": "America/Argentina/San_Luis",
-          "value": "America/Argentina/San_Luis"
-        },
-        {
-          "label": "America/Argentina/Tucuman",
-          "value": "America/Argentina/Tucuman"
-        },
-        {
-          "label": "America/Argentina/Ushuaia",
-          "value": "America/Argentina/Ushuaia"
-        },
-        {
-          "label": "America/Asuncion",
-          "value": "America/Asuncion"
-        },
-        {
-          "label": "America/Bahia",
-          "value": "America/Bahia"
-        },
-        {
-          "label": "America/Bahia_Banderas",
-          "value": "America/Bahia_Banderas"
-        },
-        {
-          "label": "America/Barbados",
-          "value": "America/Barbados"
-        },
-        {
-          "label": "America/Belem",
-          "value": "America/Belem"
-        },
-        {
-          "label": "America/Belize",
-          "value": "America/Belize"
-        },
-        {
-          "label": "America/Boa_Vista",
-          "value": "America/Boa_Vista"
-        },
-        {
-          "label": "America/Bogota",
-          "value": "America/Bogota"
-        },
-        {
-          "label": "America/Boise",
-          "value": "America/Boise"
-        },
-        {
-          "label": "America/Cambridge_Bay",
-          "value": "America/Cambridge_Bay"
-        },
-        {
-          "label": "America/Campo_Grande",
-          "value": "America/Campo_Grande"
-        },
-        {
-          "label": "America/Cancun",
-          "value": "America/Cancun"
-        },
-        {
-          "label": "America/Caracas",
-          "value": "America/Caracas"
-        },
-        {
-          "label": "America/Cayenne",
-          "value": "America/Cayenne"
-        },
-        {
-          "label": "America/Chicago",
-          "value": "America/Chicago"
-        },
-        {
-          "label": "America/Chihuahua",
-          "value": "America/Chihuahua"
-        },
-        {
-          "label": "America/Ciudad_Juarez",
-          "value": "America/Ciudad_Juarez"
-        },
-        {
-          "label": "America/Costa_Rica",
-          "value": "America/Costa_Rica"
-        },
-        {
-          "label": "America/Coyhaique",
-          "value": "America/Coyhaique"
-        },
-        {
-          "label": "America/Cuiaba",
-          "value": "America/Cuiaba"
-        },
-        {
-          "label": "America/Danmarkshavn",
-          "value": "America/Danmarkshavn"
-        },
-        {
-          "label": "America/Dawson",
-          "value": "America/Dawson"
-        },
-        {
-          "label": "America/Dawson_Creek",
-          "value": "America/Dawson_Creek"
-        },
-        {
-          "label": "America/Denver",
-          "value": "America/Denver"
-        },
-        {
-          "label": "America/Detroit",
-          "value": "America/Detroit"
-        },
-        {
-          "label": "America/Edmonton",
-          "value": "America/Edmonton"
-        },
-        {
-          "label": "America/Eirunepe",
-          "value": "America/Eirunepe"
-        },
-        {
-          "label": "America/El_Salvador",
-          "value": "America/El_Salvador"
-        },
-        {
-          "label": "America/Fort_Nelson",
-          "value": "America/Fort_Nelson"
-        },
-        {
-          "label": "America/Fortaleza",
-          "value": "America/Fortaleza"
-        },
-        {
-          "label": "America/Glace_Bay",
-          "value": "America/Glace_Bay"
-        },
-        {
-          "label": "America/Goose_Bay",
-          "value": "America/Goose_Bay"
-        },
-        {
-          "label": "America/Grand_Turk",
-          "value": "America/Grand_Turk"
-        },
-        {
-          "label": "America/Guatemala",
-          "value": "America/Guatemala"
-        },
-        {
-          "label": "America/Guayaquil",
-          "value": "America/Guayaquil"
-        },
-        {
-          "label": "America/Guyana",
-          "value": "America/Guyana"
-        },
-        {
-          "label": "America/Halifax",
-          "value": "America/Halifax"
-        },
-        {
-          "label": "America/Havana",
-          "value": "America/Havana"
-        },
-        {
-          "label": "America/Hermosillo",
-          "value": "America/Hermosillo"
-        },
-        {
-          "label": "America/Indiana/Indianapolis",
-          "value": "America/Indiana/Indianapolis"
-        },
-        {
-          "label": "America/Indiana/Knox",
-          "value": "America/Indiana/Knox"
-        },
-        {
-          "label": "America/Indiana/Marengo",
-          "value": "America/Indiana/Marengo"
-        },
-        {
-          "label": "America/Indiana/Petersburg",
-          "value": "America/Indiana/Petersburg"
-        },
-        {
-          "label": "America/Indiana/Tell_City",
-          "value": "America/Indiana/Tell_City"
-        },
-        {
-          "label": "America/Indiana/Vevay",
-          "value": "America/Indiana/Vevay"
-        },
-        {
-          "label": "America/Indiana/Vincennes",
-          "value": "America/Indiana/Vincennes"
-        },
-        {
-          "label": "America/Indiana/Winamac",
-          "value": "America/Indiana/Winamac"
-        },
-        {
-          "label": "America/Inuvik",
-          "value": "America/Inuvik"
-        },
-        {
-          "label": "America/Iqaluit",
-          "value": "America/Iqaluit"
-        },
-        {
-          "label": "America/Jamaica",
-          "value": "America/Jamaica"
-        },
-        {
-          "label": "America/Juneau",
-          "value": "America/Juneau"
-        },
-        {
-          "label": "America/Kentucky/Louisville",
-          "value": "America/Kentucky/Louisville"
-        },
-        {
-          "label": "America/Kentucky/Monticello",
-          "value": "America/Kentucky/Monticello"
-        },
-        {
-          "label": "America/La_Paz",
-          "value": "America/La_Paz"
-        },
-        {
-          "label": "America/Lima",
-          "value": "America/Lima"
-        },
-        {
-          "label": "America/Los_Angeles",
-          "value": "America/Los_Angeles"
-        },
-        {
-          "label": "America/Maceio",
-          "value": "America/Maceio"
-        },
-        {
-          "label": "America/Managua",
-          "value": "America/Managua"
-        },
-        {
-          "label": "America/Manaus",
-          "value": "America/Manaus"
-        },
-        {
-          "label": "America/Martinique",
-          "value": "America/Martinique"
-        },
-        {
-          "label": "America/Matamoros",
-          "value": "America/Matamoros"
-        },
-        {
-          "label": "America/Mazatlan",
-          "value": "America/Mazatlan"
-        },
-        {
-          "label": "America/Menominee",
-          "value": "America/Menominee"
-        },
-        {
-          "label": "America/Merida",
-          "value": "America/Merida"
-        },
-        {
-          "label": "America/Metlakatla",
-          "value": "America/Metlakatla"
-        },
-        {
-          "label": "America/Mexico_City",
-          "value": "America/Mexico_City"
-        },
-        {
-          "label": "America/Miquelon",
-          "value": "America/Miquelon"
-        },
-        {
-          "label": "America/Moncton",
-          "value": "America/Moncton"
-        },
-        {
-          "label": "America/Monterrey",
-          "value": "America/Monterrey"
-        },
-        {
-          "label": "America/Montevideo",
-          "value": "America/Montevideo"
-        },
-        {
-          "label": "America/New_York",
-          "value": "America/New_York"
-        },
-        {
-          "label": "America/Nome",
-          "value": "America/Nome"
-        },
-        {
-          "label": "America/Noronha",
-          "value": "America/Noronha"
-        },
-        {
-          "label": "America/North_Dakota/Beulah",
-          "value": "America/North_Dakota/Beulah"
-        },
-        {
-          "label": "America/North_Dakota/Center",
-          "value": "America/North_Dakota/Center"
-        },
-        {
-          "label": "America/North_Dakota/New_Salem",
-          "value": "America/North_Dakota/New_Salem"
-        },
-        {
-          "label": "America/Nuuk",
-          "value": "America/Nuuk"
-        },
-        {
-          "label": "America/Ojinaga",
-          "value": "America/Ojinaga"
-        },
-        {
-          "label": "America/Panama",
-          "value": "America/Panama"
-        },
-        {
-          "label": "America/Paramaribo",
-          "value": "America/Paramaribo"
-        },
-        {
-          "label": "America/Phoenix",
-          "value": "America/Phoenix"
-        },
-        {
-          "label": "America/Port-au-Prince",
-          "value": "America/Port-au-Prince"
-        },
-        {
-          "label": "America/Porto_Velho",
-          "value": "America/Porto_Velho"
-        },
-        {
-          "label": "America/Puerto_Rico",
-          "value": "America/Puerto_Rico"
-        },
-        {
-          "label": "America/Punta_Arenas",
-          "value": "America/Punta_Arenas"
-        },
-        {
-          "label": "America/Rankin_Inlet",
-          "value": "America/Rankin_Inlet"
-        },
-        {
-          "label": "America/Recife",
-          "value": "America/Recife"
-        },
-        {
-          "label": "America/Regina",
-          "value": "America/Regina"
-        },
-        {
-          "label": "America/Resolute",
-          "value": "America/Resolute"
-        },
-        {
-          "label": "America/Rio_Branco",
-          "value": "America/Rio_Branco"
-        },
-        {
-          "label": "America/Santarem",
-          "value": "America/Santarem"
-        },
-        {
-          "label": "America/Santiago",
-          "value": "America/Santiago"
-        },
-        {
-          "label": "America/Santo_Domingo",
-          "value": "America/Santo_Domingo"
-        },
-        {
-          "label": "America/Sao_Paulo",
-          "value": "America/Sao_Paulo"
-        },
-        {
-          "label": "America/Scoresbysund",
-          "value": "America/Scoresbysund"
-        },
-        {
-          "label": "America/Sitka",
-          "value": "America/Sitka"
-        },
-        {
-          "label": "America/St_Johns",
-          "value": "America/St_Johns"
-        },
-        {
-          "label": "America/Swift_Current",
-          "value": "America/Swift_Current"
-        },
-        {
-          "label": "America/Tegucigalpa",
-          "value": "America/Tegucigalpa"
-        },
-        {
-          "label": "America/Thule",
-          "value": "America/Thule"
-        },
-        {
-          "label": "America/Tijuana",
-          "value": "America/Tijuana"
-        },
-        {
-          "label": "America/Toronto",
-          "value": "America/Toronto"
-        },
-        {
-          "label": "America/Vancouver",
-          "value": "America/Vancouver"
-        },
-        {
-          "label": "America/Whitehorse",
-          "value": "America/Whitehorse"
-        },
-        {
-          "label": "America/Winnipeg",
-          "value": "America/Winnipeg"
-        },
-        {
-          "label": "America/Yakutat",
-          "value": "America/Yakutat"
-        },
-        {
-          "label": "Antarctica/Casey",
-          "value": "Antarctica/Casey"
-        },
-        {
-          "label": "Antarctica/Davis",
-          "value": "Antarctica/Davis"
-        },
-        {
-          "label": "Antarctica/Macquarie",
-          "value": "Antarctica/Macquarie"
-        },
-        {
-          "label": "Antarctica/Mawson",
-          "value": "Antarctica/Mawson"
-        },
-        {
-          "label": "Antarctica/Palmer",
-          "value": "Antarctica/Palmer"
-        },
-        {
-          "label": "Antarctica/Rothera",
-          "value": "Antarctica/Rothera"
-        },
-        {
-          "label": "Antarctica/Troll",
-          "value": "Antarctica/Troll"
-        },
-        {
-          "label": "Antarctica/Vostok",
-          "value": "Antarctica/Vostok"
-        },
-        {
-          "label": "Asia/Almaty",
-          "value": "Asia/Almaty"
-        },
-        {
-          "label": "Asia/Amman",
-          "value": "Asia/Amman"
-        },
-        {
-          "label": "Asia/Anadyr",
-          "value": "Asia/Anadyr"
-        },
-        {
-          "label": "Asia/Aqtau",
-          "value": "Asia/Aqtau"
-        },
-        {
-          "label": "Asia/Aqtobe",
-          "value": "Asia/Aqtobe"
-        },
-        {
-          "label": "Asia/Ashgabat",
-          "value": "Asia/Ashgabat"
-        },
-        {
-          "label": "Asia/Atyrau",
-          "value": "Asia/Atyrau"
-        },
-        {
-          "label": "Asia/Baghdad",
-          "value": "Asia/Baghdad"
-        },
-        {
-          "label": "Asia/Baku",
-          "value": "Asia/Baku"
-        },
-        {
-          "label": "Asia/Bangkok",
-          "value": "Asia/Bangkok"
-        },
-        {
-          "label": "Asia/Barnaul",
-          "value": "Asia/Barnaul"
-        },
-        {
-          "label": "Asia/Beirut",
-          "value": "Asia/Beirut"
-        },
-        {
-          "label": "Asia/Bishkek",
-          "value": "Asia/Bishkek"
-        },
-        {
-          "label": "Asia/Chita",
-          "value": "Asia/Chita"
-        },
-        {
-          "label": "Asia/Colombo",
-          "value": "Asia/Colombo"
-        },
-        {
-          "label": "Asia/Damascus",
-          "value": "Asia/Damascus"
-        },
-        {
-          "label": "Asia/Dhaka",
-          "value": "Asia/Dhaka"
-        },
-        {
-          "label": "Asia/Dili",
-          "value": "Asia/Dili"
-        },
-        {
-          "label": "Asia/Dubai",
-          "value": "Asia/Dubai"
-        },
-        {
-          "label": "Asia/Dushanbe",
-          "value": "Asia/Dushanbe"
-        },
-        {
-          "label": "Asia/Famagusta",
-          "value": "Asia/Famagusta"
-        },
-        {
-          "label": "Asia/Gaza",
-          "value": "Asia/Gaza"
-        },
-        {
-          "label": "Asia/Hebron",
-          "value": "Asia/Hebron"
-        },
-        {
-          "label": "Asia/Ho_Chi_Minh",
-          "value": "Asia/Ho_Chi_Minh"
-        },
-        {
-          "label": "Asia/Hong_Kong",
-          "value": "Asia/Hong_Kong"
-        },
-        {
-          "label": "Asia/Hovd",
-          "value": "Asia/Hovd"
-        },
-        {
-          "label": "Asia/Irkutsk",
-          "value": "Asia/Irkutsk"
-        },
-        {
-          "label": "Asia/Jakarta",
-          "value": "Asia/Jakarta"
-        },
-        {
-          "label": "Asia/Jayapura",
-          "value": "Asia/Jayapura"
-        },
-        {
-          "label": "Asia/Jerusalem",
-          "value": "Asia/Jerusalem"
-        },
-        {
-          "label": "Asia/Kabul",
-          "value": "Asia/Kabul"
-        },
-        {
-          "label": "Asia/Kamchatka",
-          "value": "Asia/Kamchatka"
-        },
-        {
-          "label": "Asia/Karachi",
-          "value": "Asia/Karachi"
-        },
-        {
-          "label": "Asia/Kathmandu",
-          "value": "Asia/Kathmandu"
-        },
-        {
-          "label": "Asia/Khandyga",
-          "value": "Asia/Khandyga"
-        },
-        {
-          "label": "Asia/Kolkata",
-          "value": "Asia/Kolkata"
-        },
-        {
-          "label": "Asia/Krasnoyarsk",
-          "value": "Asia/Krasnoyarsk"
-        },
-        {
-          "label": "Asia/Kuching",
-          "value": "Asia/Kuching"
-        },
-        {
-          "label": "Asia/Macau",
-          "value": "Asia/Macau"
-        },
-        {
-          "label": "Asia/Magadan",
-          "value": "Asia/Magadan"
-        },
-        {
-          "label": "Asia/Makassar",
-          "value": "Asia/Makassar"
-        },
-        {
-          "label": "Asia/Manila",
-          "value": "Asia/Manila"
-        },
-        {
-          "label": "Asia/Nicosia",
-          "value": "Asia/Nicosia"
-        },
-        {
-          "label": "Asia/Novokuznetsk",
-          "value": "Asia/Novokuznetsk"
-        },
-        {
-          "label": "Asia/Novosibirsk",
-          "value": "Asia/Novosibirsk"
-        },
-        {
-          "label": "Asia/Omsk",
-          "value": "Asia/Omsk"
-        },
-        {
-          "label": "Asia/Oral",
-          "value": "Asia/Oral"
-        },
-        {
-          "label": "Asia/Pontianak",
-          "value": "Asia/Pontianak"
-        },
-        {
-          "label": "Asia/Pyongyang",
-          "value": "Asia/Pyongyang"
-        },
-        {
-          "label": "Asia/Qatar",
-          "value": "Asia/Qatar"
-        },
-        {
-          "label": "Asia/Qostanay",
-          "value": "Asia/Qostanay"
-        },
-        {
-          "label": "Asia/Qyzylorda",
-          "value": "Asia/Qyzylorda"
-        },
-        {
-          "label": "Asia/Riyadh",
-          "value": "Asia/Riyadh"
-        },
-        {
-          "label": "Asia/Sakhalin",
-          "value": "Asia/Sakhalin"
-        },
-        {
-          "label": "Asia/Samarkand",
-          "value": "Asia/Samarkand"
-        },
-        {
-          "label": "Asia/Seoul",
-          "value": "Asia/Seoul"
-        },
-        {
-          "label": "Asia/Shanghai",
-          "value": "Asia/Shanghai"
-        },
-        {
-          "label": "Asia/Singapore",
-          "value": "Asia/Singapore"
-        },
-        {
-          "label": "Asia/Srednekolymsk",
-          "value": "Asia/Srednekolymsk"
-        },
-        {
-          "label": "Asia/Taipei",
-          "value": "Asia/Taipei"
-        },
-        {
-          "label": "Asia/Tashkent",
-          "value": "Asia/Tashkent"
-        },
-        {
-          "label": "Asia/Tbilisi",
-          "value": "Asia/Tbilisi"
-        },
-        {
-          "label": "Asia/Tehran",
-          "value": "Asia/Tehran"
-        },
-        {
-          "label": "Asia/Thimphu",
-          "value": "Asia/Thimphu"
-        },
-        {
-          "label": "Asia/Tokyo",
-          "value": "Asia/Tokyo"
-        },
-        {
-          "label": "Asia/Tomsk",
-          "value": "Asia/Tomsk"
-        },
-        {
-          "label": "Asia/Ulaanbaatar",
-          "value": "Asia/Ulaanbaatar"
-        },
-        {
-          "label": "Asia/Urumqi",
-          "value": "Asia/Urumqi"
-        },
-        {
-          "label": "Asia/Ust-Nera",
-          "value": "Asia/Ust-Nera"
-        },
-        {
-          "label": "Asia/Vladivostok",
-          "value": "Asia/Vladivostok"
-        },
-        {
-          "label": "Asia/Yakutsk",
-          "value": "Asia/Yakutsk"
-        },
-        {
-          "label": "Asia/Yangon",
-          "value": "Asia/Yangon"
-        },
-        {
-          "label": "Asia/Yekaterinburg",
-          "value": "Asia/Yekaterinburg"
-        },
-        {
-          "label": "Asia/Yerevan",
-          "value": "Asia/Yerevan"
-        },
-        {
-          "label": "Atlantic/Azores",
-          "value": "Atlantic/Azores"
-        },
-        {
-          "label": "Atlantic/Bermuda",
-          "value": "Atlantic/Bermuda"
-        },
-        {
-          "label": "Atlantic/Canary",
-          "value": "Atlantic/Canary"
-        },
-        {
-          "label": "Atlantic/Cape_Verde",
-          "value": "Atlantic/Cape_Verde"
-        },
-        {
-          "label": "Atlantic/Faroe",
-          "value": "Atlantic/Faroe"
-        },
-        {
-          "label": "Atlantic/Madeira",
-          "value": "Atlantic/Madeira"
-        },
-        {
-          "label": "Atlantic/South_Georgia",
-          "value": "Atlantic/South_Georgia"
-        },
-        {
-          "label": "Atlantic/Stanley",
-          "value": "Atlantic/Stanley"
-        },
-        {
-          "label": "Australia/Adelaide",
-          "value": "Australia/Adelaide"
-        },
-        {
-          "label": "Australia/Brisbane",
-          "value": "Australia/Brisbane"
-        },
-        {
-          "label": "Australia/Broken_Hill",
-          "value": "Australia/Broken_Hill"
-        },
-        {
-          "label": "Australia/Darwin",
-          "value": "Australia/Darwin"
-        },
-        {
-          "label": "Australia/Eucla",
-          "value": "Australia/Eucla"
-        },
-        {
-          "label": "Australia/Hobart",
-          "value": "Australia/Hobart"
-        },
-        {
-          "label": "Australia/Lindeman",
-          "value": "Australia/Lindeman"
-        },
-        {
-          "label": "Australia/Lord_Howe",
-          "value": "Australia/Lord_Howe"
-        },
-        {
-          "label": "Australia/Melbourne",
-          "value": "Australia/Melbourne"
-        },
-        {
-          "label": "Australia/Perth",
-          "value": "Australia/Perth"
-        },
-        {
-          "label": "Australia/Sydney",
-          "value": "Australia/Sydney"
-        },
-        {
-          "label": "Europe/Andorra",
-          "value": "Europe/Andorra"
-        },
-        {
-          "label": "Europe/Astrakhan",
-          "value": "Europe/Astrakhan"
-        },
-        {
-          "label": "Europe/Athens",
-          "value": "Europe/Athens"
-        },
-        {
-          "label": "Europe/Belgrade",
-          "value": "Europe/Belgrade"
-        },
-        {
-          "label": "Europe/Berlin",
-          "value": "Europe/Berlin"
-        },
-        {
-          "label": "Europe/Brussels",
-          "value": "Europe/Brussels"
-        },
-        {
-          "label": "Europe/Bucharest",
-          "value": "Europe/Bucharest"
-        },
-        {
-          "label": "Europe/Budapest",
-          "value": "Europe/Budapest"
-        },
-        {
-          "label": "Europe/Chisinau",
-          "value": "Europe/Chisinau"
-        },
-        {
-          "label": "Europe/Dublin",
-          "value": "Europe/Dublin"
-        },
-        {
-          "label": "Europe/Gibraltar",
-          "value": "Europe/Gibraltar"
-        },
-        {
-          "label": "Europe/Helsinki",
-          "value": "Europe/Helsinki"
-        },
-        {
-          "label": "Europe/Istanbul",
-          "value": "Europe/Istanbul"
-        },
-        {
-          "label": "Europe/Kaliningrad",
-          "value": "Europe/Kaliningrad"
-        },
-        {
-          "label": "Europe/Kirov",
-          "value": "Europe/Kirov"
-        },
-        {
-          "label": "Europe/Kyiv",
-          "value": "Europe/Kyiv"
-        },
-        {
-          "label": "Europe/Lisbon",
-          "value": "Europe/Lisbon"
-        },
-        {
-          "label": "Europe/London",
-          "value": "Europe/London"
-        },
-        {
-          "label": "Europe/Madrid",
-          "value": "Europe/Madrid"
-        },
-        {
-          "label": "Europe/Malta",
-          "value": "Europe/Malta"
-        },
-        {
-          "label": "Europe/Minsk",
-          "value": "Europe/Minsk"
-        },
-        {
-          "label": "Europe/Moscow",
-          "value": "Europe/Moscow"
-        },
-        {
-          "label": "Europe/Paris",
-          "value": "Europe/Paris"
-        },
-        {
-          "label": "Europe/Prague",
-          "value": "Europe/Prague"
-        },
-        {
-          "label": "Europe/Riga",
-          "value": "Europe/Riga"
-        },
-        {
-          "label": "Europe/Rome",
-          "value": "Europe/Rome"
-        },
-        {
-          "label": "Europe/Samara",
-          "value": "Europe/Samara"
-        },
-        {
-          "label": "Europe/Saratov",
-          "value": "Europe/Saratov"
-        },
-        {
-          "label": "Europe/Simferopol",
-          "value": "Europe/Simferopol"
-        },
-        {
-          "label": "Europe/Sofia",
-          "value": "Europe/Sofia"
-        },
-        {
-          "label": "Europe/Tallinn",
-          "value": "Europe/Tallinn"
-        },
-        {
-          "label": "Europe/Tirane",
-          "value": "Europe/Tirane"
-        },
-        {
-          "label": "Europe/Ulyanovsk",
-          "value": "Europe/Ulyanovsk"
-        },
-        {
-          "label": "Europe/Vienna",
-          "value": "Europe/Vienna"
-        },
-        {
-          "label": "Europe/Vilnius",
-          "value": "Europe/Vilnius"
-        },
-        {
-          "label": "Europe/Volgograd",
-          "value": "Europe/Volgograd"
-        },
-        {
-          "label": "Europe/Warsaw",
-          "value": "Europe/Warsaw"
-        },
-        {
-          "label": "Europe/Zurich",
-          "value": "Europe/Zurich"
-        },
-        {
-          "label": "Indian/Chagos",
-          "value": "Indian/Chagos"
-        },
-        {
-          "label": "Indian/Maldives",
-          "value": "Indian/Maldives"
-        },
-        {
-          "label": "Indian/Mauritius",
-          "value": "Indian/Mauritius"
-        },
-        {
-          "label": "Pacific/Apia",
-          "value": "Pacific/Apia"
-        },
-        {
-          "label": "Pacific/Auckland",
-          "value": "Pacific/Auckland"
-        },
-        {
-          "label": "Pacific/Bougainville",
-          "value": "Pacific/Bougainville"
-        },
-        {
-          "label": "Pacific/Chatham",
-          "value": "Pacific/Chatham"
-        },
-        {
-          "label": "Pacific/Easter",
-          "value": "Pacific/Easter"
-        },
-        {
-          "label": "Pacific/Efate",
-          "value": "Pacific/Efate"
-        },
-        {
-          "label": "Pacific/Fakaofo",
-          "value": "Pacific/Fakaofo"
-        },
-        {
-          "label": "Pacific/Fiji",
-          "value": "Pacific/Fiji"
-        },
-        {
-          "label": "Pacific/Galapagos",
-          "value": "Pacific/Galapagos"
-        },
-        {
-          "label": "Pacific/Gambier",
-          "value": "Pacific/Gambier"
-        },
-        {
-          "label": "Pacific/Guadalcanal",
-          "value": "Pacific/Guadalcanal"
-        },
-        {
-          "label": "Pacific/Guam",
-          "value": "Pacific/Guam"
-        },
-        {
-          "label": "Pacific/Honolulu",
-          "value": "Pacific/Honolulu"
-        },
-        {
-          "label": "Pacific/Kanton",
-          "value": "Pacific/Kanton"
-        },
-        {
-          "label": "Pacific/Kiritimati",
-          "value": "Pacific/Kiritimati"
-        },
-        {
-          "label": "Pacific/Kosrae",
-          "value": "Pacific/Kosrae"
-        },
-        {
-          "label": "Pacific/Kwajalein",
-          "value": "Pacific/Kwajalein"
-        },
-        {
-          "label": "Pacific/Marquesas",
-          "value": "Pacific/Marquesas"
-        },
-        {
-          "label": "Pacific/Nauru",
-          "value": "Pacific/Nauru"
-        },
-        {
-          "label": "Pacific/Niue",
-          "value": "Pacific/Niue"
-        },
-        {
-          "label": "Pacific/Norfolk",
-          "value": "Pacific/Norfolk"
-        },
-        {
-          "label": "Pacific/Noumea",
-          "value": "Pacific/Noumea"
-        },
-        {
-          "label": "Pacific/Pago_Pago",
-          "value": "Pacific/Pago_Pago"
-        },
-        {
-          "label": "Pacific/Palau",
-          "value": "Pacific/Palau"
-        },
-        {
-          "label": "Pacific/Pitcairn",
-          "value": "Pacific/Pitcairn"
-        },
-        {
-          "label": "Pacific/Port_Moresby",
-          "value": "Pacific/Port_Moresby"
-        },
-        {
-          "label": "Pacific/Rarotonga",
-          "value": "Pacific/Rarotonga"
-        },
-        {
-          "label": "Pacific/Tahiti",
-          "value": "Pacific/Tahiti"
-        },
-        {
-          "label": "Pacific/Tarawa",
-          "value": "Pacific/Tarawa"
-        },
-        {
-          "label": "Pacific/Tongatapu",
-          "value": "Pacific/Tongatapu"
-        }
-      ],
-      "help_text": "Timezone for scheduled checks. All IANA timezone names are supported."
+      "help_text": "Comma-separated cron expressions. Format: 'minute hour day month weekday' (weekday: 0=Sunday, 6=Saturday). Examples: '0 4 * * *' (daily at 4 AM), '0 3 * * 0' (Sundays at 3 AM), '0 2 */2 * *' (every 2 days at 2 AM). Leave blank to disable scheduling. \ud83d\udcbe After editing this field, click \"\ud83d\udcbe Save Schedule\" below to apply the new schedule."
     },
     {
       "id": "schedule_window_enabled",
-      "label": "🪟 Use Windowed Schedule (run only during a time window)",
+      "label": "\ud83e\ude9f Use Windowed Schedule (run only during a time window)",
       "type": "boolean",
       "default": false,
       "help_text": "When on, your Scheduled Times above mark the START of a run window. The check runs until the configured end-time / duration, then halts cleanly between streams. The next time the window opens it RESUMES from the same point (channels already checked are skipped). Group selection, alternative-stream and visible-only settings are read fresh at each window fire."
     },
     {
       "id": "schedule_end_mode",
-      "label": "🛑 Window End Mode",
+      "label": "\ud83d\uded1 Window End Mode",
       "type": "select",
       "default": "duration",
       "options": [
-        { "label": "Run for a fixed duration (hours)", "value": "duration" },
-        { "label": "Run until a specific time (HH:MM)", "value": "time" }
+        {
+          "label": "Run for a fixed duration (hours)",
+          "value": "duration"
+        },
+        {
+          "label": "Run until a specific time (HH:MM)",
+          "value": "time"
+        }
       ],
       "help_text": "Choose how the window ends. Duration counts forward from the cron-fire time. Time mode supports past-midnight wrap (e.g. start 22:00, end 02:00)."
     },
     {
       "id": "schedule_duration_hours",
-      "label": "⏳ Window Duration (hours)",
+      "label": "\u23f3 Window Duration (hours)",
       "type": "number",
       "default": 4,
       "help_text": "Used when Window End Mode = duration. Decimals allowed (e.g. 3.5). Default: 4 hours."
     },
     {
       "id": "schedule_end_time",
-      "label": "🕓 Window End Time (HH:MM, scheduler timezone)",
+      "label": "\ud83d\udd53 Window End Time (HH:MM, scheduler timezone)",
       "type": "string",
       "default": "04:00",
       "placeholder": "04:00",
-      "help_text": "Used when Window End Mode = time. 24-hour format in the Scheduler Timezone above. If earlier than the start time, the window is treated as wrapping past midnight."
+      "help_text": "Used when Window End Mode = time. 24-hour format in Dispatcharr's timezone. If earlier than the start time, the window is treated as wrapping past midnight."
+    },
+    {
+      "id": "_section_auto_run",
+      "type": "info",
+      "label": "\u2699\ufe0f Auto-run After Scheduled Checks",
+      "description": "Which post-check actions to apply automatically after each scheduled check completes. (Manual actions are always available on the Actions tab.)"
     },
     {
       "id": "scheduler_export_csv",
@@ -1489,11 +295,25 @@
       "help_text": "Automatically export results to CSV after scheduled checks complete."
     },
     {
+      "id": "scheduler_restore_channels",
+      "label": "\u267b\ufe0f Restore Recovered Channels After Scheduled Checks",
+      "type": "boolean",
+      "default": false,
+      "help_text": "After each scheduled check, channels that are Alive again but were previously marked by this plugin have their name tags ([DEAD]/[Slow]/[Blank]/quality) stripped and are moved back to their original group. Runs first, before re-marking. NOTE: a channel parked in a managed group (Graveyard / Slow / blank-screen) is only re-checked (and thus restorable) if your scan scope includes that group."
+    },
+    {
       "id": "scheduler_rename_dead_channels",
       "label": "\ud83d\udc80 Rename Dead Channels After Scheduled Checks",
       "type": "boolean",
       "default": false,
       "help_text": "Automatically rename dead channels after scheduled checks complete."
+    },
+    {
+      "id": "scheduler_rename_black_screen_channels",
+      "label": "\u2b1b Rename Blank-Screen Channels After Scheduled Checks",
+      "type": "boolean",
+      "default": false,
+      "help_text": "Automatically rename blank-screen channels after scheduled checks complete. Requires 'Detect Blank-Screen Streams' to be ON."
     },
     {
       "id": "scheduler_rename_low_framerate_channels",
@@ -1515,6 +335,13 @@
       "type": "boolean",
       "default": false,
       "help_text": "Automatically move dead channels to the configured group after scheduled checks complete."
+    },
+    {
+      "id": "scheduler_move_black_screen_channels",
+      "label": "\u2b1b Move Blank-Screen Channels After Scheduled Checks",
+      "type": "boolean",
+      "default": false,
+      "help_text": "Automatically move blank-screen channels to the configured group after scheduled checks complete."
     },
     {
       "id": "scheduler_move_low_framerate_channels",
@@ -1551,12 +378,43 @@
       "description": "Paths and low-level overrides. Change only if your environment differs from the Dispatcharr defaults."
     },
     {
+      "id": "ffprobe_flags",
+      "label": "\ud83d\udd0d FFprobe Analysis Flags",
+      "type": "string",
+      "default": "-show_streams,-show_packets,-loglevel error",
+      "placeholder": "-show_streams, -show_packets",
+      "help_text": "Comma-separated ffprobe flags for stream analysis. Options: -show_streams (basic validation), -show_packets (per-packet data; required for video bitrate calculation on live MPEG-TS streams), -loglevel error (errors only). Default: -show_streams,-show_packets,-loglevel error. Note: do not add -show_frames \u2014 when both -show_frames and -show_packets are passed, ffprobe returns a combined packets_and_frames array instead of separate packets[], which prevents the bitrate fallback from running."
+    },
+    {
+      "id": "ffprobe_analysis_duration",
+      "label": "\u23f1\ufe0f FFprobe Analysis Duration (seconds)",
+      "type": "number",
+      "default": 8,
+      "help_text": "Duration to analyze stream when using -show_frames or -show_packets. Longer duration = more accurate bitrate/GOP analysis but slower checks. Probes that capture fewer than 30 video packets leave video_bitrate unset, so 8s gives slow-start streams enough room to clear the threshold. Default: 8 seconds"
+    },
+    {
+      "id": "streamlink_hosts",
+      "label": "\u23fc Streamlink-Only Hosts (skip ffprobe)",
+      "type": "string",
+      "default": "youtube.com, youtu.be, twitch.tv, kick.com",
+      "placeholder": "youtube.com, twitch.tv",
+      "help_text": "Comma-separated host suffixes that ffprobe cannot validate (served via Streamlink). Streams on these hosts are marked 'Skipped' instead of 'Dead' so rename/move/delete actions leave them alone. Use full domains (e.g. 'youtube.com', not 'youtube'). Leave blank to use the defaults."
+    },
+    {
       "id": "ffprobe_path",
       "label": "\ud83d\udccd FFprobe Path",
       "type": "string",
       "default": "/usr/local/bin/ffprobe",
       "placeholder": "/usr/local/bin/ffprobe",
       "help_text": "Full path to the ffprobe executable. Default: /usr/local/bin/ffprobe (Dispatcharr's default location)"
+    },
+    {
+      "id": "ffmpeg_path",
+      "label": "\ud83d\udccd FFmpeg Path",
+      "type": "string",
+      "default": "/usr/local/bin/ffmpeg",
+      "placeholder": "/usr/local/bin/ffmpeg",
+      "help_text": "Full path to the ffmpeg executable, used for blank-screen detection. Default: /usr/local/bin/ffmpeg (Dispatcharr's default location)"
     }
   ],
   "actions": [
@@ -1656,6 +514,39 @@
       },
       "button_variant": "filled",
       "button_label": "\u26b0\ufe0f Move Dead"
+    },
+    {
+      "id": "rename_black_screen_channels",
+      "label": "\u2b1b Rename Blank-Screen Channels",
+      "description": "Rename all channels detected as a blank screen in the last check using the configured format.",
+      "button_color": "red",
+      "confirm": {
+        "message": "This will rename blank-screen channels. This action is irreversible. Continue?"
+      },
+      "button_variant": "filled",
+      "button_label": "\u2b1b Rename Blank"
+    },
+    {
+      "id": "move_black_screen_channels",
+      "label": "\u2b1b Move Blank-Screen Channels to Group",
+      "description": "Moves all channels detected as a blank screen in the last check to the specified group.",
+      "button_color": "red",
+      "confirm": {
+        "message": "This will move blank-screen channels to the configured group. This action is irreversible. Continue?"
+      },
+      "button_variant": "filled",
+      "button_label": "\u2b1b Move Blank"
+    },
+    {
+      "id": "restore_channels",
+      "label": "\u267b\ufe0f Restore Recovered Channels",
+      "description": "For channels that are Alive again but were previously marked: strip plugin name tags and move them back to their original group.",
+      "button_color": "green",
+      "confirm": {
+        "message": "This will strip plugin tags from recovered channel names and move them back to their original groups. Continue?"
+      },
+      "button_variant": "filled",
+      "button_label": "\u267b\ufe0f Restore Recovered"
     },
     {
       "id": "rename_low_framerate_channels",

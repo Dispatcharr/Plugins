@@ -85,11 +85,12 @@ class PluginConfig:
     LOADED_CHANNELS_FILE = "/data/iptv_checker_loaded_channels.json"
     PROGRESS_FILE = "/data/iptv_checker_progress.json"
     PENDING_RESUME_FILE = "/data/iptv_checker_pending_resume.json"
+    CHANNEL_STATE_FILE = "/data/iptv_checker_channel_state.json"
     SCHEDULER_LOCK_FILE = "/data/iptv_checker_scheduler.pid"
     SCHEDULER_RELOAD_FLAG = "/data/iptv_checker_scheduler_reload.flag"
 
     # --- Scheduler ---
-    DEFAULT_TIMEZONE = "America/Chicago"
+    DEFAULT_TIMEZONE = "UTC"
     SCHEDULER_CHECK_INTERVAL = 30  # Check every 30 seconds
     SCHEDULER_TIME_WINDOW = 30  # ±30 second window to trigger
     SCHEDULER_ERROR_WAIT = 60  # Wait 60s if error occurs
@@ -282,7 +283,7 @@ class Plugin:
     
     # Explicitly set the plugin key
     key = "iptv_checker"
-    version = "1.26.1582047"
+    version = "1.26.1721834"
 
     # Fields and actions are defined in plugin.json (single source of truth)
     def __init__(self):
@@ -290,6 +291,7 @@ class Plugin:
         self.loaded_channels_file = PluginConfig.LOADED_CHANNELS_FILE
         self.progress_file = PluginConfig.PROGRESS_FILE
         self.pending_resume_file = PluginConfig.PENDING_RESUME_FILE
+        self.channel_state_file = PluginConfig.CHANNEL_STATE_FILE
         self.check_progress = self._load_progress()
         self.load_progress = {"current": 0, "total": 0, "status": "idle"}  # Track load groups progress
         self._thread = None
@@ -509,12 +511,38 @@ class Plugin:
             return False
         return datetime.now(self._active_window_tz) >= self._active_window_end
 
+    @staticmethod
+    def _coerce_timezone(value):
+        """Return a valid IANA timezone name, or PluginConfig.DEFAULT_TIMEZONE as a
+        safe fallback. Accepts None / blank / non-string / invalid -> default."""
+        if not isinstance(value, str) or not value.strip():
+            return PluginConfig.DEFAULT_TIMEZONE
+        candidate = value.strip()
+        try:
+            import pytz
+            pytz.timezone(candidate)
+        except Exception:
+            return PluginConfig.DEFAULT_TIMEZONE
+        return candidate
+
+    def _dispatcharr_timezone(self):
+        """Resolve the effective timezone from Dispatcharr's global setting
+        (General Settings -> Time Zone, core.models.CoreSettings). Falls back to
+        PluginConfig.DEFAULT_TIMEZONE ('UTC') when unreadable/invalid or when
+        running outside Dispatcharr. Lazy import so the module loads in tests."""
+        try:
+            from core.models import CoreSettings
+            return self._coerce_timezone(CoreSettings.get_system_time_zone())
+        except Exception as e:
+            LOGGER.debug(f"{LOG_PREFIX} Could not read Dispatcharr timezone, using {PluginConfig.DEFAULT_TIMEZONE}: {e}")
+            return PluginConfig.DEFAULT_TIMEZONE
+
     def _setup_window_state(self, settings):
         """Resolve TZ and compute end-of-window. Stores state on self. Returns False on bad config."""
         if not PYTZ_AVAILABLE:
             LOGGER.error("Windowed schedule requires pytz")
             return False
-        tz_str = settings.get('scheduler_timezone', PluginConfig.DEFAULT_TIMEZONE)
+        tz_str = self._dispatcharr_timezone()
         try:
             tz = pytz.timezone(tz_str)
         except Exception:
@@ -538,6 +566,7 @@ class Plugin:
             'group_names': settings.get('group_names', ''),
             'check_alternative_streams': bool(settings.get('check_alternative_streams', True)),
             'only_visible_channels': bool(settings.get('only_visible_channels', False)),
+            'group_names_exclude': settings.get('group_names_exclude', ''),
         }
 
     def _seed_pending_from_loaded_channels(self, settings):
@@ -580,7 +609,7 @@ class Plugin:
         if saved_end_iso:
             try:
                 saved_end = datetime.fromisoformat(saved_end_iso)
-                saved_tz = pytz.timezone(pending.get('tz') or PluginConfig.DEFAULT_TIMEZONE)
+                saved_tz = pytz.timezone(pending.get('tz') or self._dispatcharr_timezone())
                 if saved_end.tzinfo is None:
                     saved_end = saved_tz.localize(saved_end)
                 if datetime.now(saved_tz) >= saved_end:
@@ -673,7 +702,7 @@ class Plugin:
         if not pending or not pending.get("remaining_stream_ids"):
             return
         end_iso = pending.get("window_end_iso")
-        tz_str = pending.get("tz") or settings.get('scheduler_timezone', PluginConfig.DEFAULT_TIMEZONE)
+        tz_str = pending.get("tz") or self._dispatcharr_timezone()
         try:
             tz = pytz.timezone(tz_str)
             end = datetime.fromisoformat(end_iso) if end_iso else None
@@ -686,7 +715,6 @@ class Plugin:
             return
         now = datetime.now(tz)
         if now >= end:
-            LOGGER.info("⏰ WINDOW: pending state exists but its window already closed — discarding dead pending state")
             self._clear_pending_resume()
             return
         LOGGER.info(f"⏰ WINDOW: pending state detected (ends {end.isoformat()}); resuming check after restart")
@@ -913,7 +941,7 @@ class Plugin:
             return
         
         # Get timezone
-        tz_str = settings.get('scheduler_timezone', PluginConfig.DEFAULT_TIMEZONE)
+        tz_str = self._dispatcharr_timezone()
         try:
             local_tz = pytz.timezone(tz_str)
         except pytz.exceptions.UnknownTimeZoneError:
@@ -949,7 +977,7 @@ class Plugin:
                         fresh = self._fresh_settings(settings)
                         new_times_str = (fresh.get("scheduled_times") or "").strip()
                         new_times = self._parse_scheduled_times(new_times_str) if new_times_str else []
-                        new_tz_str = fresh.get("scheduler_timezone", PluginConfig.DEFAULT_TIMEZONE)
+                        new_tz_str = self._dispatcharr_timezone()
                         try:
                             new_tz = pytz.timezone(new_tz_str)
                         except pytz.exceptions.UnknownTimeZoneError:
@@ -1131,18 +1159,32 @@ class Plugin:
                 LOGGER.info("⏰ WINDOW: closed mid-list — post-actions deferred to next window")
                 return
             
+            # Step 3b: Restore recovered channels FIRST (heal before re-marking)
+            restored_count = 0
+            if settings.get('scheduler_restore_channels', False):
+                LOGGER.info("⏰ SCHEDULED: Restoring recovered channels...")
+                restore_result = self.restore_channels_action(settings, scheduled_logger)
+                restored_count = restore_result.get('restored', 0)
+                LOGGER.info(f"⏰ SCHEDULED: {restore_result.get('message')}")
+
             # Step 4: Rename dead channels if enabled
             if settings.get('scheduler_rename_dead_channels', False):
                 LOGGER.info("⏰ SCHEDULED: Renaming dead channels...")
                 rename_result = self.rename_channels_action(settings, scheduled_logger)
                 LOGGER.info(f"⏰ SCHEDULED: {rename_result.get('message')}")
-            
+
             # Step 5: Rename low framerate channels if enabled
             if settings.get('scheduler_rename_low_framerate_channels', False):
                 LOGGER.info("⏰ SCHEDULED: Renaming low framerate channels...")
                 rename_low_fps_result = self.rename_low_framerate_channels_action(settings, scheduled_logger)
                 LOGGER.info(f"⏰ SCHEDULED: {rename_low_fps_result.get('message')}")
-            
+
+            # Step 5b: Rename black-screen channels if enabled
+            if settings.get('scheduler_rename_black_screen_channels', False):
+                LOGGER.info("⏰ SCHEDULED: Renaming black-screen channels...")
+                rename_black_result = self.rename_black_screen_channels_action(settings, scheduled_logger)
+                LOGGER.info(f"⏰ SCHEDULED: {rename_black_result.get('message')}")
+
             # Step 6: Add video format suffix if enabled
             if settings.get('scheduler_add_video_format_suffix', False):
                 LOGGER.info("⏰ SCHEDULED: Adding video format suffixes...")
@@ -1161,6 +1203,12 @@ class Plugin:
                 move_low_fps_result = self.move_low_framerate_channels_action(settings, scheduled_logger)
                 LOGGER.info(f"⏰ SCHEDULED: {move_low_fps_result.get('message')}")
 
+            # Step 8b: Move black-screen channels if enabled
+            if settings.get('scheduler_move_black_screen_channels', False):
+                LOGGER.info("⏰ SCHEDULED: Moving black-screen channels to group...")
+                move_black_result = self.move_black_screen_channels_action(settings, scheduled_logger)
+                LOGGER.info(f"⏰ SCHEDULED: {move_black_result.get('message')}")
+
             # Step 9: Delete dead channels if enabled
             if settings.get('scheduler_delete_dead_channels', False):
                 LOGGER.info("⏰ SCHEDULED: Deleting dead channels...")
@@ -1173,7 +1221,7 @@ class Plugin:
             # Step 10: Fire webhook if enabled
             if settings.get('scheduler_fire_webhook', False):
                 LOGGER.info("⏰ SCHEDULED: Firing webhook...")
-                webhook_result = self._fire_webhook(settings, scheduled_logger)
+                webhook_result = self._fire_webhook(settings, scheduled_logger, restored=restored_count)
                 if webhook_result.get('status') == 'ok':
                     LOGGER.info(f"⏰ SCHEDULED: {webhook_result.get('message')}")
                 else:
@@ -1311,6 +1359,9 @@ class Plugin:
                 "cleanup_orphaned_tasks": self.cleanup_orphaned_tasks_action,
                 "check_scheduler_status": self.check_scheduler_status_action,
                 "delete_dead_channels": self.delete_dead_channels_action,
+                "rename_black_screen_channels": self.rename_black_screen_channels_action,
+                "move_black_screen_channels": self.move_black_screen_channels_action,
+                "restore_channels": self.restore_channels_action,
             }
 
             handler = action_map.get(action)
@@ -1398,6 +1449,20 @@ class Plugin:
                     has_errors = True
             else:
                 validation_results.append("ℹ️ No groups specified (will check all)")
+
+            # Validate the exclude filter (applied after the include filter)
+            exclude_str = settings.get("group_names_exclude", "").strip()
+            if exclude_str:
+                try:
+                    all_group_names = {g['name'] for g in self._get_all_groups(logger)}
+                    ex_matched = self._match_group_names(exclude_str, all_group_names)
+                    if ex_matched:
+                        validation_results.append(f"✅ Exclude filter matches {len(ex_matched)} group(s): {', '.join(sorted(ex_matched))}")
+                    else:
+                        validation_results.append("ℹ️ Exclude filter matches no current groups")
+                except Exception as e:
+                    validation_results.append(f"❌ Failed to validate exclude filter: {str(e)}")
+                    has_errors = True
         except Exception as e:
             validation_results.append(f"❌ DB error: {str(e)[:100]}")
             has_errors = True
@@ -1429,17 +1494,11 @@ class Plugin:
             else:
                 validation_results.append(f"✅ Cron schedule(s) valid: {', '.join(scheduled_times)}")
                 
-            # Validate timezone
-            scheduler_timezone = settings.get("scheduler_timezone", PluginConfig.DEFAULT_TIMEZONE)
+            # Timezone comes from Dispatcharr's global setting (General Settings -> Time Zone).
             if PYTZ_AVAILABLE:
-                try:
-                    pytz.timezone(scheduler_timezone)
-                    validation_results.append(f"✅ Timezone valid: {scheduler_timezone}")
-                except pytz.exceptions.UnknownTimeZoneError:
-                    validation_results.append(f"❌ Unknown timezone: {scheduler_timezone}")
-                    has_errors = True
+                validation_results.append(f"✅ Using Dispatcharr timezone: {self._dispatcharr_timezone()}")
             else:
-                validation_results.append("⚠️ pytz not available - scheduler timezone cannot be validated")
+                validation_results.append("⚠️ pytz not available - scheduler cannot run")
 
         # Validate auto-delete settings
         if settings.get('scheduler_delete_dead_channels', False):
@@ -1542,10 +1601,11 @@ class Plugin:
             if r.get('status') == 'Alive':
                 formats[r.get('format', 'Unknown')] += 1
 
+        black = sum(1 for r in results if self._is_black_screen(r))
         summary = [
             f"📊 Last Check Results ({len(results)} streams):",
             f"✅ Alive: {alive}",
-            f"❌ Dead: {dead}",
+            f"❌ Dead: {dead}" + (f"  (⬛ {black} black/blank)" if black else ""),
             f"⤼ Skipped: {skipped}\n",
             "📺 Alive Stream Formats:"
         ]
@@ -1569,7 +1629,7 @@ class Plugin:
             logger.warning(f"Could not trigger frontend refresh: {e}")
         return False
 
-    def _fire_webhook(self, settings, logger):
+    def _fire_webhook(self, settings, logger, restored=None):
         """Send check results summary to the configured webhook URL via HTTP POST."""
         webhook_url = settings.get('webhook_url', '').strip()
         if not webhook_url:
@@ -1598,9 +1658,13 @@ class Plugin:
                 f"**IPTV Checker — check complete**\n"
                 f"Total: {len(results)}  •  ✅ Alive: {alive}  •  ❌ Dead: {dead}  •  ⏭️ Skipped: {skipped}"
             )
+            # Discord: hide the line on 0/None (noise); generic JSON below keeps an
+            # explicit "restored": 0 key for stable machine consumers.
+            if restored:
+                content += f"  •  ♻️ Restored: {restored}"
             payload = json.dumps({"content": content}).encode('utf-8')
         else:
-            payload = json.dumps({
+            body = {
                 "plugin": self.key,
                 "event": "check_complete",
                 "total": len(results),
@@ -1608,7 +1672,10 @@ class Plugin:
                 "dead": dead,
                 "skipped": skipped,
                 "timestamp": datetime.utcnow().isoformat() + "Z",
-            }).encode('utf-8')
+            }
+            if restored is not None:
+                body["restored"] = restored
+            payload = json.dumps(body).encode('utf-8')
 
         # Always set an explicit User-Agent. Discord's Cloudflare edge 403s the
         # default "Python-urllib/3.x" UA, which silently dropped every webhook.
@@ -1712,6 +1779,21 @@ class Plugin:
             logger.info(f"Created new group '{name}' (ID: {group.id})")
         return group
 
+    @staticmethod
+    def _match_group_names(patterns_str, all_group_names):
+        """Return the set of group names matching any comma-separated pattern.
+        Wildcards (containing * ? [) use fnmatch.fnmatchcase (case-sensitive);
+        literals use case-sensitive exact membership — symmetric with the include path."""
+        matched = set()
+        for pattern in (p.strip() for p in (patterns_str or '').split(',')):
+            if not pattern:
+                continue
+            if any(c in pattern for c in '*?['):
+                matched |= {g for g in all_group_names if fnmatch.fnmatchcase(g, pattern)}
+            elif pattern in all_group_names:
+                matched.add(pattern)
+        return matched
+
     def load_groups_action(self, settings, logger):
         """Load channels and streams from specified Dispatcharr groups."""
         try:
@@ -1729,8 +1811,8 @@ class Plugin:
                 logger.warning(f"⚠️ Total groups found: {len(group_name_to_id)}")
                 logger.warning(f"⚠️ Groups: {', '.join(sorted(group_name_to_id.keys()))}")
 
-                target_group_names, target_group_ids = set(group_name_to_id.keys()), set(group_name_to_id.values())
-                if not target_group_ids: return {"status": "error", "message": "No groups found in Dispatcharr."}
+                target_group_names = set(group_name_to_id.keys())
+                if not target_group_names: return {"status": "error", "message": "No groups found in Dispatcharr."}
             else:
                 input_names = [name.strip() for name in group_names_str.split(',') if name.strip()]
                 all_group_names = set(group_name_to_id.keys())
@@ -1751,17 +1833,27 @@ class Plugin:
                     else:
                         unmatched_patterns.append(pattern)
 
-                target_group_ids = {group_name_to_id[name] for name in target_group_names}
-
                 # Log which groups are being loaded
                 if target_group_names:
                     logger.info(f"✓ Loading specified groups: {', '.join(sorted(target_group_names))}")
                 if unmatched_patterns:
                     logger.warning(f"⚠️ No groups matched: {', '.join(unmatched_patterns)}")
 
-                if not target_group_ids:
+                if not target_group_names:
                     return {"status": "error", "message": f"No groups matched: {', '.join(unmatched_patterns)}"}
 
+            # Exclude filter — remove any matching groups AFTER the include filter.
+            exclude_str = settings.get("group_names_exclude", "").strip()
+            if exclude_str:
+                excluded = self._match_group_names(exclude_str, set(group_name_to_id.keys()))
+                removed = target_group_names & excluded
+                if removed:
+                    logger.info(f"🚫 Excluding {len(removed)} group(s) from check: {', '.join(sorted(removed))}")
+                    target_group_names = target_group_names - excluded
+                if not target_group_names:
+                    return {"status": "error", "message": "All target groups were excluded by the 'Group(s) to Exclude' filter. Nothing to check."}
+
+            target_group_ids = {group_name_to_id[name] for name in target_group_names}
             channels_in_groups = self._get_all_channels(logger, group_ids=target_group_ids)
 
             only_visible = bool(settings.get("only_visible_channels", False))
@@ -1825,6 +1917,9 @@ class Plugin:
         """Build success message for load groups action"""
         total_streams = sum(len(c.get('streams', [])) for c in loaded_channels)
         group_msg = "all groups" if not group_names_str else f"group(s): {', '.join(target_group_names)}"
+        exclude_str = settings.get("group_names_exclude", "").strip()
+        if exclude_str:
+            group_msg += f" (excluding: {exclude_str})"
         if settings.get("only_visible_channels", False):
             group_msg += " (visible channels only)"
 
@@ -2226,6 +2321,127 @@ class Plugin:
             tracker.finish()
             self._trigger_frontend_refresh(settings, logger)
 
+    # --- Tag taxonomy (shared by black-flag handling and restore) -----------
+    # Standard labels this plugin can append to a channel name. Used as a
+    # defensive floor so a previously-applied standard tag is always strippable
+    # even after the user edits their rename formats (same approach as the
+    # issue-#18 suffix stripper).
+    STANDARD_STATUS_TAGS = ('DEAD', 'Slow', 'Blank')
+    STANDARD_QUALITY_TAGS = ('UHD', 'FHD', 'HD', 'SD', 'Unknown')
+
+    @staticmethod
+    def _is_dead_nonblack(result):
+        """Dead due to a probing failure, NOT a black/blank screen."""
+        return result.get('status') == 'Dead' and result.get('error_type') != 'Black Screen'
+
+    @staticmethod
+    def _is_black_screen(result):
+        """Marked Dead specifically because the stream is a black/blank screen."""
+        return result.get('status') == 'Dead' and result.get('error_type') == 'Black Screen'
+
+    @staticmethod
+    def _extract_format_tags(fmt):
+        """Pull bracketed labels out of a rename format (e.g. 'DEAD' from '{name} [DEAD]')."""
+        if not fmt:
+            return []
+        return re.findall(r'\[([^\[\]]+)\]', fmt)
+
+    @staticmethod
+    def _compile_trailing_tag_re(tags):
+        """Compile a case-insensitive regex matching one-or-more trailing ' [TAG]' groups."""
+        labels = sorted({t.strip() for t in tags if t and t.strip()}, key=len, reverse=True)
+        if not labels:
+            return None
+        pattern = r'(?:\s*\[(?:' + '|'.join(re.escape(t) for t in labels) + r')\])+\s*$'
+        return re.compile(pattern, re.IGNORECASE)
+
+    @classmethod
+    def _derive_status_tags(cls, settings):
+        """Compiled regex of PROBLEM tags only (DEAD/Slow/Blank + custom) — used for eligibility."""
+        tags = list(cls.STANDARD_STATUS_TAGS)
+        for key in ('dead_rename_format', 'low_framerate_rename_format', 'black_screen_rename_format'):
+            tags.extend(cls._extract_format_tags(settings.get(key, '')))
+        return cls._compile_trailing_tag_re(tags)
+
+    @classmethod
+    def _derive_strippable_tags(cls, settings):
+        """Compiled regex of ALL tags this plugin can append (status + quality)."""
+        tags = list(cls.STANDARD_STATUS_TAGS) + list(cls.STANDARD_QUALITY_TAGS)
+        for key in ('dead_rename_format', 'low_framerate_rename_format', 'black_screen_rename_format'):
+            tags.extend(cls._extract_format_tags(settings.get(key, '')))
+        tags.extend(s.strip() for s in (settings.get('video_format_suffixes', '') or '').split(','))
+        return cls._compile_trailing_tag_re(tags)
+
+    @staticmethod
+    def _compute_restore_plan(alive_names_by_id, state, strip_re, status_re, existing_group_ids):
+        """Pure planner for the restore action.
+
+        A channel is eligible iff it has stored original-group state OR its current
+        name carries a trailing status tag ([DEAD]/[Slow]/[Blank] or custom). Quality
+        tags alone never make a healthy channel eligible. Eligible channels have ALL
+        plugin tags stripped from the name and are moved back to their original group
+        when it still exists.
+        """
+        name_updates = []
+        group_updates = []
+        entries_to_clear = set()
+        missing_group_ids = {}
+
+        for cid, name in alive_names_by_id.items():
+            entry = state.get(str(cid))
+            has_state = entry is not None
+            has_status_tag = bool(status_re and name and status_re.search(name))
+            if not has_state and not has_status_tag:
+                continue
+
+            if strip_re and name:
+                base = strip_re.sub('', name).rstrip()
+                if base and base != name:
+                    name_updates.append({'id': cid, 'name': base})
+
+            if has_state:
+                orig = entry.get('original_group_id')
+                if orig is not None and orig in existing_group_ids:
+                    group_updates.append({'id': cid, 'channel_group_id': orig})
+                else:
+                    missing_group_ids[str(cid)] = orig
+                entries_to_clear.add(str(cid))
+
+        return {
+            'name_updates': name_updates,
+            'group_updates': group_updates,
+            'entries_to_clear': entries_to_clear,
+            'missing_group_ids': missing_group_ids,
+        }
+
+    @staticmethod
+    def _compute_capture_state(channel_ids, current_group_by_id, group_name_by_id,
+                               managed_group_names, existing_state, now_iso):
+        """Pure planner for original-state capture. Returns ONLY the new entries to add.
+
+        Skips channels already tracked, channels with no current group (nothing to
+        restore to), and channels currently sitting in a managed destination group (so
+        a second move never records a dead/slow/black group as the 'original').
+        """
+        managed = {n.strip().lower() for n in managed_group_names if n and n.strip()}
+        new_entries = {}
+        for cid in channel_ids:
+            key = str(cid)
+            if key in existing_state:
+                continue
+            gid = current_group_by_id.get(cid)
+            if gid is None:
+                continue  # no current group -> nothing to restore TO; name-strip eligibility still covers it
+            gname = group_name_by_id.get(gid, '')
+            if gname and gname.strip().lower() in managed:
+                continue
+            new_entries[key] = {
+                'original_group_id': gid,
+                'original_group_name': gname,
+                'moved_at': now_iso,
+            }
+        return new_entries
+
     def rename_channels_action(self, settings, logger):
         """Rename channels that were marked as dead in the last check."""
         rename_format = settings.get("dead_rename_format", "{name} [DEAD]").strip()
@@ -2239,7 +2455,7 @@ class Plugin:
         if results is None:
             return {"status": "error", "message": "No check results found (or data corrupted). Please run 'Check Streams' first."}
 
-        dead_channels = {r['channel_id']: r['channel_name'] for r in results if r['status'] == 'Dead'}
+        dead_channels = {r['channel_id']: r['channel_name'] for r in results if self._is_dead_nonblack(r)}
         if not dead_channels: return {"status": "ok", "message": "No dead channels found in the last check."}
 
         payload = []
@@ -2267,10 +2483,11 @@ class Plugin:
         if results is None:
             return {"status": "error", "message": "No check results found (or data corrupted). Please run 'Check Streams' first."}
         
-        dead_channel_ids = {r['channel_id'] for r in results if r['status'] == 'Dead'}
+        dead_channel_ids = {r['channel_id'] for r in results if self._is_dead_nonblack(r)}
         if not dead_channel_ids: return {"status": "ok", "message": "No dead channels were found in the last check."}
-        
+
         try:
+            self._capture_original_state(dead_channel_ids, settings, logger)
             dest_group = self._get_or_create_group(move_to_group_name, logger)
             new_group_id = dest_group.id
 
@@ -2326,6 +2543,17 @@ class Plugin:
             logger.warning(f"DELETED {deleted_count} dead channels permanently from the database.")
             if deleted_count != len(dead_channel_ids):
                 logger.warning(f"Expected to delete {len(dead_channel_ids)} channels but only {deleted_count} were found in the database.")
+
+            # Hygiene: drop original-state entries for channels we just deleted.
+            try:
+                state = self._load_json_file(self.channel_state_file) or {}
+                if state:
+                    for cid in dead_channel_ids:
+                        state.pop(str(cid), None)
+                    self._save_json_file(self.channel_state_file, state, indent=2)
+            except Exception as e:
+                logger.warning(f"Could not prune restore-state after delete: {e}")
+
             self._trigger_frontend_refresh(settings, logger)
             return {
                 "status": "ok",
@@ -2379,8 +2607,9 @@ class Plugin:
         
         low_fps_channel_ids = {r['channel_id'] for r in results if 0 < r.get('framerate_num', 0) < 30}
         if not low_fps_channel_ids: return {"status": "ok", "message": "No low framerate channels found to move."}
-        
+
         try:
+            self._capture_original_state(low_fps_channel_ids, settings, logger)
             dest_group = self._get_or_create_group(group_name, logger)
             new_group_id = dest_group.id
 
@@ -2494,6 +2723,138 @@ class Plugin:
 
         except Exception as e: return {"status": "error", "message": str(e)}
 
+    def _capture_original_state(self, channel_ids, settings, logger):
+        """Persist each channel's current group as its 'original' before a move so
+        restore can return it later. Never overwrites an existing entry and never
+        records a managed destination group. Best-effort: never aborts the move.
+
+        The state file is read-modify-written atomically (_save_json_file = tmp +
+        os.replace), but two processes mutating it concurrently are last-writer-wins.
+        That is acceptable: a lost capture only forfeits the exact-group restore for
+        that channel (its name is still restored). Same accepted RMW model as
+        pending_resume.json; moves are not actions users typically fire in parallel."""
+        try:
+            channel_ids = list(channel_ids)
+            if not channel_ids:
+                return
+            current_group_by_id = {c['id']: c.get('channel_group_id') for c in self._get_all_channels(logger)}
+            group_name_by_id = {g['id']: g['name'] for g in self._get_all_groups(logger)}
+            managed_group_names = [
+                settings.get('move_to_group_name', ''),
+                settings.get('move_low_framerate_group', ''),
+                settings.get('move_black_screen_group', ''),
+            ]
+            state = self._load_json_file(self.channel_state_file) or {}
+            now_iso = datetime.utcnow().isoformat() + 'Z'
+            new_entries = self._compute_capture_state(
+                channel_ids, current_group_by_id, group_name_by_id,
+                managed_group_names, state, now_iso,
+            )
+            if new_entries:
+                state.update(new_entries)
+                self._save_json_file(self.channel_state_file, state, indent=2)
+                logger.info(f"Captured original group for {len(new_entries)} channel(s) before move.")
+        except Exception as e:
+            logger.warning(f"Could not capture original channel state (continuing): {e}")
+
+    def rename_black_screen_channels_action(self, settings, logger):
+        """Rename channels marked Dead specifically because they are a black/blank screen."""
+        rename_format = settings.get("black_screen_rename_format", "{name} [Blank]").strip()
+        if not rename_format:
+            return {"status": "error", "message": "Please configure a Black-Screen Channel Rename Format."}
+        if "{name}" not in rename_format:
+            return {"status": "error", "message": "Black-Screen Channel Rename Format must contain {name} placeholder."}
+
+        results = self._load_json_file(self.results_file)
+        if results is None:
+            return {"status": "error", "message": "No check results found (or data corrupted). Please run 'Check Streams' first."}
+
+        black_channels = {r['channel_id']: r['channel_name'] for r in results if self._is_black_screen(r)}
+        if not black_channels:
+            return {"status": "ok", "message": "No black-screen channels found in the last check."}
+
+        payload = []
+        for cid, name in black_channels.items():
+            new_name = rename_format.replace('{name}', name)
+            if new_name != name:
+                payload.append({'id': cid, 'name': new_name})
+
+        if not payload:
+            return {"status": "ok", "message": "No channels needed renaming."}
+        try:
+            count = self._bulk_update_channels(payload, ['name'], logger)
+            self._trigger_frontend_refresh(settings, logger)
+            return {"status": "ok", "message": f"Successfully renamed {count} black-screen channels. GUI refresh triggered."}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+
+    def move_black_screen_channels_action(self, settings, logger):
+        """Move black/blank-screen channels to a dedicated group (captures original group first)."""
+        group_name = settings.get("move_black_screen_group", "Black Screens").strip()
+        if not group_name:
+            return {"status": "error", "message": "Please enter a destination group name for black-screen channels."}
+
+        results = self._load_json_file(self.results_file)
+        if results is None:
+            return {"status": "error", "message": "No check results found (or data corrupted). Please run 'Check Streams' first."}
+
+        black_channel_ids = {r['channel_id'] for r in results if self._is_black_screen(r)}
+        if not black_channel_ids:
+            return {"status": "ok", "message": "No black-screen channels found to move."}
+        try:
+            self._capture_original_state(black_channel_ids, settings, logger)
+            dest_group = self._get_or_create_group(group_name, logger)
+            payload = [{'id': cid, 'channel_group_id': dest_group.id} for cid in black_channel_ids]
+            moved_count = self._bulk_update_channels(payload, ['channel_group_id'], logger)
+            self._trigger_frontend_refresh(settings, logger)
+            return {"status": "ok", "message": f"Successfully moved {moved_count} black-screen channels to group '{group_name}'. GUI refresh triggered."}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+
+    def restore_channels_action(self, settings, logger):
+        """Restore recovered channels: strip plugin name tags and move back to the
+        original group for channels that are Alive again but were previously marked."""
+        results = self._load_json_file(self.results_file)
+        if results is None:
+            return {"status": "error", "message": "No check results found (or data corrupted). Please run 'Check Streams' first.", "restored": 0}
+
+        alive_ids = {r['channel_id'] for r in results if r.get('status') == 'Alive'}
+        if not alive_ids:
+            return {"status": "ok", "message": "No alive channels in the last check to restore.", "restored": 0}
+
+        state = self._load_json_file(self.channel_state_file) or {}
+        strip_re = self._derive_strippable_tags(settings)
+        status_re = self._derive_status_tags(settings)
+
+        alive_names_by_id = {c['id']: c['name'] for c in self._get_all_channels(logger) if c['id'] in alive_ids}
+        existing_group_ids = {g['id'] for g in self._get_all_groups(logger)}
+
+        plan = self._compute_restore_plan(alive_names_by_id, state, strip_re, status_re, existing_group_ids)
+
+        affected = {u['id'] for u in plan['name_updates']} | {u['id'] for u in plan['group_updates']}
+        if not affected and not plan['entries_to_clear']:
+            return {"status": "ok", "message": "No recovered channels needed restoring.", "restored": 0}
+
+        try:
+            renamed = self._bulk_update_channels(plan['name_updates'], ['name'], logger)
+            moved = self._bulk_update_channels(plan['group_updates'], ['channel_group_id'], logger)
+
+            if plan['missing_group_ids']:
+                logger.warning(
+                    f"Restore: original group no longer exists for {len(plan['missing_group_ids'])} channel(s); "
+                    f"name restored but left in current group: {sorted(plan['missing_group_ids'])}"
+                )
+
+            for key in plan['entries_to_clear']:
+                state.pop(key, None)
+            self._save_json_file(self.channel_state_file, state, indent=2)
+
+            self._trigger_frontend_refresh(settings, logger)
+            return {"status": "ok", "restored": len(affected),
+                    "message": f"Restored {len(affected)} recovered channel(s): {renamed} renamed, {moved} moved back to original group. GUI refresh triggered."}
+        except Exception as e:
+            return {"status": "error", "message": str(e), "restored": 0}
+
     def view_table_action(self, settings, logger):
         """Display results in table format"""
         results = self._load_json_file(self.results_file)
@@ -2541,18 +2902,21 @@ class Plugin:
         # Add plugin settings (excluding sensitive information)
         lines.append("# Plugin Settings:")
         lines.append(f"#   Group(s) Checked: {settings.get('group_names', 'All groups')}")
+        lines.append(f"#   Group(s) Excluded: {settings.get('group_names_exclude', '') or '(none)'}")
         lines.append(f"#   Only Visible Channels: {settings.get('only_visible_channels', False)}")
         if settings.get('schedule_window_enabled', False):
             end_mode = settings.get('schedule_end_mode', 'duration')
             if end_mode == 'duration':
-                lines.append(f"#   Schedule Mode: window (duration {settings.get('schedule_duration_hours', 4)}h, tz {settings.get('scheduler_timezone', PluginConfig.DEFAULT_TIMEZONE)})")
+                lines.append(f"#   Schedule Mode: window (duration {settings.get('schedule_duration_hours', 4)}h, tz {self._dispatcharr_timezone()})")
             else:
-                lines.append(f"#   Schedule Mode: window (until {settings.get('schedule_end_time', '04:00')}, tz {settings.get('scheduler_timezone', PluginConfig.DEFAULT_TIMEZONE)})")
+                lines.append(f"#   Schedule Mode: window (until {settings.get('schedule_end_time', '04:00')}, tz {self._dispatcharr_timezone()})")
         lines.append(f"#   Connection Timeout: {settings.get('timeout', 10)} seconds")
         lines.append(f"#   Probe Timeout: {settings.get('probe_timeout', 20)} seconds")
         lines.append(f"#   Dead Connection Retries: {settings.get('dead_connection_retries', 3)}")
         lines.append(f"#   Dead Rename Format: {settings.get('dead_rename_format', '{name} [DEAD]')}")
         lines.append(f"#   Move Dead to Group: {settings.get('move_to_group_name', 'Graveyard')}")
+        lines.append(f"#   Black-Screen Rename Format: {settings.get('black_screen_rename_format', '{name} [Blank]')}")
+        lines.append(f"#   Move Black-Screen to Group: {settings.get('move_black_screen_group', 'Black Screens')}")
         lines.append(f"#   Low Framerate Rename Format: {settings.get('low_framerate_rename_format', '{name} [Slow]')}")
         lines.append(f"#   Move Low Framerate to Group: {settings.get('move_low_framerate_group', 'Slow')}")
         lines.append(f"#   Video Format Suffixes: {settings.get('video_format_suffixes', 'UHD, FHD, HD, SD, Unknown')}")
@@ -2710,7 +3074,7 @@ class Plugin:
         """Update the scheduler configuration and restart the scheduler."""
         try:
             scheduled_times_str = settings.get("scheduled_times", "").strip()
-            scheduler_timezone = settings.get("scheduler_timezone", PluginConfig.DEFAULT_TIMEZONE)
+            scheduler_timezone = self._dispatcharr_timezone()
             
             # If scheduled times are empty, signal the elected scheduler to go idle
             # rather than tearing the loop down. Killing the thread leaves no
@@ -2732,16 +3096,8 @@ class Plugin:
                     "message": f"❌ Invalid cron expression format: '{scheduled_times_str}'\n\nPlease use cron format (e.g., '0 4 * * *' for daily at 4 AM).\nFormat: minute hour day month weekday"
                 }
             
-            # Validate timezone
-            if PYTZ_AVAILABLE:
-                try:
-                    pytz.timezone(scheduler_timezone)
-                except pytz.exceptions.UnknownTimeZoneError:
-                    return {
-                        "status": "error",
-                        "message": f"❌ Unknown timezone: {scheduler_timezone}\n\nPlease select a valid timezone from the dropdown."
-                    }
-            else:
+            # Timezone comes from Dispatcharr's global setting; only pytz is required.
+            if not PYTZ_AVAILABLE:
                 return {
                     "status": "error",
                     "message": "❌ Scheduler requires pytz library but it is not installed.\n\nPlease install pytz to use scheduling features."
@@ -2762,7 +3118,7 @@ class Plugin:
             
             message = f"✅ Schedule updated successfully!\n\n"
             message += f"Cron Schedules: {times_display}\n"
-            message += f"Timezone: {scheduler_timezone}\n"
+            message += f"Timezone (from Dispatcharr): {scheduler_timezone}\n"
             message += f"Status: Enabled ✓\n\n"
             message += f"The scheduler will run checks at the configured times."
             
@@ -2922,7 +3278,7 @@ class Plugin:
             else:
                 cron_lines.append("  • (none configured)")
 
-            tz_name = settings.get("scheduler_timezone", PluginConfig.DEFAULT_TIMEZONE)
+            tz_name = self._dispatcharr_timezone()
             now_str = "?"
             if PYTZ_AVAILABLE:
                 try:
@@ -3023,6 +3379,75 @@ class Plugin:
         host = host.lower()
         suffixes = self._streamlink_host_suffixes(settings)
         return any(host == s or host.endswith('.' + s) for s in suffixes)
+
+    @staticmethod
+    def _parse_blackdetect_output(stderr):
+        # Parse ffmpeg blackdetect stderr into a list of (start, end, duration)
+        # float tuples. Returns [] when no black segments are present.
+        segments = []
+        if not stderr:
+            return segments
+        pattern = re.compile(
+            r'black_start:(?P<start>[\d.]+)\s+'
+            r'black_end:(?P<end>[\d.]+)\s+'
+            r'black_duration:(?P<dur>[\d.]+)'
+        )
+        for m in pattern.finditer(stderr):
+            try:
+                segments.append((
+                    float(m.group('start')),
+                    float(m.group('end')),
+                    float(m.group('dur')),
+                ))
+            except (ValueError, TypeError):
+                continue
+        return segments
+
+    def _check_black_screen(self, url, timeout, settings, logger):
+        # Decode a few seconds of an Alive stream and detect a pure black
+        # picture. Returns True (black), False (has video), or None
+        # (undecidable -> caller leaves the stream Alive). Never raises.
+        s = settings or {}
+        ffmpeg_path = s.get('ffmpeg_path', '/usr/local/bin/ffmpeg')
+        sample_seconds = s.get('black_screen_sample_seconds', 6)
+        min_black = s.get('black_screen_min_black_seconds', 3)
+        ffmpeg_timeout = s.get('black_screen_ffmpeg_timeout', 20)
+
+        # Input options (-user_agent, -rw_timeout) MUST precede -i or ffmpeg
+        # silently ignores them. -loglevel info is required: blackdetect logs
+        # its results at info level, so -loglevel error would suppress them.
+        cmd = [
+            ffmpeg_path,
+            '-hide_banner', '-nostats', '-loglevel', 'info',
+            '-user_agent', 'VLC/3.0.21 LibVLC/3.0.21',
+            '-rw_timeout', str(int(timeout) * 1000000),
+            '-i', url,
+            '-t', str(sample_seconds),
+            '-an',
+            '-vf', f'blackdetect=d={min_black}:pic_th=0.98',
+            '-f', 'null', '-',
+        ]
+
+        try:
+            result = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=ffmpeg_timeout
+            )
+        except FileNotFoundError:
+            logger.warning(f"[Black Screen] ffmpeg not found at {ffmpeg_path}; leaving stream Alive")
+            return None
+        except subprocess.TimeoutExpired:
+            logger.warning(f"[Black Screen] ffmpeg timed out after {ffmpeg_timeout}s; leaving stream Alive")
+            return None
+        except Exception as e:
+            logger.warning(f"[Black Screen] ffmpeg error ({e}); leaving stream Alive")
+            return None
+
+        segments = self._parse_blackdetect_output(result.stderr or '')
+        if segments:
+            return True
+        if result.returncode == 0:
+            return False
+        return None
 
     def check_stream(self, stream_data, timeout, retries, logger, skip_retries=False, settings=None, retry_attempt=0):
         """Check individual stream status with optional retries."""
@@ -3279,6 +3704,23 @@ class Plugin:
                             video_bitrate = int(round(video_bitrate))
 
                         stream_format = self._get_stream_format(resolution)
+
+                        # Optional black-screen verification. An Alive-by-ffprobe
+                        # stream can still decode to a pure black picture; mark it
+                        # Dead so destructive actions clean it up. Fail-open: any
+                        # ffmpeg problem (None) leaves the stream Alive. Null
+                        # metadata mirrors every other Dead stream so the DB stats
+                        # get cleared (see _update_dispatcharr_metadata all_none).
+                        if (settings and settings.get('black_screen_detection')
+                                and not self._stop_event.is_set()):
+                            if self._check_black_screen(url, timeout, settings, logger) is True:
+                                logger.info(f"✗ '{channel_name}' DEAD - Black Screen ({resolution})")
+                                black_return = dict(default_return)
+                                black_return['dispatcharr_metadata'] = {k: None for k in default_return['dispatcharr_metadata']}
+                                black_return['error'] = 'Stream decodes to a black screen'
+                                black_return['error_type'] = 'Black Screen'
+                                return black_return
+
                         logger.info(f"✓ '{channel_name}' ALIVE - {stream_format} {resolution} {framerate_num:.1f}fps")
 
                         # Build complete metadata for Dispatcharr integration
