@@ -1,0 +1,12 @@
+{
+  "name": "reservoarr",
+  "version": "6.2.2",
+  "description": "Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying",
+  "author": "brko7",
+  "maintainers": ["brko7"],
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.25.0",
+  "repo_url": "https://github.com/brko7/reservoarr",
+  "source_type": "external",
+  "source_url": "https://github.com/brko7/reservoarr/releases/download/v{version}/reservoarr-{version}.zip"
+}
