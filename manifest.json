@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-20T18:15:14Z",
+  "generated_at": "2026-06-21T10:55:18Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -170,6 +170,21 @@
         "max_dispatcharr_version": "v0.25.1"
       },
       {
+        "slug": "reservoarr",
+        "name": "reservoarr",
+        "description": "Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/reservoarr/manifest.json",
+        "author": "brko7",
+        "license": "MIT",
+        "last_updated": "2026-06-21T06:54:52-04:00",
+        "latest_version": "6.2.2",
+        "latest_md5": "2a628f3eee4486514134e02c65ea19f6",
+        "latest_sha256": "178380a7608d34c660c77a1488f8ea9faa67ee3f57842433dd6951b876a6a331",
+        "latest_url": "reservoarr-6.2.2/reservoarr-6.2.2.zip",
+        "latest_size": 17,
+        "min_dispatcharr_version": "v0.25.0"
+      },
+      {
         "slug": "stream-dripper",
         "name": "Stream Dripper",
         "description": "Automatically drops all active streams once per day at a configured time, with a manual drop-now button.",
@@ -289,5 +304,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajbYtgAKCRB+wDprTCI0\nzluvAQD0hL9euL5ahDvd2tATm4jgNoIltbUEQFBGU+4e67kv6wD/TKGQkifHs/Na\nI0mJHGG1vPwv7zDfU4R9Iw4iYrModQA=\n=rJ2t\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajfDGgAKCRB+wDprTCI0\nzi0iAQChv1lapW51CvZSSZolvWee2G3o7lui2EkO5A5nT7OM5AD/XZwqOT0/MtSi\n43oUhcjG/hKWh9Tbl6CChHimbSVjGgk=\n=3cTa\n-----END PGP SIGNATURE-----"
 }
