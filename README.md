@@ -22,7 +22,7 @@ This branch contains all published plugin releases.
 | [`IPTV Checker`](#iptv-checker) | `1.26.1721834` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
 | [`Lineuparr`](#lineuparr) | `1.26.1641222` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`Multiview`](#multiview) | `0.1.0` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
-| [`reservoarr`](#reservoarr) | `6.2.3` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
+| [`reservoarr`](#reservoarr) | `6.3.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `1.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.1720023` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
@@ -230,7 +230,7 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
 ### [reservoarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/reservoarr/README.md)
 
-**Version:** `6.2.3` | **Author:** brko7 | **Last Updated:** Jun 21 2026, 18:14 UTC
+**Version:** `6.3.0` | **Author:** brko7 | **Last Updated:** Jun 22 2026, 13:41 UTC
 
 Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying
 
@@ -239,10 +239,10 @@ Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dyi
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.25.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`6.2.3`)](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.2.3/reservoarr-6.2.3.zip)
-- [All Versions (2 available)](./metadata/reservoarr)
+- [Latest Release (`6.3.0`)](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.3.0/reservoarr-6.3.0.zip)
+- [All Versions (3 available)](./metadata/reservoarr)
 
-**Maintainers:** brko7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/reservoarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/reservoarr/README.md) | **Last Change:** [`c14f957`](https://github.com/Dispatcharr/Plugins/commit/c14f957d2bac2555b7a3285d2c0b07a7fd6d2292)
+**Maintainers:** brko7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/reservoarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/reservoarr/README.md) | **Last Change:** [`eb7cafa`](https://github.com/Dispatcharr/Plugins/commit/eb7cafab0a5d772d35cdb9a66bc914b407af9355)
 
 ---
 
@@ -394,4 +394,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 21 2026, 19:40 UTC*
+*Last updated: Jun 22 2026, 13:42 UTC*
