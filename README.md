@@ -19,7 +19,7 @@ This branch contains all published plugin releases.
 | [`EPG Janitor`](#epg-janitor) | `1.26.1660712` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`EPGeditARR`](#epgeditarr) | `0.2.07` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.1711720` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
-| [`IPTV Checker`](#iptv-checker) | `1.26.1721834` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
+| [`IPTV Checker`](#iptv-checker) | `1.26.1741204` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
 | [`Lineuparr`](#lineuparr) | `1.26.1641222` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`Multiview`](#multiview) | `0.1.0` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`reservoarr`](#reservoarr) | `6.3.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
@@ -176,7 +176,7 @@ Automates channel visibility by hiding channels without events and showing those
 
 ### [IPTV Checker](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/iptv-checker/README.md)
 
-**Version:** `1.26.1721834` | **Author:** PiratesIRC | **Last Updated:** Jun 21 2026, 19:39 UTC
+**Version:** `1.26.1741204` | **Author:** PiratesIRC | **Last Updated:** Jun 23 2026, 22:27 UTC
 
 A Dispatcharr Plugin that goes through a playlist to check IPTV channels
 
@@ -185,10 +185,10 @@ A Dispatcharr Plugin that goes through a playlist to check IPTV channels
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.1721834`)](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.1721834/iptv-checker-1.26.1721834.zip)
-- [All Versions (8 available)](./metadata/iptv-checker)
+- [Latest Release (`1.26.1741204`)](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.1741204/iptv-checker-1.26.1741204.zip)
+- [All Versions (9 available)](./metadata/iptv-checker)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/iptv-checker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/iptv-checker/README.md) | **Last Change:** [`7ae9fe2`](https://github.com/Dispatcharr/Plugins/commit/7ae9fe2cfbd834148a50736f6ca5537318804d08)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/iptv-checker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/iptv-checker/README.md) | **Last Change:** [`4de0ece`](https://github.com/Dispatcharr/Plugins/commit/4de0eceafadffce2377d5de075af6dfa94ebead9)
 
 ---
 
@@ -394,4 +394,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 22 2026, 17:39 UTC*
+*Last updated: Jun 23 2026, 22:27 UTC*
