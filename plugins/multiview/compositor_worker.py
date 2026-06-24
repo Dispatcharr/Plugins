@@ -49,7 +49,9 @@ except ImportError:
     raise
 
 TILE_STALE_SECS = 1.5
-RECONNECT_BACKOFF = 2.0
+RECONNECT_BASE    = 2.0   # first retry delay (seconds)
+RECONNECT_MAX     = 60.0  # cap on per-retry delay
+RECONNECT_RETRIES = 12    # consecutive failures before giving up (~8 min total)
 AUDIO_RATE = 48000
 AUDIO_LAYOUT = "stereo"
 
@@ -144,9 +146,12 @@ class Channel:
         self.provides_audio = bool(spec.get("audio", False))
         self.lang = spec.get("lang", "und")
         self.featured = bool(spec.get("featured", False))
-        self.fallback = self._make_fallback(spec.get("logo"))
+        self.fallback = black_planes(self.w, self.h)
         self.latest = self.fallback
         self.fresh_until = 0.0
+        logo = spec.get("logo")
+        if logo:
+            threading.Thread(target=self._load_logo, args=(logo,), daemon=True).start()
         self.running = True
         self.vcount = 0          # decoded video frames (for rate diagnostics)
         # audio buffer (only used when provides_audio)
@@ -163,21 +168,45 @@ class Channel:
             try:
                 with av.open(logo) as c:
                     for frame in c.decode(video=0):
-                        side = (min(self.w, self.h) // 3) & ~1
-                        lf = frame.reformat(width=side, height=side, format="yuv420p")
-                        ly, lu, lv = yuv_planes_from_frame(lf, side, side)
-                        oy = ((self.h - side) // 2) & ~1
-                        ox = ((self.w - side) // 2) & ~1
-                        Y[oy:oy + side, ox:ox + side] = ly
-                        U[oy // 2:(oy + side) // 2, ox // 2:(ox + side) // 2] = lu
-                        V[oy // 2:(oy + side) // 2, ox // 2:(ox + side) // 2] = lv
+                        # Scale to fit within one-third of the tile, preserving aspect ratio.
+                        max_w = (self.w // 3) & ~1
+                        max_h = (self.h // 3) & ~1
+                        scale = min(max_w / frame.width, max_h / frame.height)
+                        lw = _even(frame.width * scale)
+                        lh = _even(frame.height * scale)
+                        # Decode as RGBA so transparent areas composite cleanly over black.
+                        # Use to_ndarray() -- planes[0] has stride padding that makes
+                        # raw frombuffer shapes wrong for non-aligned widths.
+                        rf = frame.reformat(width=lw, height=lh, format="rgba")
+                        arr = rf.to_ndarray(format="rgba")   # (lh, lw, 4), stride-free
+                        alpha = arr[:, :, 3:4].astype(np.float32) / 255.0
+                        rgb = (arr[:, :, :3] * alpha).astype(np.uint8)
+                        rgb_frame = av.VideoFrame.from_ndarray(rgb, format="rgb24")
+                        lf = rgb_frame.reformat(format="yuv420p")
+                        ly, lu, lv = yuv_planes_from_frame(lf, lw, lh)
+                        oy = ((self.h - lh) // 2) & ~1
+                        ox = ((self.w - lw) // 2) & ~1
+                        Y[oy:oy + lh, ox:ox + lw] = ly
+                        U[oy // 2:(oy + lh) // 2, ox // 2:(ox + lw) // 2] = lu
+                        V[oy // 2:(oy + lh) // 2, ox // 2:(ox + lw) // 2] = lv
                         break
             except Exception as e:  # noqa: BLE001
                 log(f"logo decode failed for {self.name}: {e}")
         return (Y, U, V)
 
+    def _load_logo(self, logo):
+        """Load logo in background and swap self.fallback when ready."""
+        fb = self._make_fallback(logo)
+        self.fallback = fb                  # CPython GIL makes tuple attr swap atomic
+        if self.fresh_until == 0.0:         # no real video yet; update latest too
+            self.latest = fb
+
     def run(self):
+        failures = 0
         while self.running:
+            if failures >= RECONNECT_RETRIES:
+                log(f"channel {self.name}: giving up after {RECONNECT_RETRIES} failed retries")
+                break
             cont = None
             # Flush stale audio and reset the PTS clock before each new
             # connection so old samples never bleed into the new stream.
@@ -186,6 +215,7 @@ class Channel:
                 self.abuffered = 0
             self.clk_pts = None
             self.clk_wall = None
+            vcount_before = self.vcount
             try:
                 cont = av.open(self.url, options=DECODE_OPTS)
                 vs = cont.streams.video[0]
@@ -216,38 +246,45 @@ class Channel:
                     aus = cont.streams.audio[0]
                     streams.append(aus)
                     res = av.AudioResampler(format="s16", layout=AUDIO_LAYOUT, rate=AUDIO_RATE)
-                for packet in cont.demux(*streams):
-                    if not self.running:
-                        break
-                    if packet.dts is None:
-                        continue
-                    if packet.stream.type == "video":
-                        for frame in packet.decode():
-                            if frame.pts is not None:
-                                pts_s = float(frame.pts * vs.time_base)
-                                now = time.monotonic()
-                                if self.clk_pts is None:
-                                    self.clk_pts, self.clk_wall = pts_s, now
-                                else:
-                                    gap = (self.clk_wall + pts_s - self.clk_pts) - now
-                                    if 0 < gap < 2.0:
-                                        time.sleep(gap)
-                                    elif gap <= -2.0:
-                                        self.clk_pts, self.clk_wall = pts_s, time.monotonic()
-                            self.latest = fit_into_tile(frame, self.w, self.h)
-                            self.fresh_until = time.monotonic() + TILE_STALE_SECS
-                            self.vcount += 1
-                    elif res is not None and packet.stream.type == "audio":
-                        for frame in packet.decode():
-                            pts_s = (float(frame.pts * aus.time_base)
-                                     if frame.pts is not None else None)
-                            for rf in res.resample(frame):
-                                a = rf.to_ndarray()
-                                a = a.reshape(-1, 2) if a.shape[0] == 1 else a.T
-                                with self.alock:
-                                    self.aframes.append((pts_s, a.astype(np.int16)))
-                                    self.abuffered += a.shape[0]
-                                    self._trim()
+                try:
+                    for packet in cont.demux(*streams):
+                        if not self.running:
+                            break
+                        if packet.dts is None:
+                            continue
+                        if packet.stream.type == "video":
+                            for frame in packet.decode():
+                                if frame.pts is not None:
+                                    pts_s = float(frame.pts * vs.time_base)
+                                    now = time.monotonic()
+                                    if self.clk_pts is None:
+                                        self.clk_pts, self.clk_wall = pts_s, now
+                                    else:
+                                        gap = (self.clk_wall + pts_s - self.clk_pts) - now
+                                        if 0 < gap < 2.0:
+                                            time.sleep(gap)
+                                        elif gap <= -2.0:
+                                            self.clk_pts, self.clk_wall = pts_s, time.monotonic()
+                                self.latest = fit_into_tile(frame, self.w, self.h)
+                                self.fresh_until = time.monotonic() + TILE_STALE_SECS
+                                self.vcount += 1
+                        elif res is not None and packet.stream.type == "audio":
+                            for frame in packet.decode():
+                                pts_s = (float(frame.pts * aus.time_base)
+                                         if frame.pts is not None else None)
+                                for rf in res.resample(frame):
+                                    a = rf.to_ndarray()
+                                    a = a.reshape(-1, 2) if a.shape[0] == 1 else a.T
+                                    with self.alock:
+                                        self.aframes.append((pts_s, a.astype(np.int16)))
+                                        self.abuffered += a.shape[0]
+                                        self._trim()
+                finally:
+                    if res is not None:
+                        try:
+                            res.close()
+                        except Exception:
+                            pass
             except Exception as e:  # noqa: BLE001
                 log(f"channel {self.name} ended: {e}")
             finally:
@@ -256,8 +293,14 @@ class Channel:
                         cont.close()
                     except Exception:
                         pass
-            if self.running:
-                time.sleep(RECONNECT_BACKOFF)
+            if self.vcount > vcount_before:
+                failures = 0
+            else:
+                failures += 1
+            if self.running and failures < RECONNECT_RETRIES:
+                delay = min(RECONNECT_BASE * (2 ** (failures - 1)), RECONNECT_MAX)
+                log(f"channel {self.name}: retry {failures}/{RECONNECT_RETRIES} in {delay:.0f}s")
+                time.sleep(delay)
 
     def current(self):
         if time.monotonic() < self.fresh_until:
@@ -323,12 +366,25 @@ def _write_all(fd, data):
     return True
 
 
+def _nvenc_available() -> bool:
+    try:
+        r = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-encoders"],
+            capture_output=True, text=True, timeout=5,
+        )
+        return "h264_nvenc" in r.stdout
+    except Exception:
+        return False
+
+
 def build_encoder_cmd(cfg, out_w, out_h, audio_read):
     bitrate = int(cfg.get("bitrate", 8000))
     gop = max(2, round(float(fps_fraction(cfg["fps"])) * 2))
+    encoder = cfg.get("video_encoder", "libx264")
+    preset = cfg.get("preset") or ("p4" if encoder == "h264_nvenc" else "ultrafast")
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error",
-           # Cap encode threads so it doesn't grab every core and starve the
-           # PyAV decoders (3x 1080p60 decode already loads the box).
+           # Cap muxer/filter threads so it doesn't grab every core and starve
+           # the PyAV decoders (3x 1080p60 decode already loads the box).
            "-threads", str(cfg.get("enc_threads", 4)),
            "-f", "rawvideo", "-pix_fmt", "yuv420p", "-s", f"{out_w}x{out_h}",
            "-r", cfg["fps"], "-thread_queue_size", "512", "-i", "pipe:0"]
@@ -338,22 +394,32 @@ def build_encoder_cmd(cfg, out_w, out_h, audio_read):
     cmd += ["-map", "0:v:0"]
     for i in range(len(audio_read)):
         cmd += ["-map", f"{i + 1}:a:0"]
-    # VBV CBR: -b:v == -minrate == -maxrate forces constant bitrate regardless of
-    # content complexity. CRF (VBR) produces near-zero bitrate for static/logo
-    # content; IPTV players drain their receive buffer faster than realtime when
-    # data rate is very low, causing fast-forward on faster hardware. CBR pads
-    # with H.264 filler NAL units to maintain constant rate.
-    # bufsize = 0.5x target keeps encode latency low.
-    # -muxrate is NOT used: with CBR the encoder already guarantees constant
-    # output rate; adding -muxrate on top creates MPEG-TS null packets that
-    # shift the PCR clock away from the video PTS, causing player sync issues.
-    cmd += ["-c:v", "libx264", "-preset", cfg.get("preset") or "ultrafast",
-            "-pix_fmt", "yuv420p",
-            "-b:v", f"{bitrate}k",
-            "-minrate", f"{bitrate}k",
-            "-maxrate", f"{bitrate}k",
-            "-bufsize", f"{bitrate // 2}k",
-            "-g", str(gop), "-keyint_min", str(gop), "-sc_threshold", "0"]
+    # VBV CBR: constant bitrate regardless of content complexity. CRF (VBR)
+    # produces near-zero bitrate for static/logo content; IPTV players drain
+    # their receive buffer faster than realtime when the rate is very low,
+    # causing fast-forward. CBR pads with filler NAL units to hold constant
+    # rate. bufsize = 0.5x target keeps encode latency low.
+    # -muxrate is NOT used: CBR already guarantees constant output rate;
+    # -muxrate adds MPEG-TS null packets that shift the PCR clock away from
+    # video PTS, causing player sync issues.
+    if encoder == "h264_nvenc":
+        # NVENC CBR via -rc cbr (pads with filler NAL units, same guarantee as
+        # x264 CBR). -minrate, -keyint_min, -sc_threshold are x264-only.
+        cmd += ["-c:v", "h264_nvenc", "-preset", preset,
+                "-rc", "cbr",
+                "-pix_fmt", "yuv420p",
+                "-b:v", f"{bitrate}k",
+                "-maxrate", f"{bitrate}k",
+                "-bufsize", f"{bitrate // 2}k",
+                "-g", str(gop)]
+    else:
+        cmd += ["-c:v", "libx264", "-preset", preset,
+                "-pix_fmt", "yuv420p",
+                "-b:v", f"{bitrate}k",
+                "-minrate", f"{bitrate}k",
+                "-maxrate", f"{bitrate}k",
+                "-bufsize", f"{bitrate // 2}k",
+                "-g", str(gop), "-keyint_min", str(gop), "-sc_threshold", "0"]
     if audio_read:
         cmd += ["-c:a", "ac3", "-b:a", "192k"]
     cmd += ["-max_muxing_queue_size", "1024",
@@ -412,6 +478,9 @@ def main():
     audio_pipes = [os.pipe() for _ in audio_chs]
     audio_read = [r for (r, _w) in audio_pipes]
     enc_out_r, enc_out_w = os.pipe()
+    if cfg.get("video_encoder") == "h264_nvenc" and not _nvenc_available():
+        sys.exit("h264_nvenc selected but ffmpeg reports no NVENC encoder -- "
+                 "check NVIDIA driver and ffmpeg build")
     cmd = build_encoder_cmd(cfg, out_w, out_h, audio_read)
     for i, a in enumerate(audio_chs):
         cmd[-1:-1] = [f"-metadata:s:a:{i}", f"title={a.name}",
@@ -473,7 +542,9 @@ def main():
                 dt = now - prev_t
                 rates = " ".join(f"{c.name[:7]}={(c.vcount - prev_counts[i]) / dt:.0f}fps"
                                  for i, c in enumerate(channels))
-                log(f"out {n / (now - start):.1f}fps; decode {rates}")
+                import resource as _res
+                rss_mb = _res.getrusage(_res.RUSAGE_SELF).ru_maxrss // 1024
+                log(f"out {n / (now - start):.1f}fps; decode {rates}; rss={rss_mb}MB")
                 prev_counts = [c.vcount for c in channels]
                 prev_t = now
                 log_at = now + 30.0
@@ -486,6 +557,11 @@ def main():
         stop.set()
         for c in channels:
             c.running = False
+        for fd in audio_w:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
         try:
             os.close(video_w)
         except OSError:
@@ -494,6 +570,10 @@ def main():
             enc.wait(timeout=3)
         except Exception:
             enc.kill()
+        try:
+            os.close(enc_out_r)
+        except OSError:
+            pass
 
 
 if __name__ == "__main__":

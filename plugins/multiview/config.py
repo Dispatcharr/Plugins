@@ -19,10 +19,9 @@ def _load_plugin_config() -> dict:
 
 PLUGIN_CONFIG = _load_plugin_config()
 
-# Hardware encoders (NVENC/QSV/VAAPI) were removed for now and will be re-added
-# as an opt-in mode later; software libx264 is the only option.
 _ENCODER_OPTIONS = [
-    {"value": "libx264", "label": "Software (libx264)"},
+    {"value": "libx264",    "label": "Software (libx264)"},
+    {"value": "h264_nvenc", "label": "NVIDIA NVENC (h264_nvenc)"},
 ]
 
 
@@ -83,7 +82,7 @@ _VIDEO_ENCODER_FIELD = {
     "type": "select",
     "default": "libx264",
     "options": [],  # populated from _ENCODER_OPTIONS in build_plugin_fields
-    "description": "Software encoding (libx264). Hardware encoders return in a later update.",
+    "description": "Software (libx264) or NVIDIA GPU (h264_nvenc). NVENC requires an NVIDIA GPU with driver support.",
 }
 
 # Per-encoder quality / preset fields
@@ -108,8 +107,29 @@ def _x264_fields() -> list:
     ]
 
 
+def _nvenc_fields() -> list:
+    return [
+        {
+            "id": "encoder_preset",
+            "label": "Encoder Preset",
+            "type": "select", "default": "p4",
+            "options": [
+                {"value": "p1", "label": "p1 - Fastest (lowest quality)"},
+                {"value": "p2", "label": "p2 - Fast"},
+                {"value": "p3", "label": "p3 - Balanced-Fast"},
+                {"value": "p4", "label": "p4 - Balanced"},
+                {"value": "p5", "label": "p5 - Balanced-Quality"},
+                {"value": "p6", "label": "p6 - Slow"},
+                {"value": "p7", "label": "p7 - Slowest (highest quality)"},
+            ],
+            "description": "NVENC encode speed vs quality. p1-p2 recommended for live multiview.",
+        },
+    ]
+
+
 _ENCODER_EXTRA_FIELDS = {
-    "libx264": _x264_fields,
+    "libx264":    _x264_fields,
+    "h264_nvenc": _nvenc_fields,
 }
 
 _MULTIVIEW_COUNT_FIELD = {

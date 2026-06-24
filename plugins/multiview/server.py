@@ -34,6 +34,161 @@ CHUNK_SIZE = 65536
 _WORKER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "compositor_worker.py")
 
 _server_instance = None
+_mv_keepalives: dict = {}
+
+
+
+def _mv_keepalive_ensure(channel_id: str, proxy_server) -> "str | None":
+    """Register keepalive client (if absent), increment ref-count, and spawn drainer."""
+    import time as _t
+    import uuid as _u
+    if channel_id in _mv_keepalives:
+        cid, last, refs, drainer = _mv_keepalives[channel_id]
+        _mv_keepalives[channel_id] = (cid, last, refs + 1, drainer)
+        return cid
+    mgr = proxy_server.client_managers.get(channel_id)
+    if mgr is None:
+        return None
+    cid = str(_u.uuid4())
+    try:
+        if mgr.add_client(cid, "127.0.0.1", "multiview-keepalive", None, "mpegts", None):
+            drainer = None
+            try:
+                import gevent as _gv_ka
+                drainer = _gv_ka.spawn(_mv_keepalive_drain, channel_id, cid, proxy_server)
+            except Exception:
+                pass
+            _mv_keepalives[channel_id] = (cid, _t.time(), 1, drainer)
+            logger.info(f"Keepalive registered for {channel_id}")
+            return cid
+    except Exception as e:
+        logger.warning(f"Keepalive register failed for {channel_id}: {e}")
+    return None
+
+
+def _mv_keepalive_drain(channel_id: str, cid: str, proxy_server) -> None:
+    """Background greenlet: drain data for the keepalive client to prevent
+    Dispatcharr ghost-removal (last_active must stay fresh).
+
+    Only runs a StreamGenerator when ref_count == 0 (no active streaming
+    consumer).  While the streaming client is connected, it sleeps cheaply —
+    the streaming client's own generator keeps last_active current."""
+    try:
+        import gevent as _gv
+        from apps.proxy.live_proxy.output.ts.generator import StreamGenerator as _SG
+    except ImportError:
+        return
+
+    while True:
+        entry = _mv_keepalives.get(channel_id)
+        if entry is None or entry[0] != cid:
+            return
+
+        _, _, refs, _ = entry
+        if refs > 0:
+            # Streaming client is active; sleep, then refresh keepalive's
+            # last_active so Dispatcharr's ghost detector doesn't remove it.
+            _gv.sleep(1.0)
+            try:
+                import time as _t_ka
+                _mgr_ka = proxy_server.client_managers.get(channel_id)
+                if _mgr_ka and _mgr_ka.redis_client:
+                    _mgr_ka.redis_client.hset(
+                        f"live:channel:{channel_id}:clients:{cid}",
+                        "last_active", str(_t_ka.time()),
+                    )
+            except Exception:
+                pass
+            continue
+
+        # refs == 0: no streaming consumer — drain to keep last_active fresh.
+        buf = proxy_server.get_buffer(channel_id)
+        if buf is None:
+            _gv.sleep(0.5)
+            continue
+
+        mgr = proxy_server.client_managers.get(channel_id)
+        if mgr is None:
+            _gv.sleep(0.5)
+            continue
+
+        # Re-register if StreamGenerator._cleanup() removed the slot last iteration.
+        mgr.add_client(cid, "127.0.0.1", "multiview-keepalive", None, "mpegts", None)
+
+        try:
+            gen = _SG(
+                channel_id=channel_id,
+                client_id=cid,
+                client_ip="127.0.0.1",
+                client_user_agent="multiview-keepalive",
+                channel_initializing=False,
+                buffer=buf,
+            )
+            for _chunk in gen.generate():
+                _gv.sleep(0)
+                entry = _mv_keepalives.get(channel_id)
+                if entry is None or entry[0] != cid:
+                    return
+                if entry[2] > 0:
+                    # Streaming client reconnected; stop draining.
+                    break
+        except Exception:
+            _gv.sleep(0.1)
+
+
+def _mv_keepalive_release(channel_id: str) -> None:
+    """Decrement ref-count; TTL starts counting when it reaches zero."""
+    import time as _t
+    if channel_id in _mv_keepalives:
+        cid, _, refs, drainer = _mv_keepalives[channel_id]
+        _mv_keepalives[channel_id] = (cid, _t.time(), max(0, refs - 1), drainer)
+
+
+def _mv_keepalive_cleanup(proxy_server, ttl: float = 30.0) -> None:
+    """Remove keepalive clients idle (ref_count==0) longer than ttl seconds.
+    Kills drainer greenlet and removes Dispatcharr client slot."""
+    import time as _t
+    now = _t.time()
+    stale = [
+        u for u, (_, last, refs, _drainer) in list(_mv_keepalives.items())
+        if refs == 0 and now - last > ttl
+    ]
+    for uid in stale:
+        entry = _mv_keepalives.pop(uid, None)
+        if entry:
+            cid, _, _, drainer = entry
+            try:
+                if drainer is not None:
+                    drainer.kill(block=False)
+            except Exception:
+                pass
+            try:
+                mgr = proxy_server.client_managers.get(uid)
+                if mgr:
+                    mgr.remove_client(cid)
+                    logger.info(f"Keepalive expired and removed for {uid}")
+            except Exception:
+                pass
+
+
+def _mv_keepalive_shutdown(proxy_server) -> None:
+    """Kill all drainer greenlets and remove all keepalive clients immediately.
+    Called when the multiview composition stops to avoid channels lingering."""
+    entries = list(_mv_keepalives.items())
+    _mv_keepalives.clear()
+    for uid, (cid, _, _, drainer) in entries:
+        try:
+            if drainer is not None:
+                drainer.kill(block=False)
+        except Exception:
+            pass
+        try:
+            mgr = proxy_server.client_managers.get(uid)
+            if mgr:
+                mgr.remove_client(cid)
+                logger.info(f"Keepalive shutdown: removed {uid}")
+        except Exception:
+            pass
 
 
 def _python_exe() -> str:
@@ -118,23 +273,13 @@ def _audio_metadata_args(audio_source: str, channel_names: list, n: int) -> list
     return args
 
 
-def _usable_logo(url) -> "str | None":
-    """Return url only if it's a local file path that exists on disk."""
-    import os
-    if url and isinstance(url, str) and url.startswith("/"):
-        try:
-            if os.path.isfile(url):
-                return url
-        except Exception:
-            pass
-    return None
-
-
 def _channel_logo(ch) -> "str | None":
-    """Local logo file path for a Channel, or None."""
+    """URL or path for the channel's logo, passable to av.open()."""
     try:
         if getattr(ch, "logo_id", None) is not None:
-            return _usable_logo(ch.logo.url)
+            url = ch.logo.url
+            if url and isinstance(url, str):
+                return url
     except Exception:
         pass
     return None
@@ -203,14 +348,14 @@ class MultiviewServer:
         import gevent
         import gevent.subprocess as gsub
         proc = gsub.Popen(cmd, stdout=gsub.PIPE, stderr=gsub.PIPE)
-        gevent.spawn(self._drain_stderr, proc, f"worker-{n}")
+        stderr_gl = gevent.spawn(self._drain_stderr, proc, f"worker-{n}")
 
         start_response("200 OK", [
             ("Content-Type", "video/mp2t"),
             ("Cache-Control", "no-cache"),
             ("X-Accel-Buffering", "no"),
         ])
-        return self._pump_stdout(proc, f"worker {n}")
+        return self._pump_stdout(proc, f"worker {n}", stderr_gl)
 
     def _worker_config(self, tiles, layout, audio_source, settings) -> dict:
         out_w, out_h = _parse_resolution(settings)
@@ -242,14 +387,24 @@ class MultiviewServer:
                 "featured": featured_layout and i == 0,
             })
 
+        encoder = settings.get("video_encoder") or "libx264"
+        _nvenc_presets = {"p1", "p2", "p3", "p4", "p5", "p6", "p7"}
+        _x264_presets  = {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow"}
+        if encoder == "h264_nvenc":
+            saved = settings.get("encoder_preset")
+            preset = saved if saved in _nvenc_presets else "p4"
+        else:
+            saved = settings.get("encoder_preset")
+            preset = saved if saved in _x264_presets else "ultrafast"
         return {
             "out_w": out_w, "out_h": out_h, "fps": fps_string(settings),
             "bitrate": int(settings.get("output_bitrate") or 8000),
-            "preset": settings.get("encoder_preset") or "ultrafast",
+            "preset": preset,
+            "video_encoder": encoder,
             "tiles": tile_cfg,
         }
 
-    def _pump_stdout(self, proc, label: str):
+    def _pump_stdout(self, proc, label: str, stderr_gl=None):
         try:
             while True:
                 chunk = proc.stdout.read(CHUNK_SIZE)
@@ -264,6 +419,11 @@ class MultiviewServer:
                 proc.wait()
             except Exception:
                 pass
+            if stderr_gl is not None:
+                try:
+                    stderr_gl.kill(block=False)
+                except Exception:
+                    pass
             logger.info(f"{label} ended, worker killed")
 
     def _drain_stderr(self, proc, label: str):
@@ -281,12 +441,29 @@ class MultiviewServer:
             start_response("404 Not Found", [("Content-Type", "text/plain")])
             return [b"Unknown channel\n"]
 
+        gen = _dispatcharr.live_stream(channel_uuid)
+        try:
+            first = next(gen)
+        except StopIteration:
+            # live_stream returned without yielding -- proxy not ready yet.
+            # Return 503 so the compositor worker sees a clean HTTP error and
+            # retries via its backoff, rather than "Invalid data found when
+            # processing input" from a 200 with an empty body.
+            start_response("503 Service Unavailable", [("Content-Type", "text/plain")])
+            return [b"Channel not ready\n"]
+
         start_response("200 OK", [
             ("Content-Type", "video/mp2t"),
             ("Cache-Control", "no-cache"),
             ("X-Accel-Buffering", "no"),
         ])
-        return _dispatcharr.live_stream(channel_uuid)
+        def _body():
+            try:
+                yield first
+                yield from gen
+            finally:
+                gen.close()
+        return _body()
 
     # --------------------------------------------------------------- helpers
 
