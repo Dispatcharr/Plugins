@@ -19,11 +19,10 @@ def _load_plugin_config() -> dict:
 
 PLUGIN_CONFIG = _load_plugin_config()
 
+# Hardware encoders (NVENC/QSV/VAAPI) were removed for now and will be re-added
+# as an opt-in mode later; software libx264 is the only option.
 _ENCODER_OPTIONS = [
-    {"value": "libx264",    "label": "Software (libx264)"},
-    {"value": "h264_nvenc", "label": "NVIDIA (h264_nvenc)"},
-    {"value": "h264_qsv",   "label": "Intel QuickSync (h264_qsv)"},
-    {"value": "h264_vaapi", "label": "AMD/Intel VA-API (h264_vaapi)"},
+    {"value": "libx264", "label": "Software (libx264)"},
 ]
 
 
@@ -43,14 +42,28 @@ _GLOBAL_FIELDS = [
         "description": "Resolution of the tiled output. Lower resolutions reduce CPU and bandwidth.",
     },
     {
+        "id": "output_fps",
+        "label": "Output Frame Rate",
+        "type": "select",
+        "default": "30",
+        "options": [
+            {"value": "24", "label": "24 fps"},
+            {"value": "25", "label": "25 fps"},
+            {"value": "30", "label": "30 fps"},
+            {"value": "50", "label": "50 fps"},
+            {"value": "60", "label": "60 fps"},
+        ],
+        "description": "Frame rate of the tiled output. Higher rates are smoother but use more CPU.",
+    },
+    {
         "id": "output_bitrate",
-        "label": "Max Output Bitrate (kbps)",
+        "label": "Output Bitrate (kbps)",
         "type": "number",
         "default": 8000,
         "min": 1000,
         "max": 40000,
         "placeholder": "8000",
-        "description": "Hard ceiling on output video bitrate in kbps.",
+        "description": "Target output video bitrate in kbps (CBR). Higher values improve quality at the cost of bandwidth. 8000 is a good baseline for 1080p multiview; 12000-16000 for noticeably sharper tiles.",
     },
     {
         "id": "epg_refresh_hours",
@@ -70,19 +83,13 @@ _VIDEO_ENCODER_FIELD = {
     "type": "select",
     "default": "libx264",
     "options": [],  # populated from _ENCODER_OPTIONS in build_plugin_fields
-    "description": "Hardware encoders offload CPU. After changing, save and refresh to see encoder-specific settings.",
+    "description": "Software encoding (libx264). Hardware encoders return in a later update.",
 }
 
 # Per-encoder quality / preset fields
 
 def _x264_fields() -> list:
     return [
-        {
-            "id": "output_crf",
-            "label": "CRF (Quality)",
-            "type": "number", "default": 23, "min": 0, "max": 51, "placeholder": "23",
-            "description": "Constant Rate Factor: lower = better quality, higher bitrate. 18-23 is visually lossless. Max bitrate cap still applies.",
-        },
         {
             "id": "encoder_preset",
             "label": "Encoder Preset",
@@ -101,74 +108,8 @@ def _x264_fields() -> list:
     ]
 
 
-def _nvenc_fields() -> list:
-    return [
-        {
-            "id": "output_crf",
-            "label": "CQ (NVENC Quality)",
-            "type": "number", "default": 23, "min": 0, "max": 51, "placeholder": "23",
-            "description": "Constant quality target (-cq). Lower = better quality. Max bitrate cap still applies.",
-        },
-        {
-            "id": "encoder_preset",
-            "label": "NVENC Preset",
-            "type": "select", "default": "p1",
-            "options": [
-                {"value": "p1", "label": "p1 - Fastest (lowest quality per bit)"},
-                {"value": "p2", "label": "p2"},
-                {"value": "p3", "label": "p3"},
-                {"value": "p4", "label": "p4 - Balanced"},
-                {"value": "p5", "label": "p5"},
-                {"value": "p6", "label": "p6"},
-                {"value": "p7", "label": "p7 - Slowest (highest quality per bit)"},
-            ],
-            "description": "NVENC preset scale. p1 is recommended for live tiling.",
-        },
-    ]
-
-
-def _qsv_fields() -> list:
-    return [
-        {
-            "id": "output_crf",
-            "label": "Global Quality (QSV)",
-            "type": "number", "default": 23, "min": 0, "max": 51, "placeholder": "23",
-            "description": "QSV global_quality target. Lower = better quality. Max bitrate cap still applies.",
-        },
-        {
-            "id": "encoder_preset",
-            "label": "QSV Preset",
-            "type": "select", "default": "veryfast",
-            "options": [
-                {"value": "veryfast", "label": "Very Fast (lowest CPU)"},
-                {"value": "faster",   "label": "Faster"},
-                {"value": "fast",     "label": "Fast"},
-                {"value": "medium",   "label": "Medium"},
-                {"value": "slow",     "label": "Slow (highest quality)"},
-            ],
-            "description": "QSV encoding speed preset.",
-        },
-    ]
-
-
-def _vaapi_fields() -> list:
-    return [
-        {
-            "id": "vaapi_device",
-            "label": "VA-API Device",
-            "type": "string",
-            "default": "/dev/dri/renderD128",
-            "placeholder": "/dev/dri/renderD128",
-            "description": "VA-API render device path.",
-        },
-    ]
-
-
 _ENCODER_EXTRA_FIELDS = {
-    "libx264":    _x264_fields,
-    "h264_nvenc": _nvenc_fields,
-    "h264_qsv":   _qsv_fields,
-    "h264_vaapi": _vaapi_fields,
+    "libx264": _x264_fields,
 }
 
 _MULTIVIEW_COUNT_FIELD = {

@@ -84,11 +84,15 @@ def _build_xmltv(settings: dict, mv_count: int, window_start, window_end) -> str
     return "\n".join(lines) + "\n"
 
 
-def generate_epg(settings: dict, plugin_dir: str) -> None:
-    """Write a multiview_epg.xml file and register it as an XMLTV EPGSource in Dispatcharr."""
+def generate_epg(settings: dict, plugin_dir: str) -> "int | None":
+    """Write multiview_epg.xml and register it as an XMLTV EPGSource in Dispatcharr.
+
+    Returns the EPGSource id (so the caller can refresh it in sequence after the
+    M3U refresh - firing both refreshes at once collides on Dispatcharr's shared
+    DB connection). Does NOT trigger the EPG refresh itself.
+    """
     from django.utils import timezone
     from apps.epg.models import EPGSource
-    from apps.epg.tasks import refresh_epg_data
 
     mv_count = max(1, int(settings.get("multiview_count", 1)))
 
@@ -111,8 +115,4 @@ def generate_epg(settings: dict, plugin_dir: str) -> None:
             "is_active": True,
         },
     )
-
-    try:
-        refresh_epg_data.delay(source.id)
-    except Exception as e:
-        logger.warning(f"Could not trigger EPG refresh: {e}")
+    return source.id
