@@ -1,117 +1,12 @@
 {
   "name": "Stream-Mapparr",
-  "version": "1.26.1720023",
+  "version": "1.26.1751210",
   "description": "Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.",
   "author": "PiratesIRC",
   "license": "MIT",
+  "source_type": "external",
   "repo_url": "https://github.com/PiratesIRC/Stream-Mapparr",
-  "min_dispatcharr_version": "v0.20.0",
   "help_url": "https://github.com/PiratesIRC/Stream-Mapparr",
-  "_fields_note": "Settings fields are defined dynamically by the Plugin.fields property in plugin.py (the single source of truth — it builds live dropdowns for channel profiles, groups, stream groups, M3U sources, and the channel database, and stays in sync with the code). Dispatcharr only falls back to a manifest 'fields' array when the plugin provides none, so it is intentionally left empty here to prevent drift (the previous static copy had gone stale).",
-  "fields": [],
-  "actions": [
-    {
-      "id": "validate_settings",
-      "label": "\u2705 Validate Settings",
-      "description": "Check database connectivity, profiles, groups, and channel databases.",
-      "button_variant": "outline",
-      "button_color": "blue",
-      "button_label": "\u2705 Validate"
-    },
-    {
-      "id": "update_schedule",
-      "label": "\ud83d\udcc5 Update Schedule",
-      "description": "Save settings and restart the background scheduler.",
-      "button_variant": "filled",
-      "button_color": "green",
-      "button_label": "\ud83d\udcbe Save Schedule"
-    },
-    {
-      "id": "load_process_channels",
-      "label": "\ud83d\udce5 Load/Process Channels",
-      "description": "Load channel and stream data from the database.",
-      "button_variant": "filled",
-      "button_color": "green",
-      "button_label": "\ud83d\udce5 Load Channels"
-    },
-    {
-      "id": "preview_changes",
-      "label": "\ud83d\udcca Preview Changes",
-      "description": "Generate a CSV preview without making changes.",
-      "button_variant": "outline",
-      "button_color": "blue",
-      "button_label": "\ud83d\udcca Preview"
-    },
-    {
-      "id": "add_streams_to_channels",
-      "label": "\u25b6\ufe0f Match & Assign Streams",
-      "description": "Match and assign streams to channels.",
-      "button_variant": "filled",
-      "button_color": "blue",
-      "button_label": "\u25b6\ufe0f Match & Assign",
-      "confirm": {
-        "message": "This will modify channel-stream assignments based on the current settings. Continue?"
-      }
-    },
-    {
-      "id": "match_us_ota_only",
-      "label": "\ud83d\udcfa Match US OTA Only",
-      "description": "Match US OTA channels by callsign.",
-      "button_color": "orange",
-      "button_label": "\ud83d\udcfa Match OTA",
-      "confirm": {
-        "message": "This will modify channel-stream assignments for US OTA channels. Continue?"
-      }
-    },
-    {
-      "id": "sort_streams",
-      "label": "\u2195\ufe0f Sort Alternate Streams",
-      "description": "Sort existing alternate streams by quality.",
-      "button_color": "orange",
-      "button_label": "\ud83d\udd04 Sort Streams",
-      "confirm": {
-        "message": "This will reorder alternate streams on matched channels. Continue?"
-      }
-    },
-    {
-      "id": "probe_throughput",
-      "label": "🚀 Probe Stream Throughput",
-      "description": "Measure sustained throughput for streams currently assigned to channels in the selected profile. Updates the throughput cache used by alternate-stream sorting.",
-      "button_color": "blue",
-      "button_label": "🚀 Probe Throughput",
-      "confirm": {
-        "message": "This will open short HTTP connections to streams currently assigned to channels in the selected profile (one at a time per M3U account). Continue?"
-      }
-    },
-    {
-      "id": "manage_channel_visibility",
-      "label": "\ud83d\udc41\ufe0f Manage Channel Visibility",
-      "description": "Enable or disable channels based on stream count.",
-      "button_color": "orange",
-      "button_label": "\ud83d\udc41\ufe0f Manage Visibility",
-      "confirm": {
-        "message": "This will enable or disable channels based on the current settings. Continue?"
-      }
-    },
-    {
-      "id": "clear_csv_exports",
-      "label": "\ud83d\uddd1\ufe0f Clear CSV Exports",
-      "description": "Delete all CSV export files created by this plugin.",
-      "button_color": "red",
-      "button_label": "\ud83d\uddd1\ufe0f Clear Exports",
-      "confirm": {
-        "message": "This will delete all CSV files in /data/exports/. This action cannot be undone. Continue?"
-      }
-    },
-    {
-      "id": "clear_operation_lock",
-      "label": "\ud83d\udd13 Clear Operation Lock",
-      "description": "Manually clear a stuck operation lock.",
-      "button_color": "orange",
-      "button_label": "\ud83d\udd13 Clear Lock",
-      "confirm": {
-        "message": "Only clear the lock if you are sure no operation is currently running. Continue?"
-      }
-    }
-  ]
+  "min_dispatcharr_version": "v0.20.0",
+  "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/{version}/Stream-Mapparr.zip"
 }
