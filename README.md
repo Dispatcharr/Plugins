@@ -21,7 +21,7 @@ This branch contains all published plugin releases.
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.1711720` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.1741204` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
 | [`Lineuparr`](#lineuparr) | `1.26.1641222` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
-| [`Multiview`](#multiview) | `0.2.1` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
+| [`Multiview`](#multiview) | `0.2.2` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`reservoarr`](#reservoarr) | `6.3.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `1.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.1761110` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
@@ -212,7 +212,7 @@ Mirror real-world provider channel lineups by creating channel groups, channels,
 
 ### [Multiview](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/multiview/README.md)
 
-**Version:** `0.2.1` | **Author:** sethwv | **Last Updated:** Jun 24 2026, 23:23 UTC
+**Version:** `0.2.2` | **Author:** sethwv | **Last Updated:** Jun 25 2026, 15:00 UTC
 
 Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
@@ -221,10 +221,10 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.27.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`0.2.1`)](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.2.1/multiview-0.2.1.zip)
-- [All Versions (3 available)](./metadata/multiview)
+- [Latest Release (`0.2.2`)](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.2.2/multiview-0.2.2.zip)
+- [All Versions (4 available)](./metadata/multiview)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`07bc152`](https://github.com/Dispatcharr/Plugins/commit/07bc152bd72dba4a50f750fde34f22545517aa04)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`44dfc72`](https://github.com/Dispatcharr/Plugins/commit/44dfc72a8430545e47e9ff5fb47a8b46a59a71dd)
 
 ---
 
@@ -394,4 +394,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 25 2026, 12:17 UTC*
+*Last updated: Jun 25 2026, 15:01 UTC*
