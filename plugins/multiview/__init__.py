@@ -132,27 +132,7 @@ class Plugin:
             settings = cfg.settings
         except Exception:
             settings = {}
-        fields = _config().build_plugin_fields(settings)
-        return [self._pyav_status_field()] + fields
-
-    def _pyav_status_field(self) -> dict:
-        """Info field showing whether the PyAV media engine is installed."""
-        try:
-            deps = self._deps()
-            arch = deps.detect_arch()
-            if not arch:
-                import platform
-                desc = (f"⚠ Unsupported CPU architecture ({platform.machine()}); "
-                        f"PyAV is unavailable, streaming will not work.")
-            elif deps.pyav_status(arch):
-                desc = f"✓ PyAV {deps.pyav_status(arch)} installed for {arch}."
-            else:
-                desc = (f"⚠ PyAV is NOT installed for {arch}. Run the "
-                        f"'Install PyAV' action below before streaming.")
-        except Exception as e:  # noqa: BLE001
-            desc = f"PyAV status unknown: {e}"
-        return {"id": "_pyav_status", "label": "Media Engine (PyAV)",
-                "type": "info", "description": desc}
+        return _config().build_plugin_fields(settings)
 
     # Action dispatcher
 

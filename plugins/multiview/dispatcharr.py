@@ -49,48 +49,52 @@ def live_stream(channel_id):
     streams via StreamGenerator with channel_initializing=True (so Dispatcharr's
     own connect/buffer wait applies). Always removes the client on exit, whether
     the consumer disconnects (GeneratorExit) or the stream ends.
+
+    If the channel is already managed by live_proxy (e.g. mid-fallback or in its
+    shutdown grace period), we skip initialize_channel() so we don't reset its
+    stream selection back to URL 1. We just join the existing channel as a new
+    client and let live_proxy continue its retry/fallback cycle.
     """
     from apps.proxy.live_proxy.server import ProxyServer
     from apps.proxy.live_proxy.services.channel_service import ChannelService
     from apps.proxy.live_proxy.url_utils import get_stream_info_for_switch
     from apps.proxy.live_proxy.output.ts.generator import StreamGenerator
 
-    info = get_stream_info_for_switch(channel_id)
-    if not info or info.get("error"):
-        err = (info or {}).get("error", "no stream info")
-        logger.warning(f"multiview: channel {channel_id} unavailable: {err}")
-        return
-
-    ok = ChannelService.initialize_channel(
-        channel_id,
-        info["url"],
-        info.get("user_agent"),
-        transcode=info.get("transcode", False),
-        stream_profile_value=info.get("stream_profile"),
-        stream_id=info.get("stream_id"),
-        m3u_profile_id=info.get("m3u_profile_id"),
-        stream_name=info.get("stream_name"),
-    )
-    if not ok:
-        logger.warning(f"multiview: initialize_channel failed for {channel_id}")
-        return
-
     proxy = ProxyServer.get_instance()
-    client_id = str(_uuid.uuid4())
     client_manager = proxy.client_managers.get(channel_id)
+
     if client_manager is None:
-        logger.warning(f"multiview: no client manager for channel {channel_id}")
-        return
+        info = get_stream_info_for_switch(channel_id)
+        if not info or info.get("error"):
+            err = (info or {}).get("error", "no stream info")
+            logger.warning(f"multiview: channel {channel_id} unavailable: {err}")
+            return
+
+        ok = ChannelService.initialize_channel(
+            channel_id,
+            info["url"],
+            info.get("user_agent"),
+            transcode=info.get("transcode", False),
+            stream_profile_value=info.get("stream_profile"),
+            stream_id=info.get("stream_id"),
+            m3u_profile_id=info.get("m3u_profile_id"),
+            stream_name=info.get("stream_name"),
+        )
+        if not ok:
+            logger.warning(f"multiview: initialize_channel failed for {channel_id}")
+            return
+
+        client_manager = proxy.client_managers.get(channel_id)
+        if client_manager is None:
+            logger.warning(f"multiview: no client manager for channel {channel_id} after init")
+            return
+
+    client_id = str(_uuid.uuid4())
 
     client_manager.add_client(
         client_id, USER_AGENT,
         user_agent=USER_AGENT, user=None, output_format="mpegts",
     )
-
-    # client_manager.add_client(
-    #     client_id, CLIENT_IP,
-    #     user_agent=USER_AGENT, user=None, output_format="mpegts",
-    # )
 
     try:
         buffer = proxy.get_buffer(channel_id)

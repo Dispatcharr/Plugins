@@ -4,7 +4,7 @@
   "description": "Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg",
   "author": "sethwv",
 
-  "version": "0.2.2",
+  "version": "0.2.3",
   "min_dispatcharr_version": "v0.27.0",
 
   "discord_thread": "https://discord.com/channels/1340492560220684331/1509200002407465001",

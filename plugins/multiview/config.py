@@ -3,13 +3,6 @@
 import json
 import os
 
-# Constants
-
-PLUGIN_DB_KEY = "multiview"
-
-DEFAULT_SERVER_PORT = 9292
-DEFAULT_SERVER_HOST = "127.0.0.1"
-
 
 def _load_plugin_config() -> dict:
     config_path = os.path.join(os.path.dirname(__file__), "plugin.json")
@@ -22,6 +15,8 @@ PLUGIN_CONFIG = _load_plugin_config()
 _ENCODER_OPTIONS = [
     {"value": "libx264",    "label": "Software (libx264)"},
     {"value": "h264_nvenc", "label": "NVIDIA NVENC (h264_nvenc)"},
+    {"value": "h264_qsv",   "label": "Intel QSV (h264_qsv)"},
+    {"value": "h264_vaapi", "label": "Intel/AMD VAAPI (h264_vaapi)"},
 ]
 
 
@@ -82,10 +77,25 @@ _VIDEO_ENCODER_FIELD = {
     "type": "select",
     "default": "libx264",
     "options": [],  # populated from _ENCODER_OPTIONS in build_plugin_fields
-    "description": "Software (libx264) or NVIDIA GPU (h264_nvenc). NVENC requires an NVIDIA GPU with driver support.",
+    "description": "Software encoder (libx264) or hardware GPU encoder. NVENC requires NVIDIA GPU; QSV/VAAPI require Intel/AMD GPU with /dev/dri support.",
 }
 
 # Per-encoder quality / preset fields
+#
+# ENCODER_PRESETS maps encoder name -> (valid_preset_set, default_preset).
+# server.py imports this for validation; values must stay in sync with the
+# option lists in the field builders below.
+ENCODER_PRESETS: dict[str, tuple[frozenset, str]] = {}
+
+
+def _register_presets(encoder: str, fields_fn):
+    """Populate ENCODER_PRESETS from a field builder's options list."""
+    for f in fields_fn():
+        if f.get("id") == "encoder_preset":
+            vals = frozenset(o["value"] for o in f.get("options", []))
+            ENCODER_PRESETS[encoder] = (vals, f.get("default", ""))
+            return
+
 
 def _x264_fields() -> list:
     return [
@@ -127,10 +137,38 @@ def _nvenc_fields() -> list:
     ]
 
 
+def _qsv_fields() -> list:
+    return [
+        {
+            "id": "encoder_preset",
+            "label": "Encoder Preset",
+            "type": "select", "default": "medium",
+            "options": [
+                {"value": "veryfast", "label": "Very Fast (lowest quality)"},
+                {"value": "faster",   "label": "Faster"},
+                {"value": "fast",     "label": "Fast"},
+                {"value": "medium",   "label": "Medium (recommended)"},
+                {"value": "slow",     "label": "Slow (higher quality)"},
+            ],
+            "description": "QSV encode speed vs quality. Medium is recommended for live multiview.",
+        },
+    ]
+
+
+def _vaapi_fields() -> list:
+    return []
+
+
 _ENCODER_EXTRA_FIELDS = {
     "libx264":    _x264_fields,
     "h264_nvenc": _nvenc_fields,
+    "h264_qsv":   _qsv_fields,
+    "h264_vaapi": _vaapi_fields,
 }
+
+# Populate ENCODER_PRESETS from the field definitions above.
+for _enc, _fn in _ENCODER_EXTRA_FIELDS.items():
+    _register_presets(_enc, _fn)
 
 _MULTIVIEW_COUNT_FIELD = {
     "id": "multiview_count",
@@ -152,6 +190,89 @@ _LAYOUT_OPTIONS = [
     {"value": "featured",     "label": "Featured (main left, others stacked right)"},
     {"value": "top_featured", "label": "Top Featured (main top, others row bottom)"},
 ]
+
+
+def _get_multiview_profile_params() -> str:
+    """Return the ffmpeg parameters string for the globally-enabled default stream profile."""
+    try:
+        from core.models import CoreSettings, StreamProfile
+        default_id = CoreSettings.get_default_stream_profile_id()
+        profile = StreamProfile.objects.filter(id=default_id).first()
+        return profile.parameters if profile else ""
+    except Exception:
+        return ""
+
+
+def _build_warnings_fields(settings: dict) -> list:
+    """Return warning info fields for the settings page. Empty list = no warnings = section hidden."""
+    warnings = []
+
+    try:
+        from . import deps as _deps
+        import platform as _platform
+        arch = _deps.detect_arch()
+        if not arch:
+            warnings.append({
+                "id": "_warn_pyav_arch", "label": "Media Engine (PyAV)", "type": "info",
+                "description": (f"Unsupported CPU architecture ({_platform.machine()}); "
+                                f"PyAV is unavailable, streaming will not work."),
+            })
+        elif not _deps.pyav_status(arch):
+            warnings.append({
+                "id": "_warn_pyav_missing", "label": "Media Engine (PyAV)", "type": "info",
+                "description": (f"PyAV is NOT installed for {arch}. Run the "
+                                f"'Install PyAV' action below before streaming."),
+            })
+    except Exception as e:
+        warnings.append({
+            "id": "_warn_pyav_unknown", "label": "Media Engine (PyAV)", "type": "info",
+            "description": f"PyAV status unknown: {e}",
+        })
+
+    params = _get_multiview_profile_params()
+    if params and any(t in params for t in ("-c copy", "-c:a copy", "-codec:a copy", "acodec copy")):
+        warnings.append({
+            "id": "_warn_audio_copy",
+            "label": "Audio: multi-track will be dropped",
+            "type": "info",
+            "description": (
+                "The default stream profile uses audio copy (-c copy) without mapping "
+                "all tracks. Multi-track audio from multiview will be silently dropped "
+                "-- players will only see one audio track. Fix: create a stream profile "
+                "that includes '-map 0' or '-map 0:a' and set it as the default."
+            ),
+        })
+
+    encoder = settings.get("video_encoder", "libx264")
+    if encoder == "libx264":
+        mv_count = max(1, int(settings.get("multiview_count", 1)))
+        heavy_layouts = [
+            n for n in range(1, mv_count + 1)
+            if max(2, int(settings.get(f"multiview_{n}_channel_count", 4))) > 3
+        ]
+        if heavy_layouts:
+            layout_str = ", ".join(f"Layout {n}" for n in heavy_layouts)
+            warnings.append({
+                "id": "_warn_sw_encode",
+                "label": "Performance: software encoding with 4+ streams",
+                "type": "info",
+                "description": (
+                    f"{layout_str} has more than 3 streams configured with software "
+                    f"encoding (libx264). This is CPU-intensive and may cause dropped "
+                    f"frames or slow-motion output. Enable a hardware encoder "
+                    f"(NVENC, QSV, VAAPI) in Video Settings if available."
+                ),
+            })
+
+    if not warnings:
+        return []
+
+    return [{
+        "id": "_warnings_header",
+        "label": "── Warnings ──────────────────────────",
+        "type": "info",
+        "description": "Use the refresh button (top-right) or restart Dispatcharr to re-check warnings.",
+    }] + warnings
 
 
 def _get_multiview_channel_ids() -> set:
@@ -400,6 +521,14 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
     return fields
 
 
+_VIDEO_SETTINGS_HEADER = {
+    "id": "_video_settings_header",
+    "label": "── Video Settings ───────────────────────",
+    "type": "info",
+    "description": "",
+}
+
+
 def build_plugin_fields(settings: dict) -> list:
     """Build the full field list based on current settings."""
     mv_count = max(1, int(settings.get("multiview_count", 1)))
@@ -408,7 +537,9 @@ def build_plugin_fields(settings: dict) -> list:
     enc_field = dict(_VIDEO_ENCODER_FIELD)
     enc_field["options"] = _ENCODER_OPTIONS
 
-    fields = list(_GLOBAL_FIELDS)
+    fields = _build_warnings_fields(settings)
+    fields.append(_VIDEO_SETTINGS_HEADER)
+    fields.extend(_GLOBAL_FIELDS)
     fields.append(enc_field)
 
     extra_fn = _ENCODER_EXTRA_FIELDS.get(encoder, _x264_fields)
