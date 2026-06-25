@@ -83,9 +83,14 @@ def live_stream(channel_id):
         return
 
     client_manager.add_client(
-        client_id, CLIENT_IP,
+        client_id, USER_AGENT,
         user_agent=USER_AGENT, user=None, output_format="mpegts",
     )
+
+    # client_manager.add_client(
+    #     client_id, CLIENT_IP,
+    #     user_agent=USER_AGENT, user=None, output_format="mpegts",
+    # )
 
     try:
         buffer = proxy.get_buffer(channel_id)

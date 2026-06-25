@@ -22,19 +22,38 @@ DEFAULT_SERVER_PORT = 9292
 DEFAULT_SERVER_HOST = "127.0.0.1"
 
 
+def _load_submodule(name: str):
+    """Load a sibling module by file path.
+
+    importlib.import_module with a relative package requires the parent to be
+    in sys.modules. During Dispatcharr reload cycles that entry may be absent,
+    producing KeyError or ModuleNotFoundError. Loading by file path sidesteps
+    that lookup entirely.
+    """
+    import importlib.util
+    import sys
+    full_name = f"{__name__}.{name}"
+    if full_name in sys.modules:
+        return sys.modules[full_name]
+    spec = importlib.util.spec_from_file_location(
+        full_name, os.path.join(_PLUGIN_DIR, f"{name}.py")
+    )
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[full_name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def _config():
-    import importlib
-    return importlib.import_module(".config", package=__package__)
+    return _load_submodule("config")
 
 
 def _server():
-    import importlib
-    return importlib.import_module(".server", package=__package__)
+    return _load_submodule("server")
 
 
 def _epg():
-    import importlib
-    return importlib.import_module(".epg", package=__package__)
+    return _load_submodule("epg")
 
 
 class Plugin:
@@ -149,8 +168,7 @@ class Plugin:
 
     @staticmethod
     def _deps():
-        import importlib
-        return importlib.import_module(".deps", package=__package__)
+        return _load_submodule("deps")
 
     # generate_m3u
 

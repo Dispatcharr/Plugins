@@ -56,29 +56,62 @@ def _build_xmltv(settings: dict, mv_count: int, window_start, window_end) -> str
 
     for n in range(1, mv_count + 1):
         name = settings.get(f"multiview_{n}_name", f"Multiview {n}") or f"Multiview {n}"
-        epg_title = settings.get(f"multiview_{n}_epg_title", "").strip() or name
-        epg_subtitle = settings.get(f"multiview_{n}_epg_subtitle", "").strip()
-        categories_raw = settings.get(f"multiview_{n}_epg_categories", "")
-        categories = [c.strip() for c in categories_raw.split(",") if c.strip()]
-        channel_names = resolve_channel_names(settings, n)
-        description = ", ".join(channel_names) if channel_names else name
+        epg_source_mode = settings.get(f"multiview_{n}_epg_source_mode", "dummy")
 
-        slot_start = window_start
-        while slot_start < window_end:
-            slot_end = min(slot_start + chunk, window_end)
-            lines.append(
-                f'  <programme start="{_fmt_xmltv_time(slot_start)}"'
-                f' stop="{_fmt_xmltv_time(slot_end)}"'
-                f' channel="multiview_{n}">'
-            )
-            lines.append(f"    <title>{html.escape(epg_title)}</title>")
-            if epg_subtitle:
-                lines.append(f"    <sub-title>{html.escape(epg_subtitle)}</sub-title>")
-            lines.append(f"    <desc>{html.escape(description)}</desc>")
-            for cat in categories:
-                lines.append(f"    <category>{html.escape(cat)}</category>")
-            lines.append("  </programme>")
-            slot_start = slot_end
+        forwarded = False
+        if epg_source_mode == "forward":
+            fwd_ch_id = settings.get(f"multiview_{n}_epg_forward_channel", "_none")
+            if fwd_ch_id and fwd_ch_id != "_none":
+                try:
+                    from apps.channels.models import Channel
+                    ch = Channel.objects.select_related("epg_data").get(id=int(fwd_ch_id))
+                    if ch.epg_data_id:
+                        programs = list(
+                            ch.epg_data.programs
+                            .filter(start_time__lt=window_end, end_time__gt=window_start)
+                            .order_by("start_time")
+                        )
+                        if programs:
+                            for prog in programs:
+                                lines.append(
+                                    f'  <programme start="{_fmt_xmltv_time(prog.start_time)}"'
+                                    f' stop="{_fmt_xmltv_time(prog.end_time)}"'
+                                    f' channel="multiview_{n}">'
+                                )
+                                lines.append(f"    <title>{html.escape(prog.title)}</title>")
+                                if prog.sub_title:
+                                    lines.append(f"    <sub-title>{html.escape(prog.sub_title)}</sub-title>")
+                                if prog.description:
+                                    lines.append(f"    <desc>{html.escape(prog.description)}</desc>")
+                                lines.append("  </programme>")
+                            forwarded = True
+                except Exception:
+                    pass
+
+        if not forwarded:
+            epg_title = settings.get(f"multiview_{n}_epg_title", "").strip() or name
+            epg_subtitle = settings.get(f"multiview_{n}_epg_subtitle", "").strip()
+            categories_raw = settings.get(f"multiview_{n}_epg_categories", "")
+            categories = [c.strip() for c in categories_raw.split(",") if c.strip()]
+            channel_names = resolve_channel_names(settings, n)
+            description = ", ".join(channel_names) if channel_names else name
+
+            slot_start = window_start
+            while slot_start < window_end:
+                slot_end = min(slot_start + chunk, window_end)
+                lines.append(
+                    f'  <programme start="{_fmt_xmltv_time(slot_start)}"'
+                    f' stop="{_fmt_xmltv_time(slot_end)}"'
+                    f' channel="multiview_{n}">'
+                )
+                lines.append(f"    <title>{html.escape(epg_title)}</title>")
+                if epg_subtitle:
+                    lines.append(f"    <sub-title>{html.escape(epg_subtitle)}</sub-title>")
+                lines.append(f"    <desc>{html.escape(description)}</desc>")
+                for cat in categories:
+                    lines.append(f"    <category>{html.escape(cat)}</category>")
+                lines.append("  </programme>")
+                slot_start = slot_end
 
     lines.append("</tv>")
     return "\n".join(lines) + "\n"

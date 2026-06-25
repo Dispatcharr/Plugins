@@ -189,7 +189,35 @@ def _build_channel_options() -> list:
     return opts
 
 
-def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic", regex_pattern: str = "") -> list:
+def _build_layout_channel_options(n: int, settings: dict, ch_count: int, selector_type: str, regex_pattern: str) -> list:
+    """Return channel options scoped to the channels actually in layout n."""
+    opts = [{"value": "_none", "label": "Select a channel"}]
+    try:
+        from apps.channels.models import Channel
+        if selector_type == "regex" and regex_pattern:
+            for ch in (
+                Channel.objects.filter(name__iregex=regex_pattern)
+                .order_by("channel_number")[:ch_count]
+                .values("id", "name", "channel_number")
+            ):
+                num = int(ch["channel_number"]) if ch["channel_number"] is not None else ""
+                opts.append({"value": str(ch["id"]), "label": f"{num} - {ch['name']}"})
+        else:
+            for m in range(1, ch_count + 1):
+                ch_id = settings.get(f"multiview_{n}_channel_{m}", "_none")
+                if ch_id and ch_id != "_none":
+                    try:
+                        ch = Channel.objects.values("id", "name", "channel_number").get(id=int(ch_id))
+                        num = int(ch["channel_number"]) if ch["channel_number"] is not None else ""
+                        opts.append({"value": str(ch["id"]), "label": f"{num} - {ch['name']}"})
+                    except Channel.DoesNotExist:
+                        pass
+    except Exception:
+        pass
+    return opts
+
+
+def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic", regex_pattern: str = "", epg_source_mode: str = "dummy", layout_channel_options: list = None) -> list:
     """Return the list of fields for multiview layout block *n* with *ch_count* channel slots."""
     is_regex = selector_type == "regex"
 
@@ -306,35 +334,68 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
         }
     )
 
-    fields += [
+    fields.append(
         {
-            "id": f"multiview_{n}_epg_title",
-            "label": f"Layout {n} EPG Title",
-            "type": "string",
-            "default": "",
-            "placeholder": f"Multiview {n}",
-            "description": "Program title shown in the EPG. Leave blank to use the layout name.",
-        },
-        {
-            "id": f"multiview_{n}_epg_subtitle",
-            "label": f"Layout {n} EPG Subtitle",
-            "type": "string",
-            "default": "",
-            "placeholder": "",
-            "description": "Optional subtitle shown below the title in the EPG.",
-        },
-        {
-            "id": f"multiview_{n}_epg_categories",
-            "label": f"Layout {n} EPG Categories",
-            "type": "string",
-            "default": "",
-            "placeholder": "Sports, News",
+            "id": f"multiview_{n}_epg_source_mode",
+            "label": f"Layout {n} EPG Source",
+            "type": "select",
+            "default": "dummy",
+            "options": [
+                {"value": "dummy",   "label": "Placeholder (built-in)"},
+                {"value": "forward", "label": "Forward from channel"},
+            ],
             "description": (
-                "Comma-separated category tags. "
-                "EPG apps use these for colour coding (e.g. 'Sports' turns entries green in most players)."
+                "Placeholder emits a simple built-in programme entry. "
+                "Forward copies real EPG data from a source channel onto this layout. "
+                "After changing, save and refresh to see the relevant fields."
             ),
-        },
-    ]
+        }
+    )
+
+    if epg_source_mode == "forward":
+        fields.append(
+            {
+                "id": f"multiview_{n}_epg_forward_channel",
+                "label": f"Layout {n} EPG Source Channel",
+                "type": "select",
+                "default": "_none",
+                "options": layout_channel_options or _build_channel_options(),
+                "description": (
+                    "Channel whose EPG will be displayed for this layout. "
+                    "Falls back to a placeholder entry if the channel has no EPG data."
+                ),
+            }
+        )
+    else:
+        fields += [
+            {
+                "id": f"multiview_{n}_epg_title",
+                "label": f"Layout {n} EPG Title",
+                "type": "string",
+                "default": "",
+                "placeholder": f"Multiview {n}",
+                "description": "Program title shown in the EPG. Leave blank to use the layout name.",
+            },
+            {
+                "id": f"multiview_{n}_epg_subtitle",
+                "label": f"Layout {n} EPG Subtitle",
+                "type": "string",
+                "default": "",
+                "placeholder": "",
+                "description": "Optional subtitle shown below the title in the EPG.",
+            },
+            {
+                "id": f"multiview_{n}_epg_categories",
+                "label": f"Layout {n} EPG Categories",
+                "type": "string",
+                "default": "",
+                "placeholder": "Sports, News",
+                "description": (
+                    "Comma-separated category tags. "
+                    "EPG apps use these for colour coding (e.g. 'Sports' turns entries green in most players)."
+                ),
+            },
+        ]
 
     return fields
 
@@ -359,7 +420,9 @@ def build_plugin_fields(settings: dict) -> list:
         ch_count = max(2, int(settings.get(f"multiview_{n}_channel_count", 4)))
         selector_type = settings.get(f"multiview_{n}_selector_type", "classic")
         regex_pattern = settings.get(f"multiview_{n}_regex_pattern", "")
-        fields.extend(_build_multiview_block(n, ch_count, selector_type, regex_pattern))
+        epg_source_mode = settings.get(f"multiview_{n}_epg_source_mode", "dummy")
+        layout_ch_opts = _build_layout_channel_options(n, settings, ch_count, selector_type, regex_pattern)
+        fields.extend(_build_multiview_block(n, ch_count, selector_type, regex_pattern, epg_source_mode, layout_ch_opts))
 
     return fields
 
