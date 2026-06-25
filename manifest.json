@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-24T23:24:18Z",
+  "generated_at": "2026-06-25T12:16:54Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -230,16 +230,16 @@
       {
         "slug": "tickarr",
         "name": "Tickarr",
-        "description": "Dynamic text overlays for IPTV channels - SiriusXM Now Playing, Sports Ticker, Custom Text",
+        "description": "Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts",
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/tickarr/manifest.json",
         "author": "jstevenscl",
         "license": "MIT",
-        "last_updated": "2026-06-15T12:11:11-04:00",
-        "latest_version": "0.1.02",
-        "latest_md5": "245cafc7e810b91fabfb4bc25ab4d7fb",
-        "latest_sha256": "f5284f1ebf8687707b3c2505eb323c26ebddcf9e2512bf7b1472793d8b64ae6b",
-        "latest_url": "tickarr-0.1.02/tickarr-0.1.02.zip",
-        "latest_size": 22
+        "last_updated": "2026-06-25T08:16:25-04:00",
+        "latest_version": "0.2.00",
+        "latest_md5": "14ab0bc2ccde1af218e1034ed1f0febd",
+        "latest_sha256": "a4cb1cc2834d7ae1ade29b14b776dff10e480554028326ea4f45bd2bae9be707",
+        "latest_url": "tickarr-0.2.00/tickarr-0.2.00.zip",
+        "latest_size": 1188
       },
       {
         "slug": "twitcharr",
@@ -303,5 +303,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajxnJgAKCRB+wDprTCI0\nzlCHAPwLD2sAfTC1i0dLZlPxQx3dXOnDx3PPeaUFOFJDGDRMpgEAhuvPF6FIg8i7\npWLkyEgylSoUx6wZRe57LjYBdHYqmQk=\n=dgUd\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaj0cOQAKCRB+wDprTCI0\nzlrWAP97BP15oR5xo0WFw4HiwCKK46du8SjaG/+pIytTmK79wQEAisR4UFcfV6I3\nvdu0IIaXAYf/Ybw7yOcI2q4+HWVzqQs=\n=OXHd\n-----END PGP SIGNATURE-----"
 }
