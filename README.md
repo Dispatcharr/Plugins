@@ -24,7 +24,7 @@ This branch contains all published plugin releases.
 | [`Multiview`](#multiview) | `0.2.1` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`reservoarr`](#reservoarr) | `6.3.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `1.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
-| [`Stream-Mapparr`](#stream-mapparr) | `1.26.1751210` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
+| [`Stream-Mapparr`](#stream-mapparr) | `1.26.1761110` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
 | [`Tickarr`](#tickarr) | `0.2.00` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
 | [`Twitcharr`](#twitcharr) | `1.3.1` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
@@ -264,7 +264,7 @@ Automatically drops all active streams once per day at a configured time, with a
 
 ### [Stream-Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-mapparr/README.md)
 
-**Version:** `1.26.1751210` | **Author:** PiratesIRC | **Last Updated:** Jun 24 2026, 19:25 UTC
+**Version:** `1.26.1761110` | **Author:** PiratesIRC | **Last Updated:** Jun 25 2026, 12:16 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -273,10 +273,10 @@ Automatically add matching streams to channels based on name similarity and qual
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.1751210`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1751210/stream-mapparr-1.26.1751210.zip)
-- [All Versions (5 available)](./metadata/stream-mapparr)
+- [Latest Release (`1.26.1761110`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1761110/stream-mapparr-1.26.1761110.zip)
+- [All Versions (6 available)](./metadata/stream-mapparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | **Last Change:** [`ab31b28`](https://github.com/Dispatcharr/Plugins/commit/ab31b28af3599fd28242a3f3d65e8aa834709637)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | **Last Change:** [`c522fd5`](https://github.com/Dispatcharr/Plugins/commit/c522fd5bb2f8ad0b60a85daf11f4ba75a53d9f71)
 
 ---
 
