@@ -2,7 +2,7 @@
 
 # Dispatchwrapparr
 
-**Version:** `1.7.4` | **Author:** jordandalley | **Last Updated:** Jun 14 2026, 23:09 UTC
+**Version:** `1.7.5` | **Author:** jordandalley | **Last Updated:** Jun 27 2026, 05:59 UTC
 
 An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 
@@ -14,20 +14,21 @@ An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 
 ### Latest Release
 
-- **Download:** [`dispatchwrapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.4/dispatchwrapparr-1.7.4.zip)
-- **Built:** Jun 14 2026, 23:10 UTC
-- **Source Commit:** [`ee12e6a`](https://github.com/Dispatcharr/Plugins/commit/ee12e6a51c08f7cacf436b528c10ad2faec9b2dd)
+- **Download:** [`dispatchwrapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.5/dispatchwrapparr-1.7.5.zip)
+- **Built:** Jun 27 2026, 05:59 UTC
+- **Source Commit:** [`2f419a0`](https://github.com/Dispatcharr/Plugins/commit/2f419a064b0332118cccc8ee680904fe399e51b6)
 
 **Checksums:**
 ```
-MD5:    1e0dd15dfad11042002ec4e37c11c0ae
-SHA256: 4fcc117cbf15f0d91f5a1a7b4fe7843057f50db5db09fb5ddf3f49f7d596b162
+MD5:    c3a0074b2382390a16ff5b6c04c9e39b
+SHA256: 82c6a6690e9b29214e2caa8cf8b31a266c567cb470b0cc4062fa82914f217d99
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.7.5` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.5/dispatchwrapparr-1.7.5.zip) | Jun 27 2026, 05:59 UTC | [`2f419a0`](https://github.com/Dispatcharr/Plugins/commit/2f419a064b0332118cccc8ee680904fe399e51b6) | c3a0074b2382390a16ff5b6c04c9e39b | 82c6a6690e9b29214e2caa8cf8b31a266c567cb470b0cc4062fa82914f217d99 |
 | `1.7.4` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.4/dispatchwrapparr-1.7.4.zip) | Jun 14 2026, 23:10 UTC | [`ee12e6a`](https://github.com/Dispatcharr/Plugins/commit/ee12e6a51c08f7cacf436b528c10ad2faec9b2dd) | 1e0dd15dfad11042002ec4e37c11c0ae | 4fcc117cbf15f0d91f5a1a7b4fe7843057f50db5db09fb5ddf3f49f7d596b162 |
 | `1.7.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.3/dispatchwrapparr-1.7.3.zip) | Jun 07 2026, 12:43 UTC | [`bc522f1`](https://github.com/Dispatcharr/Plugins/commit/bc522f1f01c094273bded4b7b66350dc62d039fa) | 1457925b992adaa9a88e0859f14cac7c | 2cdc92af862db8fc12e58defd96b38de46c7213f2a9d47c8b29fd3da109d464b |
 | `1.7.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.2/dispatchwrapparr-1.7.2.zip) | Jun 06 2026, 02:42 UTC | [`0d3e0b5`](https://github.com/Dispatcharr/Plugins/commit/0d3e0b5e7f0a11840589e5bd75ae4f2608d1722d) | 443e3e3a5d0868e95e66e31d2a133c8f | 00f5f8dad21427cbc317cc9c04d9442a5fe19ebfa6fbb9ebfc059e786dbf61ec |
@@ -125,7 +126,11 @@ Important notes about fragment options:
 
 ### 🧑‍💻 Using the 'clearkey' URL fragment for DRM decryption
 
-To use a clearkey for a particular stream using a URL fragment, simply create a custom m3u8 file that places the #clearkey=<clearkey> fragment at the end of the stream URL.
+Most DRM implementations apply consistent encryption across both audio and video streams by using the same key.
+
+In this instance, you can simply just supply a clearkey. The HLSDRM and DASHDRM plugins will ignore any Key ID (KID) supplied to it.
+
+To use a single clearkey for a particular stream using a URL fragment, simply create a custom m3u8 file that places the #clearkey=<clearkey> fragment at the end of the stream URL.
 
 Below is an example that could be used for Channel 4 (UK):
 
@@ -135,11 +140,24 @@ Below is an example that could be used for Channel 4 (UK):
 https://olsp.live.dash.c4assets.com/dash_iso_sp_tl/live/channel(c4)/manifest.mpd#clearkey=5ce85f1aa5771900b952f0ba58857d7a
 ```
 
-You can also add the cleakey fragment to the end of a URL of a channel that you add manually into Dispatcharr.
-
 More channels can be added to the same m3u8 file, and may also contain a mixture of DRM and non-DRM encrypted streams.
 
 Simply upload your m3u8 file into Dispatcharr, select a Dispatchwrapparr stream profile, and it'll do the rest.
+
+You can also add a cleakey fragment to the end of a URL of a stream being manually entered into Dispatcharr rather than administering a custom m3u8 file. This can be useful in testing.
+
+For more complex streams that contain different clearkeys for video and audio, two keys can be provided in the order of 'video,audio'.
+
+Streams which contain separate audio and video feeds, where only one is encrypted can specify 'none' as the key at the position.
+
+The below table provides real world examples of how the DASHDRM and HLSDRM streamlink plugins process clearkeys.
+
+| Example Fragment                                                                                        | Clearkey applied to VIDEO stream | Clearkey applied to AUDIO stream |
+| :---                                                                                                    | :---                             | :---                             |
+| #clearkey=a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0                                                              | a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0 | a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0 |
+| #clearkey=a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0,b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1                             | a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0 | b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1 |
+| #clearkey=a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0,none                                                         | a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0 | None (Unencrypted)               |
+| #clearkey=none,b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1                                                         | None (Unencrypted)               | b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1 |
 
 ### ▶️ Using the 'stream' URL fragment for manual stream variant/quality selection
 

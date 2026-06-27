@@ -14,7 +14,7 @@ This branch contains all published plugin releases.
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.1701952` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.0.1` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.9.0` | Jacob-Lasky | MIT | Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings. |
-| [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.4` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
+| [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.5` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
 | [`Embyfin Stream Cleanup`](#embyfin-stream-cleanup) | `1.2.0` | sethwv | MIT | Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections |
 | [`EPG Janitor`](#epg-janitor) | `1.26.1660712` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`EPGeditARR`](#epgeditarr) | `0.2.07` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database. |
@@ -88,7 +88,7 @@ Cross-sport interestingness curator. Pulls upcoming games per enabled sport, sco
 
 ### [Dispatchwrapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dispatchwrapparr/README.md)
 
-**Version:** `1.7.4` | **Author:** jordandalley | **Last Updated:** Jun 14 2026, 23:09 UTC
+**Version:** `1.7.5` | **Author:** jordandalley | **Last Updated:** Jun 27 2026, 05:59 UTC
 
 An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 
@@ -97,10 +97,10 @@ An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.25.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.7.4`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.4/dispatchwrapparr-1.7.4.zip)
-- [All Versions (8 available)](./metadata/dispatchwrapparr)
+- [Latest Release (`1.7.5`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.5/dispatchwrapparr-1.7.5.zip)
+- [All Versions (9 available)](./metadata/dispatchwrapparr)
 
-**Maintainers:** michaelmurfy | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatchwrapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dispatchwrapparr/README.md) | **Last Change:** [`ee12e6a`](https://github.com/Dispatcharr/Plugins/commit/ee12e6a51c08f7cacf436b528c10ad2faec9b2dd)
+**Maintainers:** michaelmurfy | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatchwrapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dispatchwrapparr/README.md) | **Last Change:** [`2f419a0`](https://github.com/Dispatcharr/Plugins/commit/2f419a064b0332118cccc8ee680904fe399e51b6)
 
 ---
 
@@ -394,4 +394,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 25 2026, 19:54 UTC*
+*Last updated: Jun 27 2026, 05:59 UTC*
