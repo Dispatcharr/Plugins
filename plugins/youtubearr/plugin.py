@@ -24,7 +24,7 @@ from core.scheduling import delete_periodic_task
 
 class Plugin:
     name = "YouTubearr"
-    version = "1.20.0"
+    version = "1.30.0"
     description = "Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering"
     author = "Jeff Gooch"
     help_url = "https://github.com/jeff-gooch/youtubearr"
@@ -156,13 +156,7 @@ class Plugin:
             "id": "info_webhook",
             "label": "Webhooks",
             "type": "info",
-            "description": "Trigger external services when channels are added or removed, and send notifications for new streams.",
-        },
-        {
-            "id": "info_generic_webhooks",
-            "label": "Generic Webhooks",
-            "type": "info",
-            "description": "Configure generic webhook endpoints for media refresh and stream notifications.",
+            "description": "Trigger external services when channels are added or removed, and send notifications for new streams. Legacy webhook fields from previous versions are still honored internally — see the README for migration notes.",
         },
         {
             "id": "media_refresh_webhook_url",
@@ -181,20 +175,6 @@ class Plugin:
             "help_text": "Delay before sending the media refresh webhook to allow Dispatcharr to finish processing (default: 5 seconds).",
         },
         {
-            "id": "media_refresh_webhook_headers",
-            "label": "Media Refresh Webhook Headers",
-            "type": "string",
-            "default": "",
-            "help_text": "Optional JSON object of extra request headers (e.g., {\"Authorization\": \"Bearer TOKEN\"}). Leave empty for no extra headers.",
-        },
-        {
-            "id": "media_refresh_webhook_body_template",
-            "label": "Media Refresh Webhook Body Template",
-            "type": "text",
-            "default": "",
-            "help_text": "Optional static JSON or text body to send. Leave empty to use the default event payload.",
-        },
-        {
             "id": "notification_webhook_url",
             "label": "Notification Webhook URL",
             "type": "string",
@@ -207,49 +187,6 @@ class Plugin:
             "type": "string",
             "default": "",
             "help_text": "Base URL for Dispatcharr stream links in the notification payload (e.g., https://tv.example.com). Used to build stream URLs like {base_url}/proxy/ts/stream/{uuid}.",
-        },
-        {
-            "id": "notification_webhook_headers",
-            "label": "Notification Webhook Headers",
-            "type": "string",
-            "default": "",
-            "help_text": "Optional JSON object of extra request headers. Leave empty for no extra headers.",
-        },
-        {
-            "id": "info_legacy_webhooks",
-            "label": "Legacy Webhook Aliases",
-            "type": "info",
-            "description": "These fields are kept for backward compatibility. Prefer the generic webhook fields above for new setups.",
-        },
-        {
-            "id": "webhook_url",
-            "label": "Webhook URL (Legacy — media refresh alias, bodyless POST)",
-            "type": "string",
-            "default": "",
-            "help_text": "Legacy media refresh alias. Sends a bodyless POST (original Jellyfin-style). Use 'Media Refresh Webhook URL' above for new setups.",
-        },
-        {
-            "id": "webhook_delay_seconds",
-            "label": "Webhook Delay (Legacy — media refresh delay alias)",
-            "type": "number",
-            "default": 5,
-            "min": 0,
-            "max": 60,
-            "help_text": "Legacy media refresh delay alias. Use 'Media Refresh Webhook Delay' above for new setups.",
-        },
-        {
-            "id": "telegram_webhook_url",
-            "label": "Telegram Notification URL (Legacy — notification alias)",
-            "type": "string",
-            "default": "",
-            "help_text": "Legacy notification alias. Preserves the original Telegram payload shape for compatibility. Use 'Notification Webhook URL' above for new setups.",
-        },
-        {
-            "id": "dispatcharr_base_url",
-            "label": "Dispatcharr Base URL (Legacy — notification base URL alias)",
-            "type": "string",
-            "default": "",
-            "help_text": "Legacy notification base URL alias. Use 'Notification Base URL' above for new setups.",
         },
         {
             "id": "info_epg",
@@ -338,6 +275,13 @@ class Plugin:
             "button_color": "red",
         },
         {
+            "id": "poll",
+            "label": "Poll Now (Cron Entrypoint)",
+            "description": "Run a synchronous poll cycle. Recommended for cron/host scheduling.",
+            "button_label": "Poll",
+            "button_color": "blue",
+        },
+        {
             "id": "diagnostics",
             "label": "Diagnostics",
             "description": "Run a non-destructive YouTubearr health check",
@@ -355,13 +299,10 @@ class Plugin:
         self._channel_group_name = "YouTube Live"
         self._starting_channel_number = 2000
 
-        # Monitoring thread
-        self._monitor_thread: Optional[threading.Thread] = None
-        self._monitor_stop_event = threading.Event()
-        self._monitoring_active = False  # In-memory flag to prevent race with Dispatcharr form saves
         self._manual_refresh_lock = threading.Lock()
+        self._last_manual_refresh = {"state": "idle"}
+        self._legacy_task_cleanup_done = False
 
-        # Stream profile cache
         self._stream_profile_id: Optional[int] = None
 
         # Track assigned channel numbers during poll cycle to avoid duplicates
@@ -369,8 +310,6 @@ class Plugin:
 
         # Track video IDs that recently failed metadata extraction to avoid retrying every poll
         self._extraction_failures: Dict[str, float] = {}  # video_id -> unix timestamp of failure
-
-        self._legacy_task_cleanup_done = False
 
         # Field defaults
         self._field_defaults = {field["id"]: field.get("default") for field in self.fields}
@@ -405,6 +344,8 @@ class Plugin:
             response = self._handle_cleanup(context)
         elif action == "reset_all":
             response = self._handle_reset_all(context)
+        elif action == "poll":
+            response = self._handle_poll(context)
         elif action == "diagnostics":
             response = self._handle_diagnostics(context)
         else:
@@ -426,9 +367,57 @@ class Plugin:
 
     # --- Action Handlers ---
 
+
+    def execute_poll_cycle(self, settings: dict, trigger: str = "scheduled") -> dict:
+        """One-shot execution of a full monitoring cycle."""
+        started_at = timezone.now().isoformat()
+        try:
+            added, ended = self._poll_monitored_channels(settings)
+            self._refresh_expiring_urls(settings)
+            self._refresh_epg_times(settings)
+            if settings.get("auto_cleanup", True):
+                cleaned = self._cleanup_ended_streams(settings)
+            else:
+                cleaned = 0
+
+            triggered = added > 0 or cleaned > 0
+            if triggered:
+                self._trigger_webhook(settings)
+
+            result = {
+                "state": "completed",
+                "trigger": trigger,
+                "started_at": started_at,
+                "completed_at": timezone.now().isoformat(),
+                "added": added,
+                "ended": ended,
+                "cleaned": cleaned,
+                "webhook_triggered": triggered,
+                "error": None,
+            }
+        except Exception as exc:
+            self._log_error(f"Poll cycle error: {exc}")
+            result = {
+                "state": "failed",
+                "trigger": trigger,
+                "started_at": started_at,
+                "completed_at": timezone.now().isoformat(),
+                "added": None,
+                "ended": None,
+                "cleaned": None,
+                "webhook_triggered": False,
+                "error": str(exc)[:200],
+            }
+
+        self._last_poll_result = result
+        try:
+            self._persist_settings({"last_poll_result": result, "last_poll_time": timezone.now().isoformat()})
+        except Exception:
+            pass
+        return result
+
     def _handle_status(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Return current status"""
-        # Always read fresh settings from DB for auto-restart check
         try:
             cfg = PluginConfig.objects.get(key=self._plugin_key)
             settings = dict(cfg.settings or {})
@@ -438,23 +427,17 @@ class Plugin:
         tracked_streams = settings.get("tracked_streams", {})
         monitoring_active = settings.get("monitoring_active", False)
 
-        # Clean up the bogus Celery beat task left by older plugin versions (once per instance)
-        # Must run before any early return, so it fires even when yt-dlp is missing.
         self._cleanup_legacy_celery_task()
 
-        # Check yt-dlp availability
         if not self._ytdlp_path:
             return {
                 "status": "error",
                 "message": "yt-dlp not found (bundled version may not be working). Check logs.",
             }
 
-        # Self-heal: restart the monitor thread if DB says active but no live thread exists
-        self._ensure_monitoring_thread(settings)
-
         message_parts = []
         if monitoring_active:
-            message_parts.append(f"Monitoring active ({len(tracked_streams)} streams tracked)")
+            message_parts.append(f"Monitoring active (cron-fallback mode) ({len(tracked_streams)} streams tracked)")
         else:
             message_parts.append(f"Monitoring inactive ({len(tracked_streams)} streams tracked)")
 
@@ -629,107 +612,40 @@ class Plugin:
         }
 
     def _handle_start_monitoring(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        """Start background monitoring thread"""
-        # Check dependencies
+        """Start background monitoring"""
         if not self._ytdlp_path:
             return {
                 "status": "error",
                 "message": "yt-dlp not found (bundled version may not be working). Check logs.",
             }
 
-        # Read fresh settings from DB to avoid stale state
         try:
             cfg = PluginConfig.objects.get(key=self._plugin_key)
             settings = dict(cfg.settings or {})
         except PluginConfig.DoesNotExist:
             settings = context.get("settings", {})
 
-        # Check if already active (use both DB flag AND heartbeat from any worker)
-        # Each Celery worker has its own Plugin instance, so we can't rely on self._monitor_thread
-        # Instead, check the heartbeat to see if ANY thread is actively running
-        thread_alive = self._monitor_thread and self._monitor_thread.is_alive()
-
-        if settings.get("monitoring_active"):
-            # Check heartbeat to see if another worker's thread is running
-            heartbeat_str = settings.get("monitoring_heartbeat")
-            if heartbeat_str:
-                try:
-                    heartbeat = datetime.fromisoformat(heartbeat_str.replace("Z", "+00:00"))
-                    if isinstance(heartbeat.tzinfo, type(None)):
-                        heartbeat = heartbeat.replace(tzinfo=dt_timezone.utc)
-                    age_seconds = (datetime.now(dt_timezone.utc) - heartbeat).total_seconds()
-                    poll_interval_minutes = settings.get("poll_interval_minutes", 15)
-                    heartbeat_threshold = (poll_interval_minutes + 10) * 60
-                    if age_seconds < heartbeat_threshold:
-                        self._log(f"Monitoring already active (heartbeat {int(age_seconds)}s ago)")
-                        return {"status": "running", "message": "Monitoring already active"}
-                except (ValueError, TypeError):
-                    pass
-
-            # Also check local thread
-            if thread_alive:
-                return {"status": "running", "message": "Monitoring already active"}
-
         monitored = settings.get("monitored_channels", "").strip()
         if not monitored:
             return {"status": "error", "message": "No channels to monitor. Add channel IDs/URLs in settings."}
 
-        # Set in-memory flag BEFORE starting thread (prevents race with Dispatcharr form saves)
-        self._monitoring_active = True
-        self._monitor_stop_event.clear()
-        self._extraction_failures.clear()  # Fresh start: retry any previously-failed extractions
-
-        # Update settings in DB
-        updates = {
-            "monitoring_active": True,
-            "last_poll_time": timezone.now().isoformat(),
-            "extraction_failures": {},
-        }
-        self._persist_settings(updates)
-
-        # Start monitoring thread AFTER persisting settings
-        self._monitor_thread = threading.Thread(
-            target=self._monitoring_loop,
-            args=(self._plugin_key,),
-            daemon=True,
-            name="YouTubearr-Monitor"
-        )
-        self._monitor_thread.start()
-
-        self._log("Monitoring started")
+        self._persist_settings({"monitoring_active": True})
+        self._log("Monitoring enabled (cron fallback)")
         self._cleanup_legacy_celery_task()
 
         return {
             "status": "running",
-            "message": "Monitoring started",
+            "message": "Monitoring enabled. Please schedule the 'poll' action via cron.",
         }
 
     def _handle_stop_monitoring(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Stop background monitoring thread"""
-        # Check if monitoring is active (either in-memory or DB)
-        settings = context.get("settings", {})
-        if not self._monitoring_active and not settings.get("monitoring_active"):
-            return {"status": "stopped", "message": "Monitoring not active"}
-
-        # Step 1: Set DB flag FIRST - this is what threads in other workers will see
-        # Also clear heartbeat so Start Monitoring doesn't think a thread is still running
         updates = {
             "monitoring_active": False,
-            "monitoring_heartbeat": None,
+            "force_refresh_requested_at": None,
         }
         self._persist_settings(updates)
-
-        # Step 2: Set in-memory flag to stop
-        self._monitoring_active = False
-
-        # Step 3: Signal thread to stop
-        self._monitor_stop_event.set()
-
-        # Step 4: Wait for thread to finish (with timeout)
-        if self._monitor_thread and self._monitor_thread.is_alive():
-            self._monitor_thread.join(timeout=5.0)
-
-        self._log("Monitoring stopped")
+        self._log("Monitoring disabled")
         self._cleanup_legacy_celery_task()
 
         return {
@@ -741,25 +657,6 @@ class Plugin:
         """Manually trigger a refresh cycle"""
         self._log(f"!!! REFRESH ACTION TRIGGERED - Plugin version {self.version} !!!")
 
-        # Get settings from database to preserve monitoring_active flag
-        try:
-            cfg = PluginConfig.objects.get(key=self._plugin_key)
-            settings = dict(cfg.settings or {})
-        except PluginConfig.DoesNotExist:
-            settings = context.get("settings", {})
-
-        # If monitoring is active, the background thread is already polling on its schedule.
-        # Running a second concurrent poll blocks the HTTP thread for minutes and causes
-        # 504 Gateway Timeouts — especially with many tracked streams.
-        if settings.get("monitoring_active"):
-            poll_interval = settings.get("poll_interval_minutes", 15)
-            last_poll = settings.get("last_poll_time", "")
-            last_poll_display = last_poll[:19].replace("T", " ") if last_poll else "unknown"
-            return {
-                "status": "success",
-                "message": f"Monitoring is active (polling every {poll_interval} min). Last poll: {last_poll_display}. No manual refresh needed.",
-            }
-
         if not self._manual_refresh_lock.acquire(blocking=False):
             return {"status": "info", "message": "A manual refresh is already in progress — check logs for progress."}
 
@@ -767,18 +664,26 @@ class Plugin:
             try:
                 cfg = PluginConfig.objects.get(key=self._plugin_key)
                 s = dict(cfg.settings or {})
-                added, ended = self._poll_monitored_channels(s)
-                if s.get("auto_cleanup", True):
-                    self._cleanup_ended_streams(s)
-                if added > 0 or ended > 0:
-                    self._trigger_webhook(s)
-            except Exception as exc:
-                self._log_error(f"Manual refresh failed: {exc}")
+                self._last_manual_refresh = self.execute_poll_cycle(s, trigger="manual")
             finally:
                 self._manual_refresh_lock.release()
 
         threading.Thread(target=_run, daemon=True, name="YouTubearr-ManualRefresh").start()
         return {"status": "success", "message": "Refresh started in background — check logs or wait for the next status update."}
+
+    def _handle_poll(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Synchronous poll endpoint for cron triggers."""
+        try:
+            cfg = PluginConfig.objects.get(key=self._plugin_key)
+            settings = dict(cfg.settings or {})
+        except PluginConfig.DoesNotExist:
+            settings = context.get("settings", {})
+
+        if not settings.get("monitoring_active"):
+            return {"status": "info", "message": "Monitoring is disabled; poll skipped."}
+
+        result = self.execute_poll_cycle(settings, trigger="cron")
+        return {"status": "success", "message": "Poll completed", "details": result}
 
     def _handle_cleanup(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Manually cleanup ended streams and orphaned tracked_streams entries"""
@@ -832,35 +737,24 @@ class Plugin:
             try:
                 cfg = PluginConfig.objects.get(key=self._plugin_key)
                 tracked_count = len(cfg.settings.get("tracked_streams", {}))
-                # IMPORTANT: Create new dict to ensure Django detects the change
-                # (In-place modification of JSONField may not trigger save properly)
                 new_settings = dict(cfg.settings or {})
                 new_settings["monitoring_active"] = False
-                new_settings["tracked_streams"] = {}  # Clear immediately to prevent re-adds
-                cfg.settings = new_settings  # Assign new dict object
+                new_settings["force_refresh_requested_at"] = None
+                new_settings["tracked_streams"] = {}
+                cfg.settings = new_settings
                 cfg.save(update_fields=["settings", "updated_at"])
                 self._log(f"Reset All: Set monitoring_active=False and cleared {tracked_count} tracked_streams")
             except PluginConfig.DoesNotExist:
                 tracked_count = 0
 
-            # Step 2: Also call stop monitoring to set in-memory flag and stop event
-            self._monitoring_active = False
-            self._monitor_stop_event.set()
-            self._log("Reset All: Set in-memory stop flags")
-
-            # Step 3: Wait for any running monitoring thread to notice and stop
-            # The thread checks DB flag each poll cycle, so we wait a bit
-            time.sleep(3)
-            self._log("Reset All: Waited for monitoring thread to stop")
-
-            # Step 4: Get the channel group (read from settings, not hardcoded)
+            # Step 2: Get the channel group (read from settings, not hardcoded)
             group_name = context.get("settings", {}).get("channel_group_name", self._channel_group_name)
             try:
                 channel_group = ChannelGroup.objects.get(name=group_name)
             except ChannelGroup.DoesNotExist:
                 channel_group = None
 
-            # Step 5: Delete all channels in the YouTube Live group
+            # Step 3: Delete all channels in the YouTube Live group
             channels_deleted = 0
             streams_deleted = 0
 
@@ -877,7 +771,7 @@ class Plugin:
 
                 self._log(f"Reset All: Deleted {channels_deleted} channel(s) and {streams_deleted} stream(s)")
 
-            # Step 6: Clean up EPG data for this plugin's EPG source
+            # Step 4: Clean up EPG data for this plugin's EPG source
             epg_source_name = context.get("settings", {}).get("epg_source_name", "YouTube Live").strip()
             epg_cleaned = 0
             if epg_source_name:
@@ -907,7 +801,17 @@ class Plugin:
 
     def _handle_diagnostics(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Run a non-destructive health check and return diagnostics details."""
-        settings = context.get("settings", {})
+        # Prefer fresh DB settings so fields like last_poll_time reflect the most recent
+        # poll cycle rather than whatever stale values Dispatcharr cached in the request
+        # context. Merge strategy: start from context settings so test fixtures work, then
+        # overlay DB settings — DB wins for every key it has.
+        context_settings = context.get("settings", {})
+        try:
+            cfg = PluginConfig.objects.get(key=self._plugin_key)
+            db_settings = dict(cfg.settings or {})
+            settings = {**context_settings, **db_settings}
+        except PluginConfig.DoesNotExist:
+            settings = context_settings
         issues: List[str] = []  # "error:<reason>" or "warning:<reason>"
         details: Dict[str, Any] = {}
 
@@ -916,26 +820,25 @@ class Plugin:
         details["plugin_key"] = self._plugin_key
 
         # Monitoring state
-        monitoring_active_db = settings.get("monitoring_active", False)
-        details["monitoring_active"] = monitoring_active_db
-        thread_alive = bool(self._monitor_thread and self._monitor_thread.is_alive())
-        details["monitor_thread_alive"] = thread_alive
-        details["last_poll_time"] = settings.get("last_poll_time") or "unknown"
-        details["monitoring_heartbeat"] = settings.get("monitoring_heartbeat") or "unknown"
+        details["monitoring_active"] = settings.get("monitoring_active", False)
+        details["scheduler_mode"] = "cron-fallback"
+        details["poll_interval_minutes"] = settings.get("poll_interval_minutes", 15)
 
-        if monitoring_active_db and not thread_alive:
-            heartbeat_str = settings.get("monitoring_heartbeat")
-            if heartbeat_str:
-                try:
-                    hb = datetime.fromisoformat(heartbeat_str.replace("Z", "+00:00"))
-                    if hb.tzinfo is None:
-                        hb = hb.replace(tzinfo=dt_timezone.utc)
-                    if (datetime.now(tz=dt_timezone.utc) - hb).total_seconds() > 600:
-                        issues.append("warning:monitoring active but heartbeat is stale (>10 min)")
-                except Exception:
-                    issues.append("warning:monitoring active but heartbeat is unparseable")
-            else:
-                issues.append("warning:monitoring active but no heartbeat found")
+        last_poll = settings.get("last_poll_result", {})
+        details["last_poll_started_at"] = last_poll.get("started_at", "never")
+        details["last_poll_completed_at"] = last_poll.get("completed_at", "never")
+        details["last_poll_status"] = last_poll.get("state", "unknown")
+        details["last_poll_added"] = last_poll.get("added", 0)
+        details["last_poll_ended"] = last_poll.get("ended", 0)
+        details["last_poll_cleaned"] = last_poll.get("cleaned", 0)
+        details["last_poll_error"] = last_poll.get("error")
+
+        # EPG window counts — surface current/future program counts for the YouTubearr source
+        _epg_window = self._get_youtubearr_epg_window_counts(settings)
+        details["epg_window_counts"] = _epg_window
+        if details["monitoring_active"] and _epg_window.get("source_found"):
+            if _epg_window.get("current", 0) == 0 and _epg_window.get("future12", 0) == 0:
+                issues.append("warning:YouTubearr EPG source has no current or future programs — monitor may need refresh")
 
         # Monitored channels / tracked streams
         monitored_raw = settings.get("monitored_channels", "").strip()
@@ -1012,7 +915,6 @@ class Plugin:
         # Stale stream URLs (live streams whose URL hasn't been refreshed recently)
         _url_refresh_interval = settings.get("url_refresh_interval_seconds", 3600)
         _stale_threshold = 2 * _url_refresh_interval
-        _now_utc = datetime.now(dt_timezone.utc)
         stale_count = 0
         oldest_stale_age = 0.0
         for _vid, _sd in tracked_streams.items():
@@ -1022,21 +924,62 @@ class Plugin:
             if not _last_str:
                 stale_count += 1
                 continue
-            try:
-                _lr = datetime.fromisoformat(_last_str.replace("Z", "+00:00"))
-                if _lr.tzinfo is None:
-                    _lr = _lr.replace(tzinfo=dt_timezone.utc)
-                _age = (_now_utc - _lr).total_seconds()
-                if _age > _stale_threshold:
-                    stale_count += 1
-                    oldest_stale_age = max(oldest_stale_age, _age)
-            except (ValueError, TypeError):
+            _age = self._age_seconds(_last_str)
+            if _age is None:
                 stale_count += 1
+            elif _age > _stale_threshold:
+                stale_count += 1
+                oldest_stale_age = max(oldest_stale_age, _age)
         details["stale_tracked_stream_url_count"] = stale_count
         if oldest_stale_age:
             details["oldest_url_refresh_age_seconds"] = int(oldest_stale_age)
         if stale_count > 0:
             issues.append(f"warning:{stale_count} live stream URL(s) are stale (monitor may not be refreshing URLs)")
+
+        # Orphaned and stale-EPG tracked entries (best-effort — DB required)
+        orphaned_tracked_count = 0
+        stale_epg_tracked_count = 0
+        try:
+            _diag_now = timezone.now()
+            for _vid, _sd in tracked_streams.items():
+                if not _sd.get("is_live"):
+                    continue
+                _cid = _sd.get("channel_id")
+                if not _cid:
+                    orphaned_tracked_count += 1
+                    continue
+                try:
+                    _ch = Channel.objects.get(id=_cid)
+                    if _ch.epg_data:
+                        _prog = ProgramData.objects.filter(epg=_ch.epg_data).first()
+                        if _prog is not None and _prog.end_time is not None:
+                            _end = _prog.end_time
+                            if _diag_now.tzinfo is not None and getattr(_end, "tzinfo", None) is None:
+                                _end = _end.replace(tzinfo=dt_timezone.utc)
+                            elif _diag_now.tzinfo is None and getattr(_end, "tzinfo", None) is not None:
+                                _end = _end.astimezone().replace(tzinfo=None)
+                            if _end < _diag_now:
+                                stale_epg_tracked_count += 1
+                except Channel.DoesNotExist:
+                    orphaned_tracked_count += 1
+                except Exception:
+                    pass
+        except Exception:
+            pass
+        details["orphaned_tracked_count"] = orphaned_tracked_count
+        details["stale_epg_tracked_count"] = stale_epg_tracked_count
+        if orphaned_tracked_count > 0:
+            issues.append(f"warning:{orphaned_tracked_count} tracked stream(s) point to missing channels (run Cleanup)")
+        if stale_epg_tracked_count > 0:
+            issues.append(f"warning:{stale_epg_tracked_count} tracked-live stream(s) have expired EPG data (may be stale)")
+
+        # Log file location
+        details["log_file_path"] = str(self._log_path)
+        details["log_file_exists"] = self._log_path.exists()
+
+        # Manual refresh state (visible outcome for operators)
+        details["last_manual_refresh"] = dict(self._last_manual_refresh)
+        details["force_refresh_pending"] = bool(settings.get("force_refresh_requested_at"))
 
         # Recent log summary
         details["log_summary"] = self._get_recent_log_summary()
@@ -2229,7 +2172,7 @@ class Plugin:
             except Exception as exc:
                 self._log_error(f"Failed to poll channel {channel_id}: {exc}")
 
-        # Persist updates
+        # Persist final state
         self._persist_settings({
             "tracked_streams": tracked_streams,
             "last_poll_time": timezone.now().isoformat(),
@@ -2658,6 +2601,27 @@ class Plugin:
                     )
                     if updated > 0:
                         refreshed_count += 1
+                    else:
+                        # No ProgramData row exists — create one so the EPG window stays current.
+                        # This repairs channels whose program entry was deleted externally or
+                        # expired after a long monitoring outage.
+                        channel_tvg_id = channel.tvg_id or str(channel.channel_number)
+                        title = stream_data.get("title", "YouTube Live")
+                        try:
+                            ProgramData.objects.update_or_create(
+                                epg=channel.epg_data,
+                                tvg_id=channel_tvg_id,
+                                defaults={
+                                    "title": title,
+                                    "description": title,
+                                    "start_time": prog_now,
+                                    "end_time": prog_now + timedelta(hours=12),
+                                }
+                            )
+                            refreshed_count += 1
+                            self._log(f"Created missing EPG program for channel {channel_id} (tvg_id={channel_tvg_id})")
+                        except Exception as create_exc:
+                            self._log_error(f"Failed to create EPG program for channel {channel_id}: {create_exc}")
             except Channel.DoesNotExist:
                 pass
             except Exception as exc:
@@ -2668,7 +2632,13 @@ class Plugin:
     # --- Cleanup ---
 
     def _cleanup_ended_streams(self, settings: Dict[str, Any], force: bool = False) -> int:
-        """Remove channels for ended streams. Returns count of cleaned channels"""
+        """Remove channels for ended/stale streams and orphaned tracking entries.
+
+        Returns count of Dispatcharr channels actually deleted.
+        Also removes orphaned tracking entries (is_live=True but channel missing) and
+        stale-live entries (is_live=True, EPG ended, and direct verify confirms not live).
+        Persists tracked_streams whenever any entries are removed.
+        """
         tracked_streams = settings.get("tracked_streams", {})
         auto_cleanup = settings.get("auto_cleanup", True)
 
@@ -2679,10 +2649,13 @@ class Plugin:
         to_remove = []
 
         for video_id, stream_data in tracked_streams.items():
-            if not stream_data.get("is_live") or force:
+            is_live = stream_data.get("is_live")
+            channel_id = stream_data.get("channel_id")
+            stream_id = stream_data.get("stream_id")
+
+            if not is_live or force:
+                # Normal ended stream cleanup (or force)
                 try:
-                    # Delete Channel
-                    channel_id = stream_data.get("channel_id")
                     if channel_id:
                         try:
                             channel = Channel.objects.get(id=channel_id)
@@ -2690,10 +2663,8 @@ class Plugin:
                             cleaned_count += 1
                             self._log(f"Deleted channel: {stream_data.get('title')}")
                         except Channel.DoesNotExist:
-                            pass
+                            pass  # Already gone; still remove tracking entry below
 
-                    # Delete Stream (if not used by other channels)
-                    stream_id = stream_data.get("stream_id")
                     if stream_id:
                         try:
                             stream = Stream.objects.get(id=stream_id)
@@ -2707,121 +2678,80 @@ class Plugin:
                 except Exception as exc:
                     self._log_error(f"Cleanup failed for {video_id}: {exc}")
 
+            else:
+                # is_live=True — check for orphan or stale EPG condition
+
+                # Orphan check: channel no longer exists in the database
+                if not channel_id:
+                    self._log(f"Removing orphaned tracking entry: no channel_id (video {video_id})")
+                    to_remove.append(video_id)
+                    continue
+
+                try:
+                    channel = Channel.objects.get(id=channel_id)
+                except Channel.DoesNotExist:
+                    self._log(f"Removing orphaned tracking entry: channel {channel_id} missing (video {video_id})")
+                    to_remove.append(video_id)
+                    continue
+                except Exception:
+                    continue  # DB error — fail safe, keep tracking entry
+
+                # Stale EPG check: EPG programme end time is in the past
+                epg_ended = False
+                try:
+                    if channel.epg_data:
+                        prog = ProgramData.objects.filter(epg=channel.epg_data).first()
+                        if prog is not None and prog.end_time is not None:
+                            _now = datetime.now(dt_timezone.utc)
+                            _end = prog.end_time
+                            if getattr(_end, "tzinfo", None) is None:
+                                _end = _end.replace(tzinfo=dt_timezone.utc)
+                            if _end < _now:
+                                epg_ended = True
+                except Exception:
+                    pass  # EPG unavailable — fail safe, don't treat as stale
+
+                if not epg_ended:
+                    continue
+
+                # EPG end time is in the past — do a direct live verification
+                # _verify_video_is_live fails safe: returns True (assume live) on any error
+                title = stream_data.get("title", video_id)
+                self._log(f"EPG ended for still-live entry: {title} — verifying via yt-dlp")
+                if self._verify_video_is_live(video_id):
+                    self._log(f"Confirmed still live (EPG lag): {title}")
+                    continue
+
+                # Confirmed not live — clean up the stale entry
+                self._log(f"Confirmed stale-live stream ended: {title}")
+                try:
+                    channel.delete()
+                    cleaned_count += 1
+                    self._log(f"Deleted stale channel: {title}")
+                except Exception as exc:
+                    self._log_error(f"Failed to delete stale channel {channel_id}: {exc}")
+
+                if stream_id:
+                    try:
+                        stream = Stream.objects.get(id=stream_id)
+                        if not stream.channelstream_set.exists():
+                            stream.delete()
+                    except Stream.DoesNotExist:
+                        pass
+
+                to_remove.append(video_id)
+
         # Remove from tracked streams
         for video_id in to_remove:
             del tracked_streams[video_id]
 
-        # Persist updates
-        if cleaned_count > 0:
+        # Persist whenever any entries were removed (not just when channels were deleted)
+        if to_remove:
             self._persist_settings({"tracked_streams": tracked_streams})
 
         return cleaned_count
 
     # --- Monitoring Thread ---
-
-    def _monitoring_loop(self, plugin_key: str) -> None:
-        """Background monitoring loop (runs in daemon thread)"""
-        self._log("Monitoring loop started")
-
-        try:
-            # Restore extraction failures that survived from before last container restart
-            try:
-                cfg = PluginConfig.objects.get(key=plugin_key)
-                persisted_failures = dict(cfg.settings or {}).get("extraction_failures", {})
-                now = time.time()
-                loaded = 0
-                for vid, fail_time in persisted_failures.items():
-                    if fail_time + 86400 > now and vid not in self._extraction_failures:
-                        self._extraction_failures[vid] = fail_time
-                        loaded += 1
-                if loaded:
-                    self._log(f"Restored {loaded} persisted extraction failures from DB")
-            except PluginConfig.DoesNotExist:
-                pass
-
-            while not self._monitor_stop_event.is_set():
-                try:
-                    # Check in-memory flag first (authoritative - DB flag can be overwritten by Dispatcharr)
-                    if not self._monitoring_active:
-                        self._log("Monitoring disabled (in-memory flag), stopping")
-                        break
-
-                    # Reload settings from database
-                    try:
-                        cfg = PluginConfig.objects.get(key=plugin_key)
-                        settings = dict(cfg.settings or {})
-                    except PluginConfig.DoesNotExist:
-                        self._log_error("Plugin config not found, stopping monitoring")
-                        break
-
-                    # Check if monitoring was stopped via DB flag (e.g., by Stop button in another worker)
-                    if not settings.get("monitoring_active"):
-                        self._log("DB shows monitoring_active=False, stopping monitoring thread")
-                        self._monitoring_active = False
-                        break
-
-                    # Update heartbeat to signal this thread is actively running
-                    # This prevents other Celery workers from starting duplicate threads
-                    self._persist_settings({"monitoring_heartbeat": timezone.now().isoformat()})
-
-                    # Prune stale extraction failures to keep the dict bounded
-                    try:
-                        _pruned = self._prune_extraction_failures()
-                        if _pruned:
-                            self._log(f"Pruned {_pruned} stale extraction failure(s)")
-                    except Exception:
-                        pass
-
-                    # Poll channels
-                    try:
-                        added, ended = self._poll_monitored_channels(settings)
-
-                        # Refresh URLs
-                        refreshed = self._refresh_expiring_urls(settings)
-
-                        # Keep EPG times current for all active streams
-                        self._refresh_epg_times(settings)
-
-                        # Cleanup if enabled
-                        if settings.get("auto_cleanup", True):
-                            cleaned = self._cleanup_ended_streams(settings)
-                        else:
-                            cleaned = 0
-
-                        # Trigger webhook if channels changed
-                        if added > 0 or cleaned > 0:
-                            self._trigger_webhook(settings)
-
-                    except Exception as exc:
-                        self._log_error(f"Poll cycle error: {exc}")
-
-                    # Sleep for poll interval
-                    poll_interval = settings.get("poll_interval_minutes", 15)
-                    sleep_seconds = poll_interval * 60
-
-                    # Sleep in small chunks so we can respond to stop signal
-                    for _ in range(int(sleep_seconds)):
-                        if self._monitor_stop_event.is_set():
-                            break
-                        time.sleep(1)
-
-                except Exception as exc:
-                    self._log_error(f"Monitoring loop error: {exc}")
-                    time.sleep(60)  # Back off on error
-
-        finally:
-            # Always clean up flags when thread exits (crash, break, or normal exit)
-            self._log("Monitoring loop exiting, cleaning up flags")
-            self._monitoring_active = False
-            try:
-                # Clear both monitoring_active and heartbeat so auto-restart can work on next startup
-                self._persist_settings({"monitoring_active": False, "monitoring_heartbeat": None})
-            except Exception as cleanup_exc:
-                self._log_error(f"Failed to persist monitoring_active=False: {cleanup_exc}")
-
-        self._log("Monitoring loop stopped")
-
-    # --- State Management ---
 
     def _persist_extraction_failures(self) -> None:
         """Persist non-expired extraction failures to DB so they survive container restarts."""
@@ -3206,51 +3136,73 @@ class Plugin:
         except Exception as exc:
             self._log_error(f"Legacy Celery task cleanup failed: {exc}")
 
-    def _ensure_monitoring_thread(self, settings: Dict[str, Any]) -> bool:
-        """Restart the monitor thread if DB says active but no live thread is running.
+    def _current_datetime(self) -> datetime:
+        result = timezone.now()
+        if isinstance(result, datetime):
+            return result
+        return datetime.now(dt_timezone.utc)
 
-        This is the in-plugin self-healing path: it handles container restarts and
-        crashed/hung threads without relying on any Celery task. Returns True if a
-        new thread was started.
+    def _parse_iso_datetime(self, value) -> Optional[datetime]:
+        """Parse an ISO-8601 datetime string in the same timezone mode as timezone.now().
+
+        When Django USE_TZ=True, timestamps are written as tz-aware UTC; return aware.
+        When Django USE_TZ=False, timestamps are written as naive local time; return naive.
+        Forcing all naive timestamps to UTC caused cross-worker health check failures when
+        the server was not in UTC — ages appeared hours off, triggering false restart loops.
         """
-        if not settings.get("monitoring_active"):
-            return False
+        if not value or not isinstance(value, str):
+            return None
+        try:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            _now = self._current_datetime()
+            if _now.tzinfo is not None:
+                # Django tz-aware mode: ensure result is also aware (assume UTC if naive)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=dt_timezone.utc)
+            else:
+                # Django tz-naive mode: strip tzinfo so comparison with timezone.now() works
+                if dt.tzinfo is not None:
+                    dt = dt.astimezone().replace(tzinfo=None)
+            return dt
+        except (ValueError, TypeError):
+            return None
 
-        thread_dead = not self._monitor_thread or not self._monitor_thread.is_alive()
-        if not thread_dead:
-            return False
+    def _age_seconds(self, value) -> Optional[float]:
+        """Return age in seconds of an ISO-8601 timestamp, or None if unparseable."""
+        dt = self._parse_iso_datetime(value)
+        if dt is None:
+            return None
+        return max(0.0, (timezone.now() - dt).total_seconds())
 
-        # Another Celery worker's thread may still be running — check the shared heartbeat
-        heartbeat_str = settings.get("monitoring_heartbeat")
-        if heartbeat_str:
-            try:
-                heartbeat = datetime.fromisoformat(heartbeat_str.replace("Z", "+00:00"))
-                if isinstance(heartbeat.tzinfo, type(None)):
-                    heartbeat = heartbeat.replace(tzinfo=dt_timezone.utc)
-                age_seconds = (datetime.now(dt_timezone.utc) - heartbeat).total_seconds()
-                poll_interval_minutes = settings.get("poll_interval_minutes", 15)
-                heartbeat_threshold = (poll_interval_minutes + 10) * 60
-                if age_seconds < heartbeat_threshold:
-                    self._log(f"Monitoring heartbeat is recent ({int(age_seconds)}s ago, threshold={heartbeat_threshold}s), skipping auto-restart")
-                    return False
-            except (ValueError, TypeError):
-                pass
+    def _get_youtubearr_epg_window_counts(self, settings: Dict[str, Any]) -> Dict[str, Any]:
+        """Return current/future-12h program counts for the configured EPG source.
 
-        channels = settings.get("monitored_channels", "").strip()
-        if not channels or not self._ytdlp_path:
-            return False
-
-        self._log("Auto-restarting monitoring after service restart")
-        self._monitoring_active = True
-        self._monitor_stop_event.clear()
-        self._monitor_thread = threading.Thread(
-            target=self._monitoring_loop,
-            args=(self._plugin_key,),
-            daemon=True,
-            name="YouTubearr-Monitor"
-        )
-        self._monitor_thread.start()
-        return True
+        Safe fallback: returns zeros and source_found=False on any DB/import error.
+        """
+        result: Dict[str, Any] = {"current": 0, "future12": 0, "source_found": False}
+        epg_source_name = settings.get("epg_source_name", "YouTube Live").strip()
+        if not epg_source_name:
+            return result
+        try:
+            source = EPGSource.objects.filter(name=epg_source_name).first()
+            if not source:
+                return result
+            result["source_found"] = True
+            now = timezone.now()
+            future12 = now + timedelta(hours=12)
+            result["current"] = ProgramData.objects.filter(
+                epg__epg_source=source,
+                start_time__lte=now,
+                end_time__gt=now,
+            ).count()
+            result["future12"] = ProgramData.objects.filter(
+                epg__epg_source=source,
+                end_time__gt=now,
+                start_time__lt=future12,
+            ).count()
+        except Exception:
+            pass
+        return result
 
     def _log(self, message: str) -> None:
         """Write log message"""
