@@ -30,7 +30,7 @@ This branch contains all published plugin releases.
 | [`Twitcharr`](#twitcharr) | `1.3.1` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
 | [`VOD to Media Library`](#vod-to-media-library) | `1.15.2` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
 | [`Waybill`](#waybill) | `1.3.0` | Matthew-Beckett | MIT | Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control. |
-| [`YouTubearr`](#youtubearr) | `1.20.0` | jeff-gooch | Unlicense | Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering |
+| [`YouTubearr`](#youtubearr) | `1.30.0` | jeff-gooch | Unlicense | Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering |
 
 ---
 
@@ -368,7 +368,7 @@ Waybill matches, renames, and organizes any streams no matter the provider. Infi
 
 ### [YouTubearr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/youtubearr/README.md)
 
-**Version:** `1.20.0` | **Author:** jeff-gooch | **Last Updated:** Jun 06 2026, 20:08 UTC
+**Version:** `1.30.0` | **Author:** jeff-gooch | **Last Updated:** Jun 28 2026, 00:18 UTC
 
 Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering
 
@@ -377,10 +377,10 @@ Zero-dependency YouTube livestream plugin with automatic monitoring and configur
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.20.0`)](https://github.com/Dispatcharr/Plugins/releases/download/youtubearr-1.20.0/youtubearr-1.20.0.zip)
-- [All Versions (4 available)](./metadata/youtubearr)
+- [Latest Release (`1.30.0`)](https://github.com/Dispatcharr/Plugins/releases/download/youtubearr-1.30.0/youtubearr-1.30.0.zip)
+- [All Versions (5 available)](./metadata/youtubearr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/youtubearr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/youtubearr/README.md) | **Last Change:** [`0900a37`](https://github.com/Dispatcharr/Plugins/commit/0900a376c840979b09ee5d3834e468d7c117094b)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/youtubearr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/youtubearr/README.md) | **Last Change:** [`5f3a8d5`](https://github.com/Dispatcharr/Plugins/commit/5f3a8d5c3febd0f564298152b52a42fbf6ea3df5)
 
 ---
 
@@ -394,4 +394,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jun 27 2026, 05:59 UTC*
+*Last updated: Jun 28 2026, 00:18 UTC*
