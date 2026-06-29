@@ -11,7 +11,7 @@ This branch contains all published plugin releases.
 
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
-| [`Channel Mapparr`](#channel-mapparr) | `1.26.1701952` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
+| [`Channel Mapparr`](#channel-mapparr) | `1.26.1791324` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.0.1` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.10.0` | Jacob-Lasky | MIT | Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.5` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
@@ -20,7 +20,7 @@ This branch contains all published plugin releases.
 | [`EPGeditARR`](#epgeditarr) | `0.2.07` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.1711720` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.1741204` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
-| [`Lineuparr`](#lineuparr) | `1.26.1641222` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
+| [`Lineuparr`](#lineuparr) | `1.26.1791747` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`Multiview`](#multiview) | `0.2.3` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`reservoarr`](#reservoarr) | `6.3.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `1.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
@@ -36,7 +36,7 @@ This branch contains all published plugin releases.
 
 ### [Channel Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-mapparr/README.md)
 
-**Version:** `1.26.1701952` | **Author:** PiratesIRC | **Last Updated:** Jun 20 2026, 02:05 UTC
+**Version:** `1.26.1791324` | **Author:** PiratesIRC | **Last Updated:** Jun 29 2026, 11:28 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries.
 
@@ -45,10 +45,10 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.1701952`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.1701952/channel-mapparr-1.26.1701952.zip)
-- [All Versions (4 available)](./metadata/channel-mapparr)
+- [Latest Release (`1.26.1791324`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.1791324/channel-mapparr-1.26.1791324.zip)
+- [All Versions (5 available)](./metadata/channel-mapparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | **Last Change:** [`c6ecfb3`](https://github.com/Dispatcharr/Plugins/commit/c6ecfb3757353fec70e7a15ca070cb46edf83d35)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | **Last Change:** [`a5bea09`](https://github.com/Dispatcharr/Plugins/commit/a5bea099ba5abbf25c9e84cf2e9957070fc84dee)
 
 ---
 
@@ -194,7 +194,7 @@ A Dispatcharr Plugin that goes through a playlist to check IPTV channels
 
 ### [Lineuparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/lineuparr/README.md)
 
-**Version:** `1.26.1641222` | **Author:** PiratesIRC | **Last Updated:** Jun 13 2026, 13:21 UTC
+**Version:** `1.26.1791747` | **Author:** PiratesIRC | **Last Updated:** Jun 29 2026, 11:27 UTC
 
 Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them.
 
@@ -203,10 +203,10 @@ Mirror real-world provider channel lineups by creating channel groups, channels,
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.1641222`)](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.1641222/lineuparr-1.26.1641222.zip)
-- [All Versions (6 available)](./metadata/lineuparr)
+- [Latest Release (`1.26.1791747`)](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.1791747/lineuparr-1.26.1791747.zip)
+- [All Versions (7 available)](./metadata/lineuparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/lineuparr) | **Last Change:** [`c9b8a7b`](https://github.com/Dispatcharr/Plugins/commit/c9b8a7bca055605d573865e1016d073155bbc31e)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/lineuparr) | **Last Change:** [`ed8ee86`](https://github.com/Dispatcharr/Plugins/commit/ed8ee868bb90d6f2db8c20e4e67ee0014fdf8fa7)
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-20T02:05:58Z",
+  "generated_at": "2026-06-29T11:28:29Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -10,21 +10,33 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1422963882548265110",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-06-19T22:05:32-04:00",
+    "last_updated": "2026-06-29T07:28:13-04:00",
     "latest": {
-      "version": "1.26.1701952",
-      "commit_sha": "c6ecfb3757353fec70e7a15ca070cb46edf83d35",
-      "commit_sha_short": "c6ecfb3",
-      "build_timestamp": "2026-06-20T02:05:48Z",
-      "last_updated": "2026-06-19T22:05:32-04:00",
-      "checksum_md5": "0fbfea3acbff32f93c8d59940b48aac8",
-      "checksum_sha256": "e282f8fccd96de95d43412ccd684a98dc721dbb202198a9f1775e81e0d189c8b",
+      "version": "1.26.1791324",
+      "commit_sha": "a5bea099ba5abbf25c9e84cf2e9957070fc84dee",
+      "commit_sha_short": "a5bea09",
+      "build_timestamp": "2026-06-29T11:28:20Z",
+      "last_updated": "2026-06-29T07:28:13-04:00",
+      "checksum_md5": "6de805788f3da1bc3b688bce93070d1c",
+      "checksum_sha256": "92fe4860950f5c02a3ead294bf6f7e591c9d73f78b688aaca5a245561a2cd28e",
       "min_dispatcharr_version": "v0.20.0",
-      "latest_url": "channel-mapparr-1.26.1701952/channel-mapparr-1.26.1701952.zip",
-      "url": "channel-mapparr-1.26.1701952/channel-mapparr-1.26.1701952.zip",
-      "size": 576
+      "latest_url": "channel-mapparr-1.26.1791324/channel-mapparr-1.26.1791324.zip",
+      "url": "channel-mapparr-1.26.1791324/channel-mapparr-1.26.1791324.zip",
+      "size": 588
     },
     "versions": [
+      {
+        "version": "1.26.1791324",
+        "commit_sha": "a5bea099ba5abbf25c9e84cf2e9957070fc84dee",
+        "commit_sha_short": "a5bea09",
+        "build_timestamp": "2026-06-29T11:28:20Z",
+        "last_updated": "2026-06-29T07:28:13-04:00",
+        "checksum_md5": "6de805788f3da1bc3b688bce93070d1c",
+        "checksum_sha256": "92fe4860950f5c02a3ead294bf6f7e591c9d73f78b688aaca5a245561a2cd28e",
+        "min_dispatcharr_version": "v0.20.0",
+        "url": "channel-mapparr-1.26.1791324/channel-mapparr-1.26.1791324.zip",
+        "size": 588
+      },
       {
         "version": "1.26.1701952",
         "commit_sha": "c6ecfb3757353fec70e7a15ca070cb46edf83d35",
@@ -75,5 +87,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajX1hwAKCRB+wDprTCI0\nzrp+AP4oOOAQJbv9epj82SSTEiTNzkQWph+gnGm+lequEBrlGQEA1cHK0ywluIjW\nZaHB9BXOQfUsqATMxQA6xAgZPQr0NAU=\n=2dd0\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCakJW3gAKCRB+wDprTCI0\nzs/3AP9isxm0yaLEgrqTfDMmYGlRfTm9OS7aIlo/i1UgfnxSsgD8D5v9oioReU+3\nfrApoF7OmtwAzB2pLSGp5/M0ED6ZggI=\n=XnHw\n-----END PGP SIGNATURE-----"
 }
