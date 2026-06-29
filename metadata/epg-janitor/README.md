@@ -2,7 +2,7 @@
 
 # EPG Janitor
 
-**Version:** `1.26.1660712` | **Author:** PiratesIRC | **Last Updated:** Jun 15 2026, 14:20 UTC
+**Version:** `1.26.1791309` | **Author:** PiratesIRC | **Last Updated:** Jun 29 2026, 11:27 UTC
 
 Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments.
 
@@ -14,20 +14,21 @@ Scans for channels with EPG assignments but no program data. Auto-matches EPG to
 
 ### Latest Release
 
-- **Download:** [`epg-janitor-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1660712/epg-janitor-1.26.1660712.zip)
-- **Built:** Jun 15 2026, 14:20 UTC
-- **Source Commit:** [`dba280a`](https://github.com/Dispatcharr/Plugins/commit/dba280a1d4493541da20ace73c736ac6ecb7f842)
+- **Download:** [`epg-janitor-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1791309/epg-janitor-1.26.1791309.zip)
+- **Built:** Jun 29 2026, 11:27 UTC
+- **Source Commit:** [`7ffd2cc`](https://github.com/Dispatcharr/Plugins/commit/7ffd2ccc1e04038873a22979f325ee68773da6e5)
 
 **Checksums:**
 ```
-MD5:    1ec4eba71a3d9190da36389713927fd3
-SHA256: aedcc482a09c0f0e24851658fa2d1a59313ddd330eeb52231e9e24cfb8347b64
+MD5:    0b1509586098119da3e920c579893a26
+SHA256: 9e72f5c744dbcc2f70437a9bb7c45c4e4bfbd4daca6d2d2c802624b141a90d59
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.1791309` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1791309/epg-janitor-1.26.1791309.zip) | Jun 29 2026, 11:27 UTC | [`7ffd2cc`](https://github.com/Dispatcharr/Plugins/commit/7ffd2ccc1e04038873a22979f325ee68773da6e5) | 0b1509586098119da3e920c579893a26 | 9e72f5c744dbcc2f70437a9bb7c45c4e4bfbd4daca6d2d2c802624b141a90d59 |
 | `1.26.1660712` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1660712/epg-janitor-1.26.1660712.zip) | Jun 15 2026, 14:20 UTC | [`dba280a`](https://github.com/Dispatcharr/Plugins/commit/dba280a1d4493541da20ace73c736ac6ecb7f842) | 1ec4eba71a3d9190da36389713927fd3 | aedcc482a09c0f0e24851658fa2d1a59313ddd330eeb52231e9e24cfb8347b64 |
 | `1.26.1420824` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1420824/epg-janitor-1.26.1420824.zip) | May 22 2026, 14:19 UTC | [`a5ccaa9`](https://github.com/Dispatcharr/Plugins/commit/a5ccaa94fb0ddb806eb2ef36abef0c8a665afb8d) | d50bf65d2cd18488c6be7f652a36e90a | 55cc84fa57d509b3eefea3511ffbb9705ee5dd2f1994f6c247e6ee6372484ba0 |
 | `1.26.1021352` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1021352/epg-janitor-1.26.1021352.zip) | Apr 12 2026, 19:22 UTC | [`2cf371a`](https://github.com/Dispatcharr/Plugins/commit/2cf371ad80c2219d832938067564d40b038ccd26) | 25cf566d3e3c0fec1f99d78d7b09dd85 | 9109e92484c73b24fad2c92b455f9a3bd8e2280b51b6eac7120c14de42314499 |
@@ -56,10 +57,10 @@ Dispatcharr v0.20.0 or newer. Python 3.13+ (bundled). No required dependencies (
 ## Key features
 
 - **Auto-Match EPG** — weighted structural scoring (callsign 50 / state 30 / city 20 / network 10) + Lineuparr-style 4-stage fuzzy pipeline (alias → exact → substring → token-sort), takes the higher score. Identical-name matches score 100.
-- **Callsign anchoring** — high-confidence US callsign matching for parenthesized (`ABC (WABC)`), end-of-name (`WABC-DT`), and leading `CALLSIGN (NETWORK)` forms (jesmann-US: `KGTV (ABC)`), gated on a known-callsign allowlist from the loaded DBs so callsign-shaped words aren't promoted. A shared high-confidence callsign anchors the match; a disagreement rejects a wrong-station candidate.
+- **Callsign anchoring** — high-confidence US callsign matching for parenthesized (`ABC (WABC)`), end-of-name (`WABC-DT`), and leading `CALLSIGN (NETWORK)` forms (jesmann-US: `KGTV (ABC)`), gated on a known-callsign allowlist from the loaded DBs so callsign-shaped words aren't promoted. Grandfathered 3-letter callsigns (`(WWL)`, `(WJZ)`) and allowlisted word-callsigns (`(KING)`, `(WAVE)`) anchor too. A shared high-confidence callsign anchors the match; a disagreement rejects a wrong-station candidate.
 - **Sibling guards & smarter normalization** — numbered/time-shift siblings no longer cross-match (`Fox Sports 1`≠`2`, `BBC One`≠`Two`, `ITV2`≠`ITV2 +1`); number-words fold to digits (`BBC Three`=`BBC 3`), CamelCase and dotted compounds split (`97.2` preserved). Similarity is rapidfuzz-parity with optional `rapidfuzz` acceleration.
 - **Scan & Heal** — find channels whose current EPG has no program data and walk ranked candidates for a working replacement (respects fallback source allowlist).
-- **EPG source selection & priority** — pick eligible sources by name or `*`/`?` wildcard (case-insensitive); only enabled sources are used, and score ties resolve by each source's Dispatcharr `priority` (higher wins).
+- **EPG source selection & priority** — pick eligible sources by name or `*`/`?` wildcard (case-insensitive); only enabled sources are used, and score ties resolve by each source's Dispatcharr `priority` (higher wins). Leave it empty and *all* active sources are eligible — including foreign-country ones (the matcher has no country gate), so scope it to your region (e.g. `*-US`) on single-region installs.
 - **~200 built-in aliases** (FS1/FS2, CSPAN variants, rebrands like EPIX→MGM+, MSNBC→MS NOW, getTV→GREATTV, DIY→Magnolia, Hallmark Movies & Mysteries→Hallmark Mystery, Justice Network→True Crime Network). User-extendable via a JSON `custom_aliases` setting.
 - **Regional differentiation** (East/West/Pacific, Pacific ≡ West) — lineup channels with regional markers only match compatible EPG feeds, even when `ignore_regional_tags=true`.
 - **Per-category normalization toggles** — quality (`[HD]`, `[4K]`), regional (East/West/Pacific), geographic (`US:`, `[CA]`), misc (`(A)`, `(CX)`) stripped independently.
@@ -83,7 +84,7 @@ Organized into sections via UI dividers: Scope, Auto-Match, Scan & Heal, Cleanup
 
 ## Install
 
-Install from the Dispatcharr Plugin Hub (once available) or download the latest release from the source repo and import via **Plugins → Import Plugin** in the Dispatcharr UI.
+Install directly from the Dispatcharr Plugin Hub (search for **EPG Janitor**), or download the latest release from the source repo and import via **Plugins → Import Plugin** in the Dispatcharr UI.
 
 ## License
 

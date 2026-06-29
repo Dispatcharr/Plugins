@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-15T14:20:36Z",
+  "generated_at": "2026-06-29T11:27:56Z",
   "manifest": {
     "slug": "epg-janitor",
     "name": "EPG Janitor",
@@ -13,21 +13,33 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1420051973994053848",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-06-15T10:20:03-04:00",
+    "last_updated": "2026-06-29T07:27:31-04:00",
     "latest": {
-      "version": "1.26.1660712",
-      "commit_sha": "dba280a1d4493541da20ace73c736ac6ecb7f842",
-      "commit_sha_short": "dba280a",
-      "build_timestamp": "2026-06-15T14:20:27Z",
-      "last_updated": "2026-06-15T10:20:03-04:00",
-      "checksum_md5": "1ec4eba71a3d9190da36389713927fd3",
-      "checksum_sha256": "aedcc482a09c0f0e24851658fa2d1a59313ddd330eeb52231e9e24cfb8347b64",
+      "version": "1.26.1791309",
+      "commit_sha": "7ffd2ccc1e04038873a22979f325ee68773da6e5",
+      "commit_sha_short": "7ffd2cc",
+      "build_timestamp": "2026-06-29T11:27:47Z",
+      "last_updated": "2026-06-29T07:27:31-04:00",
+      "checksum_md5": "0b1509586098119da3e920c579893a26",
+      "checksum_sha256": "9e72f5c744dbcc2f70437a9bb7c45c4e4bfbd4daca6d2d2c802624b141a90d59",
       "min_dispatcharr_version": "v0.20.0",
-      "latest_url": "epg-janitor-1.26.1660712/epg-janitor-1.26.1660712.zip",
-      "url": "epg-janitor-1.26.1660712/epg-janitor-1.26.1660712.zip",
-      "size": 437
+      "latest_url": "epg-janitor-1.26.1791309/epg-janitor-1.26.1791309.zip",
+      "url": "epg-janitor-1.26.1791309/epg-janitor-1.26.1791309.zip",
+      "size": 449
     },
     "versions": [
+      {
+        "version": "1.26.1791309",
+        "commit_sha": "7ffd2ccc1e04038873a22979f325ee68773da6e5",
+        "commit_sha_short": "7ffd2cc",
+        "build_timestamp": "2026-06-29T11:27:47Z",
+        "last_updated": "2026-06-29T07:27:31-04:00",
+        "checksum_md5": "0b1509586098119da3e920c579893a26",
+        "checksum_sha256": "9e72f5c744dbcc2f70437a9bb7c45c4e4bfbd4daca6d2d2c802624b141a90d59",
+        "min_dispatcharr_version": "v0.20.0",
+        "url": "epg-janitor-1.26.1791309/epg-janitor-1.26.1791309.zip",
+        "size": 449
+      },
       {
         "version": "1.26.1660712",
         "commit_sha": "dba280a1d4493541da20ace73c736ac6ecb7f842",
@@ -66,5 +78,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCajAKNgAKCRB+wDprTCI0\nzlnRAP9JDNdgUHbgiDep57XlDkedgox32bpB+2N4KzcxVLOElwD9GSW+EHxCaNO+\nMD6/7kn4GE/KAxXe1RThThq05NqnLwc=\n=WjyI\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCakJWvQAKCRB+wDprTCI0\nzhBVAP9KNUmtRqBsGnFklkqwSKsrkHCGe2i6xJn6qlO9x28CYQEAshwumdQQ8giJ\ntfPDc2MSE/x90zu25JraNN/1DW6LegU=\n=20gb\n-----END PGP SIGNATURE-----"
 }
