@@ -64,7 +64,7 @@ def _clean_json_text(s):
 
 
 class PluginConfig:
-    PLUGIN_VERSION = "1.26.1641222"
+    PLUGIN_VERSION = "1.26.1791747"
 
     DEFAULT_FUZZY_MATCH_THRESHOLD = 80
     DEFAULT_PRIORITIZE_QUALITY = True
@@ -2691,6 +2691,12 @@ class Plugin:
             # refresh: matched AND user-selected.
             matched_epg_source_ids = set()
 
+            # (pool, name->entries, has_program_data) in priority order.
+            match_passes = [
+                (unique_epg_names, epg_by_name, True),
+                (unique_epg_names_all, epg_by_name_all, False),
+            ]
+
             for category, channels in lineup["categories"].items():
                 group_name = self._make_group_name(prefix, category)
                 group_id = existing_groups.get(group_name)
@@ -2702,6 +2708,8 @@ class Plugin:
                     continue
 
                 cat_cc = self._resolve_category_country(category, lineup_cc, logger)
+                # Lineup country first, then relaxed (None) if nothing matched.
+                countries = (cat_cc, None) if cat_cc else (None,)
 
                 for entry in channels:
                     if self._stop_event.is_set():
@@ -2725,44 +2733,40 @@ class Plugin:
                         progress.update()
                         continue
 
-                    # Fuzzy match channel name against EPG names
-                    # (all candidates already have program data - pre-filtered above)
-                    matches = matcher.match_all_streams(
-                        ch_name, unique_epg_names, alias_map,
-                        channel_number=ch_number,
-                        lineup_country=cat_cc,
-                    )
-
-                    # Take best match (all candidates have program data)
+                    # Try program-data entries before all entries, and the lineup
+                    # country before relaxing it, so a cross-border channel (e.g.
+                    # an NL lineup's ZDF, tagged "┃DE┃") still gets its foreign EPG.
                     best_epg = None
                     best_score = 0
                     best_method = None
                     has_program_data = True
 
-                    if matches:
-                        top_name, top_score, top_method = matches[0]
-                        top_entries = epg_by_name.get(top_name, [])
-                        if top_entries:
+                    for country in countries:
+                        for pool, lookup, has_prog in match_passes:
+                            if not pool:
+                                continue
+                            ms = matcher.match_all_streams(
+                                ch_name, pool, alias_map,
+                                channel_number=ch_number,
+                                lineup_country=country,
+                            )
+                            if not ms:
+                                continue
+                            top_name, top_score, top_method = ms[0]
+                            top_entries = lookup.get(top_name, [])
+                            if not top_entries:
+                                continue
                             best_epg = self._pick_epg_by_country(top_entries, cat_cc)
                             best_score = top_score
                             best_method = top_method
-
-                    # Fallback: if no program-data match, try ALL EPG entries
-                    if not best_epg and unique_epg_names_all:
-                        fallback_matches = matcher.match_all_streams(
-                            ch_name, unique_epg_names_all, alias_map,
-                            channel_number=ch_number,
-                            lineup_country=cat_cc,
-                        )
-                        if fallback_matches:
-                            top_name, top_score, top_method = fallback_matches[0]
-                            top_entries = epg_by_name_all.get(top_name, [])
-                            if top_entries:
-                                best_epg = self._pick_epg_by_country(top_entries, cat_cc)
-                                best_score = top_score
-                                best_method = top_method
-                                has_program_data = False
+                            has_program_data = has_prog
+                            if not has_prog:
                                 logger.debug(f"{LOG_PREFIX} EPG fallback (no program data): {ch_name} -> {best_epg['name']}")
+                            if country is None and cat_cc:
+                                logger.debug(f"{LOG_PREFIX} EPG country-relaxed match: {ch_name} -> {best_epg['name']}")
+                            break
+                        if best_epg:
+                            break
 
                     # Build CSV row
                     row = {
