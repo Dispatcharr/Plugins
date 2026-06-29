@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-29T11:28:29Z",
+  "generated_at": "2026-06-29T11:28:59Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -303,5 +303,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCakJW4gAKCRB+wDprTCI0\nzm2lAQC6ZasRBAaIw5OQu11O1NesnYb4npfl8GaApOCFQhZ7PgEAkQsGhQZQB5Fl\nI9SIszYlRfU/P1WKb4LNae6oA5+H/g4=\n=P+bX\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCakJW/gAKCRB+wDprTCI0\nzlQcAQCrpqOBV4rNIb917jXy/znkUfp+PYL5Q5ZQSbOu+5mYdAEAwKaG6bj0KiNH\nYPxkK95JoYCB5828imIfrmBER78WWgA=\n=jjfe\n-----END PGP SIGNATURE-----"
 }
