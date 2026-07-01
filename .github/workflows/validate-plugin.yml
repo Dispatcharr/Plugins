@@ -748,14 +748,35 @@ jobs:
               done
             } > codeql-low-findings.md
           fi
-          if [[ "$RESULT_COUNT" -gt 0 || ( "${{ steps.detect-langs.outputs.found }}" == 'true' && "${{ steps.analyze.outcome }}" != "success" && "${{ steps.analyze.outcome }}" != "" ) ]]; then
+          ANALYZE_FAILED=false
+          if [[ "${{ steps.detect-langs.outputs.found }}" == 'true' && "${{ steps.analyze.outcome }}" != "success" && "${{ steps.analyze.outcome }}" != "" ]]; then
+            ANALYZE_FAILED=true
+          fi
+
+          UNSCANNED_CSV="${{ steps.detect-langs.outputs.unscanned_langs }}"
+          CONFIG_ERROR_LANGS=""
+
+          # CodeQL sets CODEQL_ACTION_JOB_STATUS=JOB_STATUS_CONFIGURATION_ERROR when it found
+          # no indexable source for a requested language (e.g. a committed file that's only
+          # vendored/minified/generated code, which CodeQL's own extractor refuses to treat as
+          # source). That's not a security finding or a broken analysis - don't block the PR on
+          # it, just note which language(s) went unscanned. Any other non-success outcome (a
+          # real extractor crash, OOM, etc.) still fails the job below.
+          if [[ "$ANALYZE_FAILED" == 'true' && "${CODEQL_ACTION_JOB_STATUS:-}" == 'JOB_STATUS_CONFIGURATION_ERROR' ]]; then
+            echo "::warning::CodeQL reported a configuration error (no indexable source found) for language(s): ${{ steps.detect-langs.outputs.languages }}. Treating as skipped instead of failing the PR."
+            CONFIG_ERROR_LANGS="codeql-config-error($(echo '${{ steps.detect-langs.outputs.languages }}' | tr ',' '+'))"
+            UNSCANNED_CSV="${UNSCANNED_CSV:+$UNSCANNED_CSV,}${CONFIG_ERROR_LANGS}"
+            ANALYZE_FAILED=false
+          fi
+
+          if [[ "$RESULT_COUNT" -gt 0 || "$ANALYZE_FAILED" == 'true' ]]; then
             echo "codeql_status=failure" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ steps.detect-langs.outputs.found }}" == 'false' ]]; then
+          elif [[ "${{ steps.detect-langs.outputs.found }}" == 'false' || -n "$CONFIG_ERROR_LANGS" ]]; then
             echo "codeql_status=skipped" >> "$GITHUB_OUTPUT"
           else
             echo "codeql_status=success" >> "$GITHUB_OUTPUT"
           fi
-          echo "codeql_unscanned_langs=${{ steps.detect-langs.outputs.unscanned_langs }}" >> "$GITHUB_OUTPUT"
+          echo "codeql_unscanned_langs=$UNSCANNED_CSV" >> "$GITHUB_OUTPUT"
 
       - name: Upload findings detail for PR comment
         if: always() && steps.status.outputs.codeql_status == 'failure'
