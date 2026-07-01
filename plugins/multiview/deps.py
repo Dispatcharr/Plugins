@@ -57,6 +57,25 @@ def pyav_status(arch: str) -> "str | None":
     return "installed" if os.path.isdir(os.path.join(d, "av")) else None
 
 
+def _get_settings() -> dict:
+    try:
+        from apps.plugins.models import PluginConfig
+        return PluginConfig.objects.get(key="multiview").settings
+    except Exception:
+        return {}
+
+
+def _save_settings(updates: dict):
+    from apps.plugins.models import PluginConfig
+    cfg = PluginConfig.objects.get(key="multiview")
+    for k, v in updates.items():
+        if v is None:
+            cfg.settings.pop(k, None)
+        else:
+            cfg.settings[k] = v
+    cfg.save()
+
+
 def _find_wheel(arch: str):
     """Return (url, filename) of the cp313 manylinux wheel for this arch."""
     info = ARCHES[arch]
@@ -106,4 +125,47 @@ def install_pyav(arch: str) -> dict:
     ver = pyav_status(arch) or PYAV_VERSION
     msg = f"PyAV {ver} installed for {arch}."
     logger.info(f"multiview: {msg}")
+    try:
+        _save_settings({f"pyav_consent_{arch}": True, "pyav_auto_install_error": None})
+    except Exception as e:  # noqa: BLE001
+        logger.warning(f"multiview: could not record PyAV consent: {e}")
     return {"status": "success", "message": msg}
+
+
+def maybe_auto_install(arch: "str | None" = None) -> "dict | None":
+    """If the user has previously consented (a prior successful 'Install
+    PyAV' run for this arch) and the vendored copy is now missing or
+    doesn't match the pinned PYAV_VERSION (e.g. reset by a plugin update),
+    reinstall it automatically. No-op if consent was never given, or the
+    install is already current. Returns the install result dict, or None
+    if nothing needed to be done."""
+    arch = arch or detect_arch()
+    if not arch:
+        return None
+    settings = _get_settings()
+    if not settings.get(f"pyav_consent_{arch}"):
+        return None
+    if pyav_status(arch) == PYAV_VERSION:
+        return None
+
+    lockpath = os.path.join(VENDOR_DIR, f".autoinstall_{arch}.lock")
+    os.makedirs(VENDOR_DIR, exist_ok=True)
+    try:
+        fd = os.open(lockpath, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        os.close(fd)
+    except FileExistsError:
+        return None  # another worker is already handling this
+    try:
+        logger.info(f"multiview: auto-reinstalling PyAV for {arch} (consent on file)")
+        result = install_pyav(arch)
+        if result.get("status") != "success":
+            try:
+                _save_settings({"pyav_auto_install_error": result.get("message", "unknown error")})
+            except Exception:
+                pass
+        return result
+    finally:
+        try:
+            os.remove(lockpath)
+        except OSError:
+            pass

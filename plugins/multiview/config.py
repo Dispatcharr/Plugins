@@ -22,7 +22,38 @@ _ENCODER_OPTIONS = [
 
 # Global fields (always shown)
 
-_GLOBAL_FIELDS = [
+_GLOBAL_SETTINGS_FIELDS = [
+    {
+        "id": "dash_enabled",
+        "label": "Web Dashboard",
+        "type": "select",
+        "default": "disabled",
+        "options": [
+            {"value": "disabled", "label": "Disabled"},
+            {"value": "enabled",  "label": "Enabled"},
+        ],
+        "description": (
+            "Serves a mobile-friendly PWA dashboard at http://<host>:9292/dash/ "
+            "for editing settings and managing active streams without the "
+            "Dispatcharr admin UI. Off by default. You may need to add "
+            "9292:9292 to your docker-compose.yml ports to reach it from "
+            "outside the container. Changing this setting requires a "
+            "plugin/Dispatcharr reload (e.g. restart Dispatcharr) to take effect."
+        ),
+    },
+    {
+        "id": "epg_refresh_hours",
+        "label": "Auto-Refresh Interval (hours)",
+        "type": "number",
+        "default": 24,
+        "min": 0,
+        "max": 168,
+        "placeholder": "24",
+        "description": "How often to automatically regenerate M3U and EPG. 0 = manual only (Regenerate M3U button).",
+    },
+]
+
+_VIDEO_OUTPUT_FIELDS = [
     {
         "id": "output_resolution",
         "label": "Output Resolution",
@@ -58,16 +89,6 @@ _GLOBAL_FIELDS = [
         "max": 40000,
         "placeholder": "8000",
         "description": "Target output video bitrate in kbps (CBR). Higher values improve quality at the cost of bandwidth. 8000 is a good baseline for 1080p multiview; 12000-16000 for noticeably sharper tiles.",
-    },
-    {
-        "id": "epg_refresh_hours",
-        "label": "Auto-Refresh Interval (hours)",
-        "type": "number",
-        "default": 24,
-        "min": 0,
-        "max": 168,
-        "placeholder": "24",
-        "description": "How often to automatically regenerate M3U and EPG. 0 = manual only (Regenerate M3U button).",
     },
 ]
 
@@ -218,10 +239,22 @@ def _build_warnings_fields(settings: dict) -> list:
                                 f"PyAV is unavailable, streaming will not work."),
             })
         elif not _deps.pyav_status(arch):
+            if settings.get(f"pyav_consent_{arch}"):
+                desc = (
+                    f"PyAV is not currently installed for {arch}. Since you've "
+                    f"previously installed it, the plugin will automatically "
+                    f"reinstall it in the background on next load."
+                )
+                err = settings.get("pyav_auto_install_error")
+                if err:
+                    desc += (f" Last automatic attempt failed: {err}. You can also "
+                             f"click 'Install PyAV' below to retry immediately.")
+            else:
+                desc = (f"PyAV is NOT installed for {arch}. Run the "
+                        f"'Install PyAV' action below before streaming.")
             warnings.append({
                 "id": "_warn_pyav_missing", "label": "Media Engine (PyAV)", "type": "info",
-                "description": (f"PyAV is NOT installed for {arch}. Run the "
-                                f"'Install PyAV' action below before streaming."),
+                "description": desc,
             })
     except Exception as e:
         warnings.append({
@@ -263,6 +296,25 @@ def _build_warnings_fields(settings: dict) -> list:
                     f"(NVENC, QSV, VAAPI) in Video Settings if available."
                 ),
             })
+
+    try:
+        from apps.proxy.config import BaseConfig as _ProxyConfig
+        proxy_settings = _ProxyConfig.get_proxy_settings()
+        grace = int(proxy_settings.get("channel_init_grace_period", 5))
+        if grace < 8:
+            warnings.append({
+                "id": "_warn_channel_init_timeout",
+                "label": "Proxy: Channel Initialization Timeout is too low",
+                "type": "info",
+                "description": (
+                    f"Channel Initialization Timeout is set to {grace}s in Dispatcharr's "
+                    f"Proxy Settings. Values under 8s can cause multiview tiles to fail on "
+                    f"startup before channels finish initializing. "
+                    f"Set it to at least 10s in Settings → Proxy (higher on lower-power systems)."
+                ),
+            })
+    except Exception:
+        pass
 
     if not warnings:
         return []
@@ -521,6 +573,13 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
     return fields
 
 
+_GLOBAL_SETTINGS_HEADER = {
+    "id": "_global_settings_header",
+    "label": "── Global Settings ──────────────────────",
+    "type": "info",
+    "description": "",
+}
+
 _VIDEO_SETTINGS_HEADER = {
     "id": "_video_settings_header",
     "label": "── Video Settings ───────────────────────",
@@ -538,14 +597,15 @@ def build_plugin_fields(settings: dict) -> list:
     enc_field["options"] = _ENCODER_OPTIONS
 
     fields = _build_warnings_fields(settings)
+    fields.append(_GLOBAL_SETTINGS_HEADER)
+    fields.extend(_GLOBAL_SETTINGS_FIELDS)
+    fields.append(_MULTIVIEW_COUNT_FIELD)
     fields.append(_VIDEO_SETTINGS_HEADER)
-    fields.extend(_GLOBAL_FIELDS)
+    fields.extend(_VIDEO_OUTPUT_FIELDS)
     fields.append(enc_field)
 
     extra_fn = _ENCODER_EXTRA_FIELDS.get(encoder, _x264_fields)
     fields.extend(extra_fn())
-
-    fields.append(_MULTIVIEW_COUNT_FIELD)
 
     for n in range(1, mv_count + 1):
         ch_count = max(2, int(settings.get(f"multiview_{n}_channel_count", 4)))
