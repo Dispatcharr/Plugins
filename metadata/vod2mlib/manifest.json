@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T14:02:00Z",
+  "generated_at": "2026-07-01T21:57:44Z",
   "manifest": {
     "slug": "vod2mlib",
     "name": "VOD to Media Library",
@@ -9,22 +9,38 @@
     "source_type": "external",
     "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v{version}/plugin-vod2mlib-v{version}.zip",
     "repo_url": "https://github.com/R3XCHRIS/VOD2MLIB",
+    "discord_thread": "https://discord.com/channels/1340492560220684331/1503076618078261374",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-06-11T14:01:56Z",
+    "last_updated": "2026-07-01T17:57:17-04:00",
     "latest": {
-      "version": "1.15.2",
-      "build_timestamp": "2026-06-11T14:01:56Z",
-      "last_updated": "2026-06-11T14:01:56Z",
-      "checksum_md5": "a1f9afa1a478dfdbc17a74215ef39e94",
-      "checksum_sha256": "7207f908af40be565b7d068f0dfc5907d3821b8e8df4d6e7b384fd1fc1f48812",
+      "version": "1.16.0",
+      "commit_sha": "3b8487b78899906c8181804749514627eccd2f06",
+      "commit_sha_short": "3b8487b",
+      "build_timestamp": "2026-07-01T21:57:39Z",
+      "last_updated": "2026-07-01T17:57:17-04:00",
+      "checksum_md5": "26e098d325cfc3197539fe2196cbf3be",
+      "checksum_sha256": "b992b95d8d0c30249afe3d816118c5f360ce7c2d3ce0347953d2cabda60136e4",
       "min_dispatcharr_version": "v0.24.0",
-      "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.15.2/plugin-vod2mlib-v1.15.2.zip",
-      "latest_url": "vod2mlib-1.15.2/vod2mlib-1.15.2.zip",
-      "url": "vod2mlib-1.15.2/vod2mlib-1.15.2.zip",
-      "size": 151
+      "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.16.0/plugin-vod2mlib-v1.16.0.zip",
+      "latest_url": "vod2mlib-1.16.0/vod2mlib-1.16.0.zip",
+      "url": "vod2mlib-1.16.0/vod2mlib-1.16.0.zip",
+      "size": 154
     },
     "versions": [
+      {
+        "version": "1.16.0",
+        "commit_sha": "3b8487b78899906c8181804749514627eccd2f06",
+        "commit_sha_short": "3b8487b",
+        "build_timestamp": "2026-07-01T21:57:39Z",
+        "last_updated": "2026-07-01T17:57:17-04:00",
+        "checksum_md5": "26e098d325cfc3197539fe2196cbf3be",
+        "checksum_sha256": "b992b95d8d0c30249afe3d816118c5f360ce7c2d3ce0347953d2cabda60136e4",
+        "min_dispatcharr_version": "v0.24.0",
+        "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.16.0/plugin-vod2mlib-v1.16.0.zip",
+        "url": "vod2mlib-1.16.0/vod2mlib-1.16.0.zip",
+        "size": 154
+      },
       {
         "version": "1.15.2",
         "build_timestamp": "2026-06-11T14:01:56Z",
@@ -71,5 +87,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaiq/2gAKCRB+wDprTCI0\nzh20AP0ekb9X6hMjgKTm5UFVdrE+aXSwOhRr/rVlovekKEIBFwD/ZBxG2xcSXYA1\nDc+kivN94fdaZw7689i+Kk/xYVsX8AQ=\n=ZHmS\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCakWNWwAKCRB+wDprTCI0\nztO2AQDYewXyMaHerHFDUpADNQAeahwPUsNZO4z5DFXBXJZCqgD9FrMRASZFSQX6\nXMZJb3g6+RMM6F77k3j3PD5Hv7Kvwwg=\n=GpfU\n-----END PGP SIGNATURE-----"
 }
