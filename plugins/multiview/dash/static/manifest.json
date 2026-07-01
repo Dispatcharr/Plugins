@@ -1,0 +1,11 @@
+{
+  "name": "Multiview Dashboard",
+  "short_name": "Multiview",
+  "start_url": "/dash/",
+  "display": "standalone",
+  "theme_color": "#1971c2",
+  "background_color": "#1a1b1e",
+  "icons": [
+    { "src": "/dash/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

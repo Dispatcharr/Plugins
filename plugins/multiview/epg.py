@@ -188,9 +188,9 @@ def _build_xmltv(settings: dict, mv_count: int, window_start, window_end) -> str
                                     f' stop="{_fmt_xmltv_time(prog.end_time)}"'
                                     f' channel="multiview_{n}">'
                                 )
-                                lines.append(f"    <title>{html.escape(prog.title)}</title>")
+                                lines.append(f"    <title>{html.escape(prog.title or '')}</title>")
                                 if prog.sub_title:
-                                    lines.append(f"    <sub-title>{html.escape(prog.sub_title)}</sub-title>")
+                                    lines.append(f"    <sub-title>{html.escape(prog.sub_title or '')}</sub-title>")
                                 desc = prog.description or ""
                                 if ch_list:
                                     desc = (desc + "\n(" + ch_list + ")") if desc else "(" + ch_list + ")"

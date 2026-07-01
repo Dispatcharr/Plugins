@@ -49,6 +49,29 @@ CHUNK_SIZE = 65536
 _WORKER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "compositor_worker.py")
 
 _server_instance = None
+_dash_api = None
+
+
+def _load_dash_api():
+    """Load src/dash/api.py using the same file-path loader as other submodules."""
+    global _dash_api
+    if _dash_api is not None:
+        return _dash_api
+    import importlib.util
+    import sys
+    # Derive a stable module name from this module's own name
+    parent = __name__.rsplit(".", 1)[0] if "." in __name__ else __name__
+    mod_name = f"{parent}.dash_api"
+    if mod_name in sys.modules:
+        _dash_api = sys.modules[mod_name]
+        return _dash_api
+    api_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dash", "api.py")
+    spec = importlib.util.spec_from_file_location(mod_name, api_path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[mod_name] = mod
+    spec.loader.exec_module(mod)
+    _dash_api = mod
+    return _dash_api
 
 
 def _python_exe() -> str:
@@ -132,17 +155,43 @@ class MultiviewServer:
         self._server = None
         self._greenlet = None
         self.running = False
+        self._active_procs: dict = {}  # proc -> layout_n
 
     # ------------------------------------------------------------------ WSGI
 
+    def _loopback_only(self, loopback, start_response):
+        if not loopback:
+            start_response("403 Forbidden", [("Content-Type", "text/plain")])
+            return [b"Forbidden\n"]
+        return None
+
     def wsgi_app(self, environ, start_response):
         path = environ.get("PATH_INFO", "")
+        loopback = environ.get("REMOTE_ADDR", "") in ("127.0.0.1", "::1")
 
         if path == "/health":
+            if deny := self._loopback_only(loopback, start_response):
+                return deny
             start_response("200 OK", [("Content-Type", "text/plain")])
             return [b"OK\n"]
 
+        is_dash_path = path == "/dash" or path.startswith("/dash/") or path.startswith("/api/")
+        if is_dash_path and _settings().get("dash_enabled", "disabled") != "enabled":
+            start_response("404 Not Found", [("Content-Type", "text/plain")])
+            return [b"Not Found\n"]
+
+        if path.startswith("/dash/api/"):
+            return self._handle_api(path[len("/dash"):], environ, start_response)
+
+        if path == "/dash" or path.startswith("/dash/"):
+            return _load_dash_api().serve_static(path if path.startswith("/dash/") else "/dash/", start_response)
+
+        if path.startswith("/api/"):
+            return self._handle_api(path, environ, start_response)
+
         if path.startswith("/stream/"):
+            if deny := self._loopback_only(loopback, start_response):
+                return deny
             try:
                 n = int(path.split("/")[2])
             except (IndexError, ValueError):
@@ -151,12 +200,34 @@ class MultiviewServer:
             return self._serve_stream(n, start_response)
 
         if path.startswith("/internal/realsrc/"):
+            if deny := self._loopback_only(loopback, start_response):
+                return deny
             return self._serve_realsrc(path[len("/internal/realsrc/"):], start_response)
 
         start_response("404 Not Found", [("Content-Type", "text/plain")])
         return [b"Not Found\n"]
 
     # --------------------------------------------------------------- handlers
+
+    def _handle_api(self, path, environ, start_response):
+        api = _load_dash_api()
+        api._server = self  # inject current server so handlers can call kill_active_streams etc.
+        if path == "/api/auth/token":
+            return api.handle_auth_token(environ, start_response)
+        if path == "/api/config":
+            return api.handle_config(environ, start_response)
+        if path == "/api/channels":
+            return api.handle_channels(environ, start_response)
+        if path == "/api/fields":
+            return api.handle_fields(environ, start_response)
+        if path == "/api/refresh":
+            return api.handle_refresh(environ, start_response)
+        if path == "/api/streams":
+            return api.handle_streams_list(environ, start_response)
+        if path == "/api/streams/restart":
+            return api.handle_streams_restart(environ, start_response)
+        start_response("404 Not Found", [("Content-Type", "text/plain")])
+        return [b"Not Found\n"]
 
     def _serve_stream(self, n: int, start_response):
         logger.info(f"Stream request: layout {n}")
@@ -187,8 +258,9 @@ class MultiviewServer:
 
         import gevent
         import gevent.subprocess as gsub
-        proc = gsub.Popen(cmd, stdout=gsub.PIPE, stderr=gsub.PIPE)
+        proc = gsub.Popen(cmd, stdin=gsub.PIPE, stdout=gsub.PIPE, stderr=gsub.PIPE)
         stderr_gl = gevent.spawn(self._drain_stderr, proc, f"worker-{n}")
+        self._active_procs[proc] = {"n": n, "cfg": cfg}
 
         start_response("200 OK", [
             ("Content-Type", "video/mp2t"),
@@ -217,7 +289,7 @@ class MultiviewServer:
         # tiles) decodes at lower effort to save CPU.
         featured_layout = layout in ("featured", "top_featured")
         tile_cfg = []
-        for i, (t, (x, y, w, h)) in enumerate(zip(tiles, rects)):
+        for i, (t, (x, y, w, h, valign, halign)) in enumerate(zip(tiles, rects)):
             tile_cfg.append({
                 "url": f"http://127.0.0.1:{self.port}/internal/realsrc/{t['id']}",
                 "x": x, "y": y, "w": w, "h": h,
@@ -225,6 +297,7 @@ class MultiviewServer:
                 "audio": i in audio_idx,
                 "lang": langs.get(i, "und"),
                 "featured": featured_layout and i == 0,
+                "valign": valign, "halign": halign,
             })
 
         encoder = settings.get("video_encoder") or "libx264"
@@ -237,6 +310,46 @@ class MultiviewServer:
             "tiles": tile_cfg,
         }
 
+    def get_active_streams(self) -> list:
+        seen = {}
+        for info in self._active_procs.values():
+            n = info["n"]
+            if n not in seen:
+                tiles = info["cfg"].get("tiles", [])
+                seen[n] = {"n": n, "channels": [{"idx": i, "name": t.get("name", f"Channel {i+1}")} for i, t in enumerate(tiles)]}
+        return [seen[n] for n in sorted(seen)]
+
+    def kill_active_streams(self) -> int:
+        procs = list(self._active_procs)
+        for proc in procs:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+        return len(procs)
+
+    def kill_stream(self, n: int) -> int:
+        to_kill = [p for p, info in list(self._active_procs.items()) if info["n"] == n]
+        for proc in to_kill:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+        return len(to_kill)
+
+    def reconnect_channel(self, n: int, idx: int) -> bool:
+        import json as _json
+        for proc, info in list(self._active_procs.items()):
+            if info["n"] == n:
+                try:
+                    cmd = _json.dumps({"cmd": "reconnect_channel", "idx": idx}).encode() + b"\n"
+                    proc.stdin.write(cmd)
+                    proc.stdin.flush()
+                    return True
+                except Exception:
+                    pass
+        return False
+
     def _pump_stdout(self, proc, label: str, stderr_gl=None):
         try:
             while True:
@@ -247,6 +360,11 @@ class MultiviewServer:
         except GeneratorExit:
             pass
         finally:
+            self._active_procs.pop(proc, None)
+            try:
+                proc.stdin.close()
+            except Exception:
+                pass
             try:
                 proc.kill()
                 proc.wait()
