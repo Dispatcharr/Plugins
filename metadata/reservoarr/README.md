@@ -2,7 +2,7 @@
 
 # reservoarr
 
-**Version:** `6.3.0` | **Author:** brko7 | **Last Updated:** Jun 22 2026, 13:41 UTC
+**Version:** `6.3.1` | **Author:** brko7 | **Last Updated:** Jul 03 2026, 16:10 UTC
 
 Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying
 
@@ -14,20 +14,21 @@ Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dyi
 
 ### Latest Release
 
-- **Download:** [`reservoarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.3.0/reservoarr-6.3.0.zip)
-- **Built:** Jun 22 2026, 13:41 UTC
-- **Source Commit:** [`eb7cafa`](https://github.com/Dispatcharr/Plugins/commit/eb7cafab0a5d772d35cdb9a66bc914b407af9355)
+- **Download:** [`reservoarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.3.1/reservoarr-6.3.1.zip)
+- **Built:** Jul 03 2026, 16:10 UTC
+- **Source Commit:** [`87eb446`](https://github.com/Dispatcharr/Plugins/commit/87eb4462b4d69c9c7fed119696b027be4b6ed2c2)
 
 **Checksums:**
 ```
-MD5:    906d3cbf78d776ebd61dcc416a4dae7c
-SHA256: 60b4717af9a90370bccee1fac96e825048bb53a8f0bbb3b0b7b632dc082cf716
+MD5:    8a7ad55909de876961f97c680544f5a8
+SHA256: 87639f84417d02b06649466f287fa6e9ad28a5255b7e34e4b721cc49bec5d73b
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `6.3.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.3.1/reservoarr-6.3.1.zip) | Jul 03 2026, 16:10 UTC | [`87eb446`](https://github.com/Dispatcharr/Plugins/commit/87eb4462b4d69c9c7fed119696b027be4b6ed2c2) | 8a7ad55909de876961f97c680544f5a8 | 87639f84417d02b06649466f287fa6e9ad28a5255b7e34e4b721cc49bec5d73b |
 | `6.3.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.3.0/reservoarr-6.3.0.zip) | Jun 22 2026, 13:41 UTC | [`eb7cafa`](https://github.com/Dispatcharr/Plugins/commit/eb7cafab0a5d772d35cdb9a66bc914b407af9355) | 906d3cbf78d776ebd61dcc416a4dae7c | 60b4717af9a90370bccee1fac96e825048bb53a8f0bbb3b0b7b632dc082cf716 |
 | `6.2.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.2.3/reservoarr-6.2.3.zip) | Jun 21 2026, 18:14 UTC | [`c14f957`](https://github.com/Dispatcharr/Plugins/commit/c14f957d2bac2555b7a3285d2c0b07a7fd6d2292) | b91435d4472be9472b0b805fb11f9979 | 523c0b995c1d52aad3ed09787bb4f014b0d2d7f7a48ddf282941143d3de62912 |
 | `6.2.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.2.2/reservoarr-6.2.2.zip) | Jun 21 2026, 10:55 UTC | [`0b6a475`](https://github.com/Dispatcharr/Plugins/commit/0b6a47541c02b2684893a76e4e0275e0ce1e1733) | 2a628f3eee4486514134e02c65ea19f6 | 178380a7608d34c660c77a1488f8ea9faa67ee3f57842433dd6951b876a6a331 |
