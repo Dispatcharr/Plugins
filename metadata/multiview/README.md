@@ -2,7 +2,7 @@
 
 # Multiview
 
-**Version:** `0.3.0` | **Author:** sethwv | **Last Updated:** Jul 01 2026, 01:30 UTC
+**Version:** `0.3.1` | **Author:** sethwv | **Last Updated:** Jul 06 2026, 18:11 UTC
 
 Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
@@ -14,20 +14,21 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
 ### Latest Release
 
-- **Download:** [`multiview-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.3.0/multiview-0.3.0.zip)
-- **Built:** Jul 01 2026, 01:30 UTC
-- **Source Commit:** [`c4d6f23`](https://github.com/Dispatcharr/Plugins/commit/c4d6f23237d380becd9f189404fef92d21b08d4a)
+- **Download:** [`multiview-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.3.1/multiview-0.3.1.zip)
+- **Built:** Jul 06 2026, 18:12 UTC
+- **Source Commit:** [`261c88c`](https://github.com/Dispatcharr/Plugins/commit/261c88c65259049ff7edcc3ab76192c6d21932e8)
 
 **Checksums:**
 ```
-MD5:    b95c051bc87f738606fb2f0ce61764b0
-SHA256: 3423ff6933b0145216580dc68ce98a2cddacf7a2145da1cc4d73dde165af04c1
+MD5:    70174cc503ae72ba3bc43542fc300dd1
+SHA256: f8aa3a7b5aba97170236d3e79afcd4c83a613393e25d3b5dceedb794ca576a95
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.3.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.3.1/multiview-0.3.1.zip) | Jul 06 2026, 18:12 UTC | [`261c88c`](https://github.com/Dispatcharr/Plugins/commit/261c88c65259049ff7edcc3ab76192c6d21932e8) | 70174cc503ae72ba3bc43542fc300dd1 | f8aa3a7b5aba97170236d3e79afcd4c83a613393e25d3b5dceedb794ca576a95 |
 | `0.3.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.3.0/multiview-0.3.0.zip) | Jul 01 2026, 01:30 UTC | [`c4d6f23`](https://github.com/Dispatcharr/Plugins/commit/c4d6f23237d380becd9f189404fef92d21b08d4a) | b95c051bc87f738606fb2f0ce61764b0 | 3423ff6933b0145216580dc68ce98a2cddacf7a2145da1cc4d73dde165af04c1 |
 | `0.2.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.2.3/multiview-0.2.3.zip) | Jun 25 2026, 19:54 UTC | [`e2ce714`](https://github.com/Dispatcharr/Plugins/commit/e2ce714328e250fd26c76225f3fcb19c11fbcd91) | e018214696d2384ee83c0e4a477fa397 | b839189c95f337f46e53dbf264e190f15cea3fa6ba1b154d231e10c54d69c726 |
 | `0.2.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.2.2/multiview-0.2.2.zip) | Jun 25 2026, 15:01 UTC | [`44dfc72`](https://github.com/Dispatcharr/Plugins/commit/44dfc72a8430545e47e9ff5fb47a8b46a59a71dd) | 3e1990619d1c115906e6088e3b4a66fe | b39084758c2f80ba4d31e3d4887ddf9ce259cd71d9185b903d364cd14c9d8dba |
