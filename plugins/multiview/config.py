@@ -352,7 +352,7 @@ def _build_channel_options() -> list:
     opts = [{"value": "_none", "label": "Select a channel"}]
     try:
         from apps.channels.models import Channel
-        for ch in Channel.objects.order_by("channel_number").values("id", "name", "channel_number"):
+        for ch in Channel.objects.order_by("channel_number").values("id", "name", "channel_number").distinct():
             if ch["id"] in excluded:
                 continue
             num = int(ch["channel_number"]) if ch["channel_number"] is not None else ""
@@ -365,6 +365,7 @@ def _build_channel_options() -> list:
 def _build_layout_channel_options(n: int, settings: dict, ch_count: int, selector_type: str, regex_pattern: str) -> list:
     """Return channel options scoped to the channels actually in layout n."""
     opts = [{"value": "_none", "label": "Select a channel"}]
+    seen = set()
     try:
         from apps.channels.models import Channel
         if selector_type == "regex" and regex_pattern:
@@ -372,15 +373,20 @@ def _build_layout_channel_options(n: int, settings: dict, ch_count: int, selecto
                 Channel.objects.filter(name__iregex=regex_pattern)
                 .order_by("channel_number")[:ch_count]
                 .values("id", "name", "channel_number")
+                .distinct()
             ):
+                if ch["id"] in seen:
+                    continue
+                seen.add(ch["id"])
                 num = int(ch["channel_number"]) if ch["channel_number"] is not None else ""
                 opts.append({"value": str(ch["id"]), "label": f"{num} - {ch['name']}"})
         else:
             for m in range(1, ch_count + 1):
                 ch_id = settings.get(f"multiview_{n}_channel_{m}", "_none")
-                if ch_id and ch_id != "_none":
+                if ch_id and ch_id != "_none" and ch_id not in seen:
                     try:
                         ch = Channel.objects.values("id", "name", "channel_number").get(id=int(ch_id))
+                        seen.add(ch_id)
                         num = int(ch["channel_number"]) if ch["channel_number"] is not None else ""
                         opts.append({"value": str(ch["id"]), "label": f"{num} - {ch['name']}"})
                     except Channel.DoesNotExist:

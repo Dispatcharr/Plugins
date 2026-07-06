@@ -175,7 +175,7 @@ def handle_channels(environ, start_response):
             pass
 
         channels = []
-        for ch in Channel.objects.order_by("channel_number").values("id", "name", "channel_number"):
+        for ch in Channel.objects.order_by("channel_number").values("id", "name", "channel_number").distinct():
             if ch["id"] in excluded:
                 continue
             num = int(ch["channel_number"]) if ch["channel_number"] is not None else ""
@@ -209,7 +209,7 @@ def handle_refresh(environ, start_response):
                 break
         if plugin_mod is None:
             return _json_error(start_response, "503 Service Unavailable", "Plugin module not found")
-        result = plugin_mod.Plugin()._generate_m3u()
+        result = plugin_mod.Plugin.__new__(plugin_mod.Plugin)._generate_m3u()
         return _json_ok(start_response, result)
     except Exception as e:
         logger.error(f"Refresh failed: {e}", exc_info=True)

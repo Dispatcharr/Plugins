@@ -57,6 +57,19 @@ def _epg():
     return _load_submodule("epg")
 
 
+def _close_db_connections():
+    """Release Django DB connections opened outside Django's own request cycle.
+
+    Background threads/loops here never go through Django's request_finished
+    signal, so connections they open are never cleaned up on their own.
+    """
+    try:
+        from django.db import close_old_connections
+        close_old_connections()
+    except Exception:
+        pass
+
+
 class Plugin:
     """Dispatcharr Plugin: Multiview stream tiling via FFmpeg."""
 
@@ -114,12 +127,16 @@ class Plugin:
             self._autostart()
         except Exception as e:
             logger.warning(f"Multiview server auto-start skipped: {e}")
+        finally:
+            _close_db_connections()
 
     def _auto_repair_pyav(self):
         try:
             self._deps().maybe_auto_install()
         except Exception as e:  # noqa: BLE001
             logger.warning(f"Multiview PyAV auto-repair skipped: {e}")
+        finally:
+            _close_db_connections()
 
     def _autostart(self):
         existing = _server().get_server()
@@ -285,6 +302,8 @@ class Plugin:
                 self._generate_m3u()
             except Exception as e:
                 logger.warning(f"Multiview auto-refresh failed: {e}")
+            finally:
+                _close_db_connections()
 
     def _schedule_auto_refresh(self, interval_hours: int):
         if interval_hours <= 0:
