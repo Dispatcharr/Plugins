@@ -37,7 +37,13 @@ def tile_rects(layout: str, n: int, out_w: int, out_h: int) -> list:
 
 
 def _auto_grid_rects(n: int, out_w: int, out_h: int) -> list:
-    """Square-ish grid; last partial row is horizontally centered."""
+    """Square-ish grid; last partial row is horizontally centered.
+
+    Content in the top row is pushed down and the bottom row pushed up (same
+    idea as the side-stack valign trick in _featured_rects) so aspect-ratio
+    letterboxing collects at the outer top/bottom edges instead of doubling
+    up where rows meet.
+    """
     cols = math.ceil(math.sqrt(n))
     rows = math.ceil(n / cols)
     tile_w = out_w // cols
@@ -54,7 +60,15 @@ def _auto_grid_rects(n: int, out_w: int, out_h: int) -> list:
         is_last = r == rows - 1 and empty_cells > 0
         x = c * tile_w + (offset_x if is_last else 0)
         y = r * tile_h
-        rects.append((x, y, tile_w, tile_h, "center", "center"))
+        if rows == 1:
+            valign = "center"
+        elif r == 0:
+            valign = "bottom"
+        elif r == rows - 1:
+            valign = "top"
+        else:
+            valign = "center"
+        rects.append((x, y, tile_w, tile_h, valign, "center"))
     return rects
 
 
