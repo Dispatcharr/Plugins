@@ -26,7 +26,7 @@ This branch contains all published plugin releases.
 | [`Stream Dripper`](#stream-dripper) | `1.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.1820605` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
-| [`Tickarr`](#tickarr) | `0.3.01` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
+| [`Tickarr`](#tickarr) | `0.3.02` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
 | [`Twitcharr`](#twitcharr) | `1.3.1` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
 | [`VOD to Media Library`](#vod-to-media-library) | `1.16.0` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
 | [`Waybill`](#waybill) | `1.3.0` | Matthew-Beckett | MIT | Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control. |
@@ -300,17 +300,17 @@ Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Include
 
 ### [Tickarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/tickarr/README.md)
 
-**Version:** `0.3.01` | **Author:** jstevenscl | **Last Updated:** Jun 28 2026, 11:49 UTC
+**Version:** `0.3.02` | **Author:** jstevenscl | **Last Updated:** Jul 08 2026, 01:38 UTC
 
 Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jstevenscl/tickarr)
 
 **Downloads:**
-- [Latest Release (`0.3.01`)](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.01/tickarr-0.3.01.zip)
-- [All Versions (7 available)](./metadata/tickarr)
+- [Latest Release (`0.3.02`)](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.02/tickarr-0.3.02.zip)
+- [All Versions (8 available)](./metadata/tickarr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/tickarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/tickarr/README.md) | **Last Change:** [`ddd4f98`](https://github.com/Dispatcharr/Plugins/commit/ddd4f98763a2c5ebe2d51cfc14d0e1ff4bf358b5)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/tickarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/tickarr/README.md) | **Last Change:** [`3c8d595`](https://github.com/Dispatcharr/Plugins/commit/3c8d595d76d9eda2e622c69cf90a3da478aed6bf)
 
 ---
 
