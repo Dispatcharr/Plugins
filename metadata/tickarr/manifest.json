@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T01:39:29Z",
+  "generated_at": "2026-07-10T00:23:07Z",
   "manifest": {
     "slug": "tickarr",
     "name": "Tickarr",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/jstevenscl/tickarr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-07-07T21:38:46-04:00",
+    "last_updated": "2026-07-09T20:22:40-04:00",
     "latest": {
-      "version": "0.3.02",
-      "commit_sha": "3c8d595d76d9eda2e622c69cf90a3da478aed6bf",
-      "commit_sha_short": "3c8d595",
-      "build_timestamp": "2026-07-08T01:39:24Z",
-      "last_updated": "2026-07-07T21:38:46-04:00",
-      "checksum_md5": "50ae72a28a846742d2c25cabef42bb94",
-      "checksum_sha256": "b4bd9729604dd950e200d37a3c2b0ab942228e620291eb9c13b2fbd10fa7d5ae",
-      "source_url": "https://github.com/jstevenscl/tickarr/releases/download/v0.3.02/tickarr-0.3.02.zip",
-      "latest_url": "tickarr-0.3.02/tickarr-0.3.02.zip",
-      "url": "tickarr-0.3.02/tickarr-0.3.02.zip",
-      "size": 2123
+      "version": "0.3.03",
+      "commit_sha": "eff1cb74b2969f737f76e22f0b5a6f87e18251e4",
+      "commit_sha_short": "eff1cb7",
+      "build_timestamp": "2026-07-10T00:23:01Z",
+      "last_updated": "2026-07-09T20:22:40-04:00",
+      "checksum_md5": "fc6498692454c22fa910b3236c5a34b5",
+      "checksum_sha256": "2a4a7192bf6b21e98094b450938f8f90a159b7ab7594dc47591cfb55ccd20fa1",
+      "source_url": "https://github.com/jstevenscl/tickarr/releases/download/v0.3.03/tickarr-0.3.03.zip",
+      "latest_url": "tickarr-0.3.03/tickarr-0.3.03.zip",
+      "url": "tickarr-0.3.03/tickarr-0.3.03.zip",
+      "size": 2124
     },
     "versions": [
+      {
+        "version": "0.3.03",
+        "commit_sha": "eff1cb74b2969f737f76e22f0b5a6f87e18251e4",
+        "commit_sha_short": "eff1cb7",
+        "build_timestamp": "2026-07-10T00:23:01Z",
+        "last_updated": "2026-07-09T20:22:40-04:00",
+        "checksum_md5": "fc6498692454c22fa910b3236c5a34b5",
+        "checksum_sha256": "2a4a7192bf6b21e98094b450938f8f90a159b7ab7594dc47591cfb55ccd20fa1",
+        "source_url": "https://github.com/jstevenscl/tickarr/releases/download/v0.3.03/tickarr-0.3.03.zip",
+        "url": "tickarr-0.3.03/tickarr-0.3.03.zip",
+        "size": 2124
+      },
       {
         "version": "0.3.02",
         "commit_sha": "3c8d595d76d9eda2e622c69cf90a3da478aed6bf",
@@ -120,5 +132,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCak2qVAAKCRB+wDprTCI0\nzvqeAP4wFPsK/iP75Uw9Z4CQJ6U6Ema0QTR9OkJnSQD8bu+tlAEA/0e9mbsPzygy\njDgW6Mhg8tIoNBat+sPDEuWasHOs+AI=\n=4vAM\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCalA7bgAKCRB+wDprTCI0\nzhJIAP4/zC5929DmV/E7L84g0XDHL6HnN1nTTbQi1PdCsvmNIgD+PirIQ28pJ6gk\nq3qGx5vdelJ/Hsj/qK1YE+uOM4KfmQs=\n=NMDb\n-----END PGP SIGNATURE-----"
 }
