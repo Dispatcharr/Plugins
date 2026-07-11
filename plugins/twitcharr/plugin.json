@@ -6,6 +6,6 @@
   "maintainers": ["eliasbruno124-dev"],
   "license": "MIT",
   "source_type": "external",
-  "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/{version}/twitcharr.zip",
+  "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v{version}/twitcharr.zip",
   "repo_url": "https://github.com/eliasbruno124-dev/Twitcharr"
 }
