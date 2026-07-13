@@ -24,10 +24,10 @@ This branch contains all published plugin releases.
 | [`Multiview`](#multiview) | `0.3.1` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`reservoarr`](#reservoarr) | `6.3.1` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `1.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
-| [`Stream-Mapparr`](#stream-mapparr) | `1.26.1820605` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
+| [`Stream-Mapparr`](#stream-mapparr) | `1.26.1931038` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
 | [`Tickarr`](#tickarr) | `0.3.03` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
-| [`Twitcharr`](#twitcharr) | `1.3.1` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
+| [`Twitcharr`](#twitcharr) | `1.3.2` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
 | [`VOD to Media Library`](#vod-to-media-library) | `1.16.0` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
 | [`Waybill`](#waybill) | `1.3.0` | Matthew-Beckett | MIT | Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control. |
 | [`YouTubearr`](#youtubearr) | `1.30.0` | jeff-gooch | Unlicense | Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering |
@@ -264,7 +264,7 @@ Automatically drops all active streams once per day at a configured time, with a
 
 ### [Stream-Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-mapparr/README.md)
 
-**Version:** `1.26.1820605` | **Author:** PiratesIRC | **Last Updated:** Jul 03 2026, 10:43 UTC
+**Version:** `1.26.1931038` | **Author:** PiratesIRC | **Last Updated:** Jul 13 2026, 02:54 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -273,10 +273,10 @@ Automatically add matching streams to channels based on name similarity and qual
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.1820605`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1820605/stream-mapparr-1.26.1820605.zip)
-- [All Versions (8 available)](./metadata/stream-mapparr)
+- [Latest Release (`1.26.1931038`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1931038/stream-mapparr-1.26.1931038.zip)
+- [All Versions (9 available)](./metadata/stream-mapparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | **Last Change:** [`a4e29d2`](https://github.com/Dispatcharr/Plugins/commit/a4e29d2c3f8fbf9d9f99dd8ae831ed74d9872654)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | **Last Change:** [`62a7907`](https://github.com/Dispatcharr/Plugins/commit/62a790775f91eaeb5ee4e7d3576e03b32752d346)
 
 ---
 
@@ -316,17 +316,17 @@ Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports 
 
 ### [Twitcharr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/twitcharr/README.md)
 
-**Version:** `1.3.1` | **Author:** eliasbruno124-dev | **Last Updated:** Jun 21 2026, 18:14 UTC
+**Version:** `1.3.2` | **Author:** eliasbruno124-dev | **Last Updated:** Jul 13 2026, 02:54 UTC
 
 Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/eliasbruno124-dev/Twitcharr)
 
 **Downloads:**
-- [Latest Release (`1.3.1`)](https://github.com/Dispatcharr/Plugins/releases/download/twitcharr-1.3.1/twitcharr-1.3.1.zip)
-- [All Versions (3 available)](./metadata/twitcharr)
+- [Latest Release (`1.3.2`)](https://github.com/Dispatcharr/Plugins/releases/download/twitcharr-1.3.2/twitcharr-1.3.2.zip)
+- [All Versions (4 available)](./metadata/twitcharr)
 
-**Maintainers:** eliasbruno124-dev | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/twitcharr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/twitcharr/README.md) | **Last Change:** [`e7c35b1`](https://github.com/Dispatcharr/Plugins/commit/e7c35b1506985c50d060ff8cb79e0c613129ea84)
+**Maintainers:** eliasbruno124-dev | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/twitcharr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/twitcharr/README.md) | **Last Change:** [`2d65eb1`](https://github.com/Dispatcharr/Plugins/commit/2d65eb13b1ad72210ca517520c9d0608d2dc342b)
 
 ---
 
@@ -394,4 +394,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jul 11 2026, 12:24 UTC*
+*Last updated: Jul 13 2026, 02:54 UTC*
