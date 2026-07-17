@@ -1,7 +1,9 @@
 """Plugin configuration and field definitions for Dispatcharr Multiview."""
 
+import datetime
 import json
 import os
+import secrets
 
 
 def _load_plugin_config() -> dict:
@@ -33,12 +35,26 @@ _GLOBAL_SETTINGS_FIELDS = [
             {"value": "enabled",  "label": "Enabled"},
         ],
         "description": (
-            "Serves a mobile-friendly PWA dashboard at http://<host>:9292/dash/ "
-            "for editing settings and managing active streams without the "
-            "Dispatcharr admin UI. Off by default. You may need to add "
-            "9292:9292 to your docker-compose.yml ports to reach it from "
-            "outside the container. Changing this setting requires a "
+            "Serves a mobile-friendly PWA dashboard on port 9292 (fixed -- "
+            "shared with the multiview stream output itself, not "
+            "configurable) for editing settings and managing active streams "
+            "without the Dispatcharr admin UI. Off by default. You may need "
+            "to add 9292:9292 to your docker-compose.yml ports to reach it "
+            "from outside the container. Changing this setting requires a "
             "plugin/Dispatcharr reload (e.g. restart Dispatcharr) to take effect."
+        ),
+    },
+    {
+        "id": "dash_path",
+        "label": "Dashboard Mount Path",
+        "type": "string",
+        "default": "/dash",
+        "placeholder": "/dash",
+        "description": (
+            "URL path the dashboard is served under, e.g. '/dash' gives "
+            "http://<host>:9292/dash/. Takes effect immediately, no restart "
+            "needed. Avoid '/stream' and '/internal', which are reserved for "
+            "the plugin's own streaming endpoints."
         ),
     },
     {
@@ -199,7 +215,9 @@ _MULTIVIEW_COUNT_FIELD = {
     "min": 1,
     "description": (
         "How many multiview streams to define. "
-        "After changing this value, save and refresh to see the new layout blocks"
+        "After changing this value, save and reload the plugin to see the new layout blocks. "
+        "Our own dashboard (/dash) manages layouts directly and hides this field -- "
+        "it's only needed when adding a layout from this native settings page."
     ),
     "placeholder": "1",
 }
@@ -211,6 +229,179 @@ _LAYOUT_OPTIONS = [
     {"value": "featured",     "label": "Featured (main left, others stacked right)"},
     {"value": "top_featured", "label": "Top Featured (main top, others row bottom)"},
 ]
+
+
+def _new_layout_id() -> str:
+    return secrets.token_hex(4)
+
+
+_BACKUP_KEYS = ("multiview_pre_migration_backup", "multiview_pre_reconcile_backup")
+
+
+def _snapshot_before(settings: dict, backup_key: str) -> dict:
+    """Stash a single most-recent copy of *settings* under backup_key before a
+    destructive change (legacy migration rename, or reconcile_layout_count's
+    shrink path deleting layout keys). Manual-recovery safety net only, not a
+    version history -- overwrites any prior snapshot under the same key.
+
+    Recovery (Django shell):
+        from apps.plugins.models import PluginConfig
+        cfg = PluginConfig.objects.get(key="multiview")
+        cfg.settings = cfg.settings["multiview_pre_reconcile_backup"]["settings"]
+        cfg.save()
+    """
+    clean = {k: v for k, v in settings.items() if k not in _BACKUP_KEYS}
+    new_settings = dict(settings)
+    new_settings[backup_key] = {
+        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+        "settings": clean,
+    }
+    return new_settings
+
+
+def _backfill_layout_names(settings: dict) -> tuple:
+    """Fill in a missing multiview_{id}_name for any layout already in
+    multiview_order. Covers layouts that migrated under an earlier build of
+    this migration (before it started persisting the name explicitly) --
+    without this, a layout stuck in that state would stay nameless forever,
+    since ensure_layout_order's migration branch only ever runs once.
+    """
+    order = settings.get("multiview_order", [])
+    missing = [
+        (idx, layout_id) for idx, layout_id in enumerate(order)
+        if f"multiview_{layout_id}_name" not in settings
+    ]
+    if not missing:
+        return settings, False
+    new_settings = dict(settings)
+    for idx, layout_id in missing:
+        new_settings[f"multiview_{layout_id}_name"] = f"Multiview {idx + 1}"
+    return new_settings, True
+
+
+def ensure_layout_order(settings: dict) -> tuple:
+    """Ensure *settings* has a `multiview_order` list of stable layout ids.
+
+    Position used to be identity (`multiview_{n}_*`, n = 1..multiview_count),
+    but n is baked into the live stream URL and M3U tvg-id, so renumbering on
+    delete/reorder silently swapped a viewer's stream on reconnect. This
+    migrates any legacy numeric-keyed install to `multiview_{id}_*` keys plus
+    an explicit `multiview_order` (a JSON list of ids) that's the only place
+    position is recorded, or bootstraps a single fresh layout for a brand new
+    install. Runs at most once per install -- a no-op once `multiview_order`
+    exists.
+
+    Returns (settings, changed). Callers must persist `settings` back to the
+    DB when changed=True, since the migration must not silently re-run (and
+    generate different ids) on every request.
+    """
+    if "multiview_order" in settings:
+        return _backfill_layout_names(settings)
+
+    new_settings = dict(settings)
+
+    legacy_count = settings.get("multiview_count")
+    is_legacy = legacy_count is not None or any(k.startswith("multiview_1_") for k in settings)
+    if is_legacy:
+        new_settings = _snapshot_before(new_settings, "multiview_pre_migration_backup")
+        count = max(1, int(legacy_count or 1))
+        order = []
+        for n in range(1, count + 1):
+            new_id = _new_layout_id()
+            prefix = f"multiview_{n}_"
+            for key in list(new_settings.keys()):
+                if key.startswith(prefix):
+                    suffix = key[len(prefix):]
+                    new_settings[f"multiview_{new_id}_{suffix}"] = new_settings.pop(key)
+            # The name field is only ever filled in client-side from the
+            # field default -- persist it for real so it survives migration
+            # instead of depending on that client-side illusion.
+            name_key = f"multiview_{new_id}_name"
+            if name_key not in new_settings:
+                new_settings[name_key] = f"Multiview {n}"
+            order.append(new_id)
+        new_settings["multiview_order"] = order
+        new_settings["multiview_count"] = len(order)
+        return new_settings, True
+
+    # Brand new install: bootstrap a single empty layout, same as the old
+    # `max(1, int(settings.get("multiview_count", 1)))` default.
+    new_settings["multiview_order"] = [_new_layout_id()]
+    new_settings["multiview_count"] = 1
+    return new_settings, True
+
+
+def reconcile_layout_count(settings: dict) -> tuple:
+    """Grow/shrink multiview_order to match multiview_count.
+
+    multiview_count is the only layout-management control exposed on
+    Dispatcharr's native plugin settings page. That page fully overwrites
+    PluginConfig.settings on save (PluginManager.update_settings()) with no
+    visibility into multiview_order, so a native-page edit to the count is
+    reconciled here, lazily, the next time any of our own settings-read call
+    sites runs (mirrors ensure_layout_order's own call pattern -- call this
+    right after it, persist if either reports a change).
+    """
+    order = list(settings.get("multiview_order", []))
+    desired = settings.get("multiview_count")
+    if desired is None:
+        return settings, False
+    desired = max(1, int(desired))
+    if desired == len(order):
+        return settings, False
+
+    new_settings = dict(settings)
+    if desired > len(order):
+        for _ in range(desired - len(order)):
+            new_id = _new_layout_id()
+            position = len(order) + 1
+            new_settings[f"multiview_{new_id}_name"] = f"Multiview {position}"
+            new_settings[f"multiview_{new_id}_layout"] = "auto"
+            new_settings[f"multiview_{new_id}_selector_type"] = "classic"
+            new_settings[f"multiview_{new_id}_channel_count"] = 4
+            new_settings[f"multiview_{new_id}_epg_source_mode"] = "dummy"
+            order.append(new_id)
+    else:
+        new_settings = _snapshot_before(new_settings, "multiview_pre_reconcile_backup")
+        while len(order) > desired:
+            removed_id = order.pop()
+            prefix = f"multiview_{removed_id}_"
+            for key in list(new_settings.keys()):
+                if key.startswith(prefix):
+                    new_settings.pop(key, None)
+
+    new_settings["multiview_order"] = order
+    new_settings["multiview_count"] = len(order)
+    return new_settings, True
+
+
+def ensure_custom_layout_order(settings: dict) -> tuple:
+    """Ensure *settings* has a `multiview_custom_layouts_order` list of
+    style ids, mirroring `ensure_layout_order`'s rationale: dict key order
+    on `multiview_custom_layouts` isn't a reliable place to record display
+    order (not guaranteed to round-trip through JSON storage), so an
+    explicit ordered id list is kept alongside it instead. Migrates once
+    from the dict's existing keys if the order list is missing, and appends
+    any "orphan" ids present in the dict but absent from the order list
+    (e.g. a style added directly via API without going through this path).
+
+    Returns (settings, changed). Callers must persist `settings` back to
+    the DB when changed=True.
+    """
+    layouts = settings.get("multiview_custom_layouts", {})
+    order = settings.get("multiview_custom_layouts_order")
+    if order is None:
+        new_settings = dict(settings)
+        new_settings["multiview_custom_layouts_order"] = list(layouts.keys())
+        return new_settings, True
+
+    orphans = [style_id for style_id in layouts.keys() if style_id not in order]
+    if not orphans:
+        return settings, False
+
+    new_settings = dict(settings)
+    new_settings["multiview_custom_layouts_order"] = [*order, *orphans]
+    return new_settings, True
 
 
 def _get_multiview_profile_params() -> str:
@@ -278,10 +469,10 @@ def _build_warnings_fields(settings: dict) -> list:
 
     encoder = settings.get("video_encoder", "libx264")
     if encoder == "libx264":
-        mv_count = max(1, int(settings.get("multiview_count", 1)))
+        order = settings.get("multiview_order", [])
         heavy_layouts = [
-            n for n in range(1, mv_count + 1)
-            if max(2, int(settings.get(f"multiview_{n}_channel_count", 4))) > 3
+            idx + 1 for idx, layout_id in enumerate(order)
+            if max(2, int(settings.get(f"multiview_{layout_id}_channel_count", 4))) > 3
         ]
         if heavy_layouts:
             layout_str = ", ".join(f"Layout {n}" for n in heavy_layouts)
@@ -362,8 +553,8 @@ def _build_channel_options() -> list:
     return opts
 
 
-def _build_layout_channel_options(n: int, settings: dict, ch_count: int, selector_type: str, regex_pattern: str) -> list:
-    """Return channel options scoped to the channels actually in layout n."""
+def _build_layout_channel_options(layout_id: str, settings: dict, ch_count: int, selector_type: str, regex_pattern: str) -> list:
+    """Return channel options scoped to the channels actually in this layout."""
     opts = [{"value": "_none", "label": "Select a channel"}]
     seen = set()
     try:
@@ -382,7 +573,7 @@ def _build_layout_channel_options(n: int, settings: dict, ch_count: int, selecto
                 opts.append({"value": str(ch["id"]), "label": f"{num} - {ch['name']}"})
         else:
             for m in range(1, ch_count + 1):
-                ch_id = settings.get(f"multiview_{n}_channel_{m}", "_none")
+                ch_id = settings.get(f"multiview_{layout_id}_channel_{m}", "_none")
                 if ch_id and ch_id != "_none" and ch_id not in seen:
                     try:
                         ch = Channel.objects.values("id", "name", "channel_number").get(id=int(ch_id))
@@ -396,19 +587,25 @@ def _build_layout_channel_options(n: int, settings: dict, ch_count: int, selecto
     return opts
 
 
-def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic", regex_pattern: str = "", epg_source_mode: str = "dummy", layout_channel_options: list = None) -> list:
-    """Return the list of fields for multiview layout block *n* with *ch_count* channel slots."""
+def _build_multiview_block(layout_id: str, position: int, ch_count: int, selector_type: str = "classic", regex_pattern: str = "", epg_source_mode: str = "dummy", layout_channel_options: list = None, layout_style_options: list = None) -> list:
+    """Return the list of fields for multiview layout *layout_id* with *ch_count* channel slots.
+
+    *position* is only for human-readable labels ("Layout 2 Name") -- the
+    stable *layout_id* is what's baked into field ids/settings keys, so
+    reordering/deleting other layouts never renames this one's keys.
+    """
     is_regex = selector_type == "regex"
+    n = position  # short alias for the label text below
 
     fields = [
         {
-            "id": f"multiview_{n}_header",
+            "id": f"multiview_{layout_id}_header",
             "label": f"── Layout {n} ──────────────────────",
             "type": "info",
             "description": "",
         },
         {
-            "id": f"multiview_{n}_name",
+            "id": f"multiview_{layout_id}_name",
             "label": f"Layout {n} Name",
             "type": "string",
             "default": f"Multiview {n}",
@@ -416,18 +613,18 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
             "placeholder": f"Multiview {n}",
         },
         {
-            "id": f"multiview_{n}_layout",
+            "id": f"multiview_{layout_id}_layout",
             "label": f"Layout {n} Style",
             "type": "select",
             "default": "auto",
-            "options": _LAYOUT_OPTIONS,
+            "options": layout_style_options or _LAYOUT_OPTIONS,
             "description": (
                 "Auto Grid: square-ish tile grid sized automatically from channel count. "
                 "Featured: first channel large on the left, remaining channels stacked on the right"
             ),
         },
         {
-            "id": f"multiview_{n}_selector_type",
+            "id": f"multiview_{layout_id}_selector_type",
             "label": f"Layout {n} Channel Selection",
             "type": "select",
             "default": "classic",
@@ -442,7 +639,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
             ),
         },
         {
-            "id": f"multiview_{n}_channel_count",
+            "id": f"multiview_{layout_id}_channel_count",
             "label": f"Layout {n} Max Channels" if is_regex else f"Layout {n} Channel Count",
             "type": "number",
             "default": 4,
@@ -463,7 +660,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
     if is_regex:
         fields.append(
             {
-                "id": f"multiview_{n}_regex_pattern",
+                "id": f"multiview_{layout_id}_regex_pattern",
                 "label": f"Layout {n} Channel Pattern",
                 "type": "string",
                 "default": "",
@@ -485,7 +682,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
         for m in range(1, ch_count + 1):
             fields.append(
                 {
-                    "id": f"multiview_{n}_channel_{m}",
+                    "id": f"multiview_{layout_id}_channel_{m}",
                     "label": f"Layout {n}: Channel {m}",
                     "type": "select",
                     "default": "_none",
@@ -500,7 +697,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
 
     fields.append(
         {
-            "id": f"multiview_{n}_audio_source",
+            "id": f"multiview_{layout_id}_audio_source",
             "label": f"Layout {n} Audio Source",
             "type": "select",
             "default": audio_default,
@@ -515,7 +712,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
 
     fields.append(
         {
-            "id": f"multiview_{n}_epg_source_mode",
+            "id": f"multiview_{layout_id}_epg_source_mode",
             "label": f"Layout {n} EPG Source",
             "type": "select",
             "default": "dummy",
@@ -534,7 +731,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
     if epg_source_mode == "forward":
         fields.append(
             {
-                "id": f"multiview_{n}_epg_forward_channel",
+                "id": f"multiview_{layout_id}_epg_forward_channel",
                 "label": f"Layout {n} EPG Source Channel",
                 "type": "select",
                 "default": "_none",
@@ -548,7 +745,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
     else:
         fields += [
             {
-                "id": f"multiview_{n}_epg_title",
+                "id": f"multiview_{layout_id}_epg_title",
                 "label": f"Layout {n} EPG Title",
                 "type": "string",
                 "default": "",
@@ -556,7 +753,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
                 "description": "Program title shown in the EPG. Leave blank to use the layout name.",
             },
             {
-                "id": f"multiview_{n}_epg_subtitle",
+                "id": f"multiview_{layout_id}_epg_subtitle",
                 "label": f"Layout {n} EPG Subtitle",
                 "type": "string",
                 "default": "",
@@ -564,7 +761,7 @@ def _build_multiview_block(n: int, ch_count: int, selector_type: str = "classic"
                 "description": "Optional subtitle shown below the title in the EPG.",
             },
             {
-                "id": f"multiview_{n}_epg_categories",
+                "id": f"multiview_{layout_id}_epg_categories",
                 "label": f"Layout {n} EPG Categories",
                 "type": "string",
                 "default": "",
@@ -595,17 +792,32 @@ _VIDEO_SETTINGS_HEADER = {
 
 
 def build_plugin_fields(settings: dict) -> list:
-    """Build the full field list based on current settings."""
-    mv_count = max(1, int(settings.get("multiview_count", 1)))
+    """Build the full field list based on current settings.
+
+    Callers must run `ensure_layout_order()` on *settings* (and persist it if
+    changed) before calling this -- this function just renders whatever
+    `multiview_order` is already there.
+    """
+    order = settings.get("multiview_order", [])
     encoder  = settings.get("video_encoder", "libx264")
+
+    custom_layouts = settings.get("multiview_custom_layouts", {})
+    layout_style_options = _LAYOUT_OPTIONS + [
+        {"value": f"custom:{style_id}", "label": f"Custom: {info.get('name') or style_id}"}
+        for style_id, info in custom_layouts.items()
+        if info.get("elements")
+    ]
 
     enc_field = dict(_VIDEO_ENCODER_FIELD)
     enc_field["options"] = _ENCODER_OPTIONS
 
+    count_field = dict(_MULTIVIEW_COUNT_FIELD)
+    count_field["default"] = len(order)
+
     fields = _build_warnings_fields(settings)
     fields.append(_GLOBAL_SETTINGS_HEADER)
     fields.extend(_GLOBAL_SETTINGS_FIELDS)
-    fields.append(_MULTIVIEW_COUNT_FIELD)
+    fields.append(count_field)
     fields.append(_VIDEO_SETTINGS_HEADER)
     fields.extend(_VIDEO_OUTPUT_FIELDS)
     fields.append(enc_field)
@@ -613,13 +825,14 @@ def build_plugin_fields(settings: dict) -> list:
     extra_fn = _ENCODER_EXTRA_FIELDS.get(encoder, _x264_fields)
     fields.extend(extra_fn())
 
-    for n in range(1, mv_count + 1):
-        ch_count = max(2, int(settings.get(f"multiview_{n}_channel_count", 4)))
-        selector_type = settings.get(f"multiview_{n}_selector_type", "classic")
-        regex_pattern = settings.get(f"multiview_{n}_regex_pattern", "")
-        epg_source_mode = settings.get(f"multiview_{n}_epg_source_mode", "dummy")
-        layout_ch_opts = _build_layout_channel_options(n, settings, ch_count, selector_type, regex_pattern)
-        fields.extend(_build_multiview_block(n, ch_count, selector_type, regex_pattern, epg_source_mode, layout_ch_opts))
+    for idx, layout_id in enumerate(order):
+        position = idx + 1
+        ch_count = max(2, int(settings.get(f"multiview_{layout_id}_channel_count", 4)))
+        selector_type = settings.get(f"multiview_{layout_id}_selector_type", "classic")
+        regex_pattern = settings.get(f"multiview_{layout_id}_regex_pattern", "")
+        epg_source_mode = settings.get(f"multiview_{layout_id}_epg_source_mode", "dummy")
+        layout_ch_opts = _build_layout_channel_options(layout_id, settings, ch_count, selector_type, regex_pattern)
+        fields.extend(_build_multiview_block(layout_id, position, ch_count, selector_type, regex_pattern, epg_source_mode, layout_ch_opts, layout_style_options))
 
     return fields
 
