@@ -530,8 +530,10 @@ class MultiviewServer:
             pattern = settings.get(f"multiview_{layout_id}_regex_pattern", "").strip()
             if not pattern:
                 raise LookupError(f"Layout {n} is in regex mode but has no pattern configured")
+            excluded = _mvconfig._get_multiview_channel_ids() | _mvconfig._get_streamless_channel_ids()
             matched = list(
                 Channel.objects.select_related("logo").filter(name__iregex=pattern)
+                .exclude(id__in=excluded)
                 .order_by("channel_number")[:ch_count]
             )
             for ch in matched:

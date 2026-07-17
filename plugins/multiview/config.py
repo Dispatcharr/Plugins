@@ -519,27 +519,39 @@ def _build_warnings_fields(settings: dict) -> list:
 
 
 def _get_multiview_channel_ids() -> set:
-    """Return the set of Channel IDs that belong to the Dispatcharr Multiview M3U account."""
+    """Return the set of Channel IDs backed by the Dispatcharr Multiview M3U account."""
     try:
         from apps.m3u.models import M3UAccount
         from apps.channels.models import Channel
         acct = M3UAccount.objects.filter(name="Dispatcharr Multiview").first()
         if not acct:
             return set()
-        for field in ("m3u_account", "account", "m3u_account_id", "source"):
-            try:
-                ids = set(Channel.objects.filter(**{field: acct}).values_list("id", flat=True))
-                return ids
-            except Exception:
-                continue
+        return set(
+            Channel.objects.filter(streams__m3u_account=acct)
+            .values_list("id", flat=True)
+            .distinct()
+        )
     except Exception:
-        pass
-    return set()
+        return set()
+
+
+def _get_streamless_channel_ids() -> set:
+    """Return the set of Channel IDs with no streams assigned."""
+    try:
+        from django.db.models import Count
+        from apps.channels.models import Channel
+        return set(
+            Channel.objects.annotate(n_streams=Count("streams"))
+            .filter(n_streams=0)
+            .values_list("id", flat=True)
+        )
+    except Exception:
+        return set()
 
 
 def _build_channel_options() -> list:
     """Return channel select options from the live DB, excluding multiview output channels."""
-    excluded = _get_multiview_channel_ids()
+    excluded = _get_multiview_channel_ids() | _get_streamless_channel_ids()
     opts = [{"value": "_none", "label": "Select a channel"}]
     try:
         from apps.channels.models import Channel
@@ -560,8 +572,10 @@ def _build_layout_channel_options(layout_id: str, settings: dict, ch_count: int,
     try:
         from apps.channels.models import Channel
         if selector_type == "regex" and regex_pattern:
+            excluded = _get_multiview_channel_ids() | _get_streamless_channel_ids()
             for ch in (
                 Channel.objects.filter(name__iregex=regex_pattern)
+                .exclude(id__in=excluded)
                 .order_by("channel_number")[:ch_count]
                 .values("id", "name", "channel_number")
                 .distinct()
