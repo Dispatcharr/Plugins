@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-07-17T00:26:51Z",
+  "manifest": {
+    "slug": "m3u-expiration-notifier",
+    "name": "M3U Expiration Notifier",
+    "description": "Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire.",
+    "author": "barryanderson",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/barryanderson/dispatcharr-m3u-expiration-notifier/releases/download/v{version}/m3u_expiration_notifier-{version}.zip",
+    "repo_url": "https://github.com/barryanderson/dispatcharr-m3u-expiration-notifier",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-07-16T20:26:29-04:00",
+    "latest": {
+      "version": "1.0.0",
+      "commit_sha": "af83e5054bf456bbe78b841eabc3a3373abbbae1",
+      "commit_sha_short": "af83e50",
+      "build_timestamp": "2026-07-17T00:26:45Z",
+      "last_updated": "2026-07-16T20:26:29-04:00",
+      "checksum_md5": "3bc650df39ff169f519c1586af1a2bc1",
+      "checksum_sha256": "2f154290bbea98f4e24d6162709074c01ebe7e2a65ec618a4a3000c42aa27574",
+      "source_url": "https://github.com/barryanderson/dispatcharr-m3u-expiration-notifier/releases/download/v1.0.0/m3u_expiration_notifier-1.0.0.zip",
+      "latest_url": "m3u-expiration-notifier-1.0.0/m3u-expiration-notifier-1.0.0.zip",
+      "url": "m3u-expiration-notifier-1.0.0/m3u-expiration-notifier-1.0.0.zip",
+      "size": 37
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "commit_sha": "af83e5054bf456bbe78b841eabc3a3373abbbae1",
+        "commit_sha_short": "af83e50",
+        "build_timestamp": "2026-07-17T00:26:45Z",
+        "last_updated": "2026-07-16T20:26:29-04:00",
+        "checksum_md5": "3bc650df39ff169f519c1586af1a2bc1",
+        "checksum_sha256": "2f154290bbea98f4e24d6162709074c01ebe7e2a65ec618a4a3000c42aa27574",
+        "source_url": "https://github.com/barryanderson/dispatcharr-m3u-expiration-notifier/releases/download/v1.0.0/m3u_expiration_notifier-1.0.0.zip",
+        "url": "m3u-expiration-notifier-1.0.0/m3u-expiration-notifier-1.0.0.zip",
+        "size": 37
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCall2zQAKCRB+wDprTCI0\nzj0GAQCsxrsapaxFvD2VqxIYABUYBMudtlgVt1v/fs0EjlaCYQD+P6cbZWkuOsWK\nIsu7ocwIV9lGaOTAjdjHgDS3kliRfA4=\n=3cKU\n-----END PGP SIGNATURE-----"
+}
