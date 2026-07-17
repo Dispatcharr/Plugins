@@ -87,21 +87,28 @@ def _even(v):
 
 
 def fit_into_tile(frame, w, h, valign="center", halign="center"):
-    """Scale a decoded frame into a w x h yuv420p tile, preserving aspect
-    ratio (content is never cropped). Letterbox/pillarbox padding is
-    centered by default, or pushed to one edge via valign ("center"/"top"/
-    "bottom") and halign ("center"/"left"/"right") so a tile's content can
-    be made to touch an adjacent tile's content with no gap at the shared
-    edge, leaving any padding on the outer edge instead."""
+    """Scale a decoded frame preserving aspect ratio (content is never
+    cropped). Letterbox/pillarbox padding is centered by default, or pushed
+    to one edge via valign ("center"/"top"/"bottom") and halign
+    ("center"/"left"/"right") so a tile's content can be made to touch an
+    adjacent tile's content with no gap at the shared edge, leaving any
+    padding on the outer edge instead.
+
+    Returns (Y, U, V, ox, oy, tw, th) -- the content-sized planes and their
+    placement within the w x h tile -- rather than a full w x h buffer with
+    black padding baked in, so the compositor can blit only the real content
+    and leave letterbox/pillarbox padding alone (showing whatever's already
+    on the persistent canvas, e.g. the background image, instead of painting
+    opaque black over it every frame).
+    """
     sw, sh = frame.width, frame.height
     if sw <= 0 or sh <= 0:
-        return black_planes(w, h)
+        return (*black_planes(w, h), 0, 0, w, h)
     scale = min(w / sw, h / sh)
     tw, th = _even(sw * scale), _even(sh * scale)
     tw, th = min(tw, w), min(th, h)
     sf = frame.reformat(width=tw, height=th, format="yuv420p")
     sy, su, sv = yuv_planes_from_frame(sf, tw, th)
-    Y, U, V = black_planes(w, h)
     if halign == "left":
         ox = 0
     elif halign == "right":
@@ -114,10 +121,7 @@ def fit_into_tile(frame, w, h, valign="center", halign="center"):
         oy = (h - th) & ~1
     else:
         oy = ((h - th) // 2) & ~1
-    Y[oy:oy + th, ox:ox + tw] = sy
-    U[oy // 2:oy // 2 + th // 2, ox // 2:ox // 2 + tw // 2] = su
-    V[oy // 2:oy // 2 + th // 2, ox // 2:ox // 2 + tw // 2] = sv
-    return (Y, U, V)
+    return (sy, su, sv, ox, oy, tw, th)
 
 
 class Channel:
@@ -136,7 +140,7 @@ class Channel:
         self.featured = bool(spec.get("featured", False))
         self.valign = spec.get("valign", "center")
         self.halign = spec.get("halign", "center")
-        self.fallback = black_planes(self.w, self.h)
+        self.fallback = (*black_planes(self.w, self.h), 0, 0, self.w, self.h)
         self.latest = self.fallback
         self.fresh_until = 0.0
         logo = spec.get("logo")
@@ -188,7 +192,7 @@ class Channel:
                         break
             except Exception as e:  # noqa: BLE001
                 log(f"logo decode failed for {self.name}: {e}")
-        return (Y, U, V)
+        return (Y, U, V, 0, 0, self.w, self.h)
 
     def _load_logo(self, logo):
         """Load logo in background and swap self.fallback when ready."""

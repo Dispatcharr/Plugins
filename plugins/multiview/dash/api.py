@@ -1,13 +1,19 @@
-"""REST API handlers for /api/* and static file serving for /dash/*."""
+"""REST API handlers for /api/* and static file serving under the dashboard's
+runtime-configurable mount path (dash_path setting, default /dash)."""
 
+import base64
 import json
 import logging
 import mimetypes
 import os
+import re
 
 logger = logging.getLogger(__name__)
 
 _STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+_PLUGIN_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_BACKGROUNDS_DIR = os.path.join(_PLUGIN_DIR, "style_backgrounds")
+_MAX_BACKGROUND_BYTES = 5 * 1024 * 1024
 _PLUGIN_KEY = "multiview"
 
 _CORS_HEADERS = [
@@ -62,11 +68,23 @@ def _verify_token(environ) -> bool:
 
 
 def _get_settings() -> dict:
+    config_mod = _get_config_mod()
     try:
         from apps.plugins.models import PluginConfig
-        return PluginConfig.objects.get(key=_PLUGIN_KEY).settings
+        cfg = PluginConfig.objects.get(key=_PLUGIN_KEY)
     except Exception:
-        return {}
+        settings, _ = config_mod.ensure_layout_order({})
+        settings, _ = config_mod.reconcile_layout_count(settings)
+        settings, _ = config_mod.ensure_custom_layout_order(settings)
+        return settings
+
+    settings, changed1 = config_mod.ensure_layout_order(cfg.settings)
+    settings, changed2 = config_mod.reconcile_layout_count(settings)
+    settings, changed3 = config_mod.ensure_custom_layout_order(settings)
+    if changed1 or changed2 or changed3:
+        cfg.settings = settings
+        cfg.save()
+    return settings
 
 
 def _save_settings(updates: dict):
@@ -77,6 +95,13 @@ def _save_settings(updates: dict):
             cfg.settings.pop(k, None)
         else:
             cfg.settings[k] = v
+    # Keep the legacy multiview_count field (still authoritative for
+    # reconcile_layout_count, which detects native-settings-page edits) in
+    # sync whenever the dashboard itself changes multiview_order -- otherwise
+    # reconcile_layout_count treats the dashboard's own change as drift and
+    # deletes it back out on the very next settings read.
+    if updates.get("multiview_order") is not None:
+        cfg.settings["multiview_count"] = len(cfg.settings.get("multiview_order") or [])
     cfg.save()
 
 
@@ -117,6 +142,49 @@ def handle_auth_token(environ, start_response):
         return _json_error(start_response, "500 Internal Server Error", f"Token error: {e}")
 
 
+def handle_auth_refresh(environ, start_response):
+    if environ.get("REQUEST_METHOD") == "OPTIONS":
+        return cors_preflight(start_response)
+    if environ.get("REQUEST_METHOD") != "POST":
+        return _json_error(start_response, "405 Method Not Allowed", "POST only")
+
+    try:
+        data = json.loads(_read_body(environ))
+    except Exception:
+        return _json_error(start_response, "400 Bad Request", "Invalid JSON")
+
+    refresh_str = data.get("refresh", "")
+    if not refresh_str:
+        return _json_error(start_response, "400 Bad Request", "refresh required")
+
+    try:
+        from rest_framework_simplejwt.tokens import RefreshToken
+        from rest_framework_simplejwt.exceptions import TokenError
+        token = RefreshToken(refresh_str)
+        return _json_ok(start_response, {"access": str(token.access_token)})
+    except TokenError:
+        return _json_error(start_response, "401 Unauthorized", "Refresh token invalid or expired")
+
+
+def _plugin_version() -> str:
+    try:
+        with open(os.path.join(_PLUGIN_DIR, "plugin.json")) as f:
+            return json.load(f).get("version", "")
+    except Exception:
+        return ""
+
+
+def _dispatcharr_version() -> str:
+    # Dispatcharr's version lives in a plain top-level `version.py` module
+    # (not under the `dispatcharr` package) -- not a stable public API, so
+    # this is defensive: a future Dispatcharr release could move/remove it.
+    try:
+        import version as _dv
+        return getattr(_dv, "__version__", "")
+    except Exception:
+        return ""
+
+
 def handle_config(environ, start_response):
     if environ.get("REQUEST_METHOD") == "OPTIONS":
         return cors_preflight(start_response)
@@ -127,8 +195,13 @@ def handle_config(environ, start_response):
 
     if method == "GET":
         settings = _get_settings()
-        mv_count = max(1, int(settings.get("multiview_count", 1)))
-        return _json_ok(start_response, {"settings": settings, "layout_count": mv_count})
+        layout_count = len(settings.get("multiview_order", []))
+        return _json_ok(start_response, {
+            "settings": settings,
+            "layout_count": layout_count,
+            "plugin_version": _plugin_version(),
+            "dispatcharr_version": _dispatcharr_version(),
+        })
 
     if method in ("PATCH", "POST"):
         try:
@@ -253,9 +326,9 @@ def handle_streams_restart(environ, start_response):
         channel_idx = data.get("channel_idx")
         if n is not None and channel_idx is not None:
             # Reconnect a specific channel within a layout (non-destructive)
-            ok = server.reconnect_channel(int(n), int(channel_idx))
+            ok = server.reconnect_channel(n, int(channel_idx))
             return _json_ok(start_response, {"status": "ok", "reconnected": ok})
-        killed = server.kill_stream(int(n)) if n is not None else server.kill_active_streams()
+        killed = server.kill_stream(n) if n is not None else server.kill_active_streams()
         return _json_ok(start_response, {"status": "ok", "killed": killed})
     except Exception as e:
         logger.error(f"Streams restart failed: {e}", exc_info=True)
@@ -301,6 +374,161 @@ def _get_config_mod():
     return mod
 
 
+def _get_layouts_mod():
+    """Return the already-loaded layouts module, or load it standalone.
+
+    dash/api.py isn't always imported under the plugin's own package (see
+    _get_config_mod's docstring for why that dance is needed there), so a
+    plain top-level `from . import layouts` here can fail the same way even
+    though layouts.py itself has no relative imports of its own.
+    """
+    import importlib.util
+    import sys
+
+    for mod in sys.modules.values():
+        if hasattr(mod, 'tile_rects') and hasattr(mod, '_even'):
+            return mod
+
+    layouts_path = os.path.normpath(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "layouts.py")
+    )
+    mod_name = f"mv_layouts_{_PLUGIN_KEY}"
+    if mod_name in sys.modules:
+        return sys.modules[mod_name]
+
+    spec = importlib.util.spec_from_file_location(mod_name, layouts_path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[mod_name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def handle_styles_preview(environ, start_response):
+    if environ.get("REQUEST_METHOD") == "OPTIONS":
+        return cors_preflight(start_response)
+    if not _verify_token(environ):
+        return _json_error(start_response, "401 Unauthorized", "Authentication required")
+    if environ.get("REQUEST_METHOD") != "GET":
+        return _json_error(start_response, "405 Method Not Allowed", "GET only")
+
+    try:
+        from urllib.parse import parse_qs
+        qs = parse_qs(environ.get("QUERY_STRING", ""))
+        layout = (qs.get("layout") or ["auto"])[0]
+        channel_count = int((qs.get("channel_count") or ["4"])[0])
+    except Exception:
+        return _json_error(start_response, "400 Bad Request", "Invalid layout/channel_count")
+
+    try:
+        layouts_mod = _get_layouts_mod()
+        # Fixed dummy canvas -- only the fractions matter, geometry is
+        # resolution-independent by construction (tile_rects rounds to even
+        # pixels, so a larger canvas keeps more precision).
+        out_w, out_h = 1920, 1080
+        rects = layouts_mod.tile_rects(layout, channel_count, out_w, out_h)
+        tiles = [
+            [x / out_w, y / out_h, w / out_w, h / out_h, valign, halign]
+            for (x, y, w, h, valign, halign) in rects
+        ]
+        return _json_ok(start_response, {"tiles": tiles})
+    except Exception as e:
+        logger.error(f"Style preview failed: {e}", exc_info=True)
+        return _json_error(start_response, "500 Internal Server Error", str(e))
+
+
+def _sanitize_filename(name: str) -> str:
+    base = os.path.basename(name or "background")
+    base = re.sub(r"[^A-Za-z0-9._-]", "_", base)
+    return base or "background"
+
+
+def handle_style_background(environ, start_response):
+    """GET serves a style's saved background image; POST uploads/replaces one.
+
+    Uploads are base64-in-JSON, not multipart -- this raw WSGI app has no
+    form-parsing anywhere, matching every other endpoint's json-in/json-out
+    convention. Image validity is only checked lightly (size cap) rather than
+    decoded here: PyAV must never be imported into this gevent-patched
+    process (compositor_worker.py runs it in a separate plain-CPython
+    subprocess specifically to avoid that conflict) -- a bad file just fails
+    gracefully later when the worker tries to decode it, same as the
+    existing per-channel logo fallback already handles decode failures.
+    """
+    if environ.get("REQUEST_METHOD") == "OPTIONS":
+        return cors_preflight(start_response)
+    if not _verify_token(environ):
+        return _json_error(start_response, "401 Unauthorized", "Authentication required")
+
+    method = environ.get("REQUEST_METHOD", "GET")
+
+    if method == "GET":
+        from urllib.parse import parse_qs
+        qs = parse_qs(environ.get("QUERY_STRING", ""))
+        style_id = (qs.get("style_id") or [""])[0]
+        if not style_id:
+            return _json_error(start_response, "400 Bad Request", "style_id required")
+        settings = _get_settings()
+        style = settings.get("multiview_custom_layouts", {}).get(style_id)
+        filename = style.get("background_image") if style else None
+        if not filename:
+            return _json_error(start_response, "404 Not Found", "No background image set")
+        path = os.path.join(_BACKGROUNDS_DIR, filename)
+        if not os.path.isfile(path):
+            return _json_error(start_response, "404 Not Found", "Background image file missing")
+        try:
+            with open(path, "rb") as f:
+                data = f.read()
+        except OSError as e:
+            return _json_error(start_response, "500 Internal Server Error", str(e))
+        content_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        start_response("200 OK", [
+            ("Content-Type", content_type),
+            ("Content-Length", str(len(data))),
+        ] + _CORS_HEADERS)
+        return [data]
+
+    if method == "POST":
+        try:
+            body = json.loads(_read_body(environ))
+        except Exception:
+            return _json_error(start_response, "400 Bad Request", "Invalid JSON")
+        style_id = body.get("style_id")
+        filename = body.get("filename")
+        data_b64 = body.get("data_base64")
+        if not style_id or not filename or not data_b64:
+            return _json_error(start_response, "400 Bad Request", "style_id, filename, data_base64 required")
+
+        try:
+            raw = base64.b64decode(data_b64)
+        except Exception:
+            return _json_error(start_response, "400 Bad Request", "Invalid base64 data")
+        if len(raw) > _MAX_BACKGROUND_BYTES:
+            return _json_error(start_response, "400 Bad Request", f"Image too large (max {_MAX_BACKGROUND_BYTES // (1024*1024)}MB)")
+
+        stored_name = f"{style_id}_{_sanitize_filename(filename)}"
+        try:
+            os.makedirs(_BACKGROUNDS_DIR, exist_ok=True)
+            with open(os.path.join(_BACKGROUNDS_DIR, stored_name), "wb") as f:
+                f.write(raw)
+        except OSError as e:
+            return _json_error(start_response, "500 Internal Server Error", f"Failed to save image: {e}")
+
+        try:
+            settings = _get_settings()
+            custom_layouts = dict(settings.get("multiview_custom_layouts", {}))
+            style = dict(custom_layouts.get(style_id, {}))
+            style["background_image"] = stored_name
+            custom_layouts[style_id] = style
+            _save_settings({"multiview_custom_layouts": custom_layouts})
+        except Exception as e:
+            logger.error(f"Failed to save background_image reference: {e}", exc_info=True)
+            return _json_error(start_response, "500 Internal Server Error", str(e))
+
+        return _json_ok(start_response, {"status": "ok", "filename": stored_name})
+
+    return _json_error(start_response, "405 Method Not Allowed", "GET or POST only")
+
+
 def handle_fields(environ, start_response):
     if environ.get("REQUEST_METHOD") == "OPTIONS":
         return cors_preflight(start_response)
@@ -314,8 +542,9 @@ def handle_fields(environ, start_response):
         settings = _get_settings()
         config_mod = _get_config_mod()
         all_fields = config_mod.build_plugin_fields(settings)
+        order = settings.get("multiview_order", [])
 
-        layout_re = re.compile(r"^multiview_(\d+)_")
+        layout_re = re.compile(r"^multiview_([0-9a-f]{8})_")
         global_fields = []
         warnings = []
         layout_fields = {}
@@ -325,21 +554,22 @@ def handle_fields(environ, start_response):
             if fid.startswith("_warn") and fid != "_warnings_header":
                 warnings.append(f)
             elif fid.startswith("_") or fid == "multiview_count":
-                continue  # skip section headers and the implicit count field
+                continue  # skip section headers and the native-page-only count field
             else:
                 m = layout_re.match(fid)
                 if m:
-                    n = int(m.group(1))
-                    layout_fields.setdefault(n, []).append(f)
+                    layout_fields.setdefault(m.group(1), []).append(f)
                 else:
                     global_fields.append(f)
 
-        mv_count = max(1, int(settings.get("multiview_count", 1)))
         return _json_ok(start_response, {
             "warnings": warnings,
             "global": global_fields,
-            "layouts": [{"n": n, "fields": fs} for n, fs in sorted(layout_fields.items())],
-            "layout_count": mv_count,
+            "layouts": [
+                {"n": layout_id, "position": idx + 1, "fields": layout_fields.get(layout_id, [])}
+                for idx, layout_id in enumerate(order)
+            ],
+            "layout_count": len(order),
         })
 
     except Exception as e:
@@ -347,9 +577,13 @@ def handle_fields(environ, start_response):
         return _json_error(start_response, "500 Internal Server Error", str(e))
 
 
-def serve_static(path: str, start_response):
-    """Serve files from src/dash/static/."""
-    rel = path[len("/dash/"):] or "index.html"
+def serve_static(mount_path: str, sub_path: str, start_response):
+    """Serve files from dash/static/, under a runtime-configurable mount path.
+
+    mount_path: normalized prefix the server routed on, e.g. "/dash".
+    sub_path: request path relative to mount_path, e.g. "/", "/assets/index-x.js".
+    """
+    rel = sub_path.lstrip("/") or "index.html"
 
     # Block path traversal
     safe = os.path.normpath(rel)
@@ -367,10 +601,20 @@ def serve_static(path: str, start_response):
 
     mime, _ = mimetypes.guess_type(file_path)
     mime = mime or "application/octet-stream"
-    cache_control = "no-cache" if mime == "text/html" else "public, max-age=3600"
 
     with open(file_path, "rb") as f:
         data = f.read()
+
+    if mime == "text/html":
+        # The SPA build uses relative asset paths (base: './'), so it doesn't
+        # know its own mount path at build time. Inject it at request time so
+        # the frontend can build correct API/asset URLs.
+        base = (mount_path or "") + "/"
+        snippet = f'<script>window.__BASE_PATH__={json.dumps(base)};</script>'.encode()
+        data = data.replace(b"<head>", b"<head>" + snippet, 1)
+        cache_control = "no-cache"
+    else:
+        cache_control = "public, max-age=3600"
 
     start_response("200 OK", [
         ("Content-Type", mime),

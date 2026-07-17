@@ -165,13 +165,21 @@ class Plugin:
     @property
     def fields(self):
         """Regenerate fields from current DB settings on every request."""
+        config_mod = _config()
         try:
             from apps.plugins.models import PluginConfig
             cfg = PluginConfig.objects.get(key=PLUGIN_DB_KEY)
-            settings = cfg.settings
+            settings, changed1 = config_mod.ensure_layout_order(cfg.settings)
+            settings, changed2 = config_mod.reconcile_layout_count(settings)
+            settings, changed3 = config_mod.ensure_custom_layout_order(settings)
+            if changed1 or changed2 or changed3:
+                cfg.settings = settings
+                cfg.save()
         except Exception:
-            settings = {}
-        return _config().build_plugin_fields(settings)
+            settings, _changed = config_mod.ensure_layout_order({})
+            settings, _changed = config_mod.reconcile_layout_count(settings)
+            settings, _changed = config_mod.ensure_custom_layout_order(settings)
+        return config_mod.build_plugin_fields(settings)
 
     # Action dispatcher
 
@@ -192,20 +200,28 @@ class Plugin:
     # generate_m3u
 
     def _generate_m3u(self) -> dict:
+        config_mod = _config()
         try:
             from apps.plugins.models import PluginConfig
             cfg = PluginConfig.objects.get(key=PLUGIN_DB_KEY)
-            settings = cfg.settings
+            settings, changed1 = config_mod.ensure_layout_order(cfg.settings)
+            settings, changed2 = config_mod.reconcile_layout_count(settings)
+            settings, changed3 = config_mod.ensure_custom_layout_order(settings)
+            if changed1 or changed2 or changed3:
+                cfg.settings = settings
+                cfg.save()
         except Exception:
-            settings = {}
-        mv_count = max(1, int(settings.get("multiview_count", 1)))
+            settings, _changed = config_mod.ensure_layout_order({})
+            settings, _changed = config_mod.reconcile_layout_count(settings)
+            settings, _changed = config_mod.ensure_custom_layout_order(settings)
+        order = settings.get("multiview_order", [])
 
         lines = ["#EXTM3U"]
-        for n in range(1, mv_count + 1):
+        for n in order:
             name = settings.get(f"multiview_{n}_name", f"Multiview {n}") or f"Multiview {n}"
             safe_name = name.replace('"', "'")  # quotes break EXTINF attribute parsing
             stream_url = f"http://127.0.0.1:{DEFAULT_SERVER_PORT}/stream/{n}"
-            lines.append(f'#EXTINF:-1 tvg-id="multiview_{n}" tvg-name="{safe_name}",{safe_name}')
+            lines.append(f'#EXTINF:-1 tvg-id="mv-{n}" tvg-name="{safe_name}",{safe_name}')
             lines.append(stream_url)
 
         m3u_content = "\n".join(lines) + "\n"
@@ -248,30 +264,28 @@ class Plugin:
             }
 
     def _refresh_epg_then_m3u(self, account_id, source_id) -> None:
-        """Refresh EPG first, then M3U, in sequence.
+        """Refresh EPG first, then M3U, once EPG finishes (success OR error).
 
-        Firing both refreshes at once collides on Dispatcharr's shared celery DB
-        connection ("the last operation didn't produce records (command status:
-        INSERT 0 N)"). A celery chain serializes them; EPG first so program data
-        is current before the M3U account sync runs.
-
-        refresh_single_m3u_account internally calls refresh_m3u_groups(full_refresh=True)
-        which calls process_groups, which hits a Python 3.13 / Django ORM incompatibility
-        (StopIteration raised inside QuerySet.__iter__ generator -> RuntimeError).
-        Calling refresh_m3u_groups directly with full_refresh=False skips process_groups
-        and avoids the crash.
+        Firing both at once collides on Dispatcharr's shared celery DB connection
+        ("the last operation didn't produce records (command status: INSERT 0 N)"),
+        so M3U must wait for EPG to finish. A plain celery chain achieves that but
+        aborts the M3U task if EPG raises -- which silently skipped the M3U refresh
+        (and all its Dispatcharr-side websocket progress) whenever EPG refresh
+        failed. link_error() also fires the M3U task on EPG's failure path, so it
+        always runs once EPG is done, regardless of outcome.
         """
         try:
             from celery import chain
             from apps.m3u.tasks import refresh_single_m3u_account
             if source_id is not None:
                 from apps.epg.tasks import refresh_epg_data
-                chain(refresh_epg_data.si(source_id),
-                      refresh_single_m3u_account.si(account_id)).delay()
+                epg_sig = refresh_epg_data.si(source_id)
+                epg_sig.link_error(refresh_single_m3u_account.si(account_id))
+                chain(epg_sig, refresh_single_m3u_account.si(account_id)).delay()
             else:
                 refresh_single_m3u_account.delay(account_id)
         except Exception as e:  # noqa: BLE001
-            logger.warning(f"Could not trigger EPG/M3U refresh chain: {e}")
+            logger.warning(f"Could not trigger EPG/M3U refresh: {e}")
 
     # start_server
 

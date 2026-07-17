@@ -152,18 +152,18 @@ def _emit_custom_props(cp: dict, lines: list) -> None:
         lines.append(f"    <review{attrs}>{content}</review>")
 
 
-def _build_xmltv(settings: dict, mv_count: int, window_start, window_end) -> str:
+def _build_xmltv(settings: dict, order: list, window_start, window_end) -> str:
     chunk = timedelta(hours=4)
 
     lines = ['<?xml version="1.0" encoding="UTF-8"?>', "<tv>"]
 
-    for n in range(1, mv_count + 1):
+    for n in order:
         name = settings.get(f"multiview_{n}_name", f"Multiview {n}") or f"Multiview {n}"
-        lines.append(f'  <channel id="multiview_{n}">')
+        lines.append(f'  <channel id="mv-{n}">')
         lines.append(f"    <display-name>{html.escape(name)}</display-name>")
         lines.append("  </channel>")
 
-    for n in range(1, mv_count + 1):
+    for n in order:
         name = settings.get(f"multiview_{n}_name", f"Multiview {n}") or f"Multiview {n}"
         epg_source_mode = settings.get(f"multiview_{n}_epg_source_mode", "dummy")
 
@@ -186,7 +186,7 @@ def _build_xmltv(settings: dict, mv_count: int, window_start, window_end) -> str
                                 lines.append(
                                     f'  <programme start="{_fmt_xmltv_time(prog.start_time)}"'
                                     f' stop="{_fmt_xmltv_time(prog.end_time)}"'
-                                    f' channel="multiview_{n}">'
+                                    f' channel="mv-{n}">'
                                 )
                                 lines.append(f"    <title>{html.escape(prog.title or '')}</title>")
                                 if prog.sub_title:
@@ -216,7 +216,7 @@ def _build_xmltv(settings: dict, mv_count: int, window_start, window_end) -> str
                 lines.append(
                     f'  <programme start="{_fmt_xmltv_time(slot_start)}"'
                     f' stop="{_fmt_xmltv_time(slot_end)}"'
-                    f' channel="multiview_{n}">'
+                    f' channel="mv-{n}">'
                 )
                 lines.append(f"    <title>{html.escape(epg_title)}</title>")
                 if epg_subtitle:
@@ -241,13 +241,13 @@ def generate_epg(settings: dict, plugin_dir: str) -> "int | None":
     from django.utils import timezone
     from apps.epg.models import EPGSource
 
-    mv_count = max(1, int(settings.get("multiview_count", 1)))
+    order = settings.get("multiview_order", [])
 
     now = timezone.now()
     window_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     window_end = window_start + timedelta(days=14)
 
-    xmltv = _build_xmltv(settings, mv_count, window_start, window_end)
+    xmltv = _build_xmltv(settings, order, window_start, window_end)
 
     xml_path = os.path.join(plugin_dir, "multiview_epg.xml")
     with open(xml_path, "w", encoding="utf-8") as f:

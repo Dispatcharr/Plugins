@@ -22,8 +22,9 @@ import time
 
 # channel.py sets up the vendored PyAV sys.path as a side effect of import;
 # numpy must be imported after so it finds the vendored build.
-from channel import Channel, AUDIO_RATE, AUDIO_LAYOUT, log, _yuv_planes  # noqa: E402
+from channel import Channel, AUDIO_RATE, AUDIO_LAYOUT, log, _yuv_planes, yuv_planes_from_frame, _even  # noqa: E402
 
+import av  # noqa: E402  (vendored, already on sys.path via the channel import above)
 import numpy as np  # noqa: E402
 
 from parameters import fps_fraction, build_encoder_cmd, validate_encoder  # noqa: E402
@@ -121,6 +122,31 @@ def audio_feeder(track, fd, stop):
         time.sleep(0.02)
 
 
+# ---------------------------------------------------------------- background image
+
+def _load_background(path, out_w, out_h):
+    """Decode a still image and scale+center-crop it to exactly out_w x out_h
+    (aspect-preserving cover, like CSS background-size: cover), returning
+    (Y, U, V) planes ready to seed the canvas once at startup. Same PyAV
+    decode-to-YUV technique as channel.py's _make_fallback (logo image),
+    just cover-fit instead of contain-fit since this fills the whole frame
+    rather than a small padded tile.
+    """
+    with av.open(path) as c:
+        for frame in c.decode(video=0):
+            scale = max(out_w / frame.width, out_h / frame.height)
+            sw, sh = _even(round(frame.width * scale)), _even(round(frame.height * scale))
+            rf = frame.reformat(width=sw, height=sh, format="yuv420p")
+            y, u, v = yuv_planes_from_frame(rf, sw, sh)
+            ox = ((sw - out_w) // 2) & ~1
+            oy = ((sh - out_h) // 2) & ~1
+            Y = np.ascontiguousarray(y[oy:oy + out_h, ox:ox + out_w])
+            U = np.ascontiguousarray(u[oy // 2:(oy + out_h) // 2, ox // 2:(ox + out_w) // 2])
+            V = np.ascontiguousarray(v[oy // 2:(oy + out_h) // 2, ox // 2:(ox + out_w) // 2])
+            return (Y, U, V)
+    return None
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -181,6 +207,24 @@ def main():
     Uc[:] = 128
     Vc[:] = 128
 
+    # Seed the canvas with a background image once, if configured. Kept as
+    # an immutable reference copy (bg_buf) alongside the live canvas: each
+    # frame, every tile's rect is restored from this copy before its actual
+    # content is blitted on top, so letterbox/pillarbox padding (and any
+    # gap a layout leaves uncovered) shows the background instead of a
+    # stale opaque-black bar painted over it by a previous frame.
+    bg_path = cfg.get("background")
+    if bg_path:
+        try:
+            bg = _load_background(bg_path, out_w, out_h)
+            if bg:
+                Yc[:], Uc[:], Vc[:] = bg
+        except Exception as e:  # noqa: BLE001
+            log(f"background image load failed ({bg_path}): {e}")
+
+    bg_buf = cbuf.copy()
+    bg_Y, bg_U, bg_V = _yuv_planes(bg_buf, out_w, out_h)
+
     start = time.monotonic()
     n = 0
     log_at = start + 30.0
@@ -190,11 +234,15 @@ def main():
     try:
         while not stop.is_set():
             for t in channels:
-                Yt, Ut, Vt = t.current()
+                Yt, Ut, Vt, ox, oy, tw, th = t.current()
                 x, y, w, h = t.x, t.y, t.w, t.h
-                Yc[y:y + h, x:x + w] = Yt
-                Uc[y // 2:(y + h) // 2, x // 2:(x + w) // 2] = Ut
-                Vc[y // 2:(y + h) // 2, x // 2:(x + w) // 2] = Vt
+                Yc[y:y + h, x:x + w] = bg_Y[y:y + h, x:x + w]
+                Uc[y // 2:(y + h) // 2, x // 2:(x + w) // 2] = bg_U[y // 2:(y + h) // 2, x // 2:(x + w) // 2]
+                Vc[y // 2:(y + h) // 2, x // 2:(x + w) // 2] = bg_V[y // 2:(y + h) // 2, x // 2:(x + w) // 2]
+                px, py = x + ox, y + oy
+                Yc[py:py + th, px:px + tw] = Yt
+                Uc[py // 2:(py + th) // 2, px // 2:(px + tw) // 2] = Ut
+                Vc[py // 2:(py + th) // 2, px // 2:(px + tw) // 2] = Vt
             if not _write_all(video_w, memoryview(cbuf)):
                 break
             n += 1
