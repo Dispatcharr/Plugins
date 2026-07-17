@@ -1,54 +1,85 @@
-"""Auto-start logic for the Emby Stream Cleanup monitor.
+"""Auto-start logic for the Emby Stream Cleanup monitor and dashboard server.
 
-Uses Redis leader election (SET NX EX) so only one uWSGI worker starts the
-monitor, even across multiple processes.
+Mirrors force-fallback/multiview's autostart pattern: cheap, safe to call
+every time ``Plugin()`` is constructed (which Dispatcharr does repeatedly
+over the plugin's lifecycle -- e.g. on settings-page loads -- not just once
+at boot), so a single missed window (DB or Redis not ready yet) just means
+the *next* construction tries again shortly, rather than giving up forever.
 
-  1. Each worker calls ``attempt_autostart()`` from ``Plugin.__init__``.
-  2. Background thread waits for Django ORM, reads plugin config.
-  3. Races all workers with SET NX EX on a leader key.
-  4. Winner clears stale state and starts the StreamMonitor (and optionally
-     the debug server).
+The monitor and the dashboard server must always end up in the **same**
+worker process: the dashboard reads live state via ``dash/api.py``'s
+``_find_plugin_module()``, which only scans ``sys.modules`` in its own
+process to find the module-level ``_monitor`` singleton. If the dashboard
+binds its port in a different worker than the one actually running the
+monitor's poll loop, it finds an idle ``_monitor`` that was never
+``.start()``-ed and reports empty/stopped state forever.
 
-The per-process guard ``_autostart_launched`` prevents spawning duplicate
-threads *within a single import cycle*, but ``force_reload=True`` in
-Dispatcharr's plugin loader re-imports all modules, resetting module-level
-state.  To handle that, the autostart thread also checks Redis for an
-already-running monitor/server before doing anything destructive.
+- Monitor autostart uses Redis leader election (SET NX EX): the monitor is a
+  bare background thread with no OS-level exclusivity guarantee, so an
+  explicit single-owner election across Dispatcharr's worker processes is
+  needed to avoid duplicate polling loops. It must run continuously
+  regardless of whether the dashboard is even enabled, so it stays the
+  primary election.
+- Dashboard server autostart is now a **dependent** of the monitor, not an
+  independent race: ``ensure_dashboard`` only ever does anything when
+  ``monitor.is_running()`` is ``True`` for *this* process, i.e. only in the
+  worker that already won the monitor's leader election. This guarantees
+  dashboard and monitor always share a process. It's called both here (fast
+  path, on the ``Plugin()`` construction that wins leader election) and from
+  the monitor's own poll loop (``handler.py:_poll_loop``) on every cycle, so
+  the dashboard no longer depends on ``Plugin()`` being reconstructed again
+  to retry a failed bind -- the poll loop is proven alive for as long as the
+  monitor runs.
+
+This repo has one earlier regression to avoid repeating here: dashboard-start
+used to run only after a *successful* monitor leader-election win, physically
+inside the same function. That meant once the monitor was running from any
+earlier attempt on any worker, every later ``attempt_autostart()`` call --
+including the leader's own subsequent calls -- returned early at a **Redis**
+check ("is the monitor running anywhere?") before ever reaching the
+dashboard-start code, so only the one attempt that originally won leader
+election ever got a shot at binding the dashboard port. The gate here is
+different in the way that matters: ``monitor.is_running()`` is a **local,
+in-process** attribute read on the actual ``StreamMonitor`` object, true only
+in the one process that called ``.start()`` successfully. It never blocks
+that process's own repeated ``Plugin()`` constructions from retrying the
+dashboard bind -- it only ever prevents *other* workers (which aren't running
+the monitor at all) from attempting it.
 """
 
 import logging
 import os
 import threading
-import time
 
 logger = logging.getLogger(__name__)
 
-# Per-process guard: only one autostart thread may be spawned per process.
-_autostart_launched = False
-_autostart_lock = threading.Lock()
+# Debounces a burst of near-simultaneous Plugin() constructions (e.g. several
+# requests landing at once) from spawning a pile of redundant autostart
+# threads. Transient, not a permanent lock: always cleared when an attempt
+# finishes (success, failure, or exception), so the *next* Plugin()
+# construction gets a fresh, un-gated try.
+_attempt_in_progress = False
+_attempt_lock = threading.Lock()
 
-_STARTUP_WAIT = 5   # seconds before the first config-read attempt
-_RETRY_DELAY  = 3   # seconds between subsequent attempts
-_MAX_ATTEMPTS = 8   # total attempts to read PluginConfig from the DB
+# Dedupes repeated identical autostart-worker exceptions so they log at
+# `warning` once (visible without debug logging) rather than spamming on
+# every retry -- see _autostart_worker.
+_last_autostart_error = None
 
 
 def attempt_autostart(monitor) -> None:
     """Entry point from ``Plugin.__init__``.
 
-    Spawns a daemon thread (at most once per OS process) that races via Redis
-    NX to become the autostart leader and start the monitor.
+    Safe, and intended, to call on every ``Plugin()`` construction -- cheap
+    early-outs below mean a monitor/dashboard that's already running (locally
+    or, for the monitor, on another worker) costs almost nothing to check.
     """
-    global _autostart_launched
-    with _autostart_lock:
-        if _autostart_launched:
-            logger.debug("Emby stream cleanup: auto-start already launched in this process, skipping")
+    global _attempt_in_progress
+    with _attempt_lock:
+        if _attempt_in_progress:
+            logger.debug("Emby stream cleanup: an auto-start attempt is already in flight, skipping")
             return
-        _autostart_launched = True
-
-    # Redis-level dedup is handled later inside the background thread
-    # (leader election). We avoid touching Redis here because Plugin.__init__
-    # runs at import time, potentially before Dispatcharr's Redis is ready.
-    # Blocking here would stall the entire uWSGI worker boot.
+        _attempt_in_progress = True
 
     threading.Thread(
         target=_autostart_worker,
@@ -72,77 +103,67 @@ def cleanup_stale_state(redis_client) -> None:
         logger.warning(f"Startup cleanup failed: {e}")
 
 
-def _autostart_worker(monitor) -> None:
-    """Background thread body."""
-    from .config import (
-        REDIS_KEY_LEADER, LEADER_TTL,
-        DEFAULT_PORT, DEFAULT_HOST, PLUGIN_DB_KEY,
-    )
-    from .utils import get_redis_client, normalize_host
+def _read_plugin_settings():
+    """Read current PluginConfig settings.
 
-    # ── Step 0: Redis dedup (prevents redundant threads after force_reload) ──
-    # This runs inside the thread (after the daemon is spawned) so it never
-    # blocks uWSGI worker boot.  The initial sleep gives Redis time to be ready.
-    time.sleep(_STARTUP_WAIT)
+    Returns (settings_dict, enabled), or (None, None) if the DB/ORM isn't
+    ready yet or the row doesn't exist -- callers should just bail and let
+    the next Plugin() construction retry, not treat this as fatal.
+    """
+    from .config import PLUGIN_DB_KEY
     try:
-        from .config import REDIS_KEY_MONITOR
-        _rc = get_redis_client()
-        if _rc:
-            _dedup_key = REDIS_KEY_LEADER + ":autostart_dedup"
-            if not _rc.set(_dedup_key, "1", nx=True, ex=(_RETRY_DELAY * _MAX_ATTEMPTS) + 30):
-                # Key exists, but if nothing is actually running or leading,
-                # it's stale from a previous lifecycle.  Clear and proceed.
-                if not _rc.get(REDIS_KEY_MONITOR) and not _rc.get(REDIS_KEY_LEADER):
-                    logger.debug("Emby stream cleanup: stale autostart_dedup key, clearing")
-                    _rc.delete(_dedup_key)
-                    _rc.set(_dedup_key, "1", nx=True, ex=(_RETRY_DELAY * _MAX_ATTEMPTS) + 30)
-                else:
-                    logger.debug("Emby stream cleanup: auto-start already in progress (Redis dedup), skipping")
-                    return
+        from apps.plugins.models import PluginConfig
+        config = None
+        for _key in (PLUGIN_DB_KEY, PLUGIN_DB_KEY.replace('_', '-')):
+            config = PluginConfig.objects.filter(key=_key).first()
+            if config is not None:
+                break
+        if config is None:
+            return None, None
+        return (config.settings or {}), config.enabled
     except Exception:
-        pass  # Redis not available yet, leader election will gate us
+        return None, None
 
-    # Try both key forms (underscore and hyphen)
-    _plugin_keys = [PLUGIN_DB_KEY, PLUGIN_DB_KEY.replace('_', '-')]
 
-    settings_dict: dict = {}
+def _autostart_worker(monitor) -> None:
+    global _attempt_in_progress, _last_autostart_error
+    try:
+        settings_dict, enabled = _read_plugin_settings()
+        if settings_dict is None:
+            logger.debug("Emby stream cleanup: PluginConfig not found yet, will retry on next Plugin() construction")
+            return
+        if not enabled:
+            logger.debug("Emby stream cleanup: plugin is disabled, skipping auto-start")
+            return
 
-    for attempt in range(_MAX_ATTEMPTS):
-        # First iteration has no sleep since _STARTUP_WAIT already elapsed above.
-        if attempt > 0:
-            time.sleep(_RETRY_DELAY)
-        try:
-            from apps.plugins.models import PluginConfig
-            config = None
-            for _key in _plugin_keys:
-                config = PluginConfig.objects.filter(key=_key).first()
-                if config is not None:
-                    break
-            if config is None:
-                logger.debug(
-                    f"Emby stream cleanup: PluginConfig not found yet "
-                    f"(attempt {attempt + 1}/{_MAX_ATTEMPTS}, tried keys: {_plugin_keys})"
-                )
-                continue
-            settings_dict = config.settings or {}
-            if not config.enabled:
-                logger.debug("Emby stream cleanup: plugin is disabled, skipping auto-start")
-                return
-            logger.debug(
-                f"Emby stream cleanup: config read on attempt {attempt + 1}, plugin enabled"
-            )
-            break
-        except Exception as e:
-            logger.debug(
-                f"Emby stream cleanup: auto-start attempt {attempt + 1} could not read config: {e}"
-            )
-    else:
-        logger.warning(
-            "Emby stream cleanup: could not read plugin config after all attempts, aborting auto-start"
-        )
-        return
+        _try_autostart_monitor(monitor, settings_dict)
+        if monitor.is_running():
+            # Dashboard only ever starts in the same process that's running
+            # the monitor -- see module docstring for why. The monitor's own
+            # poll loop (handler.py:_poll_loop) also calls ensure_dashboard
+            # every cycle as a self-healing backstop, so this call here is
+            # just the fast path on the construction that won leader election.
+            ensure_dashboard(monitor, settings_dict)
+        _last_autostart_error = None
+    except Exception as e:  # noqa: BLE001
+        err = str(e)
+        if err != _last_autostart_error:
+            logger.warning(f"Emby stream cleanup: auto-start attempt raised, will retry on next Plugin() construction: {e}")
+            _last_autostart_error = err
+        else:
+            logger.debug(f"Emby stream cleanup: auto-start attempt raised again (already warned): {e}")
+    finally:
+        _attempt_in_progress = False
 
-    # Check that at least one media server has URL + API key + identifier
+
+def _try_autostart_monitor(monitor, settings_dict: dict) -> None:
+    from .config import REDIS_KEY_LEADER, REDIS_KEY_MONITOR, REDIS_KEY_MANUAL_STOP, LEADER_TTL
+    from .utils import get_redis_client
+
+    if monitor.is_running():
+        return  # already running in this process
+
+    # -- Require at least one fully configured media server -------------------
     has_configured_server = False
     ms_count = max(1, int(settings_dict.get("media_server_count", 1)))
     for n in range(1, ms_count + 1):
@@ -154,47 +175,40 @@ def _autostart_worker(monitor) -> None:
             has_configured_server = True
             break
     if not has_configured_server:
-        logger.warning(
-            "Emby stream cleanup: auto-start skipped because no media server "
-            "is fully configured (URL + API key + identifier)"
+        logger.debug(
+            "Emby stream cleanup: monitor auto-start skipped, no media server is fully "
+            "configured yet (URL + API key + identifier) -- will retry on next Plugin() construction"
         )
         return
 
-    # -- Respect manual stop ---------------------------------------------------
-    # If the user manually stopped the monitor during this Dispatcharr runtime,
-    # a Redis flag is set.  It's cleared on fresh boot (CLEANUP_REDIS_KEYS).
-    try:
-        from .config import REDIS_KEY_MANUAL_STOP
-        _rc = get_redis_client()
-        if _rc and _rc.get(REDIS_KEY_MANUAL_STOP):
-            logger.debug("Emby stream cleanup: auto-start skipped (manually stopped)")
-            return
-    except Exception:
-        pass
-
-    # -- Leader election via Redis SET NX --------------------------------------
     redis_client = get_redis_client()
     if redis_client is None:
-        logger.warning("Emby stream cleanup: cannot connect to Redis, aborting auto-start")
+        logger.debug("Emby stream cleanup: cannot connect to Redis yet, will retry on next Plugin() construction")
         return
 
-    # Guard: if the monitor is already running (e.g. we were force-reloaded
-    # and the old daemon thread is still alive), skip everything.  This
-    # prevents cleanup_stale_state from nuking keys for a live server.
-    from .config import REDIS_KEY_MONITOR as _RMON
-    if redis_client.get(_RMON):
-        logger.debug("Emby stream cleanup: monitor already running (Redis), skipping auto-start")
+    # -- Respect a manual stop from earlier in this Dispatcharr runtime -------
+    # Cleared on fresh container boot (CLEANUP_REDIS_KEYS).
+    if redis_client.get(REDIS_KEY_MANUAL_STOP):
+        logger.debug("Emby stream cleanup: monitor auto-start skipped (manually stopped)")
         return
 
+    # Guard: if the monitor is already running (e.g. on another worker, or
+    # this worker was force-reloaded and the old daemon thread is still
+    # alive), skip everything -- this also prevents cleanup_stale_state from
+    # nuking keys for a live server.
+    if redis_client.get(REDIS_KEY_MONITOR):
+        logger.debug("Emby stream cleanup: monitor already running (Redis), skipping monitor auto-start")
+        return
+
+    # -- Leader election via Redis SET NX --------------------------------------
     worker_id = f"{os.getpid()}-{threading.get_ident()}"
     won = redis_client.set(REDIS_KEY_LEADER, worker_id, nx=True, ex=LEADER_TTL)
     if not won:
-        logger.debug("Emby stream cleanup: another worker won leader election, skipping auto-start")
+        logger.debug("Emby stream cleanup: another worker won leader election, skipping monitor auto-start")
         return
 
     logger.debug(f"Emby stream cleanup: won leader election (worker {worker_id})")
 
-    # -- Clean stale state then start monitor ----------------------------------
     cleanup_stale_state(redis_client)
 
     if monitor.start(settings=settings_dict):
@@ -206,28 +220,43 @@ def _autostart_worker(monitor) -> None:
             pass
         logger.warning(
             "Emby stream cleanup: auto-start failed to start monitor. "
-            "Use 'Start Monitor' button to start manually."
+            "Use 'Restart Monitor' to start manually."
         )
+
+
+def ensure_dashboard(monitor, settings_dict: dict) -> None:
+    """Local-only, no Redis -- matches force-fallback/multiview's dashboard
+    server autostart. Only ever meaningful (see callers) when
+    ``monitor.is_running()`` is already ``True`` for this process, i.e. this
+    worker just won -- or previously won -- the monitor's Redis leader
+    election. That keeps the dashboard and the monitor's poll loop pinned to
+    the same process, which is what lets ``dash/api.py``'s in-process
+    ``sys.modules`` lookup find a live ``_monitor`` instead of an idle one.
+
+    Cheap and idempotent: short-circuits immediately once
+    ``get_current_server().is_running()`` is true, so it's safe to call
+    repeatedly (both from ``_autostart_worker`` on each ``Plugin()``
+    construction, and from the monitor's own poll loop as a self-healing
+    backstop that doesn't depend on ``Plugin()`` being reconstructed again).
+    """
+    from .config import DEFAULT_PORT, DEFAULT_HOST
+    from .utils import normalize_host
+
+    if settings_dict.get("dash_enabled") != "enabled":
         return
 
-    # Optionally start the debug server
-    if settings_dict.get("enable_debug_server", False):
-        # Skip if debug server is already running (e.g. after force_reload)
-        from .config import REDIS_KEY_RUNNING as _RRUN
-        if redis_client.get(_RRUN):
-            logger.debug("Emby stream cleanup: debug server already running (Redis), skipping")
-        else:
-            port = int(settings_dict.get('port', DEFAULT_PORT))
-            host = normalize_host(
-                settings_dict.get('host', DEFAULT_HOST),
-                DEFAULT_HOST,
-            )
+    from .server import get_current_server, DebugServer
+    existing = get_current_server()
+    if existing and existing.is_running():
+        logger.debug("Emby stream cleanup: dashboard server already running in this process, skipping")
+        return
 
-            from .server import DebugServer
-            server = DebugServer(monitor, port=port, host=host)
-            if server.start(settings=settings_dict):
-                logger.info(
-                    f"Emby stream cleanup: auto-start debug server on http://{host}:{port}/debug"
-                )
-            else:
-                logger.warning("Emby stream cleanup: auto-start debug server failed")
+    port = int(settings_dict.get('dash_port', DEFAULT_PORT))
+    host = normalize_host(settings_dict.get('dash_host', DEFAULT_HOST), DEFAULT_HOST)
+
+    server = DebugServer(monitor, port=port, host=host)
+    if server.start():
+        path = settings_dict.get('dash_path') or '/dash'
+        logger.info(f"Emby stream cleanup: auto-start dashboard on http://{host}:{port}{path}/")
+    else:
+        logger.debug("Emby stream cleanup: dashboard auto-start bind failed (port likely taken by another worker)")

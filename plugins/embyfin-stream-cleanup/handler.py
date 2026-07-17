@@ -62,6 +62,29 @@ def _get_failover_grace():
         return 35  # safe default: 20 + 15
 
 
+def _ensure_dashboard(monitor, settings_dict):
+    """Self-healing dashboard-up check, run from the poll loop every cycle.
+
+    Cheap and idempotent once the dashboard is up (see ensure_dashboard's
+    docstring in autostart.py). Unlike the Plugin()-construction-triggered
+    attempt in autostart.py, this runs inside a thread that's proven alive
+    for as long as the monitor itself is running in this process, so a
+    transient first-attempt failure (port not free yet, brief Redis hiccup)
+    gets retried automatically every poll_interval seconds without needing
+    Dispatcharr to reconstruct Plugin() again.
+    """
+    try:
+        from .autostart import ensure_dashboard
+        ensure_dashboard(monitor, settings_dict)
+        monitor._dash_ensure_warned = False
+    except Exception as e:  # noqa: BLE001
+        if not monitor._dash_ensure_warned:
+            logger.warning(f"Emby stream cleanup: dashboard auto-start check failed, will keep retrying each poll cycle: {e}")
+            monitor._dash_ensure_warned = True
+        else:
+            logger.debug(f"Emby stream cleanup: dashboard auto-start check failed again (already warned): {e}")
+
+
 def _resolve_username(user_id_str, cache):
     """Resolve a Redis user_id string to a Django username.
 
@@ -87,6 +110,10 @@ class StreamMonitor:
         self._thread = None
         self._running = False
         self._settings = {}
+        # Tracks whether we've already logged a dashboard-ensure failure at
+        # `warning` for the current run, so the poll loop's every-cycle
+        # retry doesn't spam the log -- see _poll_loop.
+        self._dash_ensure_warned = False
         # Per-client tracking: {(channel_uuid, client_id): first_idle_ts}
         # Records when we first noticed a client was idle so we can
         # measure idle duration across poll cycles.
@@ -220,7 +247,7 @@ class StreamMonitor:
                 # Note identifiers shared with lower-numbered servers (allowed — pools are unioned)
                 dupes = idents & seen_idents
                 if dupes:
-                    logger.info(
+                    logger.debug(
                         f"Server {n}: identifier(s) {', '.join(sorted(dupes))} also on a "
                         "lower-numbered server — pools will be combined for those identifiers"
                     )
@@ -565,6 +592,7 @@ class StreamMonitor:
         self._emby_error = None
         self._active_recording_channels = set()
         self._recording_count_by_url = {}
+        self._dash_ensure_warned = False
 
         # Mark as running in Redis (with heartbeat TTL so the key expires
         # if this process dies without cleaning up).
@@ -652,6 +680,9 @@ class StreamMonitor:
 
                 # Re-read settings from DB so UI changes take effect
                 self._refresh_settings()
+
+                # Self-healing dashboard check -- see _ensure_dashboard docstring.
+                _ensure_dashboard(self, self._settings)
 
                 self._poll_once()
             except Exception as e:

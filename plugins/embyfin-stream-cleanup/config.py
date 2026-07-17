@@ -1,10 +1,4 @@
-"""Plugin configuration, Redis key constants, and field definitions.
-
-Single source of truth for:
-  - PLUGIN_CONFIG: loaded from plugin.json
-  - Redis key names used by every module
-  - PLUGIN_FIELDS: the settings schema shared by the Plugin class and the monitor
-"""
+"""Plugin configuration, Redis key constants, and field definitions."""
 
 import json
 import os
@@ -13,6 +7,7 @@ import os
 # ── Hard-coded defaults ─────────────────────────────────────────────────────
 DEFAULT_PORT: int = 9193
 DEFAULT_HOST: str = "0.0.0.0"
+DEFAULT_DASH_PATH: str = "/dash"
 DEFAULT_CLEANUP_TIMEOUT: int = 30  # seconds
 DEFAULT_POLL_INTERVAL: int = 10    # seconds
 
@@ -32,9 +27,10 @@ def _load_plugin_config() -> dict:
 PLUGIN_CONFIG = _load_plugin_config()
 
 # ── Redis key names ──────────────────────────────────────────────────────────
-REDIS_KEY_RUNNING  = "emby_cleanup:server_running"
-REDIS_KEY_HOST     = "emby_cleanup:server_host"
-REDIS_KEY_PORT     = "emby_cleanup:server_port"
+# REDIS_KEY_RUNNING/HOST/PORT (debug-server singleton coordination) were
+# dropped when the dashboard server moved to force-fallback's simpler
+# local-only lifecycle. REDIS_KEY_STOP stays: it's shared with the monitor's
+# own orphaned-thread signaling (handler.py), not debug-server-specific.
 REDIS_KEY_STOP     = "emby_cleanup:stop_requested"
 REDIS_KEY_LEADER   = "emby_cleanup:leader"
 REDIS_KEY_MONITOR  = "emby_cleanup:monitor_running"
@@ -43,9 +39,6 @@ REDIS_KEY_MANUAL_STOP = "emby_cleanup:manual_stop"
 # Keys to wipe on startup (leader key intentionally excluded so the winning
 # worker keeps its claim after cleanup).
 CLEANUP_REDIS_KEYS = [
-    REDIS_KEY_RUNNING,
-    REDIS_KEY_HOST,
-    REDIS_KEY_PORT,
     REDIS_KEY_STOP,
     REDIS_KEY_MONITOR,
     REDIS_KEY_MANUAL_STOP,
@@ -57,25 +50,32 @@ ALL_PLUGIN_REDIS_KEYS = CLEANUP_REDIS_KEYS + [REDIS_KEY_LEADER]
 # Leader election TTL.  The winner holds this key for up to LEADER_TTL seconds.
 LEADER_TTL = 60  # seconds
 
-# Heartbeat TTL for "running" Redis keys.  The monitor and server refresh
-# their keys on every loop iteration.  If the process dies, the keys expire
-# and autostart can proceed on the next startup.
+# Heartbeat TTL for the monitor's "running" Redis key.  The monitor refreshes
+# it on every loop iteration; if the process dies, the key expires and
+# autostart can proceed on the next startup.
 HEARTBEAT_TTL = 30  # seconds
 
 # ── Plugin field definitions ─────────────────────────────────────────────────
 
-# Fields that appear before the media server section
-_FIELDS_BEFORE_SERVERS = [
+_GLOBAL_SETTINGS_HEADER = {
+    "id": "_global_settings_header",
+    "label": "── Global Settings ──────────────────────",
+    "type": "info",
+    "description": "",
+}
+
+_GLOBAL_SETTINGS_FIELDS = [
     {
         "id": "cleanup_timeout",
         "label": "Timeout (seconds)",
         "type": "number",
         "default": DEFAULT_CLEANUP_TIMEOUT,
+        "min": 1,
         "description": (
-            "Seconds before a matching client's Dispatcharr connection is terminated. "
-            "Applies to idle connections (no data flowing) and connections whose "
-            "channel is no longer in the media server's active session pool. "
-            "Paused automatically during stream failover or buffering"
+            "Seconds a matching client's Dispatcharr connection is allowed to sit idle, or "
+            "absent from its media server's active session pool, before it's terminated. "
+            "Automatically paused during stream failover or buffering so those don't trigger "
+            "a false termination. Takes effect on the next poll cycle, no restart needed."
         ),
         "placeholder": "30",
     },
@@ -84,8 +84,90 @@ _FIELDS_BEFORE_SERVERS = [
         "label": "Poll Interval (seconds)",
         "type": "number",
         "default": DEFAULT_POLL_INTERVAL,
-        "description": "How often to check client activity",
+        "min": 1,
+        "description": (
+            "How often to check Dispatcharr client activity and media server session pools. "
+            "Lower values react to idle/orphaned clients faster at the cost of more frequent "
+            "API calls. Requires the 'Restart Monitor' action (or a Dispatcharr restart) to "
+            "take effect."
+        ),
         "placeholder": "10",
+    },
+]
+
+_DASHBOARD_SETTINGS_HEADER = {
+    "id": "_dashboard_settings_header",
+    "label": "── Dashboard Settings ──────────────────────",
+    "type": "info",
+    "description": "",
+}
+
+_DASHBOARD_SETTINGS_FIELDS = [
+    {
+        "id": "dash_enabled",
+        "label": "Web Dashboard",
+        "type": "select",
+        "default": "disabled",
+        "options": [
+            {"value": "disabled", "label": "Disabled"},
+            {"value": "enabled", "label": "Enabled"},
+        ],
+        "description": (
+            "Serves a mobile-friendly PWA dashboard for viewing live channel/client status "
+            "and editing settings, gated behind your Dispatcharr login. Off by default. You "
+            "may need to expose the configured port in your docker-compose.yml to reach it "
+            "from outside the container. After changing this, the port, or the path, use the "
+            "'Restart Monitor' action below (or restart Dispatcharr) to apply it."
+        ),
+    },
+    {
+        "id": "mask_sensitive_data",
+        "label": "Mask Sensitive Data on Dashboard",
+        "type": "select",
+        "default": "disabled",
+        "options": [
+            {"value": "disabled", "label": "Disabled"},
+            {"value": "enabled", "label": "Enabled"},
+        ],
+        "description": (
+            "Hides usernames, IPs, and media server URLs on the dashboard's status view. "
+            "Takes effect immediately, no restart needed."
+        ),
+    },
+    {
+        "id": "dash_port",
+        "label": "Dashboard Port",
+        "type": "number",
+        "default": DEFAULT_PORT,
+        "min": 1024,
+        "max": 65535,
+        "placeholder": str(DEFAULT_PORT),
+        "description": (
+            "TCP port the embedded dashboard server listens on. Requires the 'Restart "
+            "Monitor' action (or a Dispatcharr restart) to take effect."
+        ),
+    },
+    {
+        "id": "dash_path",
+        "label": "Dashboard Mount Path",
+        "type": "string",
+        "default": DEFAULT_DASH_PATH,
+        "placeholder": DEFAULT_DASH_PATH,
+        "description": (
+            "URL path the dashboard is served under, e.g. '/dash' gives "
+            "http://<host>:<port>/dash/. Takes effect immediately, no restart needed."
+        ),
+    },
+    {
+        "id": "dash_host",
+        "label": "Dashboard Bind Host",
+        "type": "string",
+        "default": DEFAULT_HOST,
+        "placeholder": DEFAULT_HOST,
+        "description": (
+            "Host address the dashboard server binds to (0.0.0.0 for all interfaces). "
+            "Requires the 'Restart Monitor' action (or a Dispatcharr restart) to take effect."
+        ),
     },
 ]
 
@@ -98,51 +180,23 @@ _MEDIA_SERVER_COUNT_FIELD = {
     "description": (
         "Number of Emby/Jellyfin servers to monitor for orphan detection. "
         "After changing this value, save settings and click the blue refresh "
-        "button in the top-right of the My Plugins page to see the new fields"
+        "button in the top-right of the My Plugins page to see the new fields."
     ),
     "placeholder": "1",
 }
 
-# Fields that appear after the media server section
-_FIELDS_AFTER_SERVERS = [
-    {
-        "id": "enable_debug_server",
-        "label": "Enable Debug Server",
-        "type": "boolean",
-        "default": False,
-        "description": "Start an HTTP server for the debug dashboard (optional)",
-    },
-    {
-        "id": "mask_sensitive_data",
-        "label": "Mask Sensitive Data in Debug Page",
-        "type": "boolean",
-        "default": False,
-        "description": "Hide usernames, IPs, and URLs in the debug dashboard",
-    },
-    {
-        "id": "port",
-        "label": "Debug Server Port",
-        "type": "number",
-        "default": DEFAULT_PORT,
-        "description": "Port for the debug HTTP server",
-        "placeholder": "9193",
-    },
-    {
-        "id": "host",
-        "label": "Debug Server Host",
-        "type": "string",
-        "default": DEFAULT_HOST,
-        "description": "Host address to bind the debug server to (0.0.0.0 for all interfaces)",
-        "placeholder": "0.0.0.0",
-    },
-]
-
 
 def _build_server_fields(n):
-    """Generate URL + API key fields for media server *n* (1-based)."""
+    """Generate the header + URL/key/identifier fields for media server *n* (1-based)."""
     suffix = f"_{n}" if n > 1 else ""
     label_num = f" {n}" if n > 1 else ""
     return [
+        {
+            "id": f"_media_server_{n}_header",
+            "label": f"── Media Server {n} ──────────────────────",
+            "type": "info",
+            "description": "",
+        },
         {
             "id": f"media_server_url{suffix}",
             "label": f"Media Server{label_num} URL",
@@ -151,7 +205,7 @@ def _build_server_fields(n):
             "description": (
                 f"Base URL of media server{label_num} (e.g. http://192.168.1.100:8096). "
                 "Polls the Sessions API to detect orphaned connections. "
-                "Leave blank to disable"
+                "Leave blank to disable."
             ),
             "placeholder": "http://192.168.1.100:8096",
         },
@@ -163,7 +217,7 @@ def _build_server_fields(n):
             "default": "",
             "description": (
                 f"API key for media server{label_num}. "
-                "Generate one under Settings > API Keys"
+                "Generate one under Settings > API Keys."
             ),
             "placeholder": "your-api-key",
         },
@@ -177,23 +231,29 @@ def _build_server_fields(n):
                 "connecting to Dispatcharr (as shown in the Client Identifier column). "
                 "Comma-separated for multiple values. "
                 "CIDR notation (e.g. 10.0.0.0/24) matches any IP in the range. "
-                "This links the server's session pool to its connections for accurate cleanup"
+                "This links the server's session pool to its connections for accurate cleanup. "
+                "URL, API key, and identifier must all be set for a server to be considered "
+                "configured. Changes here are picked up automatically within one poll cycle; "
+                "use the 'Restart Monitor' action for it to take effect immediately."
             ),
             "placeholder": "emby-prod, 192.168.1.0/24",
         },
     ]
 
 
-def build_plugin_fields(server_count=1):
-    """Build the complete field list for *server_count* media servers."""
-    count = max(1, int(server_count))
-    fields = list(_FIELDS_BEFORE_SERVERS)
+def build_plugin_fields(settings: dict) -> list:
+    """Build the full field list based on current settings."""
+    count = max(1, int(settings.get("media_server_count", 1)))
+
+    fields = [_GLOBAL_SETTINGS_HEADER]
+    fields.extend(_GLOBAL_SETTINGS_FIELDS)
+    fields.append(_DASHBOARD_SETTINGS_HEADER)
+    fields.extend(_DASHBOARD_SETTINGS_FIELDS)
     fields.append(_MEDIA_SERVER_COUNT_FIELD)
     for n in range(1, count + 1):
         fields.extend(_build_server_fields(n))
-    fields.extend(_FIELDS_AFTER_SERVERS)
     return fields
 
 
 # Default field list (1 server) - used by plugin.json and as fallback
-PLUGIN_FIELDS = build_plugin_fields(1)
+PLUGIN_FIELDS = build_plugin_fields({})
