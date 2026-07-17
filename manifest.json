@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17T00:31:58Z",
+  "generated_at": "2026-07-17T21:39:26Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -71,12 +71,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/embyfin-stream-cleanup/manifest.json",
         "author": "sethwv",
         "license": "MIT",
-        "last_updated": "2026-05-15T13:13:11-04:00",
-        "latest_version": "1.2.0",
-        "latest_md5": "b898fd7cfbf60bb0807c659f1c26be5f",
-        "latest_sha256": "f1f94d9a8cb6b311ac5e864b9e810a64017ee1bf85027e41a18144cf52292969",
-        "latest_url": "embyfin-stream-cleanup-1.2.0/embyfin-stream-cleanup-1.2.0.zip",
-        "latest_size": 1567,
+        "last_updated": "2026-07-17T17:38:58-04:00",
+        "latest_version": "1.3.0",
+        "latest_md5": "6fa65aef898c225ad3fba47d9708c573",
+        "latest_sha256": "6ee76b5aa4126aaf84e9824ea58b9e03b03a5d3215a4d3d87f4fb5bcc6e055ce",
+        "latest_url": "embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip",
+        "latest_size": 302,
         "min_dispatcharr_version": "v0.22.0"
       },
       {
@@ -317,5 +317,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCall4AwAKCRB+wDprTCI0\nzqpHAP4yRBBrYva+ItAOUXHvHor5nxb32y4kt1MUBVjgI/lZ7QD/UETBC7qeqSk1\nev5P7wLcFzhH0aw6ceh48RFF2Q6cOgQ=\n=AYBB\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCalqhEgAKCRB+wDprTCI0\nzo1EAP4lQGJYf2omJwHW8lkMZvj6rJse8otlUANvKLt9gb9IjQD9EIwEpzmUNtYM\nkb61hoXNtO9/enAqlbdi1usoTJV7+Q4=\n=LWEW\n-----END PGP SIGNATURE-----"
 }

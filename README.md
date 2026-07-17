@@ -15,7 +15,7 @@ This branch contains all published plugin releases.
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.0.1` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.11.1` | Jacob-Lasky | MIT | Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.6` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
-| [`Embyfin Stream Cleanup`](#embyfin-stream-cleanup) | `1.2.0` | sethwv | MIT | Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections |
+| [`Embyfin Stream Cleanup`](#embyfin-stream-cleanup) | `1.3.0` | sethwv | MIT | Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections |
 | [`EPG Janitor`](#epg-janitor) | `1.26.1791309` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`EPGeditARR`](#epgeditarr) | `0.2.07` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.1711720` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
@@ -107,7 +107,7 @@ An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 
 ### [Embyfin Stream Cleanup](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/embyfin-stream-cleanup/README.md)
 
-**Version:** `1.2.0` | **Author:** sethwv | **Last Updated:** May 15 2026, 17:13 UTC
+**Version:** `1.3.0` | **Author:** sethwv | **Last Updated:** Jul 17 2026, 21:38 UTC
 
 Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections
 
@@ -116,10 +116,10 @@ Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connectio
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.22.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.2.0`)](https://github.com/Dispatcharr/Plugins/releases/download/embyfin-stream-cleanup-1.2.0/embyfin-stream-cleanup-1.2.0.zip)
-- [All Versions (6 available)](./metadata/embyfin-stream-cleanup)
+- [Latest Release (`1.3.0`)](https://github.com/Dispatcharr/Plugins/releases/download/embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip)
+- [All Versions (7 available)](./metadata/embyfin-stream-cleanup)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/embyfin-stream-cleanup) | **Last Change:** [`315a967`](https://github.com/Dispatcharr/Plugins/commit/315a967448ff4db469a66491ebc404bfb8e0bb42)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/embyfin-stream-cleanup) | **Last Change:** [`c5c8cd5`](https://github.com/Dispatcharr/Plugins/commit/c5c8cd52948305d6eb701297b666e37dfc5b0c79)
 
 ---
 
@@ -411,4 +411,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jul 17 2026, 00:32 UTC*
+*Last updated: Jul 17 2026, 21:39 UTC*

@@ -2,7 +2,7 @@
 
 # Embyfin Stream Cleanup
 
-**Version:** `1.2.0` | **Author:** sethwv | **Last Updated:** May 15 2026, 17:13 UTC
+**Version:** `1.3.0` | **Author:** sethwv | **Last Updated:** Jul 17 2026, 21:38 UTC
 
 Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections
 
@@ -14,20 +14,21 @@ Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connectio
 
 ### Latest Release
 
-- **Download:** [`embyfin-stream-cleanup-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/embyfin-stream-cleanup-1.2.0/embyfin-stream-cleanup-1.2.0.zip)
-- **Built:** May 15 2026, 17:13 UTC
-- **Source Commit:** [`315a967`](https://github.com/Dispatcharr/Plugins/commit/315a967448ff4db469a66491ebc404bfb8e0bb42)
+- **Download:** [`embyfin-stream-cleanup-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip)
+- **Built:** Jul 17 2026, 21:39 UTC
+- **Source Commit:** [`c5c8cd5`](https://github.com/Dispatcharr/Plugins/commit/c5c8cd52948305d6eb701297b666e37dfc5b0c79)
 
 **Checksums:**
 ```
-MD5:    b898fd7cfbf60bb0807c659f1c26be5f
-SHA256: f1f94d9a8cb6b311ac5e864b9e810a64017ee1bf85027e41a18144cf52292969
+MD5:    6fa65aef898c225ad3fba47d9708c573
+SHA256: 6ee76b5aa4126aaf84e9824ea58b9e03b03a5d3215a4d3d87f4fb5bcc6e055ce
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.3.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip) | Jul 17 2026, 21:39 UTC | [`c5c8cd5`](https://github.com/Dispatcharr/Plugins/commit/c5c8cd52948305d6eb701297b666e37dfc5b0c79) | 6fa65aef898c225ad3fba47d9708c573 | 6ee76b5aa4126aaf84e9824ea58b9e03b03a5d3215a4d3d87f4fb5bcc6e055ce |
 | `1.2.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/embyfin-stream-cleanup-1.2.0/embyfin-stream-cleanup-1.2.0.zip) | May 15 2026, 17:13 UTC | [`315a967`](https://github.com/Dispatcharr/Plugins/commit/315a967448ff4db469a66491ebc404bfb8e0bb42) | b898fd7cfbf60bb0807c659f1c26be5f | f1f94d9a8cb6b311ac5e864b9e810a64017ee1bf85027e41a18144cf52292969 |
 | `1.1.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/embyfin-stream-cleanup-1.1.2/embyfin-stream-cleanup-1.1.2.zip) | May 10 2026, 18:26 UTC | [`006432d`](https://github.com/Dispatcharr/Plugins/commit/006432da42655d524601830db5aa888437551c84) | b5c83e690b790616134e9d954fbd81ef | 1af5193583bcb037c00012b157fb2c52c0c0462c9beca9da3f26c91033eec47a |
 | `1.1.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/embyfin-stream-cleanup-1.1.1/embyfin-stream-cleanup-1.1.1.zip) | Apr 28 2026, 18:33 UTC | [`9416199`](https://github.com/Dispatcharr/Plugins/commit/94161991dd24c6bc86be99d9044b8cf5e6622952) | 91600ee7bd50ee34715eee4cfab52320 | 362c6c061bb016caaf756790d45b8aceecbff6201e6f1fb6df30d115608c797b |
