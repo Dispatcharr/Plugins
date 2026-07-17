@@ -1,6 +1,6 @@
 {
   "name": "Embyfin Stream Cleanup",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections",
   "license": "MIT",
   "discord_thread": "https://discord.com/channels/1340492560220684331/1491487318832447668",
