@@ -465,7 +465,10 @@ jobs:
           if find plugins -name '*.py' -print -quit | grep -q .; then
             LANGS+=(python)
           fi
-          if find plugins \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' \) -print -quit | grep -q .; then
+          if find plugins \
+               \( -path '*/node_modules/*' -o -path '*/dist/*' -o -path '*/build/*' -o -path '*/static/*' \) -prune -o \
+               \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' \) -print \
+               -quit | grep -q .; then
             LANGS+=(javascript)
           fi
           if find plugins -name '*.go' -print -quit | grep -q .; then
