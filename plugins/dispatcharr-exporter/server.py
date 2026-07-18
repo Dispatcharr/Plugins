@@ -99,6 +99,18 @@ class MetricsServer:
                 logger.error(f"Error generating metrics: {e}", exc_info=True)
                 start_response('500 Internal Server Error', [('Content-Type', 'text/plain')])
                 return [f"# Error: {str(e)}\n".encode('utf-8')]
+            finally:
+                # This WSGI server runs outside Django's normal request cycle,
+                # so the request_finished signal that would normally close/reset
+                # DB connections never fires. Without this, connections opened
+                # by collect_metrics() (and any left mid-transaction by an
+                # exception) accumulate until the DB's connection limit is
+                # exhausted, hanging the whole Dispatcharr app until restart.
+                try:
+                    from django.db import close_old_connections
+                    close_old_connections()
+                except Exception as e:
+                    logger.warning(f"Error closing DB connections after /metrics: {e}")
 
         elif path == '/health':
             start_response('200 OK', [('Content-Type', 'text/plain')])
