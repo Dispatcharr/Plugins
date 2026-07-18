@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17T22:39:56Z",
+  "generated_at": "2026-07-18T17:30:00Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -27,12 +27,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/dispatcharr-exporter/manifest.json",
         "author": "sethwv",
         "license": "MIT",
-        "last_updated": "2026-05-10T14:26:32-04:00",
-        "latest_version": "3.0.1",
-        "latest_md5": "35f2f95db36ec3a75f818f102c68ec4f",
-        "latest_sha256": "89c83cbf9a257ad278370920451bdb9ceee5868983c8b923bd10674c7e739730",
-        "latest_url": "dispatcharr-exporter-3.0.1/dispatcharr-exporter-3.0.1.zip",
-        "latest_size": 140,
+        "last_updated": "2026-07-18T13:29:39-04:00",
+        "latest_version": "3.1.0",
+        "latest_md5": "1ae1da155cefd2cac233d2bf9357825a",
+        "latest_sha256": "f854184a48616b84763bdfb492496becb69dd60999fa23370eeaab7ec680264e",
+        "latest_url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
+        "latest_size": 143,
         "min_dispatcharr_version": "v0.22.0"
       },
       {
@@ -317,5 +317,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCalqvQAAKCRB+wDprTCI0\nzsDbAP9e0+cYNlRnE633jbHRPXQjTUjv8OiyTtxMeNo8t9yzBwD/dEzQ8l3VSkX5\nraiskaiaqYmLjUfd/ep+xMTWSlf53QQ=\n=V/XX\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCalu4HAAKCRB+wDprTCI0\nzlADAPsH774GjyQPUyv4FJFuXp/9Hxi75o21kM9CPs+tz8VI+gD/fEu7YWjqeRWw\nO3j8qzRDuarvdC39qO6byynNYNfV3go=\n=L5xw\n-----END PGP SIGNATURE-----"
 }

@@ -12,7 +12,7 @@ This branch contains all published plugin releases.
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.1791324` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
-| [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.0.1` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
+| [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.1.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.11.1` | Jacob-Lasky | MIT | Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.6` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
 | [`Embyfin Stream Cleanup`](#embyfin-stream-cleanup) | `1.3.0` | sethwv | MIT | Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections |
@@ -55,7 +55,7 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 
 ### [Dispatcharr Exporter](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dispatcharr-exporter/README.md)
 
-**Version:** `3.0.1` | **Author:** sethwv | **Last Updated:** May 10 2026, 18:26 UTC
+**Version:** `3.1.0` | **Author:** sethwv | **Last Updated:** Jul 18 2026, 17:29 UTC
 
 Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring
 
@@ -64,10 +64,10 @@ Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitori
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.22.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`3.0.1`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-exporter-3.0.1/dispatcharr-exporter-3.0.1.zip)
-- [All Versions (3 available)](./metadata/dispatcharr-exporter)
+- [Latest Release (`3.1.0`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip)
+- [All Versions (4 available)](./metadata/dispatcharr-exporter)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-exporter) | **Last Change:** [`b70abd6`](https://github.com/Dispatcharr/Plugins/commit/b70abd6df9cd520bcc28ad7fced085be135897a9)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-exporter) | **Last Change:** [`ddffa49`](https://github.com/Dispatcharr/Plugins/commit/ddffa49420c5dd513a9a7876998a72ce295e2242)
 
 ---
 
@@ -411,4 +411,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Jul 17 2026, 22:40 UTC*
+*Last updated: Jul 18 2026, 17:30 UTC*
