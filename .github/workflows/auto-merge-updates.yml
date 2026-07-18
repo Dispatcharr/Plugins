@@ -1,0 +1,181 @@
+name: Auto-merge Plugin Updates
+
+# Opt-in via the AUTO_MERGE_UPDATES repo variable. When enabled, squash-merges
+# a PR automatically once "Validate Plugin" succeeds - but ONLY for pure
+# plugin version-bump updates. Never for new plugins, repo/tooling changes,
+# invalid PRs, or PRs that mix a new plugin with an update.
+#
+# Runs the merge with the GitHub App token specifically (never GITHUB_TOKEN):
+# pushes authored by the App's bot identity correctly cascade into
+# publish-plugins.yml's `on: push` trigger, whereas GITHUB_TOKEN-authored
+# pushes are exempt from triggering other workflows. If the App isn't
+# configured, auto-merge is skipped entirely rather than falling back.
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_run:
+    workflows: ["Validate Plugin"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  auto-merge:
+    if: github.event.workflow_run.conclusion == 'success' && vars.AUTO_MERGE_UPDATES == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: auto-merge-updates-${{ github.event.workflow_run.head_sha }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout base branch scripts (trusted)
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.repository }}
+          ref: main
+          fetch-depth: 0
+
+      - name: Load app ID from config
+        id: config
+        env:
+          GH_APP_ID: ${{ vars.GH_APP_ID }}
+          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        run: |
+          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
+            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
+            echo "use_app=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "use_app=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip - GitHub App not configured
+        if: steps.config.outputs.use_app != 'true'
+        run: |
+          echo "::notice::GH_APP_ID or GH_APP_PRIVATE_KEY not configured. Skipping auto-merge (merging with GITHUB_TOKEN would not trigger publish-plugins.yml)."
+
+      - name: Generate GitHub App token
+        if: steps.config.outputs.use_app == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ steps.config.outputs.app_id }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Resolve PR for this workflow run
+        if: steps.config.outputs.use_app == 'true'
+        id: resolve-pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          # workflow_run.pull_requests is unreliable for pull_request_target runs
+          # from forks, so match on head SHA against open PRs instead.
+          MATCHES=$(gh pr list --state open --json number,headRefOid,isDraft \
+            | jq -c --arg sha "$HEAD_SHA" '[.[] | select(.headRefOid == $sha)]')
+          COUNT=$(echo "$MATCHES" | jq 'length')
+
+          if [[ "$COUNT" -ne 1 ]]; then
+            echo "::notice::Found $COUNT open PR(s) matching head SHA $HEAD_SHA - skipping (expected exactly 1)."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          PR_NUMBER=$(echo "$MATCHES" | jq -r '.[0].number')
+          IS_DRAFT=$(echo "$MATCHES" | jq -r '.[0].isDraft')
+
+          if [[ "$IS_DRAFT" == "true" ]]; then
+            echo "::notice::PR #$PR_NUMBER is a draft - skipping."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Check labels and mergeable state
+        if: steps.config.outputs.use_app == 'true' && steps.resolve-pr.outputs.found == 'true'
+        id: check-labels
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.resolve-pr.outputs.pr_number }}
+        run: |
+          INFO=$(gh pr view "$PR_NUMBER" --json labels,mergeable,mergeStateStatus)
+          LABELS=$(echo "$INFO" | jq -r '[.labels[].name] | join(",")')
+          MERGEABLE=$(echo "$INFO" | jq -r '.mergeable')
+
+          echo "Labels: $LABELS"
+          echo "Mergeable: $MERGEABLE"
+
+          has_label() {
+            echo ",$LABELS," | grep -qF ",$1,"
+          }
+
+          OK=true
+          has_label "Plugin Update" || { echo "::notice::Missing 'Plugin Update' label - skipping."; OK=false; }
+          has_label "New Plugin" && { echo "::notice::Has 'New Plugin' label - skipping."; OK=false; }
+          has_label "Repo Update" && { echo "::notice::Has 'Repo Update' label - skipping."; OK=false; }
+          has_label "Invalid" && { echo "::notice::Has 'Invalid' label - skipping."; OK=false; }
+          has_label "QUARANTINE" && { echo "::notice::Has 'QUARANTINE' label - skipping."; OK=false; }
+          [[ "$MERGEABLE" == "MERGEABLE" ]] || { echo "::notice::PR not cleanly mergeable (mergeable=$MERGEABLE) - skipping."; OK=false; }
+
+          echo "ok=$OK" >> "$GITHUB_OUTPUT"
+
+      - name: Independently re-verify this is a pure plugin update
+        if: steps.config.outputs.use_app == 'true' && steps.resolve-pr.outputs.found == 'true' && steps.check-labels.outputs.ok == 'true'
+        id: reverify
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.resolve-pr.outputs.pr_number }}
+        run: |
+          # Defense in depth: labels are applied by a trusted job, but they are
+          # ordinary PR labels and could in principle be hand-edited by anyone
+          # with write access. Re-derive the same signal directly from the diff
+          # rather than trusting labels alone.
+          git fetch origin "pull/${PR_NUMBER}/merge:pr-merge-${PR_NUMBER}" 2>/dev/null \
+            || { echo "::notice::Could not fetch merge ref for PR #$PR_NUMBER - skipping."; echo "ok=false" >> "$GITHUB_OUTPUT"; exit 0; }
+          git checkout -q "pr-merge-${PR_NUMBER}"
+
+          MERGE_BASE=$(git merge-base origin/main HEAD)
+          CHANGED=$(git diff --name-only "$MERGE_BASE" HEAD)
+
+          OK=true
+
+          OUTSIDE=$(echo "$CHANGED" | grep -v '^plugins/' || true)
+          if [[ -n "$OUTSIDE" ]]; then
+            echo "::notice::Changes outside plugins/ detected - skipping. Files: $OUTSIDE"
+            OK=false
+          fi
+
+          PLUGIN_SLUGS=$(echo "$CHANGED" | grep '^plugins/' | cut -d'/' -f2 | sort -u)
+          if [[ -z "$PLUGIN_SLUGS" ]]; then
+            echo "::notice::No plugin changes detected in diff - skipping."
+            OK=false
+          fi
+
+          while IFS= read -r slug; do
+            [[ -z "$slug" ]] && continue
+            if ! git show "origin/main:plugins/${slug}/plugin.json" > /dev/null 2>&1; then
+              echo "::notice::Plugin '$slug' does not exist on main - this is a new plugin, not an update. Skipping."
+              OK=false
+            fi
+          done <<< "$PLUGIN_SLUGS"
+
+          echo "ok=$OK" >> "$GITHUB_OUTPUT"
+
+      - name: Squash-merge PR
+        if: steps.config.outputs.use_app == 'true' && steps.resolve-pr.outputs.found == 'true' && steps.check-labels.outputs.ok == 'true' && steps.reverify.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.resolve-pr.outputs.pr_number }}
+        run: |
+          gh pr merge "$PR_NUMBER" --squash --delete-branch=false
+          echo "Auto-merged PR #$PR_NUMBER"
