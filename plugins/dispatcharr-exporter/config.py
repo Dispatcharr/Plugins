@@ -145,4 +145,18 @@ PLUGIN_FIELDS = [
         "default": False,
         "description": "Include user account metrics (user info, stream limits, active stream counts).",
     },
+    {
+        "id": "include_plugin_stats",
+        "label": "Include Plugin Statistics",
+        "type": "boolean",
+        "default": False,
+        "description": "Include installed plugin and plugin-repo health metrics",
+    },
+    {
+        "id": "include_channel_info",
+        "label": "Include Channel Info Statistics",
+        "type": "boolean",
+        "default": False,
+        "description": "Include per-channel info (catch-up status, source/stream count, group) metrics",
+    },
 ]
