@@ -2,7 +2,7 @@
 
 # Ranked Matchups (Top Games)
 
-**Version:** `1.11.1` | **Author:** Jacob-Lasky | **Last Updated:** Jul 11 2026, 12:24 UTC
+**Version:** `1.12.0` | **Author:** Jacob-Lasky | **Last Updated:** Jul 20 2026, 14:01 UTC
 
 Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings.
 
@@ -12,20 +12,21 @@ Cross-sport interestingness curator. Pulls upcoming games per enabled sport, sco
 
 ### Latest Release
 
-- **Download:** [`dispatcharr-ranked-matchups-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.11.1/dispatcharr-ranked-matchups-1.11.1.zip)
-- **Built:** Jul 11 2026, 12:24 UTC
-- **Source Commit:** [`c22c57a`](https://github.com/Dispatcharr/Plugins/commit/c22c57a445bf16bf841578c318f1b6a8b60248eb)
+- **Download:** [`dispatcharr-ranked-matchups-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.12.0/dispatcharr-ranked-matchups-1.12.0.zip)
+- **Built:** Jul 20 2026, 14:01 UTC
+- **Source Commit:** [`624eca0`](https://github.com/Dispatcharr/Plugins/commit/624eca0ac2a7f2e6114a1674acd256b939fdd6c6)
 
 **Checksums:**
 ```
-MD5:    a18f67243ed3c16451b07af0636da329
-SHA256: 55f2c1a3a0514f6b579f6698158edcab62fb807f66e18ad82440f8d63ef9c979
+MD5:    d91cb11d5c94fd8a9b91abe108c176cc
+SHA256: 4c0fd43fddcbbaae0dea259b0f70640c0bfd7dbe09c45358d4e8b354de37f304
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.12.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.12.0/dispatcharr-ranked-matchups-1.12.0.zip) | Jul 20 2026, 14:01 UTC | [`624eca0`](https://github.com/Dispatcharr/Plugins/commit/624eca0ac2a7f2e6114a1674acd256b939fdd6c6) | d91cb11d5c94fd8a9b91abe108c176cc | 4c0fd43fddcbbaae0dea259b0f70640c0bfd7dbe09c45358d4e8b354de37f304 |
 | `1.11.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.11.1/dispatcharr-ranked-matchups-1.11.1.zip) | Jul 11 2026, 12:24 UTC | [`c22c57a`](https://github.com/Dispatcharr/Plugins/commit/c22c57a445bf16bf841578c318f1b6a8b60248eb) | a18f67243ed3c16451b07af0636da329 | 55f2c1a3a0514f6b579f6698158edcab62fb807f66e18ad82440f8d63ef9c979 |
 | `1.11.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.11.0/dispatcharr-ranked-matchups-1.11.0.zip) | Jul 10 2026, 20:16 UTC | [`8f1db20`](https://github.com/Dispatcharr/Plugins/commit/8f1db20fa8d034fe356486fd4813842b09d53f37) | e9ffd71eae27b9d410116ff0c607200b | a2047e838b295ccbfab907decaf967643b384082ac5d5eee6827b167a87d1319 |
 | `1.10.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.10.0/dispatcharr-ranked-matchups-1.10.0.zip) | Jun 28 2026, 18:15 UTC | [`224a791`](https://github.com/Dispatcharr/Plugins/commit/224a7911f90db6635a3c7831393a4423592d7d57) | 4afd6f1e1175ac937d2bfee599bef01d | 09165075376f702d854485d2c4f82983803f5e12c1445aa55b995e8b817fc1c9 |
@@ -35,7 +36,6 @@ SHA256: 55f2c1a3a0514f6b579f6698158edcab62fb807f66e18ad82440f8d63ef9c979
 | `1.7.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.7.0/dispatcharr-ranked-matchups-1.7.0.zip) | Jun 14 2026, 12:29 UTC | - | 71cea724607fa61ed0ad6c4ea9df0e42 | 82b0c5735c28d3cd217747cd973fc6c36d6b9f2dc0cd493d5c434348b8be5eee |
 | `1.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.5.0/dispatcharr-ranked-matchups-1.5.0.zip) | Jun 14 2026, 02:51 UTC | - | 74b5c647079e1947ca49f6fbaca1f039 | 829bcb6964bfb443f982fb816f82240a8c26f6afa08e503011ce3d695732b7a5 |
 | `1.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.4.0/dispatcharr-ranked-matchups-1.4.0.zip) | Jun 13 2026, 13:21 UTC | - | 45e24aef9b1864f5629f8c8a054ac5e0 | dcb1e12325d9346a0948b3699f4cb1b9eafd5030c4ebe94a21d9dcd121d5ce8a |
-| `1.2.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.2.0/dispatcharr-ranked-matchups-1.2.0.zip) | Jun 11 2026, 14:01 UTC | - | 8fab111209b40779e2ac0b56152958b0 | 818597f921d7307256cb2eae618c786e490d981a8b555e55d25f40f4a62dc345 |
 
 ---
 
