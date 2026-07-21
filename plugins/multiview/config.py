@@ -1,6 +1,7 @@
 """Plugin configuration and field definitions for Dispatcharr Multiview."""
 
 import datetime
+import glob
 import json
 import os
 import secrets
@@ -134,6 +135,31 @@ def _register_presets(encoder: str, fields_fn):
             return
 
 
+def _render_device_field() -> dict:
+    """Render-device override for QSV/VAAPI, populated from detected DRM nodes.
+
+    Auto (the default) preserves the historic behavior of picking the first
+    /dev/dri/renderD* node. In a VM or container with multiple render nodes the
+    first one can be the wrong GPU, so the user can pin a specific node here.
+    Options are globbed on the host at field-build time, so both the native
+    Dispatcharr settings page and the web dashboard list the real nodes.
+    """
+    devices = sorted(glob.glob("/dev/dri/render*"))
+    options = [{"value": "auto", "label": "Auto (first detected)"}]
+    options += [{"value": d, "label": d} for d in devices]
+    return {
+        "id": "render_device",
+        "label": "Render Device",
+        "type": "select",
+        "default": "auto",
+        "options": options,
+        "description": (
+            "GPU render node for QSV/VAAPI. Auto picks the first detected; "
+            "override if you have multiple GPUs."
+        ),
+    }
+
+
 def _x264_fields() -> list:
     return [
         {
@@ -189,11 +215,12 @@ def _qsv_fields() -> list:
             ],
             "description": "QSV encode speed vs quality. Medium is recommended for live multiview.",
         },
+        _render_device_field(),
     ]
 
 
 def _vaapi_fields() -> list:
-    return []
+    return [_render_device_field()]
 
 
 _ENCODER_EXTRA_FIELDS = {
