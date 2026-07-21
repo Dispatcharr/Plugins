@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17T22:39:56Z",
+  "generated_at": "2026-07-21T17:31:04Z",
   "manifest": {
     "slug": "multiview",
     "name": "Multiview",
@@ -10,21 +10,33 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1509200002407465001",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-07-17T18:39:28-04:00",
+    "last_updated": "2026-07-21T17:30:42Z",
     "latest": {
-      "version": "0.4.1",
-      "commit_sha": "fc3b6aac4a2cb95bc2e55ed45e410984c4a7443f",
-      "commit_sha_short": "fc3b6aa",
-      "build_timestamp": "2026-07-17T22:39:49Z",
-      "last_updated": "2026-07-17T18:39:28-04:00",
-      "checksum_md5": "7003dc14b1c3a21a5e25846259300339",
-      "checksum_sha256": "89aba669a63ba31c236fba6288f209a54dff32c0164d2928bfa1ae3d6f5e392f",
+      "version": "0.4.2",
+      "commit_sha": "38f5f73656df833e60dd9759c230cd957c6b1157",
+      "commit_sha_short": "38f5f73",
+      "build_timestamp": "2026-07-21T17:30:58Z",
+      "last_updated": "2026-07-21T17:30:42Z",
+      "checksum_md5": "b93869a72cc145a04d74a37f4ed3fe4c",
+      "checksum_sha256": "266e5721e361530478fed564c0c946af618cf8c501601dbc582e565c9b89ec57",
       "min_dispatcharr_version": "v0.27.0",
-      "latest_url": "multiview-0.4.1/multiview-0.4.1.zip",
-      "url": "multiview-0.4.1/multiview-0.4.1.zip",
+      "latest_url": "multiview-0.4.2/multiview-0.4.2.zip",
+      "url": "multiview-0.4.2/multiview-0.4.2.zip",
       "size": 360
     },
     "versions": [
+      {
+        "version": "0.4.2",
+        "commit_sha": "38f5f73656df833e60dd9759c230cd957c6b1157",
+        "commit_sha_short": "38f5f73",
+        "build_timestamp": "2026-07-21T17:30:58Z",
+        "last_updated": "2026-07-21T17:30:42Z",
+        "checksum_md5": "b93869a72cc145a04d74a37f4ed3fe4c",
+        "checksum_sha256": "266e5721e361530478fed564c0c946af618cf8c501601dbc582e565c9b89ec57",
+        "min_dispatcharr_version": "v0.27.0",
+        "url": "multiview-0.4.2/multiview-0.4.2.zip",
+        "size": 360
+      },
       {
         "version": "0.4.1",
         "commit_sha": "fc3b6aac4a2cb95bc2e55ed45e410984c4a7443f",
@@ -136,5 +148,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCalqvPwAKCRB+wDprTCI0\nzvDoAQCEMSh0vu6yTGmFKFprRpycdmlvpnMGejLM+0UgkvpwCQD5AS/bRvRTIExw\nOVledyqewLAhPYq3DjsSy5q3XkDeXgc=\n=mrt8\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCal+s2wAKCRB+wDprTCI0\nzhWAAP9jeNVUWPKise4iS7K293yNBZYv5xdnH8AS2yQ4dW4xIAEA+GLLYtCnD/BG\nC96nUGsngZgcOc/zlkBvTqdL4k9nbwo=\n=DwKl\n-----END PGP SIGNATURE-----"
 }
