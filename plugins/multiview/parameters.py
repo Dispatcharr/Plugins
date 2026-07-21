@@ -21,7 +21,9 @@ def fps_fraction(fps: str) -> Fraction:
     return Fraction(int(fps), 1)
 
 
-def _find_dri_device() -> str:
+def _find_dri_device(override: str = "") -> str:
+    if override and override != "auto":
+        return override
     devices = sorted(glob.glob("/dev/dri/render*"))
     return devices[0] if devices else "/dev/dri/renderD128"
 
@@ -60,14 +62,15 @@ def build_encoder_cmd(cfg, out_w, out_h, audio_read) -> list:
     gop = max(2, round(float(fps_fraction(cfg["fps"])) * 2))
     encoder = cfg.get("video_encoder", "libx264")
     preset = resolve_preset(encoder, cfg.get("preset"))
+    render_device = cfg.get("render_device", "")
 
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error"]
 
     # Hardware device init must precede inputs.
     if encoder == "h264_vaapi":
-        cmd += ["-vaapi_device", _find_dri_device()]
+        cmd += ["-vaapi_device", _find_dri_device(render_device)]
     elif encoder == "h264_qsv":
-        cmd += ["-init_hw_device", f"qsv=hw:{_find_dri_device()}", "-filter_hw_device", "hw"]
+        cmd += ["-init_hw_device", f"qsv=hw:{_find_dri_device(render_device)}", "-filter_hw_device", "hw"]
 
     # Cap muxer/filter threads so it doesn't grab every core and starve
     # the PyAV decoders (3x 1080p60 decode already loads the box).

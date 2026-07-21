@@ -384,6 +384,7 @@ class MultiviewServer:
             "bitrate": int(settings.get("output_bitrate") or 8000),
             "preset": preset,
             "video_encoder": encoder,
+            "render_device": settings.get("render_device") or "auto",
             "background": background,
             "tiles": tile_cfg,
         }
