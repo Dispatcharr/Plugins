@@ -1,0 +1,158 @@
+name: CodeQL Scan (reusable)
+
+# Reusable workflow called by validate-plugin.yml. Runs CodeQL over the changed
+# plugins of a PR merge commit and turns the SARIF into PR-comment inputs.
+# pluginctl always runs from the base branch (checked out into _trusted), never
+# from the untrusted merge tree.
+
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: string
+      base_ref:
+        required: true
+        type: string
+    outputs:
+      codeql_status:
+        value: ${{ jobs.analyze.outputs.codeql_status }}
+      codeql_errors:
+        value: ${{ jobs.analyze.outputs.codeql_errors }}
+      codeql_warnings:
+        value: ${{ jobs.analyze.outputs.codeql_warnings }}
+      codeql_mediums:
+        value: ${{ jobs.analyze.outputs.codeql_mediums }}
+      codeql_lows:
+        value: ${{ jobs.analyze.outputs.codeql_lows }}
+      codeql_unscanned_langs:
+        value: ${{ jobs.analyze.outputs.codeql_unscanned_langs }}
+
+permissions:
+  contents: read
+  security-events: write
+
+env:
+  PYTHONPATH: ${{ github.workspace }}/_trusted/.github/pluginctl/src
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      codeql_status: ${{ steps.status.outputs.codeql_status }}
+      codeql_errors: ${{ steps.status.outputs.codeql_errors }}
+      codeql_warnings: ${{ steps.status.outputs.codeql_warnings }}
+      codeql_mediums: ${{ steps.status.outputs.codeql_mediums }}
+      codeql_lows: ${{ steps.status.outputs.codeql_lows }}
+      codeql_unscanned_langs: ${{ steps.status.outputs.codeql_unscanned_langs }}
+    steps:
+      - name: Checkout PR merge commit for analysis
+        uses: actions/checkout@v6
+        with:
+          ref: refs/pull/${{ inputs.pr_number }}/merge
+          sparse-checkout: .gitignore
+          sparse-checkout-cone-mode: false
+          # Merge ref is analyzed statically by CodeQL only; fork code is not executed.
+          allow-unsafe-pr-checkout: true
+
+      - name: Checkout trusted pluginctl (base)
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ inputs.base_ref }}
+          path: _trusted
+          sparse-checkout: .github/pluginctl
+          sparse-checkout-cone-mode: false
+
+      - name: Limit checkout to changed plugin folders only
+        run: |
+          echo '${{ inputs.matrix }}' | jq -r '.[] | "plugins/\(.)"' | git sparse-checkout set --stdin
+          git checkout
+
+      - name: Populate external plugin source for analysis
+        run: |
+          while IFS= read -r plugin_name; do
+            plugin_json="plugins/$plugin_name/plugin.json"
+            [[ ! -f "$plugin_json" ]] && continue
+            source_type=$(jq -r '.source_type // "local"' "$plugin_json")
+            [[ "$source_type" != "external" ]] && continue
+            version=$(jq -r '.version' "$plugin_json")
+            source_url_template=$(jq -r '.source_url // ""' "$plugin_json")
+            source_url="${source_url_template//\{version\}/$version}"
+            echo "Fetching release ZIP for CodeQL: $source_url"
+            curl -fsSL "$source_url" -o "/tmp/${plugin_name}-release.zip"
+            mkdir -p "/tmp/${plugin_name}-src"
+            python3 -c "import zipfile,os; z=zipfile.ZipFile('/tmp/${plugin_name}-release.zip'); d='/tmp/${plugin_name}-src'; [z.extract((setattr(m,'filename',m.filename.replace(chr(92),'/')) or m),d) for m in z.infolist()]"
+            cp -rn "/tmp/${plugin_name}-src/." "plugins/$plugin_name/"
+            rm -rf "/tmp/${plugin_name}-release.zip" "/tmp/${plugin_name}-src"
+          done < <(echo '${{ inputs.matrix }}' | jq -r '.[]')
+
+      - name: Detect supported languages
+        id: detect-langs
+        run: python -m pluginctl detect-langs
+
+      - name: Initialize CodeQL
+        if: steps.detect-langs.outputs.found == 'true'
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ steps.detect-langs.outputs.languages }}
+          build-mode: none
+          queries: security-extended
+
+      - name: Perform CodeQL Analysis
+        if: steps.detect-langs.outputs.found == 'true'
+        id: analyze
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: pr-${{ inputs.pr_number }}
+          output: sarif-results
+          upload: false
+        continue-on-error: true
+
+      - name: Parse SARIF and set CodeQL status
+        id: status
+        if: always()
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python -m pluginctl sarif \
+            --results-dir sarif-results \
+            --repo "${{ github.repository }}" \
+            --sha "$(git rev-parse HEAD)" \
+            --matrix '${{ inputs.matrix }}' \
+            --analyze-outcome "${{ steps.analyze.outcome }}" \
+            --found "${{ steps.detect-langs.outputs.found }}" \
+            --languages "${{ steps.detect-langs.outputs.languages }}" \
+            --unscanned-langs "${{ steps.detect-langs.outputs.unscanned_langs }}"
+
+      - name: Upload findings detail for PR comment
+        if: always() && steps.status.outputs.codeql_status == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-findings
+          path: codeql-findings.md
+          if-no-files-found: ignore
+
+      - name: Upload medium findings detail for PR comment
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-medium-findings
+          path: codeql-medium-findings.md
+          if-no-files-found: ignore
+
+      - name: Upload low findings detail for PR comment
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-low-findings
+          path: codeql-low-findings.md
+          if-no-files-found: ignore
+
+      - name: Fail job if CodeQL found high/error/critical issues
+        if: always() && steps.status.outputs.codeql_status == 'failure'
+        run: exit 1

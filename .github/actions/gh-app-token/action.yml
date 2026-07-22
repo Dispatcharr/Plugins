@@ -1,0 +1,85 @@
+name: GitHub App token
+description: >-
+  Mint a GitHub App installation token when GH_APP_ID + GH_APP_PRIVATE_KEY are
+  configured, otherwise fall back to the workflow GITHUB_TOKEN
+  (github-actions[bot]) with the same step-summary warning. Replaces the token
+  block that was copy-pasted across the plugin workflows.
+
+inputs:
+  app-id:
+    description: GitHub App client/app id (pass vars.GH_APP_ID)
+    required: false
+    default: ""
+  private-key:
+    description: >-
+      GitHub App private key (pass secrets.GH_APP_PRIVATE_KEY). Composite actions
+      do not inherit secrets, so it must be provided as an input.
+    required: false
+    default: ""
+  owner:
+    description: Optional owner to scope the installation token to.
+    required: false
+    default: ""
+
+outputs:
+  token:
+    description: The App installation token, or the fallback github.token.
+    value: ${{ steps.result.outputs.token }}
+  app-slug:
+    description: The App slug (empty when falling back).
+    value: ${{ steps.app-token.outputs.app-slug }}
+  use_app:
+    description: "'true' when an App token was minted, 'false' on fallback."
+    value: ${{ steps.config.outputs.use_app }}
+  bot-login:
+    description: The bot login to attribute actions to.
+    value: ${{ steps.result.outputs.bot_login }}
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve configuration
+      id: config
+      shell: bash
+      env:
+        GH_APP_ID: ${{ inputs.app-id }}
+        GH_APP_PRIVATE_KEY: ${{ inputs.private-key }}
+      run: |
+        if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
+          echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
+          echo "use_app=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "use_app=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Generate GitHub App token
+      if: steps.config.outputs.use_app == 'true'
+      id: app-token
+      uses: actions/create-github-app-token@v3
+      with:
+        client-id: ${{ steps.config.outputs.app_id }}
+        private-key: ${{ inputs.private-key }}
+        owner: ${{ inputs.owner }}
+
+    - name: Log fallback to actions token
+      if: steps.config.outputs.use_app != 'true'
+      shell: bash
+      run: |
+        printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Expose token + bot login
+      id: result
+      shell: bash
+      env:
+        USE_APP: ${{ steps.config.outputs.use_app }}
+        APP_TOKEN: ${{ steps.app-token.outputs.token }}
+        APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        FALLBACK_TOKEN: ${{ github.token }}
+      run: |
+        if [[ "$USE_APP" == "true" ]]; then
+          echo "token=$APP_TOKEN" >> "$GITHUB_OUTPUT"
+          echo "bot_login=${APP_SLUG}[bot]" >> "$GITHUB_OUTPUT"
+        else
+          echo "token=$FALLBACK_TOKEN" >> "$GITHUB_OUTPUT"
+          echo "bot_login=github-actions[bot]" >> "$GITHUB_OUTPUT"
+        fi

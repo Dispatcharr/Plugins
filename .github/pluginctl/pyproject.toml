@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pluginctl"
+version = "2.0.0"
+description = "Dispatcharr plugin registry automation CLI (validate / publish / yank / webhooks)"
+requires-python = ">=3.10"
+# Standard-library only. git / gh / gpg / clamscan are provided by the CI runner.
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+pluginctl = "pluginctl.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pluginctl*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

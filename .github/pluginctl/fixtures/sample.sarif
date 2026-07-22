@@ -1,0 +1,43 @@
+{
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "rules": [
+            {"id": "py/sql-injection", "properties": {"security-severity": "8.8"}},
+            {"id": "py/weak-hash", "properties": {"security-severity": "6.5"}},
+            {"id": "py/clear-text-logging", "properties": {"security-severity": "5.0"}},
+            {"id": "py/unused-import", "properties": {}}
+          ]
+        },
+        "extensions": [
+          {"rules": [
+            {"id": "py/weak-hash", "properties": {"security-severity": "6.9"}}
+          ]}
+        ]
+      },
+      "results": [
+        {
+          "ruleId": "py/sql-injection",
+          "message": {"text": "This SQL query depends on a [user-provided value](123)."},
+          "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/main.py"}, "region": {"startLine": 42}}}]
+        },
+        {
+          "ruleId": "py/weak-hash",
+          "message": {"text": "Weak hash used at https://example.com/#4 www.foo"},
+          "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/util.py"}, "region": {"startLine": 7}}}]
+        },
+        {
+          "ruleId": "py/clear-text-logging",
+          "message": {"text": "Sensitive data logged."},
+          "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/log.py"}, "region": {"startLine": 3}}}]
+        },
+        {
+          "ruleId": "py/unused-import",
+          "message": {"text": "Unused import."},
+          "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/x.py"}, "region": {"startLine": 1}}}]
+        }
+      ]
+    }
+  ]
+}

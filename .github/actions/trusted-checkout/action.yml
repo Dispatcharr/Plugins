@@ -1,0 +1,64 @@
+name: Trusted checkout
+description: >-
+  The pull_request_target checkout "dance": check out the base branch's trusted
+  code, sparse-checkout the untrusted fork's plugins/ as data only, then restore
+  the trusted code and re-fetch the base refs. Fork content is never executed;
+  pluginctl always comes from the base branch. Replaces the sequence duplicated
+  across detect-changes / validate-plugin.
+
+inputs:
+  base-ref:
+    description: PR base branch (github.event.pull_request.base.ref)
+    required: true
+  head-repo:
+    description: Fork repo full name (github.event.pull_request.head.repo.full_name)
+    required: true
+  head-sha:
+    description: Fork head SHA (github.event.pull_request.head.sha)
+    required: true
+  repository:
+    description: This repository (github.repository)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout base branch code (trusted)
+      uses: actions/checkout@v6
+      with:
+        repository: ${{ inputs.repository }}
+        ref: ${{ inputs.base-ref }}
+        fetch-depth: 0
+        sparse-checkout: .github
+        sparse-checkout-cone-mode: false
+
+    - name: Fetch base branch
+      shell: bash
+      run: git fetch origin ${{ inputs.base-ref }}
+
+    - name: Save trusted code before fork checkout
+      shell: bash
+      run: cp -r .github /tmp/trusted-dotgithub
+
+    - name: Checkout PR plugins (untrusted content only)
+      uses: actions/checkout@v6
+      with:
+        repository: ${{ inputs.head-repo }}
+        ref: ${{ inputs.head-sha }}
+        fetch-depth: 0
+        sparse-checkout: plugins
+        sparse-checkout-cone-mode: false
+        clean: false
+        # Fork content is only read as data (sparse plugins/), never executed;
+        # trusted code is saved/restored around this step.
+        allow-unsafe-pr-checkout: true
+
+    - name: Restore trusted code
+      shell: bash
+      run: |
+        rm -rf .github
+        cp -r /tmp/trusted-dotgithub .github
+
+    - name: Re-fetch base branch refs
+      shell: bash
+      run: git fetch https://github.com/${{ inputs.repository }} +${{ inputs.base-ref }}:refs/remotes/origin/${{ inputs.base-ref }}

@@ -5,6 +5,7 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  PYTHONPATH: .github/pluginctl/src
 
 on:
   push:
@@ -13,12 +14,7 @@ on:
     paths:
       - 'plugins/**'
       - '.github/workflows/publish-plugins.yml'
-      - '.github/scripts/publish/run.sh'
-      - '.github/scripts/publish/build-zips.sh'
-      - '.github/scripts/publish/plugin-readmes.sh'
-      - '.github/scripts/publish/cleanup.sh'
-      - '.github/scripts/publish/generate-manifest.sh'
-      - '.github/scripts/publish/releases-readme.sh'
+      - '.github/pluginctl/**'
       - '.github/scripts/keys/**'
   workflow_dispatch:
     inputs:
@@ -28,7 +24,7 @@ on:
         default: false
         required: false
       force_rebuild_plugin:
-        description: 'Optional: plugin slug to target (e.g. dispatcharr-exporter). Only that plugin is cleared and rebuilt - all others are untouched. Leave blank to wipe and rebuild the entire releases branch (WARNING: purges all version history).'
+        description: 'Optional: plugin slug to target (e.g. dispatcharr-exporter). Only that plugin is cleared and rebuilt, all others are untouched. Leave blank to wipe and rebuild the entire releases branch (WARNING: purges all version history).'
         type: string
         default: ''
         required: false
@@ -52,53 +48,33 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Load app ID from config
-        id: config
-        env:
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
-            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
-            echo "use_app=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_app=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate GitHub App token
-        if: steps.config.outputs.use_app == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
         with:
-          client-id: ${{ steps.config.outputs.app_id }}
+          app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Log fallback to actions token
-        if: steps.config.outputs.use_app != 'true'
-        run: |
-          printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Make scripts executable
-        run: chmod +x .github/scripts/publish/*.sh
 
       - name: Publish plugins to releases branch
         id: publish
         env:
-          GITHUB_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
-          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          APP_SLUG: ${{ steps.token.outputs.app-slug }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           FORCE_REBUILD: ${{ inputs.force_rebuild }}
           FORCE_REBUILD_CONFIRM: ${{ inputs.force_rebuild_confirm }}
           FORCE_REBUILD_PLUGIN: ${{ inputs.force_rebuild_plugin }}
+          WEBHOOK_URL: ${{ vars.WEBHOOK_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         run: |
           set -o pipefail
           if [[ "${FORCE_REBUILD}" == "true" && "${FORCE_REBUILD_CONFIRM}" != "CONFIRM" ]]; then
             echo "::error::force_rebuild requires typing CONFIRM in the force_rebuild_confirm input."
             exit 1
           fi
-          .github/scripts/publish/run.sh ${{ github.ref_name }} 2>&1 | tee publish.log
+          python -m pluginctl publish ${{ github.ref_name }} 2>&1 | tee publish.log
 
       - name: Generate job summary
         if: always()
@@ -107,14 +83,6 @@ jobs:
           if [ -f publish.log ]; then
             if grep -q "Successfully published" publish.log; then
               echo "✅ Publishing completed successfully" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              # Extract plugin info from the temporary repo if available
-              if [ -d /tmp/tmp.*/repo ]; then
-                REPO_DIR=$(find /tmp -maxdepth 1 -name "tmp.*" -type d 2>/dev/null | head -1)/repo
-                if [ -f "$REPO_DIR/manifest.json" ]; then
-                  cat "$REPO_DIR/manifest.json" | jq -r '.manifest.plugins[] | "- **\(.name)** v\(.latest_version)"' >> $GITHUB_STEP_SUMMARY
-                fi
-              fi
             else
               echo "❌ Publishing failed" >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY

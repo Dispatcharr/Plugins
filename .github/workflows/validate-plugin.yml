@@ -8,8 +8,9 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  PYTHONPATH: .github/pluginctl/src
   # Comma-separated lists of blocked GitHub usernames and plugin slugs.
-  # Set these in repo Settings → Variables as AUTHOR_BLACKLIST and PLUGIN_BLACKLIST.
+  # Set these in repo Settings -> Variables as AUTHOR_BLACKLIST and PLUGIN_BLACKLIST.
   AUTHOR_BLACKLIST: ${{ vars.AUTHOR_BLACKLIST }}
   PLUGIN_BLACKLIST: ${{ vars.PLUGIN_BLACKLIST }}
 
@@ -27,7 +28,7 @@ concurrency:
 
 jobs:
   # --------------------------------------------------------------------------
-  # Job 1: Post a notice on draft PRs - no validation runs yet
+  # Job 1: Post a notice on draft PRs, no validation runs yet
   # --------------------------------------------------------------------------
   draft-notice:
     if: github.event.pull_request.draft == true
@@ -39,40 +40,21 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           fetch-depth: 1
-          sparse-checkout: .github/scripts
+          sparse-checkout: .github
           sparse-checkout-cone-mode: false
 
-      - name: Load app ID from config
-        id: config
-        env:
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
-            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
-            echo "use_app=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_app=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate GitHub App token
-        if: steps.config.outputs.use_app == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
         with:
-          client-id: ${{ steps.config.outputs.app_id }}
+          app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Log fallback to actions token
-        if: steps.config.outputs.use_app != 'true'
-        run: |
-          printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Post draft notice
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          GH_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
-          BOT_LOGIN: ${{ steps.config.outputs.use_app == 'true' && format('{0}[bot]', steps.app-token.outputs.app-slug) || 'github-actions[bot]' }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          BOT_LOGIN: ${{ steps.token.outputs.bot-login }}
           GH_REPO: ${{ github.repository }}
         run: |
           MARKER="<!--PLUGIN_VALIDATION_DRAFT_NOTICE-->"
@@ -86,7 +68,7 @@ jobs:
           fi
 
   # --------------------------------------------------------------------------
-  # Job 2: Detect which plugins changed and build the matrix
+  # Job 2: Detect which plugins changed and build the matrix (+ blacklist)
   # --------------------------------------------------------------------------
   detect-changes:
     if: github.event.pull_request.draft == false
@@ -95,8 +77,8 @@ jobs:
     outputs:
       matrix: ${{ steps.detect.outputs.matrix }}
       plugin_count: ${{ steps.detect.outputs.plugin_count }}
-      close_pr: ${{ steps.blacklist.outputs.close_pr || steps.detect.outputs.close_pr }}
-      close_reason: ${{ steps.blacklist.outputs.close_reason || steps.detect.outputs.close_reason }}
+      close_pr: ${{ steps.detect.outputs.close_pr }}
+      close_reason: ${{ steps.detect.outputs.close_reason }}
       outside_files: ${{ steps.detect.outputs.outside_files }}
       outside_violation: ${{ steps.detect.outputs.outside_violation }}
       skip_validation: ${{ steps.detect.outputs.skip_validation }}
@@ -104,132 +86,31 @@ jobs:
       has_new_plugin: ${{ steps.detect.outputs.has_new_plugin }}
       has_updated_plugin: ${{ steps.detect.outputs.has_updated_plugin }}
     steps:
-      - name: Checkout base branch scripts (trusted)
-        uses: actions/checkout@v6
+      - name: Trusted checkout
+        uses: ./.github/actions/trusted-checkout
         with:
+          base-ref: ${{ github.event.pull_request.base.ref }}
+          head-repo: ${{ github.event.pull_request.head.repo.full_name }}
+          head-sha: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.repository }}
-          ref: ${{ github.event.pull_request.base.ref }}
-          fetch-depth: 0
-          sparse-checkout: .github/scripts
-          sparse-checkout-cone-mode: false
 
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
-
-      - name: Save trusted scripts before fork checkout
-        run: cp -r .github/scripts /tmp/trusted-scripts
-
-      - name: Checkout PR plugins (untrusted content only)
-        uses: actions/checkout@v6
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-          sparse-checkout: plugins
-          sparse-checkout-cone-mode: false
-          clean: false
-          # Fork content is only read as data (sparse plugins/), never executed;
-          # trusted scripts are saved/restored around this step.
-          allow-unsafe-pr-checkout: true
-
-      - name: Restore trusted scripts
-        run: mkdir -p .github && cp -r /tmp/trusted-scripts .github/scripts
-
-      - name: Re-fetch base branch refs
-        run: git fetch https://github.com/${{ github.repository }} +${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
-
-      - name: Load app ID from config
-        id: config
-        env:
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
-            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
-            echo "use_app=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_app=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate GitHub App token
-        if: steps.config.outputs.use_app == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ steps.config.outputs.app_id }}
+          app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Log fallback to actions token
-        if: steps.config.outputs.use_app != 'true'
-        run: |
-          printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Detect changed plugins
         id: detect
         env:
-          GH_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          chmod +x .github/scripts/validate/*.sh
-          .github/scripts/validate/detect-changes.sh \
-            "${{ github.event.pull_request.user.login }}" \
-            "${{ github.event.pull_request.base.ref }}" \
-            "${{ github.event.pull_request.head.ref }}"
-
-      - name: Check author and plugin blacklists
-        id: blacklist
-        # Only run if detect didn't already decide to close (avoids redundant output)
-        if: steps.detect.outputs.close_pr != 'true'
-        env:
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          MATRIX: ${{ steps.detect.outputs.matrix }}
-        run: |
-          AUTHOR_BL="${AUTHOR_BLACKLIST:-}"
-          PLUGIN_BL="${PLUGIN_BLACKLIST:-}"
-
-          # No-op if neither list is configured
-          if [[ -z "$AUTHOR_BL" && -z "$PLUGIN_BL" ]]; then
-            exit 0
-          fi
-
-          MATCHED=false
-          REASON=""
-
-          # Check author blacklist (case-insensitive, strips whitespace around commas)
-          if [[ -n "$AUTHOR_BL" ]]; then
-            IFS=',' read -ra BLOCKED <<< "$AUTHOR_BL"
-            for entry in "${BLOCKED[@]}"; do
-              slug="${entry// /}"
-              if [[ "${PR_AUTHOR,,}" == "${slug,,}" ]]; then
-                MATCHED=true
-                REASON="author-blacklisted"
-                echo "::warning::PR author '$PR_AUTHOR' is on the author blacklist."
-                break
-              fi
-            done
-          fi
-
-          # Check plugin blacklist (case-insensitive)
-          if [[ "$MATCHED" != "true" && -n "$PLUGIN_BL" ]]; then
-            IFS=',' read -ra BLOCKED <<< "$PLUGIN_BL"
-            while IFS= read -r plugin; do
-              [[ -z "$plugin" ]] && continue
-              for entry in "${BLOCKED[@]}"; do
-                slug="${entry// /}"
-                if [[ "${plugin,,}" == "${slug,,}" ]]; then
-                  MATCHED=true
-                  REASON="plugin-blacklisted"
-                  echo "::warning::Plugin '$plugin' is on the plugin blacklist."
-                  break 2
-                fi
-              done
-            done < <(printf '%s' "$MATRIX" | jq -r '.[]' 2>/dev/null || true)
-          fi
-
-          if [[ "$MATCHED" == "true" ]]; then
-            echo "close_pr=true" >> "$GITHUB_OUTPUT"
-            echo "close_reason=$REASON" >> "$GITHUB_OUTPUT"
-          fi
+          python -m pluginctl detect \
+            --author "${{ github.event.pull_request.user.login }}" \
+            --base-ref "${{ github.event.pull_request.base.ref }}" \
+            --head-ref "${{ github.event.pull_request.head.ref }}"
 
   # --------------------------------------------------------------------------
   # Job 3: Apply PR labels based on change classification
@@ -245,75 +126,31 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           fetch-depth: 1
-          sparse-checkout: .github/scripts
+          sparse-checkout: .github
           sparse-checkout-cone-mode: false
 
-      - name: Load app ID from config
-        id: config
-        env:
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
-            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
-            echo "use_app=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_app=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate GitHub App token
-        if: steps.config.outputs.use_app == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
         with:
-          client-id: ${{ steps.config.outputs.app_id }}
+          app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Log fallback to actions token
-        if: steps.config.outputs.use_app != 'true'
-        run: |
-          printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Apply labels
         env:
-          GH_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
           GH_REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          HAS_NEW_PLUGIN: ${{ needs.detect-changes.outputs.has_new_plugin }}
-          HAS_UPDATED_PLUGIN: ${{ needs.detect-changes.outputs.has_updated_plugin }}
-          OUTSIDE_FILES: ${{ needs.detect-changes.outputs.outside_files }}
-          OUTSIDE_VIOLATION: ${{ needs.detect-changes.outputs.outside_violation }}
-          CLOSE_PR: ${{ needs.detect-changes.outputs.close_pr }}
         run: |
-          apply_label() {
-            local label=$1 condition=$2
-            if [[ "$condition" == "true" ]]; then
-              gh pr edit "$PR_NUMBER" --add-label "$label" || true
-            else
-              gh pr edit "$PR_NUMBER" --remove-label "$label" 2>/dev/null || true
-            fi
-          }
-          apply_label "New Plugin"    "$HAS_NEW_PLUGIN"
-          apply_label "Plugin Update" "$HAS_UPDATED_PLUGIN"
-          # Repo Update only when there are outside files AND it's not a violation (authorized)
-          if [[ -n "$OUTSIDE_FILES" && "$OUTSIDE_VIOLATION" != "true" ]]; then
-            IS_REPO_UPDATE=true
-          else
-            IS_REPO_UPDATE=false
-          fi
-          apply_label "Repo Update" "$IS_REPO_UPDATE"
-          # Invalid when PR has unauthorized outside changes or unauthorized plugin modifications
-          if [[ "$OUTSIDE_VIOLATION" == "true" || "$CLOSE_PR" == "true" ]]; then
-            IS_INVALID=true
-          else
-            IS_INVALID=false
-          fi
-          apply_label "Invalid" "$IS_INVALID"
+          python -m pluginctl label \
+            --pr "${{ github.event.pull_request.number }}" \
+            --has-new-plugin "${{ needs.detect-changes.outputs.has_new_plugin }}" \
+            --has-updated-plugin "${{ needs.detect-changes.outputs.has_updated_plugin }}" \
+            --outside-files "${{ needs.detect-changes.outputs.outside_files }}" \
+            --outside-violation "${{ needs.detect-changes.outputs.outside_violation }}" \
+            --close-pr "${{ needs.detect-changes.outputs.close_pr }}"
 
   # --------------------------------------------------------------------------
   # Job 4: Validate PR title format
-  #   Runs on every non-draft, non-closing PR event (including 'edited', which
-  #   fires when the title is renamed).
   # --------------------------------------------------------------------------
   validate-title:
     needs: [detect-changes]
@@ -325,796 +162,46 @@ jobs:
       title_feedback: ${{ steps.check.outputs.title_feedback }}
       title_suggestion: ${{ steps.check.outputs.title_suggestion }}
     steps:
+      - name: Checkout config
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 1
+          sparse-checkout: .github/pluginctl
+          sparse-checkout-cone-mode: false
+
       - name: Validate PR title format
         id: check
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PLUGIN_COUNT: ${{ needs.detect-changes.outputs.plugin_count }}
-          MATRIX: ${{ needs.detect-changes.outputs.matrix }}
-          SKIP_VALIDATION: ${{ needs.detect-changes.outputs.skip_validation }}
         run: |
-          TITLE="$PR_TITLE"
-          AUTHOR="$PR_AUTHOR"
-          COUNT="${PLUGIN_COUNT:-0}"
-          SKIP="${SKIP_VALIDATION:-false}"
-          MATRIX_JSON="${MATRIX:-[]}"
-          TITLE_VALID=true
-          TITLE_FEEDBACK=""
-          TITLE_SUGGESTION=""
-
-          # Build a context-appropriate suggestion for this PR
-          if [[ "$COUNT" == "0" ]]; then
-            CONTEXT_SUGGESTION="[repo]: Brief description of changes"
-          elif [[ "$COUNT" == "1" ]]; then
-            SLUG=$(printf '%s' "$MATRIX_JSON" | jq -r '.[0] // "plugin-slug"' || echo "plugin-slug")
-            CONTEXT_SUGGESTION="[$SLUG]: Brief description of changes"
-          else
-            CONTEXT_SUGGESTION="[$AUTHOR]: Brief description of changes"
-          fi
-
-          # Check format and extract prefix using bash =~ to avoid grep/sed ERE inconsistencies.
-          # [^]] inside bash =~ means "not ]" (] is literal when first after [^).
-          if [[ "$TITLE" =~ ^\[([^]]+)\]:?[[:space:]]+.+ ]]; then
-            PREFIX="${BASH_REMATCH[1]}"
-
-            # Validate prefix matches expected context
-            if [[ "$COUNT" == "0" ]]; then
-              if [[ "$PREFIX" != "repo" ]]; then
-                TITLE_VALID=false
-                TITLE_FEEDBACK="For repo-level or non-plugin changes, the prefix should be \`[repo]\`."
-                TITLE_SUGGESTION="$CONTEXT_SUGGESTION"
-              fi
-            elif [[ "$COUNT" == "1" ]]; then
-              EXPECTED=$(printf '%s' "$MATRIX_JSON" | jq -r '.[0] // ""' || echo "")
-              if [[ -n "$EXPECTED" && "$PREFIX" != "$EXPECTED" ]]; then
-                TITLE_VALID=false
-                TITLE_FEEDBACK="For a single plugin change, the prefix should match the plugin folder name: \`[$EXPECTED]\`."
-                TITLE_SUGGESTION="$CONTEXT_SUGGESTION"
-              fi
-            else
-              if [[ "$PREFIX" != "$AUTHOR" ]]; then
-                TITLE_VALID=false
-                TITLE_FEEDBACK="For changes to multiple plugins, the prefix should be your GitHub username: \`[$AUTHOR]\`."
-                TITLE_SUGGESTION="$CONTEXT_SUGGESTION"
-              fi
-            fi
-          else
-            TITLE_VALID=false
-            TITLE_FEEDBACK="PR title does not match the required format. Expected: \`[prefix] description\`."
-            TITLE_SUGGESTION="$CONTEXT_SUGGESTION"
-          fi
-
-          echo "title_valid=$TITLE_VALID" >> "$GITHUB_OUTPUT"
-          {
-            echo "title_feedback<<ENDOFVALUE"
-            echo "$TITLE_FEEDBACK"
-            echo "ENDOFVALUE"
-          } >> "$GITHUB_OUTPUT"
-          {
-            echo "title_suggestion<<ENDOFVALUE"
-            echo "$TITLE_SUGGESTION"
-            echo "ENDOFVALUE"
-          } >> "$GITHUB_OUTPUT"
-
-          if [[ "$TITLE_VALID" != "true" ]]; then
-            echo "::error::PR title does not match the required format. See CONTRIBUTING.md for details."
-            exit 1
-          fi
+          python -m pluginctl check-title \
+            --title "${{ github.event.pull_request.title }}" \
+            --author "${{ github.event.pull_request.user.login }}" \
+            --plugin-count "${{ needs.detect-changes.outputs.plugin_count }}" \
+            --matrix '${{ needs.detect-changes.outputs.matrix }}'
 
   # --------------------------------------------------------------------------
-  # Job 5: CodeQL security and quality analysis (runs after validate-plugin)
+  # Job 5: CodeQL security and quality analysis (reusable workflow)
   # --------------------------------------------------------------------------
   codeql-analyze:
     needs: [detect-changes, validate-plugin, validate-title]
     if: needs.validate-plugin.result == 'success' && needs.detect-changes.outputs.skip_validation != 'true' && needs.validate-title.outputs.title_valid == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    outputs:
-      codeql_status: ${{ steps.status.outputs.codeql_status }}
-      codeql_errors: ${{ steps.status.outputs.codeql_errors }}
-      codeql_warnings: ${{ steps.status.outputs.codeql_warnings }}
-      codeql_mediums: ${{ steps.status.outputs.codeql_mediums }}
-      codeql_lows: ${{ steps.status.outputs.codeql_lows }}
-      codeql_suppressed: ${{ steps.status.outputs.codeql_suppressed }}
-      codeql_unscanned_langs: ${{ steps.status.outputs.codeql_unscanned_langs }}
-    steps:
-      - name: Checkout PR merge commit for analysis
-        uses: actions/checkout@v6
-        with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
-          # Minimal placeholder - overridden immediately by the next step
-          # (actions/checkout doesn't support dynamic expressions in sparse-checkout)
-          sparse-checkout: .gitignore
-          sparse-checkout-cone-mode: false
-          # Merge ref is analyzed statically by CodeQL only; fork code is not executed.
-          allow-unsafe-pr-checkout: true
-
-      - name: Limit checkout to changed plugin folders only
-        run: |
-          {
-            echo '.github/codeql'
-            echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[] | "plugins/\(.)"'
-          } | git sparse-checkout set --stdin
-          git checkout
-
-      - name: Populate external plugin source for analysis
-        run: |
-          while IFS= read -r plugin_name; do
-            plugin_json="plugins/$plugin_name/plugin.json"
-            [[ ! -f "$plugin_json" ]] && continue
-
-            source_type=$(jq -r '.source_type // "local"' "$plugin_json")
-            [[ "$source_type" != "external" ]] && continue
-
-            version=$(jq -r '.version' "$plugin_json")
-            source_url_template=$(jq -r '.source_url // ""' "$plugin_json")
-            source_url="${source_url_template//\{version\}/$version}"
-
-            echo "Fetching release ZIP for CodeQL: $source_url"
-            curl -fsSL "$source_url" -o "/tmp/${plugin_name}-release.zip"
-
-            mkdir -p "/tmp/${plugin_name}-src"
-            python3 -c "import zipfile,os; z=zipfile.ZipFile('/tmp/${plugin_name}-release.zip'); d='/tmp/${plugin_name}-src'; [z.extract((setattr(m,'filename',m.filename.replace(chr(92),'/')) or m),d) for m in z.infolist()]"
-            # Copy extracted files into plugins dir without overwriting the registry plugin.json
-            cp -rn "/tmp/${plugin_name}-src/." "plugins/$plugin_name/"
-            rm -rf "/tmp/${plugin_name}-release.zip" "/tmp/${plugin_name}-src"
-            echo "Release ZIP for $plugin_name extracted into plugins/$plugin_name/"
-          done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
-
-      - name: Detect supported languages
-        id: detect-langs
-        run: |
-          LANGS=()
-          UNSCANNED=()
-
-          # --- CodeQL-supported languages ---
-          if find plugins -name '*.py' -print -quit | grep -q .; then
-            LANGS+=(python)
-          fi
-          if find plugins \
-               \( -path '*/node_modules/*' -o -path '*/dist/*' -o -path '*/build/*' -o -path '*/static/*' \) -prune -o \
-               \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' \) -print \
-               -quit | grep -q .; then
-            LANGS+=(javascript)
-          fi
-          if find plugins -name '*.go' -print -quit | grep -q .; then
-            LANGS+=(go)
-          fi
-          if find plugins -name '*.rb' -print -quit | grep -q .; then
-            LANGS+=(ruby)
-          fi
-          if find plugins \( -name '*.java' -o -name '*.kt' -o -name '*.kts' \) -print -quit | grep -q .; then
-            LANGS+=("java-kotlin")
-          fi
-          if find plugins \( -name '*.c' -o -name '*.cpp' -o -name '*.cc' -o -name '*.h' -o -name '*.hpp' \) -print -quit | grep -q .; then
-            LANGS+=("c-cpp")
-          fi
-
-          # --- Files present but not supported by CodeQL ---
-          if find plugins \( -name '*.sh' -o -name '*.bash' \) -print -quit | grep -q .; then
-            UNSCANNED+=(shell)
-          fi
-          if find plugins -name '*.php' -print -quit | grep -q .; then
-            UNSCANNED+=(php)
-          fi
-          if find plugins -name '*.lua' -print -quit | grep -q .; then
-            UNSCANNED+=(lua)
-          fi
-          if find plugins \( -name '*.pl' -o -name '*.pm' \) -print -quit | grep -q .; then
-            UNSCANNED+=(perl)
-          fi
-          if find plugins -name '*.rs' -print -quit | grep -q .; then
-            UNSCANNED+=(rust)
-          fi
-
-          UNSCANNED_CSV=""
-          [[ ${#UNSCANNED[@]} -gt 0 ]] && UNSCANNED_CSV=$(IFS=,; echo "${UNSCANNED[*]}")
-          echo "unscanned_langs=$UNSCANNED_CSV" >> "$GITHUB_OUTPUT"
-
-          if [[ ${#LANGS[@]} -gt 0 ]]; then
-            LANG_CSV=$(IFS=,; echo "${LANGS[*]}")
-            echo "found=true" >> "$GITHUB_OUTPUT"
-            echo "languages=$LANG_CSV" >> "$GITHUB_OUTPUT"
-            echo "Detected languages for CodeQL: $LANG_CSV"
-            if [[ -n "$UNSCANNED_CSV" ]]; then echo "Unscanned (no CodeQL support): $UNSCANNED_CSV"; fi
-          else
-            echo "found=false" >> "$GITHUB_OUTPUT"
-            echo "languages=" >> "$GITHUB_OUTPUT"
-            echo "No supported language files found in changed plugins - skipping CodeQL."
-            if [[ -n "$UNSCANNED_CSV" ]]; then echo "Unscanned file types detected (no CodeQL support): $UNSCANNED_CSV"; fi
-          fi
-
-      - name: Get merge commit SHA
-        id: merge
-        run: echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Initialize CodeQL
-        if: steps.detect-langs.outputs.found == 'true'
-        uses: github/codeql-action/init@v4
-        with:
-          languages: ${{ steps.detect-langs.outputs.languages }}
-          build-mode: none
-          # Query suite (security-extended: all security severities, no quality queries) and
-          # per-language alert-suppression packs (so inline `codeql[<rule-id>]` comments work)
-          # both live in this config file - see .github/codeql/codeql-config.yml for why.
-          config-file: .github/codeql/codeql-config.yml
-
-      - name: Perform CodeQL Analysis
-        if: steps.detect-langs.outputs.found == 'true'
-        id: analyze
-        uses: github/codeql-action/analyze@v4
-        with:
-          category: pr-${{ github.event.pull_request.number }}
-          output: sarif-results
-          upload: false
-        continue-on-error: true
-
-      - name: Set CodeQL status output
-        id: status
-        if: always()
-        run: |
-          # Only block on security findings with CVSS score >= 7.0 (HIGH or CRITICAL).
-          # CodeQL stores this in rule properties["security-severity"], not in result.level.
-          # A result with a non-empty .suppressions array was recognized by CodeQL's own
-          # engine as validly suppressed (e.g. a correctly-placed inline `codeql[...]`
-          # comment) - trust that signal and never let it count as blocking/medium/low.
-          JQ_BLOCKING='
-            [ .runs[] |
-              . as $run |
-              (
-                [ (($run.tool.driver.rules // [])[]          | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
-                  ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
-                | from_entries
-              ) as $secmap |
-              ($run.results // [])[] |
-              select((.suppressions // []) | length == 0) |
-              ((.ruleId // .rule.id // "") | tostring) as $rid |
-              select((($secmap[$rid] // "0") | tonumber) >= 7.0)
-            ] | length'
-          JQ_MEDIUM='
-            [ .runs[] |
-              . as $run |
-              (
-                [ (($run.tool.driver.rules // [])[]          | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
-                  ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
-                | from_entries
-              ) as $secmap |
-              ($run.results // [])[] |
-              select((.suppressions // []) | length == 0) |
-              ((.ruleId // .rule.id // "") | tostring) as $rid |
-              (($secmap[$rid] // "0") | tonumber) as $sev |
-              select($sev >= 6.0 and $sev < 7.0)
-            ] | length'
-          JQ_LOW='
-            [ .runs[] |
-              . as $run |
-              (
-                [ (($run.tool.driver.rules // [])[]          | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
-                  ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
-                | from_entries
-              ) as $secmap |
-              ($run.results // [])[] |
-              select((.suppressions // []) | length == 0) |
-              ((.ruleId // .rule.id // "") | tostring) as $rid |
-              (($secmap[$rid] // "0") | tonumber) as $sev |
-              select($sev < 6.0)
-            ] | length'
-          JQ_SUPPRESSED='
-            [ .runs[] | (.results // [])[] | select((.suppressions // []) | length > 0) ] | length'
-          RESULT_COUNT=0
-          MEDIUM_COUNT=0
-          LOW_COUNT=0
-          SUPPRESSED_COUNT=0
-          TOTAL_COUNT=0
-          if [[ -d "sarif-results" ]]; then
-            for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
-              [[ -f "$f" ]] || continue
-              if [[ "$f" == *.gz ]]; then
-                CONTENT=$(gunzip -c "$f")
-              else
-                CONTENT=$(cat "$f")
-              fi
-              COUNT=$(echo "$CONTENT" | jq "$JQ_BLOCKING")
-              MED=$(echo "$CONTENT" | jq "$JQ_MEDIUM")
-              LOW=$(echo "$CONTENT" | jq "$JQ_LOW")
-              SUPPRESSED=$(echo "$CONTENT" | jq "$JQ_SUPPRESSED")
-              TOT=$(echo "$CONTENT" | jq '[.runs[] | (.results // [])[]] | length')
-              echo "File $f: ${COUNT:-0} blocking, ${MED:-0} medium, ${LOW:-0} low, ${SUPPRESSED:-0} suppressed, $TOT total"
-              echo "$CONTENT" | jq -r \
-                '[ .runs[] | . as $run |
-                   ([ (($run.tool.driver.rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
-                      ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ] | from_entries) as $secmap |
-                   ($run.results // [])[] |
-                   select((.suppressions // []) | length == 0) |
-                   ((.ruleId // .rule.id // "") | tostring) as $rid |
-                   select((($secmap[$rid] // "0") | tonumber) >= 7.0) |
-                   "  [blocking] \($rid) sec-sev=\($secmap[$rid] // "n/a")" ] | .[]' || true
-              RESULT_COUNT=$((RESULT_COUNT + ${COUNT:-0}))
-              MEDIUM_COUNT=$((MEDIUM_COUNT + ${MED:-0}))
-              LOW_COUNT=$((LOW_COUNT + ${LOW:-0}))
-              SUPPRESSED_COUNT=$((SUPPRESSED_COUNT + ${SUPPRESSED:-0}))
-              TOTAL_COUNT=$((TOTAL_COUNT + ${TOT:-0}))
-            done
-          fi
-          WARN_COUNT=$(( TOTAL_COUNT > RESULT_COUNT ? TOTAL_COUNT - RESULT_COUNT : 0 ))
-          echo "Found $RESULT_COUNT high/critical, $MEDIUM_COUNT medium, $LOW_COUNT low, $SUPPRESSED_COUNT suppressed, and $WARN_COUNT other CodeQL result(s)"
-          echo "codeql_errors=$RESULT_COUNT" >> "$GITHUB_OUTPUT"
-          echo "codeql_warnings=$WARN_COUNT" >> "$GITHUB_OUTPUT"
-          echo "codeql_mediums=$MEDIUM_COUNT" >> "$GITHUB_OUTPUT"
-          echo "codeql_lows=$LOW_COUNT" >> "$GITHUB_OUTPUT"
-          echo "codeql_suppressed=$SUPPRESSED_COUNT" >> "$GITHUB_OUTPUT"
-
-          # Build list of external plugin path prefixes so findings links are suppressed
-          # for files that came from a downloaded ZIP and don't exist in this repo.
-          EXTERNAL_PREFIXES='[]'
-          while IFS= read -r _plugin_name; do
-            _pjson="plugins/$_plugin_name/plugin.json"
-            [[ -f "$_pjson" ]] || continue
-            _stype=$(jq -r '.source_type // "local"' "$_pjson" 2>/dev/null || echo "local")
-            if [[ "$_stype" == "external" ]]; then
-              EXTERNAL_PREFIXES=$(printf '%s' "$EXTERNAL_PREFIXES" | jq --arg p "plugins/$_plugin_name/" '. + [$p]')
-            fi
-          done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
-
-          # Generate a findings detail file for inclusion in the PR comment
-          if [[ "$RESULT_COUNT" -gt 0 ]]; then
-            MERGE_SHA=$(git rev-parse HEAD)
-            {
-              echo "| Rule | Location | Description |"
-              echo "|------|----------|-------------|"
-              for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
-                [[ -f "$f" ]] || continue
-                if [[ "$f" == *.gz ]]; then
-                  FC=$(gunzip -c "$f")
-                else
-                  FC=$(cat "$f")
-                fi
-                echo "$FC" | jq -r \
-                  --arg repo "$GITHUB_REPOSITORY" \
-                  --arg sha "$MERGE_SHA" \
-                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
-                  '.runs[] |
-                  . as $run |
-                  (
-                    [ (($run.tool.driver.rules // [])[]         | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
-                      ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
-                    | from_entries
-                  ) as $secmap |
-                  ($run.results // [])[] |
-                  select((.suppressions // []) | length == 0) |
-                  . as $result |
-                  (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
-                  select((($secmap[$rid] // "0") | tonumber) >= 7.0) |
-                  (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
-                  ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")
-                   # Data-flow queries can repeat the same sentence once per source/flow reaching
-                   # the same sink - collapse repeats while preserving first-seen order.
-                   | [splits("(?<=[.!?]) ")] as $sentences
-                   | reduce $sentences[] as $s ([]; if any(.[]; . == $s) then . else . + [$s] end)
-                   | join(" ")) as $msg |
-                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
-                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
-                  "| `\($rid)` | \($loc) | \($msg) |"'
-              done
-            } > codeql-findings.md
-          fi
-          # Generate medium findings detail file for informational display in the PR comment
-          if [[ "$MEDIUM_COUNT" -gt 0 ]]; then
-            MERGE_SHA=${MERGE_SHA:-$(git rev-parse HEAD)}
-            {
-              echo "| Rule | Location | Description |"
-              echo "|------|----------|-------------|"
-              for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
-                [[ -f "$f" ]] || continue
-                if [[ "$f" == *.gz ]]; then
-                  FC=$(gunzip -c "$f")
-                else
-                  FC=$(cat "$f")
-                fi
-                echo "$FC" | jq -r \
-                  --arg repo "$GITHUB_REPOSITORY" \
-                  --arg sha "$MERGE_SHA" \
-                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
-                  '.runs[] |
-                  . as $run |
-                  (
-                    [ (($run.tool.driver.rules // [])[]         | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
-                      ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
-                    | from_entries
-                  ) as $secmap |
-                  ($run.results // [])[] |
-                  select((.suppressions // []) | length == 0) |
-                  . as $result |
-                  (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
-                  (($secmap[$rid] // "0") | tonumber) as $sev |
-                  select($sev >= 6.0 and $sev < 7.0) |
-                  (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
-                  ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")
-                   # Data-flow queries can repeat the same sentence once per source/flow reaching
-                   # the same sink - collapse repeats while preserving first-seen order.
-                   | [splits("(?<=[.!?]) ")] as $sentences
-                   | reduce $sentences[] as $s ([]; if any(.[]; . == $s) then . else . + [$s] end)
-                   | join(" ")) as $msg |
-                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
-                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
-                  "| `\($rid)` | \($loc) | \($msg) |"'
-              done
-            } > codeql-medium-findings.md
-          fi
-          # Generate low findings detail file for informational display in the PR comment (collapsed)
-          if [[ "$LOW_COUNT" -gt 0 ]]; then
-            MERGE_SHA=${MERGE_SHA:-$(git rev-parse HEAD)}
-            {
-              echo "| Rule | Location | Description |"
-              echo "|------|----------|-------------|"
-              for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
-                [[ -f "$f" ]] || continue
-                if [[ "$f" == *.gz ]]; then
-                  FC=$(gunzip -c "$f")
-                else
-                  FC=$(cat "$f")
-                fi
-                echo "$FC" | jq -r \
-                  --arg repo "$GITHUB_REPOSITORY" \
-                  --arg sha "$MERGE_SHA" \
-                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
-                  '.runs[] |
-                  . as $run |
-                  (
-                    [ (($run.tool.driver.rules // [])[]         | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
-                      ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ]
-                    | from_entries
-                  ) as $secmap |
-                  ($run.results // [])[] |
-                  select((.suppressions // []) | length == 0) |
-                  . as $result |
-                  (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
-                  (($secmap[$rid] // "0") | tonumber) as $sev |
-                  select($sev < 6.0) |
-                  (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
-                  ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")
-                   # Data-flow queries can repeat the same sentence once per source/flow reaching
-                   # the same sink - collapse repeats while preserving first-seen order.
-                   | [splits("(?<=[.!?]) ")] as $sentences
-                   | reduce $sentences[] as $s ([]; if any(.[]; . == $s) then . else . + [$s] end)
-                   | join(" ")) as $msg |
-                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
-                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
-                  "| `\($rid)` | \($loc) | \($msg) |"'
-              done
-            } > codeql-low-findings.md
-          fi
-          # Generate suppressed findings detail file for informational display in the PR comment.
-          # These were excluded from the blocking/medium/low tables above because CodeQL's own
-          # engine recognized and applied an inline suppression comment.
-          if [[ "$SUPPRESSED_COUNT" -gt 0 ]]; then
-            MERGE_SHA=${MERGE_SHA:-$(git rev-parse HEAD)}
-            {
-              echo "| Rule | Location | Description |"
-              echo "|------|----------|-------------|"
-              for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
-                [[ -f "$f" ]] || continue
-                if [[ "$f" == *.gz ]]; then
-                  FC=$(gunzip -c "$f")
-                else
-                  FC=$(cat "$f")
-                fi
-                echo "$FC" | jq -r \
-                  --arg repo "$GITHUB_REPOSITORY" \
-                  --arg sha "$MERGE_SHA" \
-                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
-                  '.runs[] |
-                  . as $run |
-                  ($run.results // [])[] |
-                  select((.suppressions // []) | length > 0) |
-                  . as $result |
-                  (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
-                  (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
-                  ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")
-                   # Data-flow queries can repeat the same sentence once per source/flow reaching
-                   # the same sink - collapse repeats while preserving first-seen order.
-                   | [splits("(?<=[.!?]) ")] as $sentences
-                   | reduce $sentences[] as $s ([]; if any(.[]; . == $s) then . else . + [$s] end)
-                   | join(" ")) as $msg |
-                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
-                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
-                  "| `\($rid)` | \($loc) | \($msg) |"'
-              done
-            } > codeql-suppressed-findings.md
-          fi
-          ANALYZE_FAILED=false
-          if [[ "${{ steps.detect-langs.outputs.found }}" == 'true' && "${{ steps.analyze.outcome }}" != "success" && "${{ steps.analyze.outcome }}" != "" ]]; then
-            ANALYZE_FAILED=true
-          fi
-
-          UNSCANNED_CSV="${{ steps.detect-langs.outputs.unscanned_langs }}"
-          CONFIG_ERROR_LANGS=""
-
-          # CodeQL sets CODEQL_ACTION_JOB_STATUS=JOB_STATUS_CONFIGURATION_ERROR when it found
-          # no indexable source for a requested language (e.g. a committed file that's only
-          # vendored/minified/generated code, which CodeQL's own extractor refuses to treat as
-          # source). That's not a security finding or a broken analysis - don't block the PR on
-          # it, just note which language(s) went unscanned. Any other non-success outcome (a
-          # real extractor crash, OOM, etc.) still fails the job below.
-          if [[ "$ANALYZE_FAILED" == 'true' && "${CODEQL_ACTION_JOB_STATUS:-}" == 'JOB_STATUS_CONFIGURATION_ERROR' ]]; then
-            echo "::warning::CodeQL reported a configuration error (no indexable source found) for language(s): ${{ steps.detect-langs.outputs.languages }}. Treating as skipped instead of failing the PR."
-            CONFIG_ERROR_LANGS="codeql-config-error($(echo '${{ steps.detect-langs.outputs.languages }}' | tr ',' '+'))"
-            UNSCANNED_CSV="${UNSCANNED_CSV:+$UNSCANNED_CSV,}${CONFIG_ERROR_LANGS}"
-            ANALYZE_FAILED=false
-          fi
-
-          if [[ "$RESULT_COUNT" -gt 0 || "$ANALYZE_FAILED" == 'true' ]]; then
-            echo "codeql_status=failure" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ steps.detect-langs.outputs.found }}" == 'false' || -n "$CONFIG_ERROR_LANGS" ]]; then
-            echo "codeql_status=skipped" >> "$GITHUB_OUTPUT"
-          else
-            echo "codeql_status=success" >> "$GITHUB_OUTPUT"
-          fi
-          echo "codeql_unscanned_langs=$UNSCANNED_CSV" >> "$GITHUB_OUTPUT"
-
-      - name: Upload findings detail for PR comment
-        if: always() && steps.status.outputs.codeql_status == 'failure'
-        uses: actions/upload-artifact@v7
-        with:
-          name: codeql-findings
-          path: codeql-findings.md
-          if-no-files-found: ignore
-
-      - name: Upload medium findings detail for PR comment
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: codeql-medium-findings
-          path: codeql-medium-findings.md
-          if-no-files-found: ignore
-
-      - name: Upload low findings detail for PR comment
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: codeql-low-findings
-          path: codeql-low-findings.md
-          if-no-files-found: ignore
-
-      - name: Upload suppressed findings detail for PR comment
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: codeql-suppressed-findings
-          path: codeql-suppressed-findings.md
-          if-no-files-found: ignore
-
-      - name: Apply/clear CodeQL suppression label
-        # Purely informational for auto-merge gating (see auto-merge-updates.yml) - never
-        # fails the job, so a maintainer can still merge by hand after reviewing.
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          SUPPRESSED_COUNT: ${{ steps.status.outputs.codeql_suppressed }}
-        run: |
-          gh label create "CodeQL Suppression Used" \
-            --color "FBCA04" \
-            --description "PR relies on an inline CodeQL suppression comment - requires maintainer review" \
-            --repo "$GH_REPO" 2>/dev/null || true
-          if [[ "${SUPPRESSED_COUNT:-0}" -gt 0 ]]; then
-            gh pr edit "$PR_NUMBER" --add-label "CodeQL Suppression Used" --repo "$GH_REPO"
-          else
-            gh pr edit "$PR_NUMBER" --remove-label "CodeQL Suppression Used" --repo "$GH_REPO" 2>/dev/null || true
-          fi
-
-      - name: Fail job if CodeQL found high/error/critical issues
-        if: always() && steps.status.outputs.codeql_status == 'failure'
-        run: exit 1
+    uses: ./.github/workflows/_codeql-scan.yml
+    with:
+      matrix: ${{ needs.detect-changes.outputs.matrix }}
+      pr_number: ${{ github.event.pull_request.number }}
+      base_ref: ${{ github.event.pull_request.base.ref }}
 
   # --------------------------------------------------------------------------
-  # Job 6: ClamAV antivirus scan (runs after validate-plugin)
+  # Job 6: ClamAV antivirus scan (reusable workflow)
   # --------------------------------------------------------------------------
   clamav-scan:
     needs: [detect-changes, validate-plugin, validate-title]
     if: needs.validate-plugin.result == 'success' && needs.detect-changes.outputs.skip_validation != 'true' && needs.validate-title.outputs.title_valid == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      clamav_status: ${{ steps.status.outputs.clamav_status }}
-      clamav_infected: ${{ steps.status.outputs.clamav_infected }}
-    steps:
-      - name: Checkout PR merge commit for scan
-        uses: actions/checkout@v6
-        with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
-          sparse-checkout: .gitignore
-          sparse-checkout-cone-mode: false
-          # Merge ref is only virus-scanned by ClamAV; fork code is not executed.
-          allow-unsafe-pr-checkout: true
-
-      - name: Limit checkout to changed plugin folders only
-        run: |
-          echo '${{ needs.detect-changes.outputs.matrix }}' \
-            | jq -r '.[] | "plugins/\(.)"' \
-            | git sparse-checkout set --stdin
-          git checkout
-
-      - name: Get cache keys
-        id: cache-keys
-        run: |
-          echo "week=$(date +%Y-W%V)" >> $GITHUB_OUTPUT
-          echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
-
-      - name: Cache ClamAV installation (weekly)
-        id: cache-clamav-install
-        uses: actions/cache@v5
-        with:
-          path: /tmp/clamav-apt
-          key: clamav-install-${{ runner.os }}-${{ steps.cache-keys.outputs.week }}
-          restore-keys: clamav-install-${{ runner.os }}-
-
-      - name: Cache ClamAV virus definitions (daily)
-        id: cache-clamav-defs
-        uses: actions/cache@v5
-        with:
-          path: /tmp/clamav-db
-          key: clamav-defs-${{ runner.os }}-${{ steps.cache-keys.outputs.date }}
-          restore-keys: clamav-defs-${{ runner.os }}-
-
-      - name: Install ClamAV
-        run: |
-          sudo apt-get update -qq
-          if [[ "${{ steps.cache-clamav-install.outputs.cache-hit }}" == 'true' ]]; then
-            echo "Installing ClamAV from cached packages..."
-            sudo cp /tmp/clamav-apt/*.deb /var/cache/apt/archives/ 2>/dev/null || true
-          fi
-          sudo apt-get install -y --no-install-recommends clamav
-          if [[ "${{ steps.cache-clamav-install.outputs.cache-hit }}" != 'true' ]]; then
-            echo "Saving ClamAV packages to cache..."
-            mkdir -p /tmp/clamav-apt
-            find /var/cache/apt/archives/ \( -name 'clamav*.deb' -o -name 'libclamav*.deb' \) \
-              -exec cp {} /tmp/clamav-apt/ \; 2>/dev/null || true
-          fi
-
-      - name: Update virus definitions
-        run: |
-          sudo systemctl stop clamav-freshclam 2>/dev/null || true
-          sudo mkdir -p /tmp/clamav-db
-          sudo chown -R clamav:clamav /tmp/clamav-db
-          if [[ "${{ steps.cache-clamav-defs.outputs.cache-hit }}" != 'true' ]]; then
-            echo "Downloading fresh ClamAV definitions..."
-            sudo freshclam --datadir=/tmp/clamav-db
-          else
-            echo "Using cached ClamAV definitions"
-          fi
-
-      - name: Scan changed plugin directories
-        id: scan
-        run: |
-          SCAN_TARGETS=()
-          EXT_SCAN_DIR="/tmp/external-scan"
-          mkdir -p "$EXT_SCAN_DIR"
-
-          while IFS= read -r plugin_name; do
-            plugin_json="plugins/$plugin_name/plugin.json"
-            [[ ! -f "$plugin_json" ]] && continue
-
-            source_type=$(jq -r '.source_type // "local"' "$plugin_json")
-
-            if [[ "$source_type" == "external" ]]; then
-              version=$(jq -r '.version' "$plugin_json")
-              source_url_template=$(jq -r '.source_url // ""' "$plugin_json")
-              source_url="${source_url_template//\{version\}/$version}"
-
-              echo "Downloading external ZIP for ClamAV scan: $source_url"
-              scan_dir="$EXT_SCAN_DIR/$plugin_name"
-              mkdir -p "$scan_dir/extracted"
-              zip_file="$scan_dir/${plugin_name}.zip"
-
-              if curl -fsSL "$source_url" -o "$zip_file" --max-time 60; then
-                unzip -q "$zip_file" -d "$scan_dir/extracted" || true
-                SCAN_TARGETS+=("$scan_dir/extracted")
-              else
-                echo "::warning::Could not download $source_url — scanning plugin.json only for $plugin_name"
-                SCAN_TARGETS+=("plugins/$plugin_name")
-              fi
-            else
-              SCAN_TARGETS+=("plugins/$plugin_name")
-            fi
-          done < <(echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[]')
-
-          echo "Scanning: ${SCAN_TARGETS[*]}"
-          set +e
-          clamscan --database=/tmp/clamav-db \
-            --recursive --infected --no-summary \
-            "${SCAN_TARGETS[@]}" > clamav-output.txt 2>&1
-          echo "exit_code=$?" >> $GITHUB_OUTPUT
-          set -e
-          cat clamav-output.txt
-
-      - name: Set ClamAV status outputs
-        id: status
-        if: always()
-        env:
-          SCAN_EXIT: ${{ steps.scan.outputs.exit_code }}
-        run: |
-          INFECTED=0
-          if [[ -f "clamav-output.txt" ]]; then
-            INFECTED=$(grep -c ' FOUND$' clamav-output.txt || true)
-          fi
-          echo "clamav_infected=$INFECTED" >> "$GITHUB_OUTPUT"
-
-          if [[ "$INFECTED" -gt 0 ]]; then
-            {
-              echo "| File | Signature |"
-              echo "|------|-----------|"
-              grep ' FOUND$' clamav-output.txt | while IFS= read -r line; do
-                FULL_PATH=$(echo "$line" | sed 's/: .* FOUND$//')
-                FILE=$(echo "$FULL_PATH" | sed "s|^${GITHUB_WORKSPACE}/||")
-                SIG=$(echo "$line" | sed 's/^[^:]*: //; s/ FOUND$//')
-                HASH=$(sha256sum "$FULL_PATH" 2>/dev/null | cut -d' ' -f1 || true)
-                if [[ -n "$HASH" ]]; then
-                  echo "| \`$FILE\` | [\`$SIG\`](https://www.virustotal.com/gui/file/${HASH}) |"
-                else
-                  echo "| \`$FILE\` | \`$SIG\` |"
-                fi
-              done
-            } > clamav-findings.md
-            echo "clamav_status=failure" >> "$GITHUB_OUTPUT"
-          elif [[ "${SCAN_EXIT:-0}" -ge 2 ]]; then
-            echo "clamav_status=failure" >> "$GITHUB_OUTPUT"
-          else
-            echo "clamav_status=success" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Upload ClamAV findings for PR comment
-        if: always() && steps.status.outputs.clamav_status == 'failure'
-        uses: actions/upload-artifact@v7
-        with:
-          name: clamav-findings
-          path: clamav-findings.md
-          if-no-files-found: ignore
-
-      - name: Load app ID from config
-        if: always() && steps.status.outputs.clamav_status == 'failure'
-        id: config
-        env:
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
-            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
-            echo "use_app=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_app=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate GitHub App token
-        if: always() && steps.status.outputs.clamav_status == 'failure' && steps.config.outputs.use_app == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ steps.config.outputs.app_id }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Apply quarantine label
-        if: always() && steps.status.outputs.clamav_status == 'failure'
-        env:
-          GH_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
-        run: |
-          gh label create "QUARANTINE" \
-            --color "FFFF00" \
-            --description "ClamAV detected a potential threat in this PR" \
-            --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
-          gh pr edit "${{ github.event.pull_request.number }}" \
-            --add-label "QUARANTINE" \
-            --repo "$GITHUB_REPOSITORY"
-
-      - name: Fail job if ClamAV detected threats
-        if: always() && steps.status.outputs.clamav_status == 'failure'
-        run: exit 1
+    uses: ./.github/workflows/_clamav-scan.yml
+    with:
+      matrix: ${{ needs.detect-changes.outputs.matrix }}
+      pr_number: ${{ github.event.pull_request.number }}
+      base_ref: ${{ github.event.pull_request.base.ref }}
 
   # --------------------------------------------------------------------------
   # Job 7: Validate each plugin in parallel via matrix
@@ -1129,79 +216,33 @@ jobs:
       matrix:
         plugin: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
     steps:
-      - name: Checkout base branch scripts (trusted)
-        uses: actions/checkout@v6
+      - name: Trusted checkout
+        uses: ./.github/actions/trusted-checkout
         with:
+          base-ref: ${{ github.event.pull_request.base.ref }}
+          head-repo: ${{ github.event.pull_request.head.repo.full_name }}
+          head-sha: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.repository }}
-          ref: ${{ github.event.pull_request.base.ref }}
-          fetch-depth: 0
-          sparse-checkout: .github/scripts
-          sparse-checkout-cone-mode: false
 
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
-
-      - name: Save trusted scripts before fork checkout
-        run: cp -r .github/scripts /tmp/trusted-scripts
-
-      - name: Checkout PR plugins (untrusted content only)
-        uses: actions/checkout@v6
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-          sparse-checkout: plugins
-          sparse-checkout-cone-mode: false
-          clean: false
-          # Fork content is only read as data (sparse plugins/), never executed;
-          # trusted scripts are saved/restored around this step.
-          allow-unsafe-pr-checkout: true
-
-      - name: Restore trusted scripts
-        run: mkdir -p .github && cp -r /tmp/trusted-scripts .github/scripts
-
-      - name: Re-fetch base branch refs
-        run: git fetch https://github.com/${{ github.repository }} +${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
-
-      - name: Load app ID from config
-        id: config
-        env:
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
-            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
-            echo "use_app=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_app=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate GitHub App token
-        if: steps.config.outputs.use_app == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ steps.config.outputs.app_id }}
+          app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Log fallback to actions token
-        if: steps.config.outputs.use_app != 'true'
-        run: |
-          printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Validate ${{ matrix.plugin }}
         id: validate
         env:
-          GH_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          chmod +x .github/scripts/validate/*.sh
           set +e
-          .github/scripts/validate/validate.sh \
-            "${{ matrix.plugin }}" \
-            "${{ github.event.pull_request.user.login }}" \
-            "${{ github.event.pull_request.base.ref }}" \
-            "${{ matrix.plugin }}.fragment.md"
+          python -m pluginctl validate \
+            --plugin "${{ matrix.plugin }}" \
+            --author "${{ github.event.pull_request.user.login }}" \
+            --base-ref "${{ github.event.pull_request.base.ref }}" \
+            --out "${{ matrix.plugin }}.fragment.md"
           echo "exit_code=$?" >> $GITHUB_OUTPUT
         continue-on-error: true
 
@@ -1225,39 +266,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Checkout scripts
+      - name: Checkout config
         uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           fetch-depth: 1
-          sparse-checkout: .github/scripts
+          sparse-checkout: .github
           sparse-checkout-cone-mode: false
 
-      - name: Load app ID from config
-        id: config
-        env:
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
-            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
-            echo "use_app=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_app=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate GitHub App token
-        if: steps.config.outputs.use_app == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
         with:
-          client-id: ${{ steps.config.outputs.app_id }}
+          app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Log fallback to actions token
-        if: steps.config.outputs.use_app != 'true'
-        run: |
-          printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Download all report fragments
         uses: actions/download-artifact@v8
@@ -1288,13 +310,6 @@ jobs:
           path: codeql-low-findings
         continue-on-error: true
 
-      - name: Download CodeQL suppressed findings detail
-        uses: actions/download-artifact@v8
-        with:
-          name: codeql-suppressed-findings
-          path: codeql-suppressed-findings
-        continue-on-error: true
-
       - name: Download ClamAV findings detail
         uses: actions/download-artifact@v8
         with:
@@ -1305,7 +320,7 @@ jobs:
       - name: Aggregate and post comment
         id: report
         env:
-          GH_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           DISCORD_URL: ${{ vars.DISCORD_URL }}
           CODEQL_RESULT: ${{ needs.codeql-analyze.outputs.codeql_status }}
@@ -1313,7 +328,6 @@ jobs:
           CODEQL_WARNINGS: ${{ needs.codeql-analyze.outputs.codeql_warnings }}
           CODEQL_MEDIUMS: ${{ needs.codeql-analyze.outputs.codeql_mediums }}
           CODEQL_LOWS: ${{ needs.codeql-analyze.outputs.codeql_lows }}
-          CODEQL_SUPPRESSED: ${{ needs.codeql-analyze.outputs.codeql_suppressed }}
           CODEQL_UNSCANNED_LANGS: ${{ needs.codeql-analyze.outputs.codeql_unscanned_langs }}
           CLAMAV_RESULT: ${{ needs.clamav-scan.outputs.clamav_status }}
           CLAMAV_INFECTED: ${{ needs.clamav-scan.outputs.clamav_infected }}
@@ -1324,15 +338,16 @@ jobs:
           TITLE_FEEDBACK: ${{ needs.validate-title.outputs.title_feedback }}
           TITLE_SUGGESTION: ${{ needs.validate-title.outputs.title_suggestion }}
           BASE_REF: ${{ github.event.pull_request.base.ref }}
+          WEBHOOK_URL: ${{ vars.WEBHOOK_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         run: |
-          chmod +x .github/scripts/validate/*.sh
           set +e
-          .github/scripts/validate/report.sh \
-            "${{ github.event.pull_request.number }}" \
-            "${{ github.event.pull_request.user.login }}" \
-            "${{ needs.detect-changes.outputs.plugin_count }}" \
-            "false" \
-            "fragments"
+          python -m pluginctl report \
+            --pr "${{ github.event.pull_request.number }}" \
+            --author "${{ github.event.pull_request.user.login }}" \
+            --plugin-count "${{ needs.detect-changes.outputs.plugin_count }}" \
+            --close-pr false \
+            --fragments-dir fragments
           echo "exit_code=$?" >> $GITHUB_OUTPUT
 
       - name: Fail workflow if any plugin failed
@@ -1350,60 +365,39 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Checkout scripts
+      - name: Checkout config
         uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           fetch-depth: 1
-          sparse-checkout: .github/scripts
+          sparse-checkout: .github
           sparse-checkout-cone-mode: false
 
-      - name: Load app ID from config
-        id: config
-        env:
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
-            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
-            echo "use_app=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "use_app=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate GitHub App token
-        if: steps.config.outputs.use_app == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
         with:
-          client-id: ${{ steps.config.outputs.app_id }}
+          app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Log fallback to actions token
-        if: steps.config.outputs.use_app != 'true'
-        run: |
-          printf '## ⚠️ GitHub App token not available\n\nGH_APP_ID or GH_APP_PRIVATE_KEY not configured. Falling back to `GITHUB_TOKEN` (github-actions[bot] identity).\n' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Post close comment and close PR
         env:
-          GH_TOKEN: ${{ steps.config.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           DISCORD_URL: ${{ vars.DISCORD_URL }}
           CLOSE_REASON: ${{ needs.detect-changes.outputs.close_reason }}
+          WEBHOOK_URL: ${{ vars.WEBHOOK_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         run: |
-          chmod +x .github/scripts/validate/*.sh
-          .github/scripts/validate/report.sh \
-            "${{ github.event.pull_request.number }}" \
-            "${{ github.event.pull_request.user.login }}" \
-            "${{ needs.detect-changes.outputs.plugin_count }}" \
-            "true" \
-            "/dev/null"
+          python -m pluginctl report \
+            --pr "${{ github.event.pull_request.number }}" \
+            --author "${{ github.event.pull_request.user.login }}" \
+            --plugin-count "${{ needs.detect-changes.outputs.plugin_count }}" \
+            --close-pr true \
+            --fragments-dir /dev/null
 
   # --------------------------------------------------------------------------
-  # Job 10: Gate - single fixed status check for branch protection rules
-  #   Reference this job by name "Plugin PR Check" in your branch protection.
-  #   Passes only when all jobs succeed. Fails for any error, including
-  #   unauthorized PRs.
+  # Job 10: Gate, single fixed status check for branch protection rules
   # --------------------------------------------------------------------------
   plugin-pr-check:
     name: Plugin PR Check
@@ -1412,6 +406,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
+      - name: Checkout config
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 1
+          sparse-checkout: .github/pluginctl
+          sparse-checkout-cone-mode: false
+
       - name: Check for quarantine label
         env:
           GH_TOKEN: ${{ github.token }}
@@ -1437,41 +439,4 @@ jobs:
           CLAMAV_STATUS: ${{ needs.clamav-scan.outputs.clamav_status }}
           VALIDATE_RESULT: ${{ needs.validate-plugin.result }}
           REPORT_RESULT: ${{ needs.report.result }}
-        run: |
-          if [[ "$DETECT_RESULT" != "success" ]]; then
-            echo "::error::Plugin detection failed or no plugin changes found."
-            exit 1
-          fi
-          if [[ "$SKIP_VALIDATION" == "true" ]]; then
-            echo "No plugin changes detected and author has write access - passing."
-            exit 0
-          fi
-          if [[ "$TITLE_RESULT" == "failure" ]]; then
-            echo "::error::PR title does not match the required format. Rename the PR and re-run."
-            exit 1
-          fi
-          if [[ "$OUTSIDE_VIOLATION" == "true" ]]; then
-            echo "::error::PR contains unauthorized changes outside the plugins/ directory."
-            exit 1
-          fi
-          if [[ "$CLOSE_PR" == "true" ]]; then
-            echo "::error::PR is unauthorized - no permission to modify these plugins."
-            exit 1
-          fi
-          if [[ "$CODEQL_RESULT" == "failure" || "$CODEQL_STATUS" == "failure" ]]; then
-            echo "::error::CodeQL security analysis failed. See the Security tab for details."
-            exit 1
-          fi
-          if [[ "$CLAMAV_RESULT" == "failure" || "$CLAMAV_STATUS" == "failure" ]]; then
-            echo "::error::ClamAV antivirus scan detected threats. See PR comment for details."
-            exit 1
-          fi
-          if [[ "$VALIDATE_RESULT" == "failure" || "$VALIDATE_RESULT" == "cancelled" ]]; then
-            echo "::error::One or more plugin validations failed. See PR comment for details."
-            exit 1
-          fi
-          if [[ "$REPORT_RESULT" != "success" ]]; then
-            echo "::error::Plugin validation failed. See PR comment for details."
-            exit 1
-          fi
-          echo "All plugins validated successfully."
+        run: python -m pluginctl gate

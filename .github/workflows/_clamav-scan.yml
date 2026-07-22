@@ -1,0 +1,182 @@
+name: ClamAV Scan (reusable)
+
+# Reusable workflow called by validate-plugin.yml. Virus-scans the changed
+# plugins of a PR merge commit. pluginctl runs from the base branch (_trusted),
+# never from the untrusted merge tree.
+
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: string
+      base_ref:
+        required: true
+        type: string
+    outputs:
+      clamav_status:
+        value: ${{ jobs.scan.outputs.clamav_status }}
+      clamav_infected:
+        value: ${{ jobs.scan.outputs.clamav_infected }}
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+env:
+  PYTHONPATH: ${{ github.workspace }}/_trusted/.github/pluginctl/src
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      clamav_status: ${{ steps.status.outputs.clamav_status }}
+      clamav_infected: ${{ steps.status.outputs.clamav_infected }}
+    steps:
+      - name: Checkout PR merge commit for scan
+        uses: actions/checkout@v6
+        with:
+          ref: refs/pull/${{ inputs.pr_number }}/merge
+          sparse-checkout: .gitignore
+          sparse-checkout-cone-mode: false
+          # Merge ref is only virus-scanned by ClamAV; fork code is not executed.
+          allow-unsafe-pr-checkout: true
+
+      - name: Checkout trusted pluginctl (base)
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ inputs.base_ref }}
+          path: _trusted
+          sparse-checkout: .github/pluginctl
+          sparse-checkout-cone-mode: false
+
+      - name: Limit checkout to changed plugin folders only
+        run: |
+          echo '${{ inputs.matrix }}' | jq -r '.[] | "plugins/\(.)"' | git sparse-checkout set --stdin
+          git checkout
+
+      - name: Get cache keys
+        id: cache-keys
+        run: |
+          echo "week=$(date +%Y-W%V)" >> $GITHUB_OUTPUT
+          echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Cache ClamAV installation (weekly)
+        id: cache-clamav-install
+        uses: actions/cache@v5
+        with:
+          path: /tmp/clamav-apt
+          key: clamav-install-${{ runner.os }}-${{ steps.cache-keys.outputs.week }}
+          restore-keys: clamav-install-${{ runner.os }}-
+
+      - name: Cache ClamAV virus definitions (daily)
+        id: cache-clamav-defs
+        uses: actions/cache@v5
+        with:
+          path: /tmp/clamav-db
+          key: clamav-defs-${{ runner.os }}-${{ steps.cache-keys.outputs.date }}
+          restore-keys: clamav-defs-${{ runner.os }}-
+
+      - name: Install ClamAV
+        run: |
+          sudo apt-get update -qq
+          if [[ "${{ steps.cache-clamav-install.outputs.cache-hit }}" == 'true' ]]; then
+            echo "Installing ClamAV from cached packages..."
+            sudo cp /tmp/clamav-apt/*.deb /var/cache/apt/archives/ 2>/dev/null || true
+          fi
+          sudo apt-get install -y --no-install-recommends clamav
+          if [[ "${{ steps.cache-clamav-install.outputs.cache-hit }}" != 'true' ]]; then
+            echo "Saving ClamAV packages to cache..."
+            mkdir -p /tmp/clamav-apt
+            find /var/cache/apt/archives/ \( -name 'clamav*.deb' -o -name 'libclamav*.deb' \) \
+              -exec cp {} /tmp/clamav-apt/ \; 2>/dev/null || true
+          fi
+
+      - name: Update virus definitions
+        run: |
+          sudo systemctl stop clamav-freshclam 2>/dev/null || true
+          sudo mkdir -p /tmp/clamav-db
+          sudo chown -R clamav:clamav /tmp/clamav-db
+          if [[ "${{ steps.cache-clamav-defs.outputs.cache-hit }}" != 'true' ]]; then
+            echo "Downloading fresh ClamAV definitions..."
+            sudo freshclam --datadir=/tmp/clamav-db
+          else
+            echo "Using cached ClamAV definitions"
+          fi
+
+      - name: Scan changed plugin directories
+        id: scan
+        run: |
+          SCAN_TARGETS=()
+          EXT_SCAN_DIR="/tmp/external-scan"
+          mkdir -p "$EXT_SCAN_DIR"
+          while IFS= read -r plugin_name; do
+            plugin_json="plugins/$plugin_name/plugin.json"
+            [[ ! -f "$plugin_json" ]] && continue
+            source_type=$(jq -r '.source_type // "local"' "$plugin_json")
+            if [[ "$source_type" == "external" ]]; then
+              version=$(jq -r '.version' "$plugin_json")
+              source_url_template=$(jq -r '.source_url // ""' "$plugin_json")
+              source_url="${source_url_template//\{version\}/$version}"
+              echo "Downloading external ZIP for ClamAV scan: $source_url"
+              scan_dir="$EXT_SCAN_DIR/$plugin_name"
+              mkdir -p "$scan_dir/extracted"
+              zip_file="$scan_dir/${plugin_name}.zip"
+              if curl -fsSL "$source_url" -o "$zip_file" --max-time 60; then
+                unzip -q "$zip_file" -d "$scan_dir/extracted" || true
+                SCAN_TARGETS+=("$scan_dir/extracted")
+              else
+                echo "::warning::Could not download $source_url, scanning plugin.json only for $plugin_name"
+                SCAN_TARGETS+=("plugins/$plugin_name")
+              fi
+            else
+              SCAN_TARGETS+=("plugins/$plugin_name")
+            fi
+          done < <(echo '${{ inputs.matrix }}' | jq -r '.[]')
+          echo "Scanning: ${SCAN_TARGETS[*]}"
+          set +e
+          clamscan --database=/tmp/clamav-db \
+            --recursive --infected --no-summary \
+            "${SCAN_TARGETS[@]}" > clamav-output.txt 2>&1
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+          set -e
+          cat clamav-output.txt
+
+      - name: Parse ClamAV output and set status
+        id: status
+        if: always()
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: python -m pluginctl clamav-report --output clamav-output.txt --scan-exit "${{ steps.scan.outputs.exit_code }}"
+
+      - name: Upload ClamAV findings for PR comment
+        if: always() && steps.status.outputs.clamav_status == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: clamav-findings
+          path: clamav-findings.md
+          if-no-files-found: ignore
+
+      - name: Apply quarantine label
+        if: always() && steps.status.outputs.clamav_status == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          gh label create "QUARANTINE" \
+            --color "FFFF00" \
+            --description "ClamAV detected a potential threat in this PR" \
+            --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+          gh pr edit "${{ inputs.pr_number }}" \
+            --add-label "QUARANTINE" \
+            --repo "$GITHUB_REPOSITORY"
+
+      - name: Fail job if ClamAV detected threats
+        if: always() && steps.status.outputs.clamav_status == 'failure'
+        run: exit 1
