@@ -74,13 +74,15 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
                   codeql_mediums: str, codeql_lows: str, codeql_unscanned_langs: str,
                   clamav_result: str, clamav_infected: str, title_valid: str,
                   title_feedback: str, title_suggestion: str, repository: str,
-                  fragment_failed: bool,
+                  fragment_failed: bool, test_result: str = "skipped",
                   codeql_findings: str = "", codeql_medium_findings: str = "",
                   codeql_low_findings: str = "", clamav_findings: str = "",
                   other_plugins_section: str = "") -> str:
     L: list[str] = []
     overall_failed = fragment_failed
     if title_valid and title_valid != "true":
+        overall_failed = True
+    if test_result in ("failure", "cancelled"):
         overall_failed = True
 
     L.append(MARKER)
@@ -252,6 +254,16 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
                 L.append(f"**Suggested format:** `{title_suggestion}`")
             L.append("")
 
+        if test_result in ("failure", "cancelled"):
+            L.append("")
+            L.append("---")
+            L.append("")
+            L.append("### ❌ Tooling test suite")
+            L.append("")
+            L.append("The automation test suite (`pluginctl`) failed for this change. "
+                     "See the **Test Suite** job in this workflow run for details.")
+            L.append("")
+
         L.append("")
         L.append("---")
         L.append("")
@@ -386,6 +398,7 @@ def run(pr_number: str, pr_author: str, plugin_count: str, close_pr: bool,
         title_suggestion=os.environ.get("TITLE_SUGGESTION", ""),
         repository=repo,
         fragment_failed=parsed.any_failed,
+        test_result=os.environ.get("TEST_RESULT", "skipped"),
         codeql_findings=_read("codeql-findings/codeql-findings.md"),
         codeql_medium_findings=_read("codeql-medium-findings/codeql-medium-findings.md"),
         codeql_low_findings=_read("codeql-low-findings/codeql-low-findings.md"),

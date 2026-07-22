@@ -20,10 +20,15 @@ def evaluate(detect_result: str, close_pr: str, skip_validation: str,
              outside_violation: str, title_result: str,
              codeql_result: str, codeql_status: str,
              clamav_result: str, clamav_status: str,
-             validate_result: str, report_result: str) -> GateResult:
+             validate_result: str, report_result: str,
+             test_result: str = "skipped") -> GateResult:
     """Return pass/fail with the exact ::error:: message the Bash ladder emits."""
     if detect_result != "success":
         return GateResult(False, "Plugin detection failed or no plugin changes found.")
+    # Tooling test suite gates repo-update PRs. Checked before the skip_validation
+    # early-pass so a pure repo update cannot merge with red tests.
+    if test_result in ("failure", "cancelled"):
+        return GateResult(False, "Tooling test suite failed. See the Test Suite job for details.")
     if skip_validation == "true":
         return GateResult(True, "No plugin changes detected and author has write access - passing.")
     if title_result == "failure":

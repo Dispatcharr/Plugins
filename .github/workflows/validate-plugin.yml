@@ -204,6 +204,20 @@ jobs:
       base_ref: ${{ github.event.pull_request.base.ref }}
 
   # --------------------------------------------------------------------------
+  # Job 6b: Tooling test suite (reusable workflow) for authorized repo updates
+  # --------------------------------------------------------------------------
+  test-suite:
+    needs: [detect-changes]
+    if: >-
+      needs.detect-changes.result == 'success' &&
+      needs.detect-changes.outputs.outside_files != '' &&
+      needs.detect-changes.outputs.outside_violation != 'true' &&
+      needs.detect-changes.outputs.close_pr == 'false'
+    uses: ./.github/workflows/tests.yml
+    with:
+      ref: refs/pull/${{ github.event.pull_request.number }}/merge
+
+  # --------------------------------------------------------------------------
   # Job 7: Validate each plugin in parallel via matrix
   # --------------------------------------------------------------------------
   validate-plugin:
@@ -261,8 +275,8 @@ jobs:
   # Job 8: Aggregate all fragments, post PR comment, set final status
   # --------------------------------------------------------------------------
   report:
-    needs: [detect-changes, validate-plugin, codeql-analyze, clamav-scan, validate-title]
-    if: always() && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false' && (needs.detect-changes.outputs.skip_validation != 'true' || needs.detect-changes.outputs.pub_key_changed == 'true' || needs.validate-title.outputs.title_valid == 'false')
+    needs: [detect-changes, validate-plugin, codeql-analyze, clamav-scan, validate-title, test-suite]
+    if: always() && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false' && (needs.detect-changes.outputs.skip_validation != 'true' || needs.detect-changes.outputs.pub_key_changed == 'true' || needs.validate-title.outputs.title_valid == 'false' || needs.test-suite.result == 'failure')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -337,6 +351,7 @@ jobs:
           TITLE_VALID: ${{ needs.validate-title.outputs.title_valid }}
           TITLE_FEEDBACK: ${{ needs.validate-title.outputs.title_feedback }}
           TITLE_SUGGESTION: ${{ needs.validate-title.outputs.title_suggestion }}
+          TEST_RESULT: ${{ needs.test-suite.result }}
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           WEBHOOK_URL: ${{ vars.WEBHOOK_URL }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
@@ -401,7 +416,7 @@ jobs:
   # --------------------------------------------------------------------------
   plugin-pr-check:
     name: Plugin PR Check
-    needs: [detect-changes, codeql-analyze, clamav-scan, validate-plugin, validate-title, report]
+    needs: [detect-changes, codeql-analyze, clamav-scan, validate-plugin, validate-title, report, test-suite]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 2
@@ -439,4 +454,5 @@ jobs:
           CLAMAV_STATUS: ${{ needs.clamav-scan.outputs.clamav_status }}
           VALIDATE_RESULT: ${{ needs.validate-plugin.result }}
           REPORT_RESULT: ${{ needs.report.result }}
+          TEST_RESULT: ${{ needs.test-suite.result }}
         run: python -m pluginctl gate

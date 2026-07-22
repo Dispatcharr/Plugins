@@ -68,6 +68,25 @@ def test_title_invalid_block():
     assert "## ❌ Validation failed" in c
 
 
+def test_test_suite_failure_section_and_summary():
+    c = report.build_comment(**_base_kwargs(test_result="failure"))
+    assert "### ❌ Tooling test suite" in c
+    assert "pluginctl" in c
+    assert "## ❌ Validation failed" in c
+    assert "🎉" not in c
+
+
+def test_test_suite_success_renders_nothing():
+    c = report.build_comment(**_base_kwargs(test_result="success"))
+    assert "Tooling test suite" not in c
+    assert "## 🎉 All validation checks passed!" in c
+
+
+def test_test_suite_skipped_renders_nothing():
+    c = report.build_comment(**_base_kwargs(test_result="skipped"))
+    assert "Tooling test suite" not in c
+
+
 def test_codeql_skipped_notice_no_separator_when_only_success():
     c = report.build_comment(**_base_kwargs(codeql_result="success"))
     # success + no unscanned -> no findings separator, still passes

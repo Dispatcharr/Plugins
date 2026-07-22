@@ -87,6 +87,7 @@ def cmd_gate(args) -> int:
         clamav_status=_env("CLAMAV_STATUS"),
         validate_result=_env("VALIDATE_RESULT"),
         report_result=_env("REPORT_RESULT"),
+        test_result=_env("TEST_RESULT", "skipped"),
     )
     if result.ok:
         actions.log(result.message)

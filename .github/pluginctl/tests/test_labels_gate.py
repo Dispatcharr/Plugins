@@ -48,6 +48,26 @@ def test_gate_all_success():
     assert r.ok and "validated successfully" in r.message
 
 
+def test_gate_test_suite_failure_fails_even_when_skip_validation():
+    # A pure repo update (skip_validation=true) must not pass with red tests.
+    r = gate.evaluate("success", "false", "true", "false", "", "", "", "", "", "", "",
+                      test_result="failure")
+    assert not r.ok and "test suite" in r.message.lower()
+
+
+def test_gate_test_suite_skipped_allows_skip_validation_pass():
+    r = gate.evaluate("success", "false", "true", "false", "", "", "", "", "", "", "",
+                      test_result="skipped")
+    assert r.ok
+
+
+def test_gate_test_suite_success_allows_pass():
+    r = gate.evaluate("success", "false", "false", "false", "success",
+                      "success", "success", "success", "success", "success", "success",
+                      test_result="success")
+    assert r.ok and "validated successfully" in r.message
+
+
 def test_gate_ladder_order_outside_violation_before_close():
     # outside_violation takes precedence over close_pr in the ladder
     r = gate.evaluate("success", "true", "false", "true", "success",
