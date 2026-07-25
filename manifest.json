@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-25T15:21:51Z",
+  "generated_at": "2026-07-25T15:40:31Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -101,12 +101,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epgeditarr/manifest.json",
         "author": "jstevenscl",
         "license": "MIT",
-        "last_updated": "2026-05-19T16:17:32Z",
-        "latest_version": "0.2.07",
-        "latest_md5": "6f76fe364fd974cdbb4a27edff645a1c",
-        "latest_sha256": "65a4ea198ec514d430db85b56629dc8a58fd7f4d4f8eeece63aa92b1918e694e",
-        "latest_url": "epgeditarr-0.2.07/epgeditarr-0.2.07.zip",
-        "latest_size": 134
+        "last_updated": "2026-07-25T15:40:08Z",
+        "latest_version": "0.2.08",
+        "latest_md5": "8e91a62d81a8de235457108aee48a224",
+        "latest_sha256": "0f278e13551fdc86ffa2e4b362dbed991bf2830b6de7272933bdad6b80e037ad",
+        "latest_url": "epgeditarr-0.2.08/epgeditarr-0.2.08.zip",
+        "latest_size": 138
       },
       {
         "slug": "event-channel-managarr",
@@ -317,5 +317,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCamTUkwAKCRB+wDprTCI0\nzqclAP9gFI4tCnaMXUzJQfdb6wrOP3KsVRf4+9e58TjZO6FtywD+L1SqdyL6iqnw\nmerRONoMs1nA2epNIg/hDcfeECQuAgY=\n=C5ts\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCamTY9AAKCRB+wDprTCI0\nzphfAP98IMpe1+H85Y7p0223nkGfYaWC+yp5il9Lm4mtsxAz2wEAq+H6nwPyCgpC\nFzFIt7LtZhF2+/fk3EQTQUPThGxUKwY=\n=hl6X\n-----END PGP SIGNATURE-----"
 }
