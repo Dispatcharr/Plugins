@@ -19,6 +19,7 @@ from typing import Optional
 
 from ..core import actions, gh, git
 from ..core.version import is_semver, is_dispatcharr_version, version_greater_than
+from .detect import author_in_plugin_json, is_safe_name
 
 METADATA_ONLY_FIELDS = [
     "description", "repo_url", "discord_thread", "min_dispatcharr_version",
@@ -26,7 +27,6 @@ METADATA_ONLY_FIELDS = [
 ]
 
 _GH_DOWNLOAD_RE = re.compile(r"^https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/")
-_GH_DOWNLOAD_TAG_RE = re.compile(r"^https://github\.com/[^/]+/[^/]+/releases/download/([^/]+)/")
 
 SPDX_URL = "https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json"
 
@@ -137,7 +137,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         _write(output_file, text)
 
     # Folder name format
-    if not re.match(r"^[a-z0-9]+(-[a-z0-9]+)*$", plugin_name):
+    if not is_safe_name(plugin_name):
         rows.append(f"| Folder name | ❌ | Must be lowercase-kebab-case - got "
                     f"`{plugin_name}`, e.g. `my-plugin-name` |")
         failed = True
@@ -221,9 +221,9 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
                         release_link = f"https://github.com/{gh_owner}/{gh_repo}/releases/tag/{gh_tag}"
                         if old_version and old_source_url_tmpl:
                             old_resolved = old_source_url_tmpl.replace("{version}", old_version)
-                            om = _GH_DOWNLOAD_TAG_RE.match(old_resolved)
+                            om = _GH_DOWNLOAD_RE.match(old_resolved)
                             if om:
-                                old_gh_tag = om.group(1)
+                                old_gh_tag = om.group(3)
                                 compare_link = (f"https://github.com/{gh_owner}/{gh_repo}"
                                                 f"/compare/{old_gh_tag}...{gh_tag}")
                 else:
@@ -275,9 +275,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         rows.append("| Permission | ✅ | You have permission to modify this plugin |")
         has_permission = True
     elif base_raw is not None:
-        base_author = jq_r(base_raw.get("author"), "")
-        base_maintainers = [str(m) for m in (base_raw.get("maintainers") or []) if m is not None]
-        if pr_author == base_author or pr_author in base_maintainers:
+        if author_in_plugin_json(pr_author, base_raw):
             rows.append("| Permission | ✅ | You have permission to modify this plugin |")
             has_permission = True
         else:
@@ -325,15 +323,17 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
     # Dispatcharr version constraints
     min_da = jq_r(raw.get("min_dispatcharr_version"), "")
     max_da = jq_r(raw.get("max_dispatcharr_version"), "")
-    if min_da and not is_dispatcharr_version(min_da):
+    min_ok = is_dispatcharr_version(min_da)
+    max_ok = is_dispatcharr_version(max_da)
+    if min_da and not min_ok:
         rows.append(f"| `min_dispatcharr_version` | ❌ | `{min_da}` is not valid semver - "
                     "expected `X.Y.Z` or `vX.Y.Z` |")
         failed = True
-    if max_da and not is_dispatcharr_version(max_da):
+    if max_da and not max_ok:
         rows.append(f"| `max_dispatcharr_version` | ❌ | `{max_da}` is not valid semver - "
                     "expected `X.Y.Z` or `vX.Y.Z` |")
         failed = True
-    if min_da and max_da and is_dispatcharr_version(max_da) and is_dispatcharr_version(min_da):
+    if min_da and max_da and max_ok and min_ok:
         _max = max_da[1:] if max_da.startswith("v") else max_da
         _min = min_da[1:] if min_da.startswith("v") else min_da
         if not version_greater_than(_max, _min) and _max != _min:
@@ -364,10 +364,10 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         jq_r(raw.get("name"), ""),
         jq_r(raw.get("version"), ""),
         jq_r(raw.get("description"), ""),
-        jq_r(raw.get("author"), ""),
+        author,
         ", ".join(maintainers),
-        jq_r(raw.get("repo_url"), ""),
-        jq_r(raw.get("discord_thread"), ""),
+        repo_url,
+        discord_thread,
     ]
     meta_row = f"<!--META_ROW:{tsv(meta_fields)}-->"
 

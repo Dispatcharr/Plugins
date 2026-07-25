@@ -11,28 +11,35 @@ import sys
 import uuid
 
 
-def set_output(name: str, value: str) -> None:
-    """Append ``name=value`` to ``$GITHUB_OUTPUT`` (multiline-safe).
+def _format_output(name: str, value: str) -> str:
+    """One ``$GITHUB_OUTPUT`` entry; multiline values use GitHub's heredoc form
+    with a random delimiter to avoid collisions with the payload."""
+    if "\n" in value:
+        delim = f"ghadelim_{uuid.uuid4().hex}"
+        return f"{name}<<{delim}\n{value}\n{delim}\n"
+    return f"{name}={value}\n"
 
-    Values containing a newline use the heredoc form GitHub documents, with a
-    random delimiter to avoid collisions with the payload.
-    """
+
+def set_output(name: str, value: str) -> None:
+    """Append ``name=value`` to ``$GITHUB_OUTPUT`` (multiline-safe)."""
     path = os.environ.get("GITHUB_OUTPUT")
     if not path:
         # Local/dry-run: echo to stdout the same way the shell scripts did.
         print(f"{name}={value}")
         return
     with open(path, "a", encoding="utf-8") as fh:
-        if "\n" in value:
-            delim = f"ghadelim_{uuid.uuid4().hex}"
-            fh.write(f"{name}<<{delim}\n{value}\n{delim}\n")
-        else:
-            fh.write(f"{name}={value}\n")
+        fh.write(_format_output(name, value))
 
 
 def set_outputs(**kwargs: str) -> None:
-    for name, value in kwargs.items():
-        set_output(name, "" if value is None else str(value))
+    values = {name: "" if value is None else str(value) for name, value in kwargs.items()}
+    path = os.environ.get("GITHUB_OUTPUT")
+    if not path:
+        for name, value in values.items():
+            print(f"{name}={value}")
+        return
+    with open(path, "a", encoding="utf-8") as fh:
+        fh.write("".join(_format_output(name, value) for name, value in values.items()))
 
 
 def step_summary(markdown: str) -> None:

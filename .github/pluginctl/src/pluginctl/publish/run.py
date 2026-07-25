@@ -12,32 +12,13 @@ import os
 import subprocess
 import tempfile
 
-from ..core import actions, git as _git_mod
+from ..core import actions
+from ..core.git import configure_identity, run as _git
 from . import cleanup, manifest, readmes, zips
 
 RELEASES_BRANCH = "releases"
 MAX_VERSIONED_ZIPS = 10
 RELEASES_BRANCH_VERSION = "3"
-
-
-def _git(*args: str, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", *args], check=check, capture_output=True, text=True)
-
-
-def _configure_identity(repository: str, app_slug: str) -> None:
-    if app_slug:
-        from ..core import gh
-        bot_user_id = gh.api(f"/users/{app_slug}%5Bbot%5D", jq=".id") or ""
-        _git("config", "user.name", f"{app_slug}[bot]")
-        if bot_user_id:
-            _git("config", "user.email",
-                 f"{bot_user_id}+{app_slug}[bot]@users.noreply.github.com")
-        else:
-            _git("config", "user.email", f"{app_slug}[bot]@users.noreply.github.com")
-    else:
-        _git("config", "user.name", "github-actions[bot]")
-        _git("config", "user.email",
-             "41898282+github-actions[bot]@users.noreply.github.com")
 
 
 def run(source_branch: str) -> int:
@@ -56,7 +37,7 @@ def run(source_branch: str) -> int:
     try:
         _git("clone", "--no-checkout", remote, f"{workdir}/repo")
         os.chdir(f"{workdir}/repo")
-        _configure_identity(repository, app_slug)
+        configure_identity(app_slug)
         _setup_releases_branch(repository, source_branch, token, remote,
                                force_rebuild, force_plugin)
 
@@ -104,8 +85,7 @@ def _setup_releases_branch(repository, source_branch, token, remote,
 
     if force_rebuild and force_plugin:
         if branch_exists:
-            _git("checkout", RELEASES_BRANCH)
-            _git("pull", "origin", RELEASES_BRANCH, check=False)
+            _checkout_existing()
         else:
             _orphan_init()
         actions.log(f"Targeted force rebuild: deleting GitHub Releases for {force_plugin}")
@@ -127,21 +107,23 @@ def _setup_releases_branch(repository, source_branch, token, remote,
                     if tag.startswith(f"{pname}-"):
                         gh.release_delete(tag, repository)
             subprocess.run(["rm", "-rf", "plugins"], check=False)
-        _git("checkout", "--orphan", RELEASES_BRANCH)
-        _git("rm", "-rf", ".", check=False)
-        _git("commit", "--allow-empty", "-m", f"Initialize {RELEASES_BRANCH} branch (force rebuild)")
+        _orphan_init(f"Initialize {RELEASES_BRANCH} branch (force rebuild)")
         _git("push", "--force", remote, RELEASES_BRANCH)
     elif branch_exists:
-        _git("checkout", RELEASES_BRANCH)
-        _git("pull", "origin", RELEASES_BRANCH, check=False)
+        _checkout_existing()
     else:
         _orphan_init()
 
 
-def _orphan_init() -> None:
+def _orphan_init(message: str = f"Initialize {RELEASES_BRANCH} branch") -> None:
     _git("checkout", "--orphan", RELEASES_BRANCH)
     _git("rm", "-rf", ".", check=False)
-    _git("commit", "--allow-empty", "-m", f"Initialize {RELEASES_BRANCH} branch")
+    _git("commit", "--allow-empty", "-m", message)
+
+
+def _checkout_existing() -> None:
+    _git("checkout", RELEASES_BRANCH)
+    _git("pull", "origin", RELEASES_BRANCH, check=False)
 
 
 def _commit_and_push(repository, source_branch, remote) -> int:
@@ -174,15 +156,27 @@ def _commit_and_push(repository, source_branch, remote) -> int:
 
 
 def _emit_published(repository: str, changed: str) -> None:
-    """Emit one plugin.published event per changed plugin (best-effort)."""
+    """Emit one plugin.published event per changed plugin (best-effort, concurrent).
+
+    Deliveries are independent and already non-fatal, so they run in parallel
+    rather than serializing one 15s timeout per plugin on the publish path.
+    """
+    from concurrent.futures import ThreadPoolExecutor
+
     from ..integrations import webhooks
     actor = os.environ.get("GITHUB_ACTOR", "")
+    payloads = []
     for line in changed.splitlines():
         if "@" not in line:
             continue
         plugin_key, _, version = line.partition("@")
-        webhooks.emit("plugin.published",
-                      webhooks.plugin_published(plugin_key.replace("_", "-"), version, None, actor))
+        payloads.append(webhooks.plugin_published(plugin_key.replace("_", "-"),
+                                                  version, None, actor))
+    if not payloads:
+        return
+    with ThreadPoolExecutor(max_workers=min(8, len(payloads))) as pool:
+        for payload in payloads:
+            pool.submit(webhooks.emit, "plugin.published", payload)
 
 
 def _only_timestamps() -> bool:

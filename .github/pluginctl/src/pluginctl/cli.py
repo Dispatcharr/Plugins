@@ -32,6 +32,11 @@ def _env(name: str, default: str = "") -> str:
     return os.environ.get(name, default)
 
 
+def _repo(args) -> str:
+    """``--repo``, falling back to the repository the workflow runs in."""
+    return args.repo or _env("GITHUB_REPOSITORY")
+
+
 # --------------------------------------------------------------------------- #
 # Handlers
 # --------------------------------------------------------------------------- #
@@ -43,7 +48,7 @@ def cmd_detect(args) -> int:
         head_ref=args.head_ref or "",
         author_blacklist=_env("AUTHOR_BLACKLIST"),
         plugin_blacklist=_env("PLUGIN_BLACKLIST"),
-        repo=args.repo or _env("GITHUB_REPOSITORY"),
+        repo=_repo(args),
     )
 
 
@@ -100,7 +105,7 @@ def cmd_sarif(args) -> int:
     from .validate import sarif
     return sarif.run(
         results_dir=args.results_dir,
-        repo=args.repo or _env("GITHUB_REPOSITORY"),
+        repo=_repo(args),
         sha=args.sha,
         matrix=_matrix(args.matrix),
         analyze_outcome=args.analyze_outcome,
@@ -118,7 +123,7 @@ def cmd_validate(args) -> int:
         pr_author=args.author,
         base_ref=args.base_ref,
         output_file=args.out,
-        repo=args.repo or _env("GITHUB_REPOSITORY"),
+        repo=_repo(args),
     )
 
 
@@ -130,7 +135,7 @@ def cmd_report(args) -> int:
         plugin_count=args.plugin_count,
         close_pr=_bool(args.close_pr),
         fragments_dir=args.fragments_dir,
-        repo=args.repo or _env("GITHUB_REPOSITORY"),
+        repo=_repo(args),
     )
 
 
@@ -148,8 +153,8 @@ def cmd_clamav_report(args) -> int:
 def cmd_webhook(args) -> int:
     from .integrations import webhooks
     data = json.loads(args.data) if args.data else {}
-    sent = webhooks.emit(args.event, data)
-    return 0 if sent or True else 1  # emission failures never fail the pipeline
+    webhooks.emit(args.event, data)
+    return 0  # emission failures never fail the pipeline
 
 
 def cmd_publish(args) -> int:

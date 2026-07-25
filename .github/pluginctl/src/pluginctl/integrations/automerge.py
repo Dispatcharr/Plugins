@@ -12,16 +12,12 @@ from __future__ import annotations
 
 import json
 import os
-import subprocess
 from dataclasses import dataclass
 
 from ..core import actions, gh
+from ..core.git import run as _git
 
 BLOCKING_LABELS = ("New Plugin", "Repo Update", "Invalid", "QUARANTINE")
-
-
-def _git(*args: str, check: bool = False) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", *args], check=check, capture_output=True, text=True)
 
 
 @dataclass
@@ -45,12 +41,12 @@ def evaluate_labels(labels: list[str], mergeable: str) -> LabelDecision:
 
 def reverify_is_pure_update(pr_number: str, base_branch: str = "main") -> bool:
     """Re-derive from the diff that the PR only updates existing plugins."""
-    if _git("fetch", "origin", f"pull/{pr_number}/merge:pr-merge-{pr_number}").returncode != 0:
+    if _git("fetch", "origin", f"pull/{pr_number}/merge:pr-merge-{pr_number}", check=False).returncode != 0:
         actions.notice(f"Could not fetch merge ref for PR #{pr_number} - skipping.")
         return False
-    _git("checkout", "-q", f"pr-merge-{pr_number}")
-    merge_base = _git("merge-base", f"origin/{base_branch}", "HEAD").stdout.strip()
-    changed = _git("diff", "--name-only", merge_base, "HEAD").stdout.splitlines()
+    _git("checkout", "-q", f"pr-merge-{pr_number}", check=False)
+    merge_base = _git("merge-base", f"origin/{base_branch}", "HEAD", check=False).stdout.strip()
+    changed = _git("diff", "--name-only", merge_base, "HEAD", check=False).stdout.splitlines()
 
     outside = [f for f in changed if not f.startswith("plugins/")]
     if outside:
@@ -64,7 +60,7 @@ def reverify_is_pure_update(pr_number: str, base_branch: str = "main") -> bool:
         return False
 
     for slug in slugs:
-        if _git("show", f"origin/{base_branch}:plugins/{slug}/plugin.json").returncode != 0:
+        if _git("show", f"origin/{base_branch}:plugins/{slug}/plugin.json", check=False).returncode != 0:
             actions.notice(f"Plugin '{slug}' does not exist on {base_branch} - this is a new "
                            "plugin, not an update. Skipping.")
             return False

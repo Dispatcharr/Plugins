@@ -10,7 +10,6 @@ generate-manifest to consume, uploads the release, and appends the plugin to
 from __future__ import annotations
 
 import glob
-import hashlib
 import json
 import os
 import shutil
@@ -21,22 +20,9 @@ import urllib.request
 from typing import Optional
 
 from ..core import actions, gh, git, jsonio
+from ..core.hashing import file_digests
 from ..core.jsonio import drop_none
-
-
-def _now() -> str:
-    import datetime
-    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def _checksums(path: str) -> tuple[str, str]:
-    md5 = hashlib.md5()
-    sha = hashlib.sha256()
-    with open(path, "rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            md5.update(chunk)
-            sha.update(chunk)
-    return md5.hexdigest(), sha.hexdigest()
+from ..core.timeutil import now_iso
 
 
 def _download(url: str, dest: str, attempts: int = 3) -> bool:
@@ -52,6 +38,16 @@ def _download(url: str, dest: str, attempts: int = 3) -> bool:
                 actions.log(f"  Download attempt {attempt} failed, retrying in 15s...")
                 time.sleep(15)
     return False
+
+
+def _commit_info(source_branch: str, plugin_dir: str) -> tuple[str, str, str]:
+    """(commit_sha, commit_sha_short, commit_date) of the last commit touching the plugin."""
+    out = git.log_format("%H%n%h%n%cI", f"origin/{source_branch}", plugin_dir)
+    if not out:
+        return "", "", ""
+    fields = out.splitlines()
+    fields += [""] * (3 - len(fields))
+    return fields[0], fields[1], fields[2]
 
 
 def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
@@ -74,10 +70,9 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
             continue
 
         source_type = raw.get("source_type") or "local"
-        build_timestamp = _now()
-        commit_sha = git.log_format("%H", f"origin/{source_branch}", plugin_dir) or ""
-        commit_sha_short = git.log_format("%h", f"origin/{source_branch}", plugin_dir) or ""
-        last_updated = git.log_format("%cI", f"origin/{source_branch}", plugin_dir) or _now()
+        build_timestamp = now_iso()
+        commit_sha, commit_sha_short, commit_date = _commit_info(source_branch, plugin_dir)
+        last_updated = commit_date or now_iso()
         source_url_resolved = ""
 
         if source_type == "external":
@@ -95,7 +90,7 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
                 subprocess.run(["zip", "-r", zip_path, plugin_key], cwd=tmpdir,
                                check=True, stdout=subprocess.DEVNULL)
 
-        checksum_md5, checksum_sha256 = _checksums(zip_path)
+        checksum_md5, checksum_sha256 = file_digests(zip_path, "md5", "sha256")
         min_da = str(raw.get("min_dispatcharr_version") or "")
         max_da = str(raw.get("max_dispatcharr_version") or "")
         zip_size_kb = os.path.getsize(zip_path) // 1024

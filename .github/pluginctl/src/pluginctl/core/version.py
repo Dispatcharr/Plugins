@@ -87,3 +87,12 @@ def _version_cmp(a: str, b: str) -> int:
 def sort_versions_desc(versions: list[str]) -> list[str]:
     """Sort bare version strings newest-first, like ``sort -V -r``."""
     return sorted(versions, key=cmp_to_key(_version_cmp), reverse=True)
+
+
+def versioned_tags(all_tags: list[str], plugin_name: str) -> list[str]:
+    """``<plugin>-<version>`` release tags for one plugin, newest-first, minus ``-latest``."""
+    prefix = f"{plugin_name}-"
+    latest = f"{plugin_name}-latest"
+    versions = [t[len(prefix):] for t in all_tags
+                if t.startswith(prefix) and t != latest]
+    return [f"{prefix}{v}" for v in sort_versions_desc(versions)]

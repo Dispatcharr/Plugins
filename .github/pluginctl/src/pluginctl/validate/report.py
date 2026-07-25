@@ -18,6 +18,13 @@ from ..core import actions, gh, git
 
 MARKER = "<!--PLUGIN_VALIDATION_COMMENT-->"
 
+# close_reason values for which the PR itself is closed (vs. merely reported on).
+CLOSING_REASONS = ("unauthorized", "author-blacklisted", "plugin-blacklisted")
+
+
+def closes_pr(close_pr: bool, close_reason: str) -> bool:
+    return close_pr and close_reason in CLOSING_REASONS
+
 
 @dataclass
 class ParsedFragments:
@@ -414,7 +421,7 @@ def run(pr_number: str, pr_author: str, plugin_count: str, close_pr: bool,
 
     _emit_webhook(pr_number, pr_author, close_pr, close_reason, parsed)
 
-    if close_pr and close_reason in ("unauthorized", "author-blacklisted", "plugin-blacklisted"):
+    if closes_pr(close_pr, close_reason):
         gh.pr_close(pr_number)
         actions.log(f"PR #{pr_number} closed: unauthorized")
     return comment_exit
@@ -422,7 +429,7 @@ def run(pr_number: str, pr_author: str, plugin_count: str, close_pr: bool,
 
 def _emit_webhook(pr_number, pr_author, close_pr, close_reason, parsed) -> None:
     from ..integrations import webhooks
-    if close_pr and close_reason in ("unauthorized", "author-blacklisted", "plugin-blacklisted"):
+    if closes_pr(close_pr, close_reason):
         webhooks.emit("pr.closed_unauthorized",
                       webhooks.pr_closed_unauthorized(pr_number, pr_author, close_reason))
         return

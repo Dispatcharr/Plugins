@@ -10,15 +10,7 @@ import os
 import shutil
 
 from ..core import actions, gh
-from ..core.version import sort_versions_desc
-
-
-def _versioned_tags(all_tags: list[str], plugin_name: str) -> list[str]:
-    prefix = f"{plugin_name}-"
-    latest = f"{plugin_name}-latest"
-    versions = [t[len(prefix):] for t in all_tags
-                if t.startswith(prefix) and t != latest]
-    return [f"{prefix}{v}" for v in sort_versions_desc(versions)]
+from ..core.version import versioned_tags
 
 
 def run(repository: str, max_versioned_zips: int = 10) -> int:
@@ -38,7 +30,7 @@ def run(repository: str, max_versioned_zips: int = 10) -> int:
     # Prune old versioned releases per plugin (keep the newest max_versioned_zips).
     for plugin_dir in sorted(glob.glob("plugins/*/")):
         plugin_name = os.path.basename(plugin_dir.rstrip("/"))
-        tags = _versioned_tags(all_tags, plugin_name)
+        tags = versioned_tags(all_tags, plugin_name)
         if len(tags) <= max_versioned_zips:
             continue
         for old_tag in tags[max_versioned_zips:]:

@@ -1,5 +1,5 @@
+from pluginctl.core import version
 from pluginctl.integrations import automerge, external_readme
-from pluginctl.publish import cleanup
 
 
 # ---- automerge label gate ----
@@ -54,7 +54,7 @@ def test_rewrite_links():
     assert "[anchor](#section)" in out  # anchors untouched
 
 
-# ---- cleanup tag selection ----
+# ---- release tag selection ----
 def test_versioned_tags_sorted_desc_excludes_latest():
     tags = ["demo-1.0.0", "demo-1.10.0", "demo-1.2.0", "demo-latest", "other-1.0.0"]
-    assert cleanup._versioned_tags(tags, "demo") == ["demo-1.10.0", "demo-1.2.0", "demo-1.0.0"]
+    assert version.versioned_tags(tags, "demo") == ["demo-1.10.0", "demo-1.2.0", "demo-1.0.0"]

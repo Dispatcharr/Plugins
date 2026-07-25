@@ -13,9 +13,11 @@ import datetime
 import glob
 import json
 import os
+import re
 from typing import Optional
 
 from ..core import git
+from ..core.timeutil import now_iso
 
 
 def fmt_date(value: str) -> str:
@@ -167,22 +169,18 @@ def render_plugin_readme(plugin_name: str, plugin_raw: dict, manifest: dict,
 
 
 def _badges(license_id: str, discord_thread: str, repo_url: str) -> str:
-    badges = ""
+    badges: list[str] = []
     if license_id:
-        badges = (f"[![License: {license_id}]"
-                  f"(https://img.shields.io/badge/License-{shields_encode(license_id)}-blue?style=flat-square)]"
-                  f"(https://spdx.org/licenses/{license_id}.html)")
+        badges.append(f"[![License: {license_id}]"
+                      f"(https://img.shields.io/badge/License-{shields_encode(license_id)}-blue?style=flat-square)]"
+                      f"(https://spdx.org/licenses/{license_id}.html)")
     if discord_thread:
-        if badges:
-            badges += " "
-        badges += ("[![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)]"
-                   f"({discord_thread})")
+        badges.append("[![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)]"
+                      f"({discord_thread})")
     if repo_url:
-        if badges:
-            badges += " "
-        badges += ("[![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)]"
-                   f"({repo_url})")
-    return badges
+        badges.append("[![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)]"
+                      f"({repo_url})")
+    return " ".join(badges)
 
 
 def _compat_badges(min_da: str, max_da: str) -> str:
@@ -210,14 +208,11 @@ def version_count_from_manifest(manifest_file: str) -> int:
 # --------------------------------------------------------------------------- #
 # Root releases README (README.md on the releases branch)
 # --------------------------------------------------------------------------- #
-import re as _re
-
-
 def anchor_for(name: str) -> str:
     """GitHub-style heading anchor: lowercase, non [a-z0-9-] -> -, collapse runs."""
     a = name.lower()
-    a = _re.sub(r"[^a-z0-9-]", "-", a)
-    a = _re.sub(r"-+", "-", a)
+    a = re.sub(r"[^a-z0-9-]", "-", a)
+    a = re.sub(r"-+", "-", a)
     return a
 
 
@@ -297,12 +292,21 @@ def render_plugin_block(*, is_deprecated: bool, plugin_name: str, plugin_raw: di
 # --------------------------------------------------------------------------- #
 # Orchestrators (IO): called from the releases-branch checkout directory
 # --------------------------------------------------------------------------- #
-def _now_iso() -> str:
-    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+def _plugin_commit(source_branch: str, plugin_dir: str) -> tuple[str, str, str]:
+    """(last_updated, commit_sha, commit_sha_short) of the plugin's last commit.
+
+    One ``git log`` call for all three fields; empty strings when there is none.
+    """
+    out = git.log_format("%cI%n%H%n%h", f"origin/{source_branch}", plugin_dir)
+    if not out:
+        return "", "", ""
+    fields = out.splitlines()
+    fields += [""] * (3 - len(fields))
+    return fields[0], fields[1], fields[2]
 
 
 def _plugin_last_updated(source_branch: str, plugin_dir: str) -> str:
-    return git.log_format("%cI", f"origin/{source_branch}", plugin_dir) or _now_iso()
+    return _plugin_commit(source_branch, plugin_dir)[0] or now_iso()
 
 
 def generate_plugin_readmes(source_branch: str, repository: str) -> None:
@@ -335,13 +339,16 @@ def generate_releases_readme(source_branch: str, releases_branch: str, repositor
     root = _load_json("manifest.json") or {}
     root_url = (root.get("manifest") or {}).get("root_url") or ""
 
-    plugin_dirs = sorted(glob.glob("plugins/*/"))
     raws: dict[str, dict] = {}
-    for pd in plugin_dirs:
+    has_deprecated = False
+    for pd in sorted(glob.glob("plugins/*/")):
         pname = os.path.basename(pd.rstrip("/"))
         raw = _load_json(os.path.join(pd, "plugin.json"))
-        if raw is not None:
-            raws[pname] = raw
+        if raw is None:
+            continue
+        raws[pname] = raw
+        if raw.get("deprecated") is True:
+            has_deprecated = True
 
     L: list[str] = []
     L.append("# Plugin Releases")
@@ -358,20 +365,13 @@ def generate_releases_readme(source_branch: str, releases_branch: str, repositor
     L.append("| Plugin | Version | Author | License | Description |")
     L.append("|--------|---------|-------|---------|-------------|")
 
-    for pass_name in ("active", "deprecated"):
-        for pd in plugin_dirs:
-            pname = os.path.basename(pd.rstrip("/"))
-            raw = raws.get(pname)
-            if raw is None:
-                continue
-            deprecated = raw.get("deprecated") is True
+    for deprecated_pass in (False, True):
+        for raw in raws.values():
             if raw.get("unlisted") is True:
                 continue
-            if pass_name == "active" and deprecated:
+            if (raw.get("deprecated") is True) is not deprecated_pass:
                 continue
-            if pass_name == "deprecated" and not deprecated:
-                continue
-            L.append(table_row(raw, pass_name == "deprecated"))
+            L.append(table_row(raw, deprecated_pass))
 
     L.append("")
     L.append("---")
@@ -380,9 +380,10 @@ def generate_releases_readme(source_branch: str, releases_branch: str, repositor
     def emit_block(pname: str, raw: dict, is_deprecated: bool) -> None:
         pd = f"plugins/{pname}/"
         manifest = _load_json(f"metadata/{pname}/manifest.json")
-        last_updated = _plugin_last_updated(source_branch, pd)
-        commit_sha = git.log_format("%H", f"origin/{source_branch}", pd) or "unknown"
-        commit_short = git.log_format("%h", f"origin/{source_branch}", pd) or "unknown"
+        last_updated, commit_sha, commit_short = _plugin_commit(source_branch, pd)
+        last_updated = last_updated or now_iso()
+        commit_sha = commit_sha or "unknown"
+        commit_short = commit_short or "unknown"
         version_count = version_count_from_manifest(f"metadata/{pname}/manifest.json")
         has_source_readme = os.path.isfile(f"plugins/{pname}/README.md")
         L.append(render_plugin_block(
@@ -394,25 +395,19 @@ def generate_releases_readme(source_branch: str, releases_branch: str, repositor
             has_source_readme=has_source_readme))
 
     # Active detailed sections
-    for pd in plugin_dirs:
-        pname = os.path.basename(pd.rstrip("/"))
-        raw = raws.get(pname)
-        if raw is None or raw.get("deprecated") is True or raw.get("unlisted") is True:
+    for pname, raw in raws.items():
+        if raw.get("deprecated") is True or raw.get("unlisted") is True:
             continue
         emit_block(pname, raw, False)
 
-    has_deprecated = any(
-        r.get("deprecated") is True for r in raws.values())
     if has_deprecated:
         L.append("")
         L.append("## Deprecated Plugins")
         L.append("")
         L.append("These plugins are deprecated and may be removed in the future.")
         L.append("")
-        for pd in plugin_dirs:
-            pname = os.path.basename(pd.rstrip("/"))
-            raw = raws.get(pname)
-            if raw is None or raw.get("deprecated") is not True or raw.get("unlisted") is True:
+        for pname, raw in raws.items():
+            if raw.get("deprecated") is not True or raw.get("unlisted") is True:
                 continue
             emit_block(pname, raw, True)
 

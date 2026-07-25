@@ -16,14 +16,11 @@ import subprocess
 import tempfile
 
 from ..core import actions, gh
+from ..core.git import configure_identity, run as _git
 from ..core.version import sort_versions_desc
 from . import manifest, readmes
 
 RELEASES_BRANCH = "releases"
-
-
-def _git(*args: str, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", *args], check=check, capture_output=True, text=True)
 
 
 def run() -> int:
@@ -54,7 +51,7 @@ def run() -> int:
     try:
         _git("clone", "--no-checkout", remote, f"{workdir}/repo")
         os.chdir(f"{workdir}/repo")
-        _configure_identity(repository, app_slug)
+        configure_identity(app_slug)
 
         if _git("ls-remote", "--exit-code", "--heads", "origin", RELEASES_BRANCH,
                 check=False).returncode != 0:
@@ -144,18 +141,6 @@ def run() -> int:
     finally:
         os.chdir(start_cwd)
         subprocess.run(["rm", "-rf", workdir, build_meta_dir], check=False)
-
-
-def _configure_identity(repository: str, app_slug: str) -> None:
-    if app_slug:
-        bot_user_id = gh.api(f"/users/{app_slug}%5Bbot%5D", jq=".id") or ""
-        _git("config", "user.name", f"{app_slug}[bot]")
-        email = (f"{bot_user_id}+{app_slug}[bot]@users.noreply.github.com" if bot_user_id
-                 else f"{app_slug}[bot]@users.noreply.github.com")
-        _git("config", "user.email", email)
-    else:
-        _git("config", "user.name", "github-actions[bot]")
-        _git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com")
 
 
 def _commit_releases(remote, plugin, version, issue) -> str:

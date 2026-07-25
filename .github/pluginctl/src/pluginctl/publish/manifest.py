@@ -19,6 +19,27 @@ from typing import Optional
 
 from ..core import jsonio
 from ..core.jsonio import drop_none
+from ..core.timeutil import now_iso
+from ..core.version import versioned_tags
+
+
+def _metadata_fields(metadata: dict, min_da, max_da) -> dict:
+    """The build-metadata fields shared by ``versions[]`` and ``latest`` entries.
+
+    Key order matters: it is the jq emission order the Bash script produced.
+    """
+    return {
+        "version": metadata.get("version"),
+        "commit_sha": metadata.get("commit_sha"),
+        "commit_sha_short": metadata.get("commit_sha_short"),
+        "build_timestamp": metadata.get("build_timestamp"),
+        "last_updated": metadata.get("last_updated"),
+        "checksum_md5": metadata.get("checksum_md5"),
+        "checksum_sha256": metadata.get("checksum_sha256"),
+        "min_dispatcharr_version": min_da,
+        "max_dispatcharr_version": max_da,
+        "source_url": metadata.get("source_url"),
+    }
 
 
 def build_version_entry(metadata: dict, url: str, size, canonical_version: str) -> dict:
@@ -30,16 +51,9 @@ def build_version_entry(metadata: dict, url: str, size, canonical_version: str) 
     """
     if metadata:
         return drop_none({
-            "version": metadata.get("version"),
-            "commit_sha": metadata.get("commit_sha"),
-            "commit_sha_short": metadata.get("commit_sha_short"),
-            "build_timestamp": metadata.get("build_timestamp"),
-            "last_updated": metadata.get("last_updated"),
-            "checksum_md5": metadata.get("checksum_md5"),
-            "checksum_sha256": metadata.get("checksum_sha256"),
-            "min_dispatcharr_version": metadata.get("min_dispatcharr_version"),
-            "max_dispatcharr_version": metadata.get("max_dispatcharr_version"),
-            "source_url": metadata.get("source_url"),
+            **_metadata_fields(metadata,
+                               metadata.get("min_dispatcharr_version"),
+                               metadata.get("max_dispatcharr_version")),
             "url": url,
             "size": size,
         })
@@ -72,16 +86,9 @@ def build_plugin_entry(plugin_raw: dict, plugin_name: str, latest_url: str,
     latest = None
     if latest_metadata:
         latest = drop_none({
-            "version": latest_metadata.get("version"),
-            "commit_sha": latest_metadata.get("commit_sha"),
-            "commit_sha_short": latest_metadata.get("commit_sha_short"),
-            "build_timestamp": latest_metadata.get("build_timestamp"),
-            "last_updated": latest_metadata.get("last_updated"),
-            "checksum_md5": latest_metadata.get("checksum_md5"),
-            "checksum_sha256": latest_metadata.get("checksum_sha256"),
-            "min_dispatcharr_version": g("min_dispatcharr_version"),
-            "max_dispatcharr_version": g("max_dispatcharr_version"),
-            "source_url": latest_metadata.get("source_url"),
+            **_metadata_fields(latest_metadata,
+                               g("min_dispatcharr_version"),
+                               g("max_dispatcharr_version")),
             "latest_url": latest_url,
             "url": versioned_zips[0]["url"] if versioned_zips else None,
             "size": latest_size_kb,
@@ -226,8 +233,8 @@ def import_gpg_key(private_key: str) -> tuple[str, bool]:
 
     Empty ``private_key`` -> ("", False) (signing disabled, not a failure).
     """
+    from ..core import actions
     if not private_key:
-        from ..core import actions
         actions.log("GPG_PRIVATE_KEY not set - signatures will be skipped.")
         return "", False
     subprocess.run(["gpg", "--batch", "--import"], input=private_key,
@@ -241,7 +248,6 @@ def import_gpg_key(private_key: str) -> tuple[str, bool]:
             if len(parts) >= 2 and "/" in parts[1]:
                 key_id = parts[1].split("/", 1)[1]
                 break
-    from ..core import actions
     if key_id:
         actions.log(f"GPG signing enabled (key: {key_id})")
         return key_id, False
@@ -273,11 +279,10 @@ def strip_signatures() -> None:
 def generate(source_branch: str, releases_branch: str, repository: str,
              build_meta_dir: str) -> int:
     """Full generate-manifest.sh: per-plugin manifests, root manifest, signing."""
-    import datetime
     import glob
     from ..core import actions, gh
 
-    generated_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    generated_at = now_iso()
     registry_url = f"https://github.com/{repository}"
     registry_name = repository
     root_url = f"https://github.com/{repository}/releases/download"
@@ -326,11 +331,8 @@ def generate(source_branch: str, releases_branch: str, repository: str,
             except ValueError:
                 existing_manifest = None
 
-        from ..core.version import sort_versions_desc
         prefix = f"{plugin_name}-"
-        raw_versions = [t[len(prefix):] for t in all_tags
-                        if t.startswith(prefix) and t != f"{plugin_name}-latest"]
-        versioned_tags = [f"{prefix}{v}" for v in sort_versions_desc(raw_versions)]
+        tags = versioned_tags(all_tags, plugin_name)
 
         versioned_zips: list[dict] = []
         latest_metadata: dict = {}
@@ -338,7 +340,7 @@ def generate(source_branch: str, releases_branch: str, repository: str,
         latest_size_kb = 0
         latest_size_set = False
 
-        for release_tag in versioned_tags:
+        for release_tag in tags:
             zip_version = release_tag[len(prefix):]
             zip_url = f"{plugin_name}-{zip_version}/{plugin_name}-{zip_version}.zip"
             canonical_version = _canonical(zip_version)

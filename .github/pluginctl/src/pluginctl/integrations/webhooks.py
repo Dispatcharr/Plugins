@@ -13,7 +13,6 @@ Header scheme (documented in docs/webhooks.md for the consuming bot):
 
 from __future__ import annotations
 
-import datetime
 import hashlib
 import hmac
 import json
@@ -24,6 +23,7 @@ import uuid
 from typing import Any, Optional
 
 from ..core import actions
+from ..core.timeutil import now_iso
 
 USER_AGENT = "pluginctl-webhook/1"
 
@@ -37,8 +37,7 @@ def sign(secret: str, body: bytes) -> str:
 def build_envelope(event: str, data: dict, repository: str, actor: str) -> dict:
     return {
         "event": event,
-        "delivered_at": datetime.datetime.now(datetime.timezone.utc)
-        .strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "delivered_at": now_iso(),
         "repository": repository,
         "actor": actor,
         "data": data,

@@ -102,9 +102,9 @@ def classify(sarif_objs: list[dict]) -> Counts:
             for result in (run.get("results") or []):
                 counts.total += 1
                 sev = severity_of(result, secmap)
-                if sev >= 7.0:
+                if is_blocking(sev):
                     counts.blocking += 1
-                elif 6.0 <= sev < 7.0:
+                elif is_medium(sev):
                     counts.medium += 1
                 else:
                     counts.low += 1
@@ -223,8 +223,8 @@ def run(results_dir: str, repo: str, sha: str, matrix: list[str],
     actions.set_output("codeql_mediums", str(counts.medium))
     actions.set_output("codeql_lows", str(counts.low))
 
-    if counts.blocking > 0:
-        _write(results_dir and "codeql-findings.md",
+    if counts.blocking > 0 and results_dir:
+        _write("codeql-findings.md",
                findings_table(objs, is_blocking, repo, sha, external_prefixes))
     if counts.medium > 0:
         _write("codeql-medium-findings.md",
@@ -253,7 +253,5 @@ def run(results_dir: str, repo: str, sha: str, matrix: list[str],
 
 
 def _write(path: str, content: str) -> None:
-    if not path:
-        return
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(content)

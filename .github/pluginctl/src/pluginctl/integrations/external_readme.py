@@ -15,7 +15,7 @@ import re
 import subprocess
 from typing import Optional
 
-from ..core import actions, gh
+from ..core import actions, gh, git
 
 BRANCH = "auto/dispatcharr-plugin-readme"
 _SOURCE_COMMIT_RE = re.compile(r"Source commit: ([0-9a-f]+)")
@@ -69,18 +69,14 @@ def run(releases_ref: str = "origin/releases") -> int:
     source_repo = os.environ.get("SOURCE_REPO") or os.environ.get("GITHUB_REPOSITORY", "")
     reviewer = os.environ.get("PR_REVIEWER", "")
 
-    show = subprocess.run(["git", "show", f"{releases_ref}:README.md"],
-                          capture_output=True, text=True)
-    if show.returncode != 0:
+    readme = git.show(f"{releases_ref}:README.md")
+    if readme is None:
         actions.error("README.md not found on the releases branch - has the Publish Plugins workflow run yet?")
         return 1
-    readme = show.stdout
 
-    commit_msg = subprocess.run(["git", "log", "-1", "--format=%B", releases_ref],
-                                capture_output=True, text=True).stdout
+    commit_msg = git.log_format("%B", releases_ref) or ""
     source_commit, plugin_list = extract_metadata(commit_msg)
-    releases_commit = subprocess.run(["git", "rev-parse", "--short", releases_ref],
-                                     capture_output=True, text=True).stdout.strip()
+    releases_commit = git.rev_parse(releases_ref, short=True)
 
     contrib_url = f"https://github.com/{source_repo}/blob/main/CONTRIBUTING.md"
     readme = strip_preamble(readme, contrib_url)

@@ -23,6 +23,13 @@ def is_safe_name(name: str) -> bool:
     return bool(SAFE_NAME_RE.match(name))
 
 
+def author_in_plugin_json(pr_author: str, data: dict) -> bool:
+    """True when pr_author is the plugin's ``author`` or one of its ``maintainers``."""
+    author = data.get("author") or ""
+    maintainers = [str(m) for m in (data.get("maintainers") or []) if m is not None]
+    return pr_author == author or pr_author in maintainers
+
+
 def author_has_plugin_permission(pr_author: str, base_json_text: Optional[str]) -> bool:
     """True when pr_author is the base-branch author or in base maintainers.
 
@@ -34,9 +41,7 @@ def author_has_plugin_permission(pr_author: str, base_json_text: Optional[str]) 
         data = json.loads(base_json_text)
     except json.JSONDecodeError:
         return False
-    author = data.get("author") or ""
-    maintainers = [str(m) for m in (data.get("maintainers") or []) if m is not None]
-    return pr_author == author or pr_author in maintainers
+    return author_in_plugin_json(pr_author, data)
 
 
 @dataclass
@@ -50,27 +55,22 @@ def check_blacklists(pr_author: str, plugins: list[str],
     """Case-insensitive author/plugin blacklist check (whitespace-trimmed entries)."""
     author_bl = (author_blacklist or "").strip()
     plugin_bl = (plugin_blacklist or "").strip()
-    if not author_bl and not plugin_bl:
-        return BlacklistResult()
 
-    if author_bl:
-        for entry in author_bl.split(","):
-            slug = entry.replace(" ", "")
-            if pr_author.lower() == slug.lower():
-                actions.warning(f"PR author '{pr_author}' is on the author blacklist.")
-                return BlacklistResult(True, "author-blacklisted")
+    if author_bl and _csv_contains(pr_author, author_bl):
+        actions.warning(f"PR author '{pr_author}' is on the author blacklist.")
+        return BlacklistResult(True, "author-blacklisted")
 
     if plugin_bl:
-        blocked = plugin_bl.split(",")
         for plugin in plugins:
-            if not plugin:
-                continue
-            for entry in blocked:
-                slug = entry.replace(" ", "")
-                if plugin.lower() == slug.lower():
-                    actions.warning(f"Plugin '{plugin}' is on the plugin blacklist.")
-                    return BlacklistResult(True, "plugin-blacklisted")
+            if plugin and _csv_contains(plugin, plugin_bl):
+                actions.warning(f"Plugin '{plugin}' is on the plugin blacklist.")
+                return BlacklistResult(True, "plugin-blacklisted")
     return BlacklistResult()
+
+
+def _csv_contains(value: str, csv: str) -> bool:
+    """Case-insensitive membership in a comma-separated list (spaces stripped)."""
+    return any(value.lower() == entry.replace(" ", "").lower() for entry in csv.split(","))
 
 
 def run(pr_author: str, base_ref: str, head_ref: str = "",
@@ -78,9 +78,14 @@ def run(pr_author: str, base_ref: str, head_ref: str = "",
         repo: str = "") -> int:
     """Execute detection; write outputs; return process exit code (0 ok, 1 hard block)."""
     owner, _, name = repo.partition("/")
+    cached_write_access: Optional[bool] = None
 
     def write_access() -> bool:
-        return gh.has_write_access(owner, name, pr_author)
+        """``gh api`` permission lookup, resolved at most once per run."""
+        nonlocal cached_write_access
+        if cached_write_access is None:
+            cached_write_access = gh.has_write_access(owner, name, pr_author)
+        return cached_write_access
 
     # Bot-authored yank rollback PRs bypass plugin validation entirely.
     if pr_author.endswith("[bot]") and head_ref.startswith("yank/"):
@@ -147,20 +152,19 @@ def run(pr_author: str, base_ref: str, head_ref: str = "",
             close_pr = True
             close_reason = bl.reason
 
-    matrix_json = json.dumps(plugin_list, separators=(",", ":"))
-    actions.set_output("matrix", matrix_json)
-    actions.set_output("plugin_count", str(plugin_count))
-    actions.set_output("close_pr", "true" if close_pr else "false")
-    actions.set_output("skip_validation", "false")
-    actions.set_output("outside_violation", "true" if has_outside_violation else "false")
-    actions.set_output("close_reason", close_reason)
+    actions.set_outputs(matrix=json.dumps(plugin_list, separators=(",", ":")),
+                        plugin_count=str(plugin_count),
+                        close_pr="true" if close_pr else "false",
+                        skip_validation="false",
+                        outside_violation="true" if has_outside_violation else "false",
+                        close_reason=close_reason)
     if outside_changes:
         actions.set_output("outside_files", "\n".join(outside_changes))
 
     pub_key_changed = is_maintainer and PUB_KEY_PATH in outside_changes
-    actions.set_output("pub_key_changed", "true" if pub_key_changed else "false")
-    actions.set_output("has_new_plugin", "true" if has_new_plugin else "false")
-    actions.set_output("has_updated_plugin", "true" if has_updated_plugin else "false")
+    actions.set_outputs(pub_key_changed="true" if pub_key_changed else "false",
+                        has_new_plugin="true" if has_new_plugin else "false",
+                        has_updated_plugin="true" if has_updated_plugin else "false")
 
     actions.log(f"Detected {plugin_count} plugin(s): {' '.join(plugin_list)}")
     actions.log(f"close_pr={'true' if close_pr else 'false'}")

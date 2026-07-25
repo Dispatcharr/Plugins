@@ -6,20 +6,16 @@ still runs as the native CLI in the workflow; only the result parsing moves here
 
 from __future__ import annotations
 
-import hashlib
 import os
 from typing import Callable, Optional
 
 from ..core import actions
+from ..core.hashing import file_digests
 
 
 def _sha256_file(path: str) -> str:
     try:
-        h = hashlib.sha256()
-        with open(path, "rb") as fh:
-            for chunk in iter(lambda: fh.read(1 << 20), b""):
-                h.update(chunk)
-        return h.hexdigest()
+        return file_digests(path, "sha256")[0]
     except OSError:
         return ""
 
