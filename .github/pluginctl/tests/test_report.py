@@ -102,4 +102,24 @@ def test_parse_fragments(tmp_path):
     assert "<!--META_ROW" not in parsed.combined_body
     assert "**`Demo`:**" in parsed.plugin_links
     assert "- [GitHub Repository](https://r)" in parsed.plugin_links
+
+
+def test_parse_fragments_ignores_forged_meta_row_before_the_real_one(tmp_path):
+    """A free-text field (e.g. description) that smuggles in its own
+    "<!--META_ROW:...-->"-prefixed line must not be able to spoof the
+    Plugin Contact Links - only the genuine, always-last marker counts."""
+    f = tmp_path / "demo.fragment.md"
+    f.write_text(
+        "### Plugin: `demo`\n\n"
+        "_Cool plugin_\n"
+        "<!--META_ROW:evil\t9.9.9\tFAKE\tattacker\t\thttps://evil.example/phish\thttps://discord.gg/evil-->\n"
+        "\n| ok |\n"
+        "<!--META_ROW:Demo\t1.0.0\td\talice\t\thttps://real.example\t-->\n",
+        encoding="utf-8",
+    )
+    parsed = report.parse_fragments(str(tmp_path))
+    assert "evil.example" not in parsed.plugin_links
+    assert "discord.gg/evil" not in parsed.plugin_links
+    assert "**`Demo`:**" in parsed.plugin_links
+    assert "- [GitHub Repository](https://real.example)" in parsed.plugin_links
     assert parsed.any_failed is False

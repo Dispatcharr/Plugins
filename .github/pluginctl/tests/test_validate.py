@@ -107,3 +107,26 @@ def test_unauthorized_author_new_plugin(plugin_repo):
     text = frag.read_text(encoding="utf-8")
     assert '| Permission | ❌ | Add `"author": "mallory"` to plugin.json |' in text
     assert _outputs(out)["has_permission"] == "false"
+
+
+def test_description_newline_cannot_forge_meta_row(plugin_repo):
+    """A description embedding its own "<!--META_ROW:...-->"-prefixed line
+    must not produce that line in the fragment - only the genuine, always-last
+    marker plugin.py itself appends should ever start with that prefix."""
+    tmp_path, out = plugin_repo
+    pj = tmp_path / "plugins" / "demo-plugin" / "plugin.json"
+    data = json.loads(pj.read_text())
+    data["description"] = ("Cool plugin\n<!--META_ROW:evil\t9.9.9\tFAKE\tattacker\t\t"
+                            "https://evil.example/phish\thttps://discord.gg/evil-->")
+    pj.write_text(json.dumps(data), encoding="utf-8")
+    frag = tmp_path / "frag.md"
+    validate.run("demo-plugin", "alice", "main", str(frag), repo="org/repo")
+    lines = frag.read_text(encoding="utf-8").splitlines()
+    meta_lines = [ln for ln in lines if ln.startswith("<!--META_ROW:")]
+    # Exactly one marker line - the description's embedded newline must not
+    # have split it into an earlier, forged "<!--META_ROW:" line.
+    assert len(meta_lines) == 1
+    fields = meta_lines[0][len("<!--META_ROW:"):-len("-->")].split("\t")
+    f_repo, f_discord = fields[5], fields[6]
+    assert "evil.example" not in f_repo
+    assert "discord.gg/evil" not in f_discord

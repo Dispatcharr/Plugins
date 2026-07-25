@@ -50,6 +50,12 @@ def field_present(raw: dict, key: str) -> bool:
     return not (val is None or val is False)
 
 
+def _single_line(s: str) -> str:
+    """Collapse newlines/carriage returns so a free-text field can't inject
+    extra fragment lines (e.g. a forged ``<!--META_ROW:...-->`` marker)."""
+    return s.replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
+
+
 def tsv(fields: list[str]) -> str:
     """Reproduce ``@tsv`` escaping for a single row."""
     def esc(s: str) -> str:
@@ -115,7 +121,11 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         except (OSError, json.JSONDecodeError):
             raw = None
         if raw is not None:
-            desc = jq_r(raw.get("description"), "")
+            # Free-text fields are attacker-controlled. Collapse newlines before
+            # embedding them in the fragment so a value can never introduce a
+            # forged "<!--META_ROW:...-->" marker line ahead of the real one
+            # that `report.parse_fragments` looks for.
+            desc = _single_line(jq_r(raw.get("description"), ""))
             repo_url = jq_r(raw.get("repo_url"), "")
             if desc:
                 pre_lines.append(f"_{desc}_")

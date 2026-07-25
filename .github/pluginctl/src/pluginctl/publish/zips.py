@@ -23,6 +23,7 @@ from ..core import actions, gh, git, jsonio
 from ..core.hashing import file_digests
 from ..core.jsonio import drop_none
 from ..core.timeutil import now_iso
+from ..validate.detect import is_safe_name
 
 
 def _download(url: str, dest: str, attempts: int = 3) -> bool:
@@ -56,6 +57,9 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
 
     for plugin_dir in sorted(glob.glob("plugins/*/")):
         plugin_name = os.path.basename(plugin_dir.rstrip("/"))
+        if not is_safe_name(plugin_name):
+            actions.warning(f"Skipping publish for unsafe plugin folder name: '{plugin_name}'")
+            continue
         plugin_key = plugin_name.replace("-", "_")
         with open(os.path.join(plugin_dir, "plugin.json"), encoding="utf-8") as fh:
             raw = json.load(fh)

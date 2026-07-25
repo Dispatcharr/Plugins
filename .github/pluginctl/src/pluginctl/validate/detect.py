@@ -107,14 +107,27 @@ def run(pr_author: str, base_ref: str, head_ref: str = "",
     if not plugin_list:
         return _no_plugins(pr_author, outside_changes, has_outside_violation, write_access)
 
-    # Allowlist: only safe kebab-case names enter the matrix.
+    # Allowlist: only safe kebab-case names enter the matrix. A folder with an
+    # unsafe name is never scanned (ClamAV/CodeQL/publish all iterate the safe
+    # matrix), so its presence must block the whole PR rather than being
+    # silently dropped - otherwise it can ride along with a legitimate,
+    # passing plugin change straight to `main` and publish unscanned.
     safe_list: list[str] = []
+    unsafe_list: list[str] = []
     for plugin in plugin_list:
         if is_safe_name(plugin):
             safe_list.append(plugin)
         else:
-            actions.warning(f"Skipping plugin with unsafe folder name: '{plugin}'")
+            unsafe_list.append(plugin)
+            actions.warning(f"Unsafe plugin folder name: '{plugin}'")
     plugin_list = safe_list
+
+    if unsafe_list:
+        actions.error(f"Unsafe plugin folder name(s) detected: {', '.join(unsafe_list)}")
+        actions.set_outputs(close_pr="true", close_reason="unsafe-plugin-name",
+                            plugin_count="0", matrix="[]",
+                            has_new_plugin="false", has_updated_plugin="false")
+        return 0
 
     if not plugin_list:
         actions.error("No valid plugin changes detected in this PR.")

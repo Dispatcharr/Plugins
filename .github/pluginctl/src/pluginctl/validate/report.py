@@ -48,23 +48,30 @@ def parse_fragments(fragments_dir: str) -> ParsedFragments:
         content = _read(fragment)
         if "❌" in content:
             result.any_failed = True
-        # META_ROW extraction
-        for line in content.splitlines():
+        # META_ROW extraction. plugin.py always appends the genuine marker as
+        # the fragment's last line, so anchor here rather than taking the
+        # first match - a free-text field (e.g. description) earlier in the
+        # fragment must never be able to forge this by embedding its own
+        # "<!--META_ROW:" line.
+        meta_line = None
+        for line in reversed(content.splitlines()):
             if line.startswith("<!--META_ROW:"):
-                meta = line[len("<!--META_ROW:"):]
-                if meta.endswith("-->"):
-                    meta = meta[:-3]
-                fields = meta.split("\t")
-                fields += [""] * (7 - len(fields))
-                f_name, f_version, f_desc, f_author, f_maint, f_repo, f_discord = fields[:7]
-                if f_repo or f_discord:
-                    result.plugin_links += f"**`{f_name}`:**\n"
-                    if f_repo:
-                        result.plugin_links += f"- [GitHub Repository]({f_repo})\n"
-                    if f_discord:
-                        result.plugin_links += f"- [Discord Thread]({f_discord})\n"
-                    result.plugin_links += "\n"
+                meta_line = line
                 break
+        if meta_line is not None:
+            meta = meta_line[len("<!--META_ROW:"):]
+            if meta.endswith("-->"):
+                meta = meta[:-3]
+            fields = meta.split("\t")
+            fields += [""] * (7 - len(fields))
+            f_name, f_version, f_desc, f_author, f_maint, f_repo, f_discord = fields[:7]
+            if f_repo or f_discord:
+                result.plugin_links += f"**`{f_name}`:**\n"
+                if f_repo:
+                    result.plugin_links += f"- [GitHub Repository]({f_repo})\n"
+                if f_discord:
+                    result.plugin_links += f"- [Discord Thread]({f_discord})\n"
+                result.plugin_links += "\n"
         # visible = fragment minus META_ROW lines, trailing whitespace stripped ($() semantics)
         visible_lines = [ln for ln in content.splitlines() if not ln.startswith("<!--META_ROW:")]
         visible = "\n".join(visible_lines).rstrip("\n")
