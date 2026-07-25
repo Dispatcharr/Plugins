@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-21T17:31:04Z",
+  "generated_at": "2026-07-25T15:21:51Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -248,12 +248,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/tickarr/manifest.json",
         "author": "jstevenscl",
         "license": "MIT",
-        "last_updated": "2026-07-09T20:22:40-04:00",
-        "latest_version": "0.3.03",
-        "latest_md5": "fc6498692454c22fa910b3236c5a34b5",
-        "latest_sha256": "2a4a7192bf6b21e98094b450938f8f90a159b7ab7594dc47591cfb55ccd20fa1",
-        "latest_url": "tickarr-0.3.03/tickarr-0.3.03.zip",
-        "latest_size": 2124
+        "last_updated": "2026-07-25T15:21:27Z",
+        "latest_version": "0.3.04",
+        "latest_md5": "5971171b4a77ab426fe53fe8eaf04d3e",
+        "latest_sha256": "b73982da652895da2dc6c660ca8885ec4955c33f9c3e43f23a16b9876d69c14b",
+        "latest_url": "tickarr-0.3.04/tickarr-0.3.04.zip",
+        "latest_size": 2127
       },
       {
         "slug": "twitcharr",
@@ -317,5 +317,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCal+s3QAKCRB+wDprTCI0\nzvhRAP942WAwrUfS6Klr0yHjoEfvQ6HOvJbqns2qV9KX8LF6/wD9GjnmwQHQBLRB\n8MNXHTrntAoMfLvw1N8ZaMWxheQkAw0=\n=yaeS\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCamTUkwAKCRB+wDprTCI0\nzqclAP9gFI4tCnaMXUzJQfdb6wrOP3KsVRf4+9e58TjZO6FtywD+L1SqdyL6iqnw\nmerRONoMs1nA2epNIg/hDcfeECQuAgY=\n=C5ts\n-----END PGP SIGNATURE-----"
 }
