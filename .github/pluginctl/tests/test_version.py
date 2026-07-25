@@ -26,6 +26,9 @@ def test_is_dispatcharr_version(s, ok):
     ("1.0.0", "1.0.0", False),   # equal is not greater
     ("1.0.0", "1.0.1", False),
     ("0.9.9", "1.0.0", False),
+    ("0.2.08", "0.2.07", True),   # zero-padded segment (upstream Plugins#193 regression)
+    ("1.09.0", "1.08.0", True),   # zero-padded minor segment
+    ("1.0.08", "1.0.8", False),   # equal numeric value across padding, not greater
 ])
 def test_version_greater_than(new, old, gt):
     assert v.version_greater_than(new, old) is gt
