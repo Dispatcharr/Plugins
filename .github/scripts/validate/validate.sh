@@ -63,11 +63,11 @@ version_greater_than() {
   local old_version=$2
   IFS='.' read -r NEW_MAJOR NEW_MINOR NEW_PATCH <<< "$new_version"
   IFS='.' read -r OLD_MAJOR OLD_MINOR OLD_PATCH <<< "$old_version"
-  if (( NEW_MAJOR > OLD_MAJOR )); then return 0; fi
-  if (( NEW_MAJOR < OLD_MAJOR )); then return 1; fi
-  if (( NEW_MINOR > OLD_MINOR )); then return 0; fi
-  if (( NEW_MINOR < OLD_MINOR )); then return 1; fi
-  if (( NEW_PATCH > OLD_PATCH )); then return 0; fi
+  if (( 10#$NEW_MAJOR > 10#$OLD_MAJOR )); then return 0; fi
+  if (( 10#$NEW_MAJOR < 10#$OLD_MAJOR )); then return 1; fi
+  if (( 10#$NEW_MINOR > 10#$OLD_MINOR )); then return 0; fi
+  if (( 10#$NEW_MINOR < 10#$OLD_MINOR )); then return 1; fi
+  if (( 10#$NEW_PATCH > 10#$OLD_PATCH )); then return 0; fi
   return 1
 }
 
