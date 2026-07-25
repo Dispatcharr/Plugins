@@ -2,7 +2,7 @@
 
 # Tickarr
 
-**Version:** `0.3.04` | **Author:** jstevenscl | **Last Updated:** Jul 25 2026, 15:21 UTC
+**Version:** `0.3.05` | **Author:** jstevenscl | **Last Updated:** Jul 25 2026, 17:31 UTC
 
 Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts
 
@@ -12,20 +12,21 @@ Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports 
 
 ### Latest Release
 
-- **Download:** [`tickarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.04/tickarr-0.3.04.zip)
-- **Built:** Jul 25 2026, 15:21 UTC
-- **Source Commit:** [`cb170b2`](https://github.com/Dispatcharr/Plugins/commit/cb170b274029cbc8db67d6c12b043b1b510ba8fd)
+- **Download:** [`tickarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.05/tickarr-0.3.05.zip)
+- **Built:** Jul 25 2026, 17:31 UTC
+- **Source Commit:** [`134b658`](https://github.com/Dispatcharr/Plugins/commit/134b658bbc76f00204cc2f616af708a719540d28)
 
 **Checksums:**
 ```
-MD5:    5971171b4a77ab426fe53fe8eaf04d3e
-SHA256: b73982da652895da2dc6c660ca8885ec4955c33f9c3e43f23a16b9876d69c14b
+MD5:    e9922ddeb92fa03bd9a41f198d620056
+SHA256: fd3396c4438e0a3ca00a5851bf8a114e152f2c478dc16c1f41297d1b039f896b
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.3.05` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.05/tickarr-0.3.05.zip) | Jul 25 2026, 17:31 UTC | [`134b658`](https://github.com/Dispatcharr/Plugins/commit/134b658bbc76f00204cc2f616af708a719540d28) | e9922ddeb92fa03bd9a41f198d620056 | fd3396c4438e0a3ca00a5851bf8a114e152f2c478dc16c1f41297d1b039f896b |
 | `0.3.04` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.04/tickarr-0.3.04.zip) | Jul 25 2026, 15:21 UTC | [`cb170b2`](https://github.com/Dispatcharr/Plugins/commit/cb170b274029cbc8db67d6c12b043b1b510ba8fd) | 5971171b4a77ab426fe53fe8eaf04d3e | b73982da652895da2dc6c660ca8885ec4955c33f9c3e43f23a16b9876d69c14b |
 | `0.3.03` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.03/tickarr-0.3.03.zip) | Jul 10 2026, 00:23 UTC | [`eff1cb7`](https://github.com/Dispatcharr/Plugins/commit/eff1cb74b2969f737f76e22f0b5a6f87e18251e4) | fc6498692454c22fa910b3236c5a34b5 | 2a4a7192bf6b21e98094b450938f8f90a159b7ab7594dc47591cfb55ccd20fa1 |
 | `0.3.02` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.02/tickarr-0.3.02.zip) | Jul 08 2026, 01:39 UTC | [`3c8d595`](https://github.com/Dispatcharr/Plugins/commit/3c8d595d76d9eda2e622c69cf90a3da478aed6bf) | 50ae72a28a846742d2c25cabef42bb94 | b4bd9729604dd950e200d37a3c2b0ab942228e620291eb9c13b2fbd10fa7d5ae |
@@ -35,7 +36,6 @@ SHA256: b73982da652895da2dc6c660ca8885ec4955c33f9c3e43f23a16b9876d69c14b
 | `0.2.00` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.2.00/tickarr-0.2.00.zip) | Jun 25 2026, 12:16 UTC | [`7380060`](https://github.com/Dispatcharr/Plugins/commit/738006087467d028e4e90d633215432300200562) | 14ab0bc2ccde1af218e1034ed1f0febd | a4cb1cc2834d7ae1ade29b14b776dff10e480554028326ea4f45bd2bae9be707 |
 | `0.1.02` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.1.02/tickarr-0.1.02.zip) | Jun 15 2026, 16:11 UTC | [`f5dbb97`](https://github.com/Dispatcharr/Plugins/commit/f5dbb97e03072d1f480148f4e2e4105284f847ac) | 245cafc7e810b91fabfb4bc25ab4d7fb | f5284f1ebf8687707b3c2505eb323c26ebddcf9e2512bf7b1472793d8b64ae6b |
 | `0.1.01` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.1.01/tickarr-0.1.01.zip) | Jun 02 2026, 21:10 UTC | - | c3e3ff46d9eacd66bad4aaaa3c954103 | c2d0fa4f26560b571fd8014d06b230ca6fff5321e79207bcce07b19c22793e34 |
-| `0.1.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.1.0/tickarr-0.1.0.zip) | May 23 2026, 17:15 UTC | - | 15b0c5a2fb0c9d7fefd5ef4129bc8ea1 | e8c3258cf310c5b5cb3d313d474e7b8b18f9e792707ba9d29c6f78639149c858 |
 
 ---
 
