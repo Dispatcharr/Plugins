@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-18T20:24:10Z",
+  "generated_at": "2026-07-26T23:05:22Z",
   "manifest": {
     "slug": "stream-mapparr",
     "name": "Stream-Mapparr",
@@ -11,22 +11,35 @@
     "repo_url": "https://github.com/PiratesIRC/Stream-Mapparr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-07-18T20:23:39Z",
+    "last_updated": "2026-07-26T23:04:52Z",
     "latest": {
-      "version": "1.26.1992013",
-      "commit_sha": "6c60baff03b2eae96218cbfd06e0c9442a40fb14",
-      "commit_sha_short": "6c60baf",
-      "build_timestamp": "2026-07-18T20:24:02Z",
-      "last_updated": "2026-07-18T20:23:39Z",
-      "checksum_md5": "287b5b17e34bd430e08af0889d166af8",
-      "checksum_sha256": "7ae476f9dcafb5e1d14897f57fc9eae5993f05b3c06130f02617754662b7aa34",
+      "version": "1.26.2072208",
+      "commit_sha": "f956fe0035800f311a778fe3f67f71978f11b219",
+      "commit_sha_short": "f956fe0",
+      "build_timestamp": "2026-07-26T23:05:15Z",
+      "last_updated": "2026-07-26T23:04:52Z",
+      "checksum_md5": "82e5db2b6d5ac8b854bb3a3178d8de60",
+      "checksum_sha256": "2e4789cd0eae70fd945abe69ee51d55569785cafbb46027e1eac861b47b9cfda",
       "min_dispatcharr_version": "v0.20.0",
-      "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.1992013/Stream-Mapparr.zip",
-      "latest_url": "stream-mapparr-1.26.1992013/stream-mapparr-1.26.1992013.zip",
-      "url": "stream-mapparr-1.26.1992013/stream-mapparr-1.26.1992013.zip",
-      "size": 502
+      "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.2072208/Stream-Mapparr.zip",
+      "latest_url": "stream-mapparr-1.26.2072208/stream-mapparr-1.26.2072208.zip",
+      "url": "stream-mapparr-1.26.2072208/stream-mapparr-1.26.2072208.zip",
+      "size": 523
     },
     "versions": [
+      {
+        "version": "1.26.2072208",
+        "commit_sha": "f956fe0035800f311a778fe3f67f71978f11b219",
+        "commit_sha_short": "f956fe0",
+        "build_timestamp": "2026-07-26T23:05:15Z",
+        "last_updated": "2026-07-26T23:04:52Z",
+        "checksum_md5": "82e5db2b6d5ac8b854bb3a3178d8de60",
+        "checksum_sha256": "2e4789cd0eae70fd945abe69ee51d55569785cafbb46027e1eac861b47b9cfda",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.2072208/Stream-Mapparr.zip",
+        "url": "stream-mapparr-1.26.2072208/stream-mapparr-1.26.2072208.zip",
+        "size": 523
+      },
       {
         "version": "1.26.1992013",
         "commit_sha": "6c60baff03b2eae96218cbfd06e0c9442a40fb14",
@@ -142,20 +155,8 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "stream-mapparr-1.26.1720023/stream-mapparr-1.26.1720023.zip",
         "size": 464
-      },
-      {
-        "version": "1.26.1650116",
-        "commit_sha": "6b5cd911df84ce09734de70f2b33e03afe82f998",
-        "commit_sha_short": "6b5cd91",
-        "build_timestamp": "2026-06-14T02:52:05Z",
-        "last_updated": "2026-06-13T22:51:50-04:00",
-        "checksum_md5": "b1677c18fb558f3bc2729f8dd38be1a9",
-        "checksum_sha256": "cf3252dd70ae9dc553705d17b00e54957b771a735547ff516fdc095086020664",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "stream-mapparr-1.26.1650116/stream-mapparr-1.26.1650116.zip",
-        "size": 418
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCalvg7QAKCRB+wDprTCI0\nzr6nAQDGzFVMwAAxiAhncVgvGbLodpfRJRwem2YQWtiHi9s09QEA8AWB1B3EVJdp\nUyI/iyfFnqRD5labD5LW/78GgFwlsws=\n=4UnB\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCamaStgAKCRB+wDprTCI0\nzlF2AP9SAYE23s2/bVcJZuXzvIqE+b5D8/qi/X9kFN5brmSMFAD+KXDieZHUN14v\nhYwobxg3+s3/h5Q0GF4qQ3zSlBnPAwA=\n=R8wi\n-----END PGP SIGNATURE-----"
 }
