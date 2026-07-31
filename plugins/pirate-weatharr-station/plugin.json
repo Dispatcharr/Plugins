@@ -1,0 +1,10 @@
+{
+  "name": "PWS - Pirate Weatharr Station",
+  "version": "1.0.0",
+  "description": "TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel.",
+  "author": "dexdeadly",
+  "license": "MIT",
+  "source_type": "external",
+  "repo_url": "https://github.com/dexdeadly/pirate-weatharr-station/",
+  "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v{version}/pirate-weatharr-station-{version}.zip"
+}
