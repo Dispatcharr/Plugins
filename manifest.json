@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-30T03:58:41Z",
+  "generated_at": "2026-07-31T12:47:44Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -183,6 +183,20 @@
         "min_dispatcharr_version": "v0.27.0"
       },
       {
+        "slug": "pirate-weatharr-station",
+        "name": "PWS - Pirate Weatharr Station",
+        "description": "TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/pirate-weatharr-station/manifest.json",
+        "author": "dexdeadly",
+        "license": "MIT",
+        "last_updated": "2026-07-31T08:47:14-04:00",
+        "latest_version": "1.0.0",
+        "latest_md5": "e190adfe0b8739be04fa80291c4dffcc",
+        "latest_sha256": "a44cef5f3470854f1b05faaf64c76fecb67df23050ad5439e900f35e07499263",
+        "latest_url": "pirate-weatharr-station-1.0.0/pirate-weatharr-station-1.0.0.zip",
+        "latest_size": 34811
+      },
+      {
         "slug": "reservoarr",
         "name": "reservoarr",
         "description": "Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying",
@@ -317,5 +331,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCamrL9QAKCRB+wDprTCI0\nzs85AP4qHADXktgOQhbZOEEcCvHNkqTiZO9o+byx5D1oRP2kawD6Aue1hqCEIys7\n4KIZlX9BywOhGs8pMwJNXCtAKIz7wAU=\n=HYba\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCamyZdQAKCRB+wDprTCI0\nzsXXAQC+hjMBbhWOLwkNXAKiG9IfMVLCa2f1KzS82NlPwOv/LQD/anuwgkZ1QmsX\nxRk+zWcCoZFFVZoklb2q2Cj6RhQJlQ4=\n=ZW7B\n-----END PGP SIGNATURE-----"
 }
