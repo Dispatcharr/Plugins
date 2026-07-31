@@ -6,5 +6,5 @@
   "license": "MIT",
   "source_type": "external",
   "repo_url": "https://github.com/dexdeadly/pirate-weatharr-station/",
-  "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v{version}/tickarr-{version}.zip"
+  "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v{version}/pirate-weatharr-station-{version}.zip"
 }
