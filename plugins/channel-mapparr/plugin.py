@@ -12,8 +12,6 @@ import json
 import time
 import tempfile
 import threading
-import urllib.request
-import urllib.error
 from datetime import datetime
 
 # Import the fuzzy matcher module
@@ -21,6 +19,16 @@ from .fuzzy_matcher import FuzzyMatcher
 from .progress_status import (
     build_status_message, load_progress, save_progress_atomic,
 )
+from .group_scope import (
+    GroupScopeError,
+    build_name_to_ids,
+    is_ignored_name,
+    is_ignored_name_tokens,
+    parse_tokens,
+    resolve_group_scope,
+    split_rows_by_ignore,
+)
+from .wildcard_match import expand_patterns
 
 # Django model imports
 from apps.channels.models import Channel, ChannelGroup, Logo, Stream, ChannelStream
@@ -40,11 +48,34 @@ PLUGIN_LOG_PREFIX = "[Channel Mapparr]"
 # is owned by root and not writable by the dispatch uwsgi user.
 PROGRESS_FILE = "/data/channel_mapparr_progress.json"
 
+# Dispatcharr clips action toasts at roughly 280 characters from the MIDDLE
+# with no visual marker, so a name list that enumerates every match of a
+# wildcard ignore token (e.g. "Sport*") could silently truncate the more
+# important parts of the message. Cap enumeration and fall back to a count.
+_MAX_NAMES_IN_MESSAGE = 5
+
+
+# Severity glyphs that validate_settings_action's report lines are built with.
+# The final assembly classifies lines by these prefixes, so a new validation
+# line MUST start with one of them or it will be silently dropped from the
+# operator-facing output.
+_VALIDATION_ERROR_GLYPH = "❌"      # cross mark
+_VALIDATION_WARNING_GLYPH = "⚠"    # warning sign (with or without U+FE0F)
+
+
+def _format_capped_name_list(names, limit=_MAX_NAMES_IN_MESSAGE):
+    """Join up to `limit` names, then summarize the rest as a count."""
+    names = list(names)
+    shown = ", ".join(names[:limit])
+    if len(names) > limit:
+        shown += f" and {len(names) - limit} more"
+    return shown
+
 
 class PluginConfig:
     """Configuration constants for Channel Maparr."""
 
-    PLUGIN_VERSION = "1.26.1791324"
+    PLUGIN_VERSION = "1.26.2141433"
 
     # Channel Database Settings
     DEFAULT_CHANNEL_DATABASES = "US"
@@ -65,8 +96,19 @@ class PluginConfig:
 
     # File Paths
     RESULTS_FILE = "/data/channel_mapparr_loaded_channels.json"
-    VERSION_CHECK_FILE = "/data/channel_mapparr_version_check.json"
     EXPORT_DIR = "/data/exports"
+
+    # Emailed reports, delivered by the Newsflasharr plugin.
+    # The master toggle is OFF by default on purpose: a released plugin must not
+    # begin writing into another plugin's queue the moment it is upgraded.
+    DEFAULT_NOTIFY_ENABLED = False
+    # There is no scheduler in this plugin, so "scheduled" is not an option.
+    DEFAULT_NOTIFY_REPORT_ON = "every_run"
+    # One format, so one run sends one email. A notification carries a single
+    # attachment, and an attachment bearing event bypasses Newsflasharr's hourly
+    # cap and its quiet hours, so the email count cannot be throttled from the
+    # service side.
+    DEFAULT_NOTIFY_REPORT_FORMAT = "html"
 
     # tv-logos GitHub repo for per-channel logo lookup
     TV_LOGOS_REPO = "tv-logo/tv-logos"
@@ -207,48 +249,18 @@ class Plugin:
     # Settings rendered by UI
     @property
     def fields(self):
-        """Dynamically generate fields list with version check"""
-        # Check for updates from GitHub
-        version_message = "Checking for updates..."
-        try:
-            # Check if we should perform a version check (once per day)
-            if self._should_check_for_updates():
-                # Perform the version check
-                latest_version = self._get_latest_version("PiratesIRC", "Dispatcharr-Channel-Maparr-Plugin")
+        """Build the fields list. Reads the DB for M3U source options.
 
-                # Check if it's an error message
-                if latest_version.startswith("Error"):
-                    version_message = f"⚠️ Could not check for updates: {latest_version}"
-                else:
-                    # Save the check result
-                    self._save_version_check(latest_version)
-
-                    # Compare versions
-                    current = self.version
-                    # Remove 'v' prefix if present in latest_version
-                    latest_clean = latest_version.lstrip('v')
-
-                    if current == latest_clean:
-                        version_message = f"✅ You are up to date (v{current})"
-                    else:
-                        version_message = f"🔔 Update available! Current: v{current} → Latest: {latest_version}"
-            else:
-                # Use cached version info
-                if self.cached_version_info:
-                    latest_version = self.cached_version_info['latest_version']
-                    current = self.version
-                    latest_clean = latest_version.lstrip('v')
-
-                    if current == latest_clean:
-                        version_message = f"✅ You are up to date (v{current})"
-                    else:
-                        version_message = f"🔔 Update available! Current: v{current} → Latest: {latest_version}"
-                else:
-                    version_message = "ℹ️ Version check will run on next page load"
-        except Exception as e:
-            LOGGER.debug(f"{PLUGIN_LOG_PREFIX} Error during version check: {e}")
-            version_message = f"⚠️ Error checking for updates: {str(e)}"
-
+        There is deliberately NO version display and NO update check here. This
+        property is on Dispatcharr's per-request hot path, and it used to make a
+        live call to GitHub's releases API (plus a /data cache write) every time
+        the settings page was read, so plugin settings could not render without
+        outbound network access and a slow or hung GitHub stalled the request.
+        The installed version is already shown by Dispatcharr's own plugin card,
+        so repeating it as a settings field was noise.
+        `tests/test_plugin_contract.py::test_no_update_check_remains` and
+        `::test_no_version_field_in_the_settings_form` keep it that way.
+        """
         # Discover M3U sources from database
         m3u_source_options = [{"value": "_all", "label": "All sources (no filter)"}]
         try:
@@ -259,12 +271,6 @@ class Plugin:
 
         # Build the fields list dynamically
         return [
-            {
-                "id": "version_status",
-                "label": "Plugin Version",
-                "type": "info",
-                "help_text": version_message
-            },
             {
                 "id": "channel_databases",
                 "label": "Channel Databases",
@@ -292,7 +298,25 @@ class Plugin:
                 "type": "string",
                 "default": "",
                 "placeholder": "Locals, News, Entertainment",
-                "help_text": "Comma-separated. Limits rename/logo actions to these groups. Leave empty for all.",
+                "help_text": "Comma-separated. Limits rename/logo actions to these groups. Leave empty for all. Use 'Channel Groups to Ignore' to exclude instead.",
+            },
+            {
+                "id": "ignore_groups",
+                "label": "Channel Groups to Ignore",
+                "type": "string",
+                "default": "",
+                "placeholder": "Teamarr, PPV*",
+                "help_text": (
+                    "Comma-separated. Channels in these groups are excluded from "
+                    "renaming, tagging, logos and Organize by Category, regardless "
+                    "of 'Channel Groups to Process' or 'Category Organization "
+                    "Groups'. Supports * and ? wildcards; matching is "
+                    "case-insensitive. An entry that matches no channel group "
+                    "refuses most actions. Organize by Category skips an ignored "
+                    "target group and continues. Import M3U Streams does not "
+                    "check entries against every group; it only refuses if its "
+                    "own target group is ignored."
+                ),
             },
             {
                 "id": "category_groups",
@@ -300,7 +324,7 @@ class Plugin:
                 "type": "string",
                 "default": "",
                 "placeholder": "Locals, News, Entertainment",
-                "help_text": "Source groups for category-based reorganization. Leave empty for all.",
+                "help_text": "Source groups for category-based reorganization. Leave empty for all. Use 'Channel Groups to Ignore' to exclude instead.",
             },
             {
                 "id": "m3u_sources",
@@ -386,6 +410,53 @@ class Plugin:
                 ],
                 "help_text": "Delay between DB writes during large imports to reduce server load.",
             },
+            {
+                "id": "notify_enabled",
+                "label": "Send notifications to Newsflasharr",
+                "type": "boolean",
+                "default": PluginConfig.DEFAULT_NOTIFY_ENABLED,
+                "help_text": "Requires the Newsflasharr plugin, which is what "
+                             "actually sends the mail. What routes where is "
+                             "configured in Newsflasharr's routing rules, keyed on "
+                             "this plugin's name. Channel Mapparr does not require "
+                             "Newsflasharr to be installed: with it absent or "
+                             "disabled, nothing is sent and nothing fails.",
+            },
+            {
+                "id": "notify_report_on",
+                "label": "Email A Report After",
+                "type": "select",
+                "default": PluginConfig.DEFAULT_NOTIFY_REPORT_ON,
+                "options": [
+                    {"value": "never", "label": "Never, do not email reports"},
+                    {"value": "every_run", "label": "Every run that produces an export"},
+                ],
+                "help_text": "Which runs email a report. The emailed report is built "
+                             "specifically for sending: it never contains your M3U "
+                             "source names, which the CSV exports in /data/exports do "
+                             "contain in their settings header. Organize by Category "
+                             "reports only in Dry Run, because a real run of it "
+                             "produces no export. This setting does nothing unless "
+                             "Send notifications to Newsflasharr is on above.",
+            },
+            {
+                "id": "notify_report_format",
+                "label": "Email Report Format",
+                "type": "select",
+                "default": PluginConfig.DEFAULT_NOTIFY_REPORT_FORMAT,
+                "options": [
+                    {"value": "html", "label": "HTML page only, one email"},
+                    {"value": "csv", "label": "CSV only, one email"},
+                    {"value": "both", "label": "Both, which arrives as two emails"},
+                ],
+                "help_text": "Which report file to email. A notification carries one "
+                             "attachment, so choosing both sends two separate emails "
+                             "per run rather than one email with two files. The HTML "
+                             "page is easier to read and the CSV is easier to sort and "
+                             "filter. Both files are written to "
+                             "/data/channel_mapparr_reports either way; this setting "
+                             "only decides which are emailed.",
+            },
         ]
 
     # Actions for Dispatcharr UI. `label` is the action title; `button_label`
@@ -467,6 +538,24 @@ class Plugin:
             "label": "Show Status",
             "description": "Show live progress and ETA for the most recent or running operation. Reads a persistent progress file so you can check without watching container logs.",
             "button_label": "\u24d8 Status",
+             "button_variant": "outline", "button_color": "blue",
+        },
+        {
+            "id": "email_report_now",
+            "label": "Email Report Now",
+            "button_label": "✉ Email Now",
+            "button_variant": "outline",
+            "button_color": "cyan",
+            "description": "Build a report from the last processed channels and "
+                           "queue it for email. Requires the Newsflasharr plugin "
+                           "installed and enabled, its email settings configured, "
+                           "and a routing rule sending this plugin to email. This "
+                           "button checks all of that first and refuses rather than "
+                           "queueing a report nobody receives. It changes nothing. "
+                           "Queued means written to Newsflasharr's queue, not yet in "
+                           "your inbox. It does NOT prove the automatic path works, "
+                           "because it runs here in the web worker using the settings "
+                           "currently on screen.",
         },
         {
             "id": "clear_csv_exports",
@@ -485,8 +574,6 @@ class Plugin:
         self.group_name_map = {}
 
         # Version check cache state
-        self.version_check_file = PluginConfig.VERSION_CHECK_FILE
-        self.cached_version_info = None
 
         # Background threading
         self._thread = None
@@ -538,94 +625,6 @@ class Plugin:
         logger.info(f"{PLUGIN_LOG_PREFIX} Match sensitivity: {sensitivity} (threshold: {threshold})")
         return threshold
 
-    def _get_latest_version(self, owner, repo):
-        """
-        Fetches the latest release tag name from GitHub using only Python's standard library.
-        Returns the version string or an error message.
-        """
-        url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
-
-        # Add a user-agent to avoid potential 403 Forbidden errors
-        headers = {
-            'User-Agent': 'Dispatcharr-Plugin-Version-Checker'
-        }
-
-        try:
-            # Create a request object with headers
-            req = urllib.request.Request(url, headers=headers)
-
-            # Make the request and open the URL with a timeout
-            with urllib.request.urlopen(req, timeout=5) as response:
-                # Read the response and decode it as UTF-8
-                data = response.read().decode('utf-8')
-
-                # Parse the JSON string
-                json_data = json.loads(data)
-
-                # Get the tag name
-                latest_version = json_data.get("tag_name")
-
-                if latest_version:
-                    return latest_version
-                else:
-                    return "Error: 'tag_name' key not found."
-
-        except urllib.error.HTTPError as http_err:
-            if http_err.code == 404:
-                return f"Error: Repo not found or has no releases."
-            else:
-                return f"HTTP error: {http_err.code}"
-        except Exception as e:
-            # Catch other errors like timeouts
-            return f"Error: {str(e)}"
-
-    def _should_check_for_updates(self):
-        """
-        Check if we should perform a version check (once per day).
-        Returns True if we should check, False otherwise.
-        Also loads and caches the last check data.
-        """
-        try:
-            if os.path.exists(self.version_check_file):
-                with open(self.version_check_file, 'r') as f:
-                    data = json.load(f)
-                    last_check_time = data.get('last_check_time')
-                    cached_latest_version = data.get('latest_version')
-
-                    if last_check_time and cached_latest_version:
-                        # Check if last check was within 24 hours
-                        last_check_dt = datetime.fromisoformat(last_check_time)
-                        now = datetime.now()
-                        time_diff = now - last_check_dt
-
-                        if time_diff.total_seconds() < 86400:  # 24 hours in seconds
-                            # Use cached data
-                            self.cached_version_info = {
-                                'latest_version': cached_latest_version,
-                                'last_check_time': last_check_time
-                            }
-                            return False  # Don't check again
-
-            # Either file doesn't exist, or it's been more than 24 hours
-            return True
-
-        except Exception as e:
-            LOGGER.debug(f"{PLUGIN_LOG_PREFIX} Error checking version check time: {e}")
-            return True  # Check if there's an error
-
-    def _save_version_check(self, latest_version):
-        """Save the version check result to disk with timestamp"""
-        try:
-            data = {
-                'latest_version': latest_version,
-                'last_check_time': datetime.now().isoformat()
-            }
-            with open(self.version_check_file, 'w') as f:
-                json.dump(data, f, indent=2)
-            LOGGER.debug(f"{PLUGIN_LOG_PREFIX} Saved version check: {latest_version}")
-        except Exception as e:
-            LOGGER.debug(f"{PLUGIN_LOG_PREFIX} Error saving version check: {e}")
-
     def _generate_csv_settings_header(self, settings):
         """Generate CSV header comments with plugin settings"""
         # Map field IDs to their labels
@@ -633,6 +632,7 @@ class Plugin:
             'channel_databases': 'Channel Databases',
             'match_sensitivity': 'Match Sensitivity',
             'selected_groups': 'Channel Groups to Process',
+            'ignore_groups': 'Channel Groups to Ignore',
             'category_groups': 'Channel Groups for Category Organization',
             'm3u_sources': 'M3U Sources',
             'm3u_group_filter': 'M3U Group Filter',
@@ -663,6 +663,399 @@ class Plugin:
         return '\n'.join(header_lines) + '\n'
 
     # ========================================
+    # EMAILED REPORTS (via the Newsflasharr plugin)
+    #
+    # Everything here is written so a failure is REPORTED rather than thrown.
+    # Reporting is not this plugin's real work, and a bug in the report path must
+    # never break the run that produced the data.
+    #
+    # The modules are imported lazily rather than at the top of this file so that
+    # a deploy which somehow missed one of them degrades to "no reports" instead
+    # of breaking the whole plugin at import time.
+    # ========================================
+
+    @staticmethod
+    def _notify_client():
+        """The vendored Newsflasharr client. Never hand-edit the vendored copy."""
+        try:
+            from . import notify_client
+        except ImportError:
+            import notify_client
+        return notify_client
+
+    @staticmethod
+    def _notify_bridge():
+        """This plugin's emit layer."""
+        try:
+            from . import notify_bridge
+        except ImportError:
+            import notify_bridge
+        return notify_bridge
+
+    @staticmethod
+    def _reports():
+        """The report model and renderers."""
+        try:
+            from . import reports
+        except ImportError:
+            import reports
+        return reports
+
+    def _report_dir(self):
+        """Where report files are written. A method so a test can redirect it."""
+        return self._reports().REPORT_DIR
+
+    def _notify_send(self, **kwargs):
+        """One seam in front of the vendored client's notify().
+
+        A seam rather than a direct call so a test can observe what would be
+        queued without needing a queue directory on disk.
+        """
+        return self._notify_client().notify(**kwargs)
+
+    def _notifier_alive(self):
+        """Is Newsflasharr's collector actually running?
+
+        notify() CREATES the queue directory it writes into, so it returns True
+        with Newsflasharr absent, disabled, or its collector dead, and the event
+        then sits in a directory nobody reads. This is the one check between
+        queueing and the inbox that an operator can act on.
+        """
+        try:
+            return bool(self._notify_client().notifier_alive())
+        except Exception:
+            return False
+
+    def _get_m3u_account_names(self, logger):
+        """Return the M3U account names, or None when the lookup FAILED.
+
+        None and [] are deliberately different. An empty list is a legitimate
+        installation with no M3U accounts. None means the lookup raised, and the
+        caller must refuse to build a report rather than send one whose scrub was
+        a silent no-op: these names are the primary redaction input for an
+        emailed report, not a backstop.
+
+        This is a separate read on purpose. The `fields` property also lists M3U
+        accounts, but it runs on Dispatcharr's per-request hot path and must not
+        be called from here.
+        """
+        try:
+            return [row["name"] for row in M3UAccount.objects.all().values("name")
+                    if row.get("name")]
+        except Exception as error:
+            logger.warning(f"{PLUGIN_LOG_PREFIX} Could not read the M3U account "
+                           f"names, so no report will be built: {error}")
+            return None
+
+    @staticmethod
+    def _read_newsflasharr_config():
+        """Read Newsflasharr's stored configuration. Returns None when absent.
+
+        Read only on another plugin's configuration row, which is allowed;
+        nothing here writes. Raises when the registry itself cannot be reached,
+        so the caller can tell "not installed" from "could not look".
+        """
+        from apps.plugins.models import PluginConfig as StoredPluginConfig
+        row = StoredPluginConfig.objects.filter(key="newsflasharr").first()
+        if row is None:
+            return None
+        settings = getattr(row, "settings", None)
+        return {"enabled": bool(getattr(row, "enabled", False)),
+                "settings": settings if isinstance(settings, dict) else {}}
+
+    def _newsflasharr_readiness(self):
+        """Everything that must be true for an emailed report to actually arrive.
+
+        Returns a list of blocking problems, empty when the path is clear.
+
+        This exists because every one of these failures is otherwise invisible
+        from this side. A missing routing rule in particular: the queue write
+        succeeds, Newsflasharr records a delivery, and the mail is simply sent
+        somewhere other than the inbox. Attachments are email only, so an
+        unrouted report also arrives with no file at all.
+
+        Never echo a settings VALUE here. smtp_password is one of the keys being
+        checked and only its presence is ever reported.
+        """
+        bridge = self._notify_bridge()
+        try:
+            config = self._read_newsflasharr_config()
+        except Exception as error:
+            return [f"Could not read Newsflasharr's configuration: {error}"]
+        if config is None:
+            return ["Newsflasharr is not installed, and it is what actually "
+                    "sends the mail."]
+
+        problems = []
+        if not config.get("enabled"):
+            problems.append("Newsflasharr is installed but not enabled.")
+        nf_settings = config.get("settings") or {}
+        missing = [key for key in bridge.SMTP_REQUIRED
+                   if not str(nf_settings.get(key) or "").strip()]
+        if missing:
+            problems.append("Newsflasharr's email settings are not complete "
+                            "(missing: " + ", ".join(missing) + ").")
+        elif not bridge.routes_to_smtp(nf_settings):
+            problems.append(
+                f"Newsflasharr has no routing rule sending {bridge.SOURCE}'s "
+                f"{bridge.EVENT} to email, and email is not among its default "
+                "channels, so the report would be delivered somewhere else and "
+                "without its attachment.")
+        return problems
+
+    def _resolved_databases(self, settings):
+        """The country codes that actually have a database file on disk.
+
+        The raw `channel_databases` setting is free text and is never echoed into
+        a report. Resolving it here means the report states what was really
+        loaded rather than what somebody typed.
+        """
+        raw = str(settings.get("channel_databases")
+                  or PluginConfig.DEFAULT_CHANNEL_DATABASES)
+        plugin_dir = os.path.dirname(__file__)
+        resolved = []
+        for code in [part.strip().upper() for part in raw.split(",") if part.strip()]:
+            if os.path.isfile(os.path.join(plugin_dir, f"{code}_channels.json")):
+                resolved.append(code)
+        return resolved
+
+    def _build_and_emit_report(self, settings, logger, *, title, columns, rows,
+                               export_filename=None, report_dir=None):
+        """Build the report files and queue one notification per file.
+
+        Returns {"sent", "skipped_reason", "blocking_error"}. Never raises.
+
+        `blocking_error` is set only when the operator has asked for reports and
+        the mail could not possibly arrive. That case has to reach the persistent
+        red area of the plugin card, because a four second green toast is not a
+        surface for it.
+
+        Nothing is built when the report would not be sent. Building costs work,
+        and there is no point paying for a report nobody will receive.
+        """
+        outcome = {"sent": 0, "skipped_reason": None, "blocking_error": None}
+        try:
+            bridge = self._notify_bridge()
+            allowed, reason = bridge.should_emit(settings)
+            if not allowed:
+                outcome["skipped_reason"] = reason
+                return outcome
+
+            problems = self._newsflasharr_readiness()
+            if problems:
+                outcome["blocking_error"] = ("Report not queued. " + " ".join(problems))
+                outcome["skipped_reason"] = outcome["blocking_error"]
+                logger.warning(f"{PLUGIN_LOG_PREFIX} {outcome['blocking_error']}")
+                return outcome
+
+            account_names = self._get_m3u_account_names(logger)
+            if account_names is None:
+                outcome["skipped_reason"] = (
+                    "the M3U account name lookup failed, so the report was not "
+                    "built rather than sent without its redaction")
+                return outcome
+
+            reports = self._reports()
+            now = time.time()
+            model = reports.build_model(
+                title, columns, rows,
+                account_names=account_names,
+                settings=settings,
+                databases=self._resolved_databases(settings),
+                version=getattr(self, "version", PluginConfig.PLUGIN_VERSION),
+                now=now,
+                export_filename=export_filename)
+            written = reports.write_report(
+                model, report_dir or self._report_dir(), now)
+            if written.get("error"):
+                logger.warning(f"{PLUGIN_LOG_PREFIX} Report not written: "
+                               f"{written['error']}")
+                outcome["skipped_reason"] = written["error"]
+                return outcome
+
+            emitted = bridge.emit_reports(self._notify_send, settings, written)
+            outcome["sent"] = emitted["sent"]
+            outcome["skipped_reason"] = emitted["skipped_reason"]
+            logger.info(f"{PLUGIN_LOG_PREFIX} Report: {emitted['sent']} "
+                        f"notification(s) queued for delivery")
+        except Exception as error:
+            logger.warning(f"{PLUGIN_LOG_PREFIX} Report emit suppressed: {error}")
+            outcome["skipped_reason"] = (
+                f"the report path raised and was contained: {error}")
+        return outcome
+
+    @staticmethod
+    def _report_outcome_clause(outcome):
+        """A very short clause to append to an action's own message.
+
+        Dispatcharr shows roughly 280 characters of a toast, clipped from the
+        middle with no ellipsis, so this must stay small. It returns an empty
+        string when the operator has not switched notifications on, so somebody
+        who never opted in never sees report chatter.
+
+        It says QUEUED, never sent. A True from notify() means durably written to
+        Newsflasharr's queue; delivery happens later on its retry ladder.
+        """
+        outcome = outcome or {}
+        if outcome.get("sent"):
+            return f"\nReport queued ({outcome['sent']})."
+        reason = outcome.get("skipped_reason") or ""
+        if not reason or "switched off" in reason:
+            return ""
+        return f"\nReport not queued: {reason}"
+
+    def email_report_now_action(self, settings, logger):
+        """Build a report from the last processed channels and queue it now.
+
+        It BUILDS a fresh report rather than re-sending the newest files on disk.
+        Re-sending races the pruner: the newest file on disk is by definition old
+        enough to be prune eligible, so a later run could delete it while its
+        mail was still being retried, and the attachment would silently vanish.
+
+        It refuses BEFORE doing any work when the mail could not arrive, because
+        a missing routing rule is otherwise invisible: the queue write succeeds
+        and the mail is simply delivered somewhere else.
+
+        It never writes any kind of "the automatic path ran" marker. Pressing a
+        button must not be able to look like the ordinary path working.
+        """
+        try:
+            bridge = self._notify_bridge()
+            if not bridge.is_enabled(settings):
+                return {"status": "error",
+                        "error": "Send notifications to Newsflasharr is switched "
+                                 "off, so there is nothing to email with."}
+
+            problems = self._newsflasharr_readiness()
+            if problems:
+                return {"status": "error",
+                        "error": "Report not queued. " + " ".join(problems)}
+
+            if not self._notifier_alive():
+                return {"status": "error",
+                        "error": "Newsflasharr's collector is not running, so a "
+                                 "queued report would sit unread. Check that the "
+                                 "Newsflasharr plugin is enabled and its collector "
+                                 "is running, then try again."}
+
+            if not os.path.exists(self.results_file):
+                return {"status": "error",
+                        "error": "No processed channels found. Run "
+                                 "'Load/Process Channels' first, then press this."}
+
+            with open(self.results_file, "r") as handle:
+                data = json.load(handle)
+            changes = data.get("changes", [])
+            if not changes:
+                return {"status": "error",
+                        "error": "The last run produced no channel changes, so "
+                                 "there is nothing to report on."}
+
+            # Pressing the button IS the request, so the "Email A Report After"
+            # setting is overridden for this one call. The master toggle above is
+            # NOT overridden: that one is the operator's opt in.
+            forced = dict(settings)
+            forced["notify_report_on"] = "every_run"
+
+            outcome = self._build_and_emit_report(
+                forced, logger,
+                title="Rename preview",
+                columns=self._RENAME_REPORT_COLUMNS,
+                rows=changes)
+
+            if outcome["blocking_error"]:
+                return {"status": "error", "error": outcome["blocking_error"]}
+            if not outcome["sent"]:
+                return {"status": "error",
+                        "error": "Report not queued: "
+                                 + (outcome["skipped_reason"] or "unknown reason")}
+            return {"status": "success",
+                    "message": f"Report queued ({outcome['sent']}). Queued means "
+                               "written to Newsflasharr's queue, not yet in your "
+                               "inbox. This does not prove the automatic path "
+                               "works."}
+        except Exception as error:
+            logger.error(f"{PLUGIN_LOG_PREFIX} Email Report Now failed: {error}")
+            return {"status": "error", "error": f"Email Report Now failed: {error}"}
+
+    # The allow lists that decide what may leave the box. A row key absent from
+    # these pairs is never copied into a report, whatever the row carries, so a
+    # column added to a CSV writer later cannot start being emailed on its own.
+    _RENAME_REPORT_COLUMNS = [
+        ("channel_id", "Channel ID"),
+        ("channel_number", "Channel Number"),
+        ("channel_group", "Group"),
+        ("current_name", "Current Name"),
+        ("new_name", "New Name"),
+        ("status", "Status"),
+        ("matcher", "Matcher"),
+        ("match_method", "Match Method"),
+        ("reason", "Reason"),
+    ]
+
+    _CATEGORY_REPORT_COLUMNS = [
+        ("channel_id", "Channel ID"),
+        ("channel_name", "Channel Name"),
+        ("current_group", "Current Group"),
+        ("new_group", "New Group"),
+        ("category", "Category"),
+        ("match_type", "Match Type"),
+        ("match_value", "Match Value"),
+        ("group_exists", "Group Exists"),
+    ]
+
+    @staticmethod
+    def _m3u_report_rows(matched_by_category, unmatched_streams):
+        """Flatten the M3U import structures into report rows.
+
+        The M3U account is deliberately NOT carried into the report. The CSV
+        export records it as "M3U-<account id>", which is harmless in itself, but
+        the report has no use for it and an allow list is only worth having if it
+        stays narrow.
+        """
+        rows = []
+        for category in sorted(matched_by_category or {}):
+            for matched in matched_by_category[category]:
+                stream = matched.get("stream", {})
+                rows.append({
+                    "stream_id": stream.get("id", ""),
+                    "stream_name": stream.get("name", ""),
+                    "priority": stream.get("priority", 0),
+                    "match_type": matched.get("match_type", ""),
+                    "match_method": matched.get("match_method", ""),
+                    "category": category,
+                    "target_group": category,
+                    "will_import": "Yes",
+                    "notes": "",
+                })
+        for unmatched in unmatched_streams or []:
+            stream = unmatched.get("stream", {})
+            rows.append({
+                "stream_id": stream.get("id", ""),
+                "stream_name": stream.get("name", ""),
+                "priority": stream.get("priority", 0),
+                "match_type": "",
+                "match_method": "No match",
+                "category": "",
+                "target_group": "",
+                "will_import": "No",
+                "notes": unmatched.get("reason", ""),
+            })
+        return rows
+
+    _M3U_REPORT_COLUMNS = [
+        ("stream_id", "Stream ID"),
+        ("stream_name", "Stream Name"),
+        ("priority", "Priority"),
+        ("match_type", "Match Type"),
+        ("match_method", "Match Method"),
+        ("category", "Category"),
+        ("target_group", "Target Group"),
+        ("will_import", "Will Import"),
+        ("notes", "Notes"),
+    ]
+
+    # ========================================
     # ORM HELPER METHODS
     # ========================================
 
@@ -670,12 +1063,115 @@ class Plugin:
         """Fetch all channel groups via Django ORM."""
         return list(ChannelGroup.objects.all().values('id', 'name'))
 
-    def _get_all_channels(self, logger, group_ids=None):
-        """Fetch channels via Django ORM, optionally filtered by group IDs."""
+    _INCLUDE_KEYS = frozenset({"selected_groups", "category_groups"})
+    _INCLUDE_LABELS = {
+        "selected_groups": "Channel Groups to Process",
+        "category_groups": "Category Organization Groups",
+    }
+
+    def _resolve_group_scope(self, settings, logger, include_key):
+        """Resolve the channel-group scope for an action.
+
+        Raises GroupScopeError when the configured scope cannot be honoured; the
+        caller turns that into a visible error via _scope_error_return.
+        """
+        if include_key not in self._INCLUDE_KEYS:
+            raise ValueError(f"unknown include_key {include_key!r}")
+
+        name_to_ids = build_name_to_ids(self._get_all_groups(logger))
+        scope = resolve_group_scope(
+            (settings.get(include_key) or ""),
+            (settings.get("ignore_groups") or ""),
+            name_to_ids,
+            include_label=self._INCLUDE_LABELS[include_key],
+        )
+        logger.info(f"{PLUGIN_LOG_PREFIX} Scope: {scope.info}")
+        for name in scope.out_of_scope_names:
+            logger.info(
+                f"{PLUGIN_LOG_PREFIX} Ignored group '{name}' was already outside "
+                f"the selected scope - no effect."
+            )
+        return scope
+
+    def _resolve_process_scope(self, settings, logger):
+        """Scope for the scan / rename / logo actions."""
+        return self._resolve_group_scope(settings, logger, "selected_groups")
+
+    def _resolve_category_scope(self, settings, logger):
+        """Scope for the Organize-by-Category actions."""
+        return self._resolve_group_scope(settings, logger, "category_groups")
+
+    @staticmethod
+    def _scope_error_return(exc):
+        """`error`, not `message` - `status` renders nowhere on the plugin card."""
+        return {"status": "error", "error": str(exc)}
+
+    def _ignore_tokens_error(self, settings, logger):
+        """Refuse if 'Channel Groups to Ignore' names a group absent from the DB.
+
+        The file-driven actions (Preview / Rename / Tag Unknown) resolve the
+        exclusion via split_rows_by_ignore against the group names PRESENT IN
+        THE RESULTS FILE, which deliberately never refuses on a token absent
+        from that file - a stale file may legitimately contain no rows from a
+        named group. But that means a typo'd token would otherwise pass those
+        three actions silently while every DB-scoped action (which validates
+        against every real group via resolve_group_scope) refuses. This
+        validates the tokens against the database FIRST, before the
+        file-scoped split, so all six mutating/preview actions agree on what
+        counts as an unresolvable exclusion. Returns an error dict, or None
+        when the tokens are fine (or there are none).
+        """
+        tokens = parse_tokens(settings.get("ignore_groups") or "")
+        if not tokens:
+            return None
+        names = list(build_name_to_ids(self._get_all_groups(logger)))
+        _, unmatched = expand_patterns(tokens, names, ci_plain=True)
+        if unmatched:
+            return {"status": "error", "error":
+                    "These entries in 'Channel Groups to Ignore' match no "
+                    f"channel group: {', '.join(unmatched)}."}
+        return None
+
+    def _get_all_channels(self, logger, group_ids=None, include_ungrouped=False):
+        """Fetch channels via Django ORM, optionally filtered by group IDs.
+
+        group_ids=None means "no scope" (every channel). An EMPTY set means "a
+        scope that resolved to nothing" and returns nothing - `if group_ids:`
+        collapsed those two cases and silently widened the scope to every channel
+        in the database (bug-044).
+
+        include_ungrouped keeps channels whose channel_group_id is NULL. A blank
+        include filter used to pass group_ids=None, which included them; once an
+        explicit id set is always passed they would silently vanish, and no
+        exclusion can name a NULL group anyway.
+        """
         qs = Channel.objects.all()
-        if group_ids:
+        scoped = group_ids is not None
+
+        if scoped and not include_ungrouped:
+            if not group_ids:
+                logger.warning(
+                    f"{PLUGIN_LOG_PREFIX} Group scope resolved to zero groups - "
+                    f"no channels will be processed."
+                )
             qs = qs.filter(channel_group_id__in=group_ids)
-        return list(qs.values('id', 'name', 'channel_number', 'channel_group_id', 'logo_id'))
+
+        rows = list(qs.values(
+            'id', 'name', 'channel_number', 'channel_group_id', 'logo_id'))
+
+        if scoped and include_ungrouped:
+            keep = set(group_ids)
+            rows = [
+                r for r in rows
+                if r.get('channel_group_id') in keep
+                or r.get('channel_group_id') is None
+            ]
+            if not group_ids:
+                logger.warning(
+                    f"{PLUGIN_LOG_PREFIX} Group scope resolved to zero groups - "
+                    f"only ungrouped channels will be processed."
+                )
+        return rows
 
     def _bulk_update_channels(self, updates, fields, logger):
         """Bulk update Channel instances.
@@ -887,19 +1383,20 @@ class Plugin:
                 "organize_by_category": self.organize_by_category_action,
                 "import_m3u_streams": self.import_m3u_streams_action,
                 "plugin_status": self.plugin_status_action,
+                "email_report_now": self.email_report_now_action,
                 "clear_csv_exports": self.clear_csv_exports_action,
             }
 
             handler = action_map.get(action)
             if not handler:
                 logger.warning(f"{PLUGIN_LOG_PREFIX} Unknown action: {action}")
-                return {"status": "error", "message": f"Unknown action: {action}"}
+                return {"status": "error", "error": f"Unknown action: {action}"}
 
             logger.info(f"{PLUGIN_LOG_PREFIX} Action triggered: {action}")
             result = handler(settings, logger)
 
             status = result.get("status", "?") if isinstance(result, dict) else "ok"
-            msg = result.get("message", "")[:200] if isinstance(result, dict) else ""
+            msg = (result.get("message") or result.get("error", ""))[:200] if isinstance(result, dict) else ""
             is_bg = result.get("background", False) if isinstance(result, dict) else False
 
             logger.info(f"{PLUGIN_LOG_PREFIX} Action complete: {action} -> {status} | {msg}")
@@ -915,7 +1412,7 @@ class Plugin:
 
         except Exception as e:
             LOGGER.exception(f"{PLUGIN_LOG_PREFIX} Error in action '{action}': {e}")
-            return {"status": "error", "message": str(e)}
+            return {"status": "error", "error": str(e)}
 
     def load_and_process_channels_action(self, settings, logger):
         """Load channels from database and process them with channel data."""
@@ -926,37 +1423,32 @@ class Plugin:
             channels_loaded = self._load_channel_data(settings, logger)
 
             if not channels_loaded:
-                return {"status": "error", "message": "Channel databases could not be loaded. Please check your channel_databases setting and ensure the files exist."}
+                return {"status": "error", "error": "Channel databases could not be loaded. Please check your channel_databases setting and ensure the files exist."}
 
             logger.info(f"{PLUGIN_LOG_PREFIX} Loading channels from database...")
 
-            # Get all groups first to build name-to-id mapping
+            # Get all groups first to build the id-to-name mapping used below
             all_groups = self._get_all_groups(logger)
-            group_name_to_id = {g['name']: g['id'] for g in all_groups if 'name' in g and 'id' in g}
             group_id_to_name = {g['id']: g['name'] for g in all_groups if 'name' in g and 'id' in g}
             self.group_name_map = group_id_to_name
 
-            # Filter by selected groups if specified
-            selected_groups_str = settings.get("selected_groups", "").strip()
-            if selected_groups_str:
-                input_names = {name.strip() for name in selected_groups_str.split(',') if name.strip()}
-                valid_names = {n for n in input_names if n in group_name_to_id}
-                invalid_names = input_names - valid_names
-                target_group_ids = {group_name_to_id[name] for name in valid_names}
+            # Resolve the group scope (include filter minus ignore_groups)
+            try:
+                scope = self._resolve_process_scope(settings, logger)
+            except GroupScopeError as exc:
+                return self._scope_error_return(exc)
 
-                if not target_group_ids:
-                    return {"status": "error", "message": f"None of the specified groups could be found: {', '.join(invalid_names)}"}
-
-                logger.info(f"{PLUGIN_LOG_PREFIX} Target group IDs: {target_group_ids}")
-            else:
-                target_group_ids = set(group_name_to_id.values())
-                valid_names = set(group_name_to_id.keys())
-
-            # Fetch all channels and filter by group ID
-            all_channels = self._get_all_channels(logger, group_ids=target_group_ids if selected_groups_str else None)
+            all_channels = self._get_all_channels(
+                logger,
+                group_ids=scope.group_ids,
+                include_ungrouped=scope.include_ungrouped,
+            )
 
             channels_to_process = all_channels
-            logger.info(f"{PLUGIN_LOG_PREFIX} Filtered to {len(channels_to_process)} channels in groups: {selected_groups_str if selected_groups_str else 'all groups'}")
+            logger.info(
+                f"{PLUGIN_LOG_PREFIX} Filtered to {len(channels_to_process)} "
+                f"channels ({scope.info})"
+            )
 
             # Store channels with proper group names
             for channel in channels_to_process:
@@ -1125,7 +1617,9 @@ class Plugin:
 
                 progress.update()
 
-            progress.finish()
+            progress.finish(
+                summary=f"{len(renamed_channels)} to rename, "
+                        f"{len(skipped_channels)} skipped. Scope: {scope.info}")
 
             # Log completion
             logger.info(f"{PLUGIN_LOG_PREFIX} Processing complete. {len(renamed_channels)} to rename, {len(skipped_channels)} skipped.")
@@ -1162,7 +1656,7 @@ class Plugin:
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error loading and processing channels: {e}")
-            return {"status": "error", "message": f"Error loading and processing channels: {e}"}
+            return {"status": "error", "error": f"Error loading and processing channels: {e}"}
 
     def preview_changes_action(self, settings, logger):
         """Export a CSV showing the preview of channel renaming changes."""
@@ -1170,14 +1664,30 @@ class Plugin:
 
 
             if not os.path.exists(self.results_file):
-                return {"status": "error", "message": "No processed channels found. Please run 'Load/Process Channels' first."}
+                return {"status": "error", "error": "No processed channels found. Please run 'Load/Process Channels' first."}
 
             with open(self.results_file, 'r') as f:
                 data = json.load(f)
 
             all_changes = data.get('changes', [])
 
+            # A token matching no DB group must refuse here too, or a typo
+            # renames/tags every excluded channel while every other action
+            # (which validates against the DB) refuses (blocker: fail-open).
+            guard = self._ignore_tokens_error(settings, logger)
+            if guard:
+                return guard
+
+            # Dry run must reflect the same exclusion the real run applies, or
+            # the preview contradicts what Rename/Tag Unknown actually does.
+            all_changes, ignored_rows = split_rows_by_ignore(
+                all_changes, settings.get("ignore_groups"))
+
             if not all_changes:
+                if ignored_rows:
+                    return {"status": "success", "message":
+                            f"No changes to preview; all {len(ignored_rows)} "
+                            f"pending change(s) are in ignored groups."}
                 return {"status": "success", "message": "No changes to preview."}
 
             # Create export directory if it does not exist
@@ -1214,6 +1724,11 @@ class Plugin:
                             'Match Method': change.get('match_method', ''),
                             'Reason': change.get('reason', '')
                         })
+                    # Absence of a group's rows proves nothing on its own -
+                    # record how many were excluded so the CSV is self-describing.
+                    if ignored_rows:
+                        csvfile.write(
+                            f"# Excluded by ignore: {len(ignored_rows)} row(s)\n")
                 os.replace(tmp_path, csv_path)
             except Exception:
                 if tmp_path and os.path.exists(tmp_path):
@@ -1225,14 +1740,29 @@ class Plugin:
             renamed_count = sum(1 for c in all_changes if c.get('status') == 'Renamed')
             skipped_count = sum(1 for c in all_changes if c.get('status') == 'Skipped')
 
-            return {
-                "status": "success",
-                "message": f"✓ Preview exported to: {csv_filename}\n\n{renamed_count} channels will be renamed, {skipped_count} will be skipped."
-            }
+            preview_message = f"✓ Preview exported to: {csv_filename}\n\n{renamed_count} channels will be renamed, {skipped_count} will be skipped."
+            if ignored_rows:
+                preview_message += f"\n{len(ignored_rows)} row(s) in ignored groups were excluded."
+
+            # The export is confirmed on disk above, so a report may now be built
+            # from the same rows. It is built from the ROWS, never by re-reading
+            # the CSV, whose settings header names the configured M3U sources.
+            outcome = self._build_and_emit_report(
+                settings, logger,
+                title="Rename preview",
+                columns=self._RENAME_REPORT_COLUMNS,
+                rows=all_changes,
+                export_filename=csv_filename)
+            preview_message += self._report_outcome_clause(outcome)
+
+            result = {"status": "success", "message": preview_message}
+            if outcome["blocking_error"]:
+                result["error"] = outcome["blocking_error"]
+            return result
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error exporting preview: {e}")
-            return {"status": "error", "message": f"Error exporting preview: {e}"}
+            return {"status": "error", "error": f"Error exporting preview: {e}"}
 
     def rename_channels_action(self, settings, logger):
         """Apply the standardized names to channels."""
@@ -1247,7 +1777,7 @@ class Plugin:
                 return self.preview_changes_action(settings, logger)
 
             if not os.path.exists(self.results_file):
-                return {"status": "error", "message": "No processed channels found. Please run 'Load/Process Channels' first."}
+                return {"status": "error", "error": "No processed channels found. Please run 'Load/Process Channels' first."}
 
             with open(self.results_file, 'r') as f:
                 data = json.load(f)
@@ -1255,7 +1785,29 @@ class Plugin:
             all_changes = data.get('changes', [])
             channels_to_rename = [c for c in all_changes if c.get('status') == 'Renamed']
 
+            # A token matching no DB group must refuse here too (see
+            # preview_changes_action for why) - this is the action that
+            # actually writes the renames.
+            guard = self._ignore_tokens_error(settings, logger)
+            if guard:
+                return guard
+
+            # These actions replay a persisted file and never fetch channels, so
+            # the exclusion has to be applied here too; the file may predate the
+            # current ignore_groups value.
+            channels_to_rename, ignored_rows = split_rows_by_ignore(
+                channels_to_rename, settings.get("ignore_groups"))
+            if ignored_rows:
+                logger.info(
+                    f"{PLUGIN_LOG_PREFIX} Skipped {len(ignored_rows)} channel(s) "
+                    f"in ignored groups."
+                )
+
             if not channels_to_rename:
+                if ignored_rows:
+                    return {"status": "success", "message":
+                            f"No channels renamed; all {len(ignored_rows)} "
+                            f"pending change(s) are in ignored groups."}
                 return {"status": "success", "message": "No channels need to be renamed."}
 
             # Bulk update using ORM
@@ -1266,6 +1818,9 @@ class Plugin:
             self._trigger_frontend_refresh(settings, logger)
 
             message_parts = [f"✓ Successfully renamed {len(updates)} channels."]
+            if ignored_rows:
+                message_parts.append(
+                    f"Skipped {len(ignored_rows)} channel(s) in ignored groups.")
             if channels_to_rename:
                 message_parts.append("\n**Sample Changes:**")
                 for change in channels_to_rename[:5]:
@@ -1277,7 +1832,7 @@ class Plugin:
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error renaming channels: {e}")
-            return {"status": "error", "message": f"Error renaming channels: {e}"}
+            return {"status": "error", "error": f"Error renaming channels: {e}"}
 
     def rename_unknown_channels_action(self, settings, logger):
         """Append suffix to channels that could not be matched (OTA and premium/cable)."""
@@ -1285,7 +1840,7 @@ class Plugin:
 
 
             if not os.path.exists(self.results_file):
-                return {"status": "error", "message": "No processed channels found. Please run 'Load/Process Channels' first."}
+                return {"status": "error", "error": "No processed channels found. Please run 'Load/Process Channels' first."}
 
             # Get suffix with default fallback matching the field default
             suffix = settings.get("unknown_suffix", PluginConfig.DEFAULT_UNKNOWN_SUFFIX)
@@ -1295,7 +1850,7 @@ class Plugin:
 
             # Only reject if suffix is None or empty after strip
             if not suffix or not suffix.strip():
-                return {"status": "error", "message": "No suffix configured. Please set 'Suffix for Unknown Channels' in plugin settings. Default is ' [Unk]' (with leading space)."}
+                return {"status": "error", "error": "No suffix configured. Please set 'Suffix for Unknown Channels' in plugin settings. Default is ' [Unk]' (with leading space)."}
 
             with open(self.results_file, 'r') as f:
                 data = json.load(f)
@@ -1303,17 +1858,47 @@ class Plugin:
             all_changes = data.get('changes', [])
             skipped_channels = [c for c in all_changes if c.get('status') == 'Skipped']
 
+            # A token matching no DB group must refuse here too (see
+            # preview_changes_action for why) - this is the action that
+            # actually writes the "[Unk]" suffix renames.
+            guard = self._ignore_tokens_error(settings, logger)
+            if guard:
+                return guard
+
+            # These actions replay a persisted file and never fetch channels, so
+            # the exclusion has to be applied here too; the file may predate the
+            # current ignore_groups value.
+            skipped_channels, ignored_rows = split_rows_by_ignore(
+                skipped_channels, settings.get("ignore_groups"))
+            if ignored_rows:
+                logger.info(
+                    f"{PLUGIN_LOG_PREFIX} Skipped {len(ignored_rows)} channel(s) "
+                    f"in ignored groups."
+                )
+
             if not skipped_channels:
+                if ignored_rows:
+                    return {"status": "success", "message":
+                            f"No unknown channels renamed; all {len(ignored_rows)} "
+                            f"pending change(s) are in ignored groups."}
                 return {"status": "success", "message": "No unknown channels to rename."}
 
             # Bulk update using ORM
             updates = [{'id': ch['channel_id'], 'name': ch['current_name'] + suffix} for ch in skipped_channels]
+
+            if settings.get("dry_run_mode", False):
+                return {"status": "success", "message":
+                        f"Dry Run: would tag {len(updates)} unknown channel(s) "
+                        f"with suffix '{suffix}'. No changes written."}
 
             logger.info(f"{PLUGIN_LOG_PREFIX} Adding suffix '{suffix}' to {len(updates)} unknown channels...")
             self._bulk_update_channels(updates, ['name'], logger)
             self._trigger_frontend_refresh(settings, logger)
 
             message_parts = [f"✓ Successfully added suffix '{suffix}' to {len(updates)} unknown channels."]
+            if ignored_rows:
+                message_parts.append(
+                    f"Skipped {len(ignored_rows)} channel(s) in ignored groups.")
             if skipped_channels:
                 message_parts.append("\n**Sample Changes:**")
                 for change in skipped_channels[:5]:
@@ -1326,7 +1911,7 @@ class Plugin:
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error renaming unknown channels: {e}")
-            return {"status": "error", "message": f"Error renaming unknown channels: {e}"}
+            return {"status": "error", "error": f"Error renaming unknown channels: {e}"}
 
     def apply_logos_action(self, settings, logger):
         """Apply default logo to channels without logos."""
@@ -1336,7 +1921,7 @@ class Plugin:
             default_logo = settings.get("default_logo", "").strip()
 
             if not default_logo:
-                return {"status": "error", "message": "No default logo configured. Please set 'Default Logo' in plugin settings."}
+                return {"status": "error", "error": "No default logo configured. Please set 'Default Logo' in plugin settings."}
 
             # Get all logos from database
             logger.info(f"{PLUGIN_LOG_PREFIX} Fetching all logos from database...")
@@ -1364,23 +1949,23 @@ class Plugin:
 
                 return {
                     "status": "error",
-                    "message": f"Logo '{default_logo}' not found in logo manager.\n\nSearched through {len(all_logos)} logos. Check the Dispatcharr logs to see available logo names."
+                    "error": f"Logo '{default_logo}' not found in logo manager.\n\nSearched through {len(all_logos)} logos. Check the Dispatcharr logs to see available logo names."
                 }
 
             # Fetch FRESH channel data from database
             logger.info(f"{PLUGIN_LOG_PREFIX} Fetching current channel data from database...")
 
-            # Get groups to filter
-            selected_groups_str = settings.get("selected_groups", "").strip()
-            target_group_ids = None
-            if selected_groups_str:
-                all_groups = self._get_all_groups(logger)
-                group_name_to_id = {g['name']: g['id'] for g in all_groups if 'name' in g and 'id' in g}
-                input_names = {name.strip() for name in selected_groups_str.split(',') if name.strip()}
-                target_group_ids = {group_name_to_id[name] for name in input_names if name in group_name_to_id}
+            # Resolve the group scope (include filter minus ignore_groups)
+            try:
+                scope = self._resolve_process_scope(settings, logger)
+            except GroupScopeError as exc:
+                return self._scope_error_return(exc)
 
-            # Get all channels
-            all_channels = self._get_all_channels(logger, group_ids=target_group_ids)
+            all_channels = self._get_all_channels(
+                logger,
+                group_ids=scope.group_ids,
+                include_ungrouped=scope.include_ungrouped,
+            )
 
             # Filter channels without logos or with "Default" logo (ID 0)
             channels_without_logos = []
@@ -1397,6 +1982,11 @@ class Plugin:
 
             # Bulk update using ORM
             updates = [{'id': ch['id'], 'logo_id': int(logo_id)} for ch in channels_without_logos]
+
+            if settings.get("dry_run_mode", False):
+                return {"status": "success", "message":
+                        f"Dry Run: would apply default logo to {len(updates)} "
+                        f"channel(s). No changes written."}
 
             logger.info(f"{PLUGIN_LOG_PREFIX} Applying logo ID {logo_id} to {len(updates)} channels...")
             self._bulk_update_channels(updates, ['logo_id'], logger)
@@ -1416,7 +2006,7 @@ class Plugin:
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error applying logos: {e}")
-            return {"status": "error", "message": f"Error applying logos: {e}"}
+            return {"status": "error", "error": f"Error applying logos: {e}"}
 
     def apply_tv_logos_action(self, settings, logger):
         """Assign per-channel logos by fuzzy-matching channel names to the
@@ -1430,17 +2020,18 @@ class Plugin:
             country_codes_str = settings.get("channel_databases", PluginConfig.DEFAULT_CHANNEL_DATABASES).strip()
             country_codes = [c.strip().upper() for c in country_codes_str.split(',') if c.strip()]
             if not country_codes:
-                return {"status": "error", "message": "No country databases selected. Set 'Channel Databases' first."}
+                return {"status": "error", "error": "No country databases selected. Set 'Channel Databases' first."}
 
-            selected_groups_str = settings.get("selected_groups", "").strip()
-            target_group_ids = None
-            if selected_groups_str:
-                all_groups = self._get_all_groups(logger)
-                group_name_to_id = {g['name']: g['id'] for g in all_groups if 'name' in g and 'id' in g}
-                input_names = {name.strip() for name in selected_groups_str.split(',') if name.strip()}
-                target_group_ids = {group_name_to_id[name] for name in input_names if name in group_name_to_id}
+            try:
+                scope = self._resolve_process_scope(settings, logger)
+            except GroupScopeError as exc:
+                return self._scope_error_return(exc)
 
-            all_channels = self._get_all_channels(logger, group_ids=target_group_ids)
+            all_channels = self._get_all_channels(
+                logger,
+                group_ids=scope.group_ids,
+                include_ungrouped=scope.include_ungrouped,
+            )
             channels_without_logos = [
                 ch for ch in all_channels
                 if ch.get('logo_id') in (None, 0, '0')
@@ -1474,11 +2065,18 @@ class Plugin:
                     country_filelists.append((cc.lower(), country_dir, files))
 
             if not country_filelists:
-                return {"status": "error", "message": "No tv-logos file lists could be fetched. Check network access or repo path."}
+                return {"status": "error", "error": "No tv-logos file lists could be fetched. Check network access or repo path."}
+
+            # Hoisted above the loop: a dry run must create NOTHING, including
+            # the Logo catalog rows the real run creates on a first-time match
+            # (previously created even under Dry Run, orphaning them in the
+            # catalog if the operator then declined the real run).
+            dry_run = settings.get("dry_run_mode", False)
 
             progress = ProgressTracker(len(channels_without_logos), "apply_tv_logos", logger)
             assigned = 0
             no_match = 0
+            would_create = 0
             channel_updates = []
 
             for ch in channels_without_logos:
@@ -1502,6 +2100,12 @@ class Plugin:
 
                 logo = existing_logos_by_url.get(matched_url)
                 if not logo:
+                    if dry_run:
+                        # No Logo.objects.create - a dry run must write nothing.
+                        would_create += 1
+                        assigned += 1
+                        progress.update()
+                        continue
                     try:
                         logo = Logo.objects.create(name=name, url=matched_url)
                         existing_logos_by_url[matched_url] = logo
@@ -1514,17 +2118,26 @@ class Plugin:
                 assigned += 1
                 progress.update()
 
+            if dry_run:
+                summary = (
+                    f"Dry Run: would apply logos to {assigned} channel(s) "
+                    f"({no_match} had no match, {would_create} would need a "
+                    f"new Logo catalog entry). No changes written."
+                )
+                progress.finish(summary=f"{summary} Scope: {scope.info}")
+                return {"status": "success", "message": summary}
+
             if channel_updates:
                 self._bulk_update_channels(channel_updates, ['logo_id'], logger)
                 self._trigger_frontend_refresh(settings, logger)
 
             summary = f"Assigned {assigned} logos, {no_match} channels had no match."
-            progress.finish(summary=summary)
+            progress.finish(summary=f"{summary} Scope: {scope.info}")
             return {"status": "success", "message": f"✓ {summary}"}
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error applying tv-logos: {e}")
-            return {"status": "error", "message": f"Error applying tv-logos: {e}"}
+            return {"status": "error", "error": f"Error applying tv-logos: {e}"}
 
     def category_groups_dry_run_action(self, settings, logger):
         """Export a CSV showing which channels would be moved to which category-based groups."""
@@ -1534,27 +2147,24 @@ class Plugin:
             # Load channel data to get categories
             channels_loaded = self._load_channel_data(settings, logger)
             if not channels_loaded:
-                return {"status": "error", "message": "Channel databases could not be loaded."}
+                return {"status": "error", "error": "Channel databases could not be loaded."}
 
             # Get all groups and channels
             all_groups = self._get_all_groups(logger)
             group_name_to_id = {g['name']: g['id'] for g in all_groups if 'name' in g and 'id' in g}
             group_id_to_name = {g['id']: g['name'] for g in all_groups if 'name' in g and 'id' in g}
 
-            # Filter by category groups if specified
-            category_groups_str = settings.get("category_groups", "").strip()
-            if category_groups_str:
-                input_names = {name.strip() for name in category_groups_str.split(',') if name.strip()}
-                valid_names = {n for n in input_names if n in group_name_to_id}
-                target_group_ids = {group_name_to_id[name] for name in valid_names}
+            # Resolve the group scope (include filter minus ignore_groups)
+            try:
+                scope = self._resolve_category_scope(settings, logger)
+            except GroupScopeError as exc:
+                return self._scope_error_return(exc)
 
-                if not target_group_ids:
-                    return {"status": "error", "message": f"None of the specified category groups could be found."}
-            else:
-                target_group_ids = set(group_name_to_id.values())
-
-            # Get all channels and filter by group
-            all_channels = self._get_all_channels(logger, group_ids=target_group_ids)
+            all_channels = self._get_all_channels(
+                logger,
+                group_ids=scope.group_ids,
+                include_ungrouped=scope.include_ungrouped,
+            )
             channels_to_process = all_channels
 
             # Build category mapping from channel databases
@@ -1604,6 +2214,10 @@ class Plugin:
 
             # Process channels and determine moves
             moves = []
+            ignored_targets = set()
+            # Parsed once, not per-channel: is_ignored_name_tokens skips the
+            # re-parse is_ignored_name would otherwise do on every iteration.
+            ignore_tokens = parse_tokens(settings.get("ignore_groups") or "")
             for channel in channels_to_process:
                 channel_name = channel.get('name', '')
                 channel_id = channel.get('id')
@@ -1653,6 +2267,12 @@ class Plugin:
                 if category:
                     new_group_name = category
 
+                    # The exclusion also forbids writing INTO a group - the
+                    # preview must match what the real run would refuse to do.
+                    if is_ignored_name_tokens(new_group_name, ignore_tokens):
+                        ignored_targets.add(new_group_name)
+                        continue
+
                     # Check if group exists
                     group_exists = new_group_name in group_name_to_id
 
@@ -1670,7 +2290,13 @@ class Plugin:
                         })
 
             if not moves:
-                return {"status": "success", "message": "No channels need to be moved to category-based groups."}
+                message = "No channels need to be moved to category-based groups."
+                if ignored_targets:
+                    message += (
+                        f" Skipped {len(ignored_targets)} ignored target group(s): "
+                        f"{_format_capped_name_list(sorted(ignored_targets))}."
+                    )
+                return {"status": "success", "message": message}
 
             # Create export directory
             export_dir = PluginConfig.EXPORT_DIR
@@ -1681,25 +2307,47 @@ class Plugin:
             csv_filename = f"channel_mapparr_category_groups_preview_{timestamp}.csv"
             csv_path = os.path.join(export_dir, csv_filename)
 
-            with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
-                # Write settings header as comments
-                csvfile.write(self._generate_csv_settings_header(settings))
+            # Written atomically (temporary file, then rename) like the other two
+            # CSV writers. A plain open() leaves a TRUNCATED file at the final
+            # path if the write fails part way, with no temporary file to clean
+            # up, and that truncated file is the one an operator would later
+            # believe is complete. It also means there is no single moment at
+            # which the export is confirmed written, which is what the emailed
+            # report below waits for.
+            tmp_path = None
+            try:
+                with tempfile.NamedTemporaryFile(mode='w', newline='', encoding='utf-8',
+                                                 dir=export_dir, suffix='.csv',
+                                                 delete=False) as csvfile:
+                    tmp_path = csvfile.name
+                    # Write settings header as comments
+                    csvfile.write(self._generate_csv_settings_header(settings))
+                    # `scope` is already resolved above in this same function, so
+                    # this is not a re-parse: record what the ignore/include
+                    # filters actually MATCHED, not just the raw setting text
+                    # already echoed by the header above.
+                    csvfile.write(f"# Ignore resolved to: {scope.info}\n")
 
-                fieldnames = ['Channel ID', 'Channel Name', 'Current Group', 'New Group', 'Category', 'Match Type', 'Match Value', 'Group Exists']
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                    fieldnames = ['Channel ID', 'Channel Name', 'Current Group', 'New Group', 'Category', 'Match Type', 'Match Value', 'Group Exists']
+                    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-                writer.writeheader()
-                for move in moves:
-                    writer.writerow({
-                        'Channel ID': move['channel_id'],
-                        'Channel Name': move['channel_name'],
-                        'Current Group': move['current_group'],
-                        'New Group': move['new_group'],
-                        'Category': move['category'],
-                        'Match Type': move['match_type'],
-                        'Match Value': move['match_value'],
-                        'Group Exists': move['group_exists']
-                    })
+                    writer.writeheader()
+                    for move in moves:
+                        writer.writerow({
+                            'Channel ID': move['channel_id'],
+                            'Channel Name': move['channel_name'],
+                            'Current Group': move['current_group'],
+                            'New Group': move['new_group'],
+                            'Category': move['category'],
+                            'Match Type': move['match_type'],
+                            'Match Value': move['match_value'],
+                            'Group Exists': move['group_exists']
+                        })
+                os.replace(tmp_path, csv_path)
+            except Exception:
+                if tmp_path and os.path.exists(tmp_path):
+                    os.unlink(tmp_path)
+                raise
 
             logger.info(f"{PLUGIN_LOG_PREFIX} Category groups preview CSV exported to {csv_path}")
 
@@ -1710,14 +2358,36 @@ class Plugin:
             broadcast_count = sum(1 for m in moves if 'Broadcast' in m['match_type'])
             premium_count = sum(1 for m in moves if 'Premium' in m['match_type'])
 
-            return {
-                "status": "success",
-                "message": f"✓ Preview exported to: {csv_filename}\n\n{len(moves)} channels will be moved ({broadcast_count} broadcast, {premium_count} premium).\n{new_groups_needed} new groups will be created."
-            }
+            message = (
+                f"✓ Preview exported to: {csv_filename}\n\n{len(moves)} channels will "
+                f"be moved ({broadcast_count} broadcast, {premium_count} premium).\n"
+                f"{new_groups_needed} new groups will be created."
+            )
+            if ignored_targets:
+                message += (
+                    f"\nSkipped {len(ignored_targets)} ignored target group(s): "
+                    f"{_format_capped_name_list(sorted(ignored_targets))}."
+                )
+
+            # The export is confirmed on disk above. Only the Dry Run branch of
+            # Organize by Category produces an export at all, so only this branch
+            # can report; a real run has no rows to report on.
+            outcome = self._build_and_emit_report(
+                settings, logger,
+                title="Category organization preview",
+                columns=self._CATEGORY_REPORT_COLUMNS,
+                rows=moves,
+                export_filename=csv_filename)
+            message += self._report_outcome_clause(outcome)
+
+            result = {"status": "success", "message": message}
+            if outcome["blocking_error"]:
+                result["error"] = outcome["blocking_error"]
+            return result
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error generating category groups preview: {e}")
-            return {"status": "error", "message": f"Error generating category groups preview: {e}"}
+            return {"status": "error", "error": f"Error generating category groups preview: {e}"}
 
     def organize_by_category_action(self, settings, logger):
         """Create groups based on category names and move matching channels to those groups."""
@@ -1734,27 +2404,24 @@ class Plugin:
             # Load channel data to get categories
             channels_loaded = self._load_channel_data(settings, logger)
             if not channels_loaded:
-                return {"status": "error", "message": "Channel databases could not be loaded."}
+                return {"status": "error", "error": "Channel databases could not be loaded."}
 
             # Get all groups and channels
             all_groups = self._get_all_groups(logger)
             group_name_to_id = {g['name']: g['id'] for g in all_groups if 'name' in g and 'id' in g}
             group_id_to_name = {g['id']: g['name'] for g in all_groups if 'name' in g and 'id' in g}
 
-            # Filter by category groups if specified
-            category_groups_str = settings.get("category_groups", "").strip()
-            if category_groups_str:
-                input_names = {name.strip() for name in category_groups_str.split(',') if name.strip()}
-                valid_names = {n for n in input_names if n in group_name_to_id}
-                target_group_ids = {group_name_to_id[name] for name in valid_names}
+            # Resolve the group scope (include filter minus ignore_groups)
+            try:
+                scope = self._resolve_category_scope(settings, logger)
+            except GroupScopeError as exc:
+                return self._scope_error_return(exc)
 
-                if not target_group_ids:
-                    return {"status": "error", "message": f"None of the specified category groups could be found."}
-            else:
-                target_group_ids = set(group_name_to_id.values())
-
-            # Get all channels and filter by group
-            all_channels = self._get_all_channels(logger, group_ids=target_group_ids)
+            all_channels = self._get_all_channels(
+                logger,
+                group_ids=scope.group_ids,
+                include_ungrouped=scope.include_ungrouped,
+            )
             channels_to_process = all_channels
 
             # Build category mapping from channel databases
@@ -1805,6 +2472,10 @@ class Plugin:
             # Process channels and determine moves
             moves = []
             groups_needed = set()
+            ignored_targets = set()
+            # Parsed once, not per-channel: is_ignored_name_tokens skips the
+            # re-parse is_ignored_name would otherwise do on every iteration.
+            ignore_tokens = parse_tokens(settings.get("ignore_groups") or "")
 
             for channel in channels_to_process:
                 channel_name = channel.get('name', '')
@@ -1847,6 +2518,12 @@ class Plugin:
                 if category:
                     new_group_name = category
 
+                    # The exclusion also forbids writing INTO a group - never
+                    # create or adopt a target the operator declared untouchable.
+                    if is_ignored_name_tokens(new_group_name, ignore_tokens):
+                        ignored_targets.add(new_group_name)
+                        continue
+
                     # Track groups that need to be created
                     if new_group_name not in group_name_to_id:
                         groups_needed.add(new_group_name)
@@ -1860,7 +2537,13 @@ class Plugin:
                         })
 
             if not moves:
-                return {"status": "success", "message": "No channels need to be moved to category-based groups."}
+                message = "No channels need to be moved to category-based groups."
+                if ignored_targets:
+                    message += (
+                        f" Skipped {len(ignored_targets)} ignored target group(s): "
+                        f"{_format_capped_name_list(sorted(ignored_targets))}."
+                    )
+                return {"status": "success", "message": message}
 
             # Create new groups if needed using ORM
             created_groups = []
@@ -1884,7 +2567,7 @@ class Plugin:
                     })
 
             if not updates:
-                return {"status": "error", "message": "Failed to create necessary groups. Please check logs."}
+                return {"status": "error", "error": "Failed to create necessary groups. Please check logs."}
 
             # Apply the moves using ORM
             logger.info(f"{PLUGIN_LOG_PREFIX} Moving {len(updates)} channels to category-based groups...")
@@ -1902,11 +2585,17 @@ class Plugin:
             if len(moves) > 5:
                 message_parts.append(f"...and {len(moves) - 5} more.")
 
+            if ignored_targets:
+                message_parts.append(
+                    f"\nSkipped {len(ignored_targets)} ignored target group(s): "
+                    f"{_format_capped_name_list(sorted(ignored_targets))}."
+                )
+
             return {"status": "success", "message": "\n".join(message_parts)}
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error organizing channels by category: {e}")
-            return {"status": "error", "message": f"Error organizing channels by category: {e}"}
+            return {"status": "error", "error": f"Error organizing channels by category: {e}"}
 
     # ========================================
     # M3U STREAM IMPORT METHODS
@@ -2237,6 +2926,21 @@ class Plugin:
 
         return matched_by_category, unmatched_streams
 
+    @staticmethod
+    def _check_group_destinations_not_ignored(names, ignore_value):
+        """Refuse rather than create or adopt a group the operator declared untouchable.
+
+        The scope filters channels out of a scan; this is the other direction -
+        import must not write INTO a group listed in 'Channel Groups to Ignore'.
+        """
+        blocked = sorted({name for name in names if is_ignored_name(name, ignore_value)})
+        if blocked:
+            raise GroupScopeError(
+                f"Import would create or write into group(s) listed in 'Channel "
+                f"Groups to Ignore': {_format_capped_name_list(blocked)}. Change "
+                f"the import target or remove them from the ignore list."
+            )
+
     def _ensure_category_groups_exist(self, categories, settings, logger):
         """
         Ensure all category-based channel groups exist in Dispatcharr.
@@ -2248,7 +2952,14 @@ class Plugin:
             dict: Mapping of category name to group ID
         """
         # Check if custom group name is specified
-        custom_group_name = settings.get("m3u_custom_group_name", "").strip()
+        custom_group_name = (settings.get("m3u_custom_group_name") or "").strip()
+
+        # The exclusion also forbids writing INTO a group. Refuse rather than
+        # create or adopt a group the operator declared untouchable.
+        self._check_group_destinations_not_ignored(
+            [custom_group_name] if custom_group_name else list(categories),
+            settings.get("ignore_groups"),
+        )
 
         # Fetch existing groups
         existing_groups = self._get_all_groups(logger)
@@ -2603,7 +3314,7 @@ class Plugin:
             streams = self._fetch_streams_from_m3u_sources(settings, logger)
 
             if not streams:
-                return {"status": "error", "message": "No streams found in specified M3U sources"}
+                return {"status": "error", "error": "No streams found in specified M3U sources"}
 
             # Step 2: Match streams to categories
             matched_by_category, unmatched_streams = self._match_streams_to_categories(
@@ -2613,11 +3324,22 @@ class Plugin:
             if not matched_by_category:
                 return {
                     "status": "error",
-                    "message": f"No streams matched to channel databases. {len(unmatched_streams)} unmatched streams."
+                    "error": f"No streams matched to channel databases. {len(unmatched_streams)} unmatched streams."
                 }
 
             # Step 3: Check which category groups exist
             categories = list(matched_by_category.keys())
+
+            # The preview must match what the real run would refuse to do.
+            custom_group_name = (settings.get("m3u_custom_group_name") or "").strip()
+            try:
+                self._check_group_destinations_not_ignored(
+                    [custom_group_name] if custom_group_name else categories,
+                    settings.get("ignore_groups"),
+                )
+            except GroupScopeError as exc:
+                return self._scope_error_return(exc)
+
             existing_groups = self._get_all_groups(logger)
             existing_group_names = {group['name'] for group in existing_groups}
 
@@ -2652,7 +3374,7 @@ class Plugin:
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} M3U import dry run failed: {e}")
-            return {"status": "error", "message": f"Dry run failed: {str(e)}"}
+            return {"status": "error", "error": f"Dry run failed: {str(e)}"}
 
     def _do_import_m3u_streams(self, settings, logger):
         """Core M3U import logic."""
@@ -2662,7 +3384,7 @@ class Plugin:
         streams = self._fetch_streams_from_m3u_sources(settings, logger)
 
         if not streams:
-            return {"status": "error", "message": "No streams found in specified M3U sources"}
+            return {"status": "error", "error": "No streams found in specified M3U sources"}
 
         # Step 2: Match streams to categories
         matched_by_category, unmatched_streams = self._match_streams_to_categories(
@@ -2672,7 +3394,7 @@ class Plugin:
         if not matched_by_category:
             return {
                 "status": "error",
-                "message": f"No streams matched to channel databases. {len(unmatched_streams)} unmatched streams."
+                "error": f"No streams matched to channel databases. {len(unmatched_streams)} unmatched streams."
             }
 
         # Step 3: Ensure category groups exist
@@ -2709,29 +3431,43 @@ class Plugin:
         total_success = sum(1 for imp in import_results['imports'] if imp['status'] == 'success')
         total_failed = sum(1 for imp in import_results['imports'] if imp['status'] == 'failed')
 
-        return {
-            "status": "success",
-            "message": f"✓ M3U import complete!\n\n"
-                      f"Channels created: {total_success}\n"
-                      f"Failed: {total_failed}\n"
-                      f"Unmatched streams skipped: {len(unmatched_streams)}\n"
-                      f"Categories: {len(categories)}\n\n"
-                      f"Results exported to: {csv_filename}"
-        }
+        message = (f"✓ M3U import complete!\n\n"
+                   f"Channels created: {total_success}\n"
+                   f"Failed: {total_failed}\n"
+                   f"Unmatched streams skipped: {len(unmatched_streams)}\n"
+                   f"Categories: {len(categories)}\n\n"
+                   f"Results exported to: {csv_filename}")
+
+        # Only the COMPLETED import reports, not the dry run, so one import
+        # produces one report rather than two. The title says results, because
+        # _export_m3u_import_preview hardcodes the word preview into the export
+        # filename and header for both of its callers.
+        outcome = self._build_and_emit_report(
+            settings, logger,
+            title="M3U import results",
+            columns=self._M3U_REPORT_COLUMNS,
+            rows=self._m3u_report_rows(matched_by_category, unmatched_streams),
+            export_filename=csv_filename)
+        message += self._report_outcome_clause(outcome)
+
+        result = {"status": "success", "message": message}
+        if outcome["blocking_error"]:
+            result["error"] = outcome["blocking_error"]
+        return result
 
     def _do_import_m3u_streams_bg(self, settings, logger):
         """Background wrapper for M3U import."""
         try:
             result = self._do_import_m3u_streams(settings, logger)
             self._last_bg_result = result
-            msg = result.get("message", "Import complete.")
+            msg = result.get("message") or result.get("error", "Import complete.")
             logger.info(f"{PLUGIN_LOG_PREFIX} IMPORT COMPLETED: {msg}")
             send_websocket_update('updates', 'update', {
                 "type": "plugin", "plugin": self.name,
                 "message": msg
             })
         except Exception as e:
-            self._last_bg_result = {"status": "error", "message": str(e)}
+            self._last_bg_result = {"status": "error", "error": str(e)}
             logger.exception(f"{PLUGIN_LOG_PREFIX} Import error: {e}")
             send_websocket_update('updates', 'update', {
                 "type": "plugin", "plugin": self.name,
@@ -2744,8 +3480,19 @@ class Plugin:
         if dry_run:
             return self.import_m3u_streams_dry_run_action(settings, logger)
 
+        # The real import runs in a background thread whose result the card
+        # never shows, so the destination must be validated BEFORE
+        # backgrounding or a refusal would be silently swallowed.
+        custom_group_name = (settings.get("m3u_custom_group_name") or "").strip()
+        if custom_group_name:
+            try:
+                self._check_group_destinations_not_ignored(
+                    [custom_group_name], settings.get("ignore_groups"))
+            except GroupScopeError as exc:
+                return self._scope_error_return(exc)
+
         if not self._try_start_thread(self._do_import_m3u_streams_bg, (copy.deepcopy(settings), logger)):
-            return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
+            return {"status": "error", "error": "An operation is already running. Please wait for it to finish."}
 
         return {
             "status": "ok",
@@ -2794,6 +3541,89 @@ class Plugin:
                     validation_results.append(f"❌ DB error")
                     error_count += 1
 
+            # 2b. Group scope (ignore_groups exclusion) - the first group
+            # validation in this action. Kept to one capped line per branch so
+            # a wildcard exclusion matching many groups cannot blow the ~280
+            # char toast budget.
+            #
+            # ignore_dupe_error is set only when 2b's failure comes from the
+            # ignore filter ITSELF (an unmatched token, or no groups exist at
+            # all) - those two GroupScopeError messages don't mention
+            # include_label, so _resolve_category_scope below would raise the
+            # BYTE-IDENTICAL text and double-print/double-count one
+            # misconfigured setting as "2 error(s)". The "excluded every
+            # group that '<include_label>' selected" message DOES depend on
+            # include_label (process vs category can differ), so that one is
+            # deliberately NOT deduped here.
+            ignore_dupe_error = None
+            ignore_summary = None
+            try:
+                scope = self._resolve_process_scope(settings, logger)
+                # Report only the names that actually removed something from
+                # this run, never the raw ignored_names count - it is a
+                # SUPERSET of out_of_scope_names, so a wildcard matching
+                # nothing but already-out-of-scope groups would otherwise
+                # print the same name list twice in one message.
+                out_of_scope = set(scope.out_of_scope_names)
+                effective = [n for n in scope.ignored_names if n not in out_of_scope]
+                if effective:
+                    # Also folded into the SUCCESS toast by the assembly below.
+                    # Confirming what the exclusion actually resolved to is the
+                    # reason it is surfaced here at all, and a clean run would
+                    # otherwise report nothing but "OK".
+                    ignore_summary = (f"Ignoring {len(effective)} group(s): "
+                                      f"{_format_capped_name_list(effective)}")
+                    validation_results.append(f"✅ Ignore: {ignore_summary}")
+                if scope.out_of_scope_names:
+                    # ONE warning for the whole condition, not one per name -
+                    # this is benign (an ignore entry that already had no
+                    # effect), and counting per-name made a healthy config
+                    # read as "Validation completed with 10 warning(s)".
+                    warning_count += 1
+                    # No name list here: the names are already logged by
+                    # _resolve_group_scope, and a capped list on top of the
+                    # `effective` line above (which already fired) was the
+                    # single offender that pushed a real operator's message
+                    # over Dispatcharr's ~280 char clip.
+                    validation_results.append(
+                        f"⚠️ Ignore: {len(scope.out_of_scope_names)} "
+                        f"name{'' if len(scope.out_of_scope_names) == 1 else 's'} "
+                        f"had no effect (already outside the selected scope)")
+            except GroupScopeError as exc:
+                # The same exception covers an unresolvable INCLUDE filter
+                # (e.g. a typo'd selected_groups) as well as an unresolvable
+                # ignore filter, and every other consumer of this exception
+                # surfaces its raw wording with no prefix - the message
+                # already names the setting it came from (e.g. "'Channel
+                # Groups to Process'"), so prepending "Ignore:" would
+                # mislabel an include-filter typo as an ignore problem.
+                validation_results.append(f"❌ {exc}")
+                error_count += 1
+                exc_text = str(exc)
+                if ("Channel Groups to Ignore" in exc_text
+                        and "excluded every group" not in exc_text):
+                    ignore_dupe_error = exc_text
+
+            # 2c. Category scope (category_groups) - without this, a
+            # category_groups typo, or an exclusion that empties the category
+            # scope, validated GREEN here and only failed RED on Organize by
+            # Category. Only resolved when the setting is non-blank, so the
+            # common case (no category filter configured) costs nothing;
+            # when configured it costs exactly one line either way, to stay
+            # inside the ~260-char regression budget alongside 2b. Skipped
+            # entirely when 2b already reported the identical ignore-filter
+            # failure (see ignore_dupe_error above) - re-resolving would just
+            # print the same complaint twice and report "2 error(s)" for one
+            # broken setting.
+            category_groups_str = (settings.get("category_groups") or "").strip()
+            if category_groups_str and ignore_dupe_error is None:
+                try:
+                    self._resolve_category_scope(settings, logger)
+                    validation_results.append("✅ Category: OK")
+                except GroupScopeError as exc:
+                    validation_results.append(f"❌ {exc}")
+                    error_count += 1
+
             # 3. M3U filters (only show count if configured)
             m3u_info = []
 
@@ -2819,25 +3649,70 @@ class Plugin:
             if dry_run:
                 validation_results.append("ℹ️ Dry Run: ON")
 
-            # Generate summary
-            if error_count == 0 and warning_count == 0:
-                validation_results.insert(0, "✅ All settings validated successfully!")
-                status = "success"
-            elif error_count == 0:
-                validation_results.insert(0, f"⚠️ Validation completed with {warning_count} warning(s)")
-                status = "success"
-            else:
-                validation_results.insert(0, f"❌ Validation failed: {error_count} error(s), {warning_count} warning(s)")
-                status = "error"
+            # 5. Emailed reports. Reported ONLY when something is wrong, which
+            # matches the errors-and-warnings-only contract of this action. Every
+            # line here MUST start with a recognised glyph: a line starting with
+            # anything else is dropped from the operator-facing output AND trips
+            # the bookkeeping-drift warning below on every single run.
+            bridge = self._notify_bridge()
+            for problem in bridge.unknown_setting_values(settings):
+                validation_results.append(f"{_VALIDATION_WARNING_GLYPH} {problem}")
+                warning_count += 1
+            if bridge.is_enabled(settings):
+                for problem in self._newsflasharr_readiness():
+                    validation_results.append(
+                        f"{_VALIDATION_WARNING_GLYPH} Emailed reports: {problem}")
+                    warning_count += 1
+                if self._get_m3u_account_names(logger) is None:
+                    validation_results.append(
+                        f"{_VALIDATION_WARNING_GLYPH} Emailed reports: the M3U "
+                        "account name lookup is failing, so no report will be "
+                        "built. Those names are what is removed from a report "
+                        "before it is emailed.")
+                    warning_count += 1
 
-            validation_results.insert(1, "")
+            # Report ONLY what the operator has to act on.
+            #
+            # Dispatcharr renders `error` persistently at the bottom of the
+            # plugin card and `message` as a transient toast. Returning the
+            # whole readout in `error` therefore parked a wall of mostly-OK
+            # lines under the settings form on every failure. So: a failure
+            # returns the failing lines and nothing else, and a clean run says
+            # so in a toast and leaves nothing behind.
+            #
+            # Severity is read from the glyph each line is built with, which is
+            # the contract for every append above. `_VALIDATION_ERROR_GLYPH`
+            # and `_VALIDATION_WARNING_GLYPH` name it so a new line cannot
+            # quietly opt out, and the assertion below fails loudly if a
+            # counter was incremented without a matching line (or vice versa).
+            errors = [ln for ln in validation_results
+                      if ln.startswith(_VALIDATION_ERROR_GLYPH)]
+            warnings = [ln for ln in validation_results
+                        if ln.startswith(_VALIDATION_WARNING_GLYPH)]
 
-            message = "\n".join(validation_results)
+            if len(errors) != error_count or len(warnings) != warning_count:
+                logger.warning(
+                    f"{PLUGIN_LOG_PREFIX} validate_settings bookkeeping drift: "
+                    f"{error_count} error_count vs {len(errors)} error line(s), "
+                    f"{warning_count} warning_count vs {len(warnings)} warning line(s)"
+                )
 
-            return {
-                "status": status,
-                "message": message
-            }
+            if errors:
+                header = (f"Validation failed, {len(errors)} error(s)"
+                          + (f" and {len(warnings)} warning(s)" if warnings else "")
+                          + ":")
+                return {"status": "error",
+                        "error": "\n".join([header] + errors + warnings)}
+
+            suffix = f" {ignore_summary}." if ignore_summary else ""
+
+            if warnings:
+                return {"status": "success",
+                        "message": f"✅ Settings OK.{suffix}\n"
+                                   f"{len(warnings)} warning(s):\n" + "\n".join(warnings)}
+
+            return {"status": "success",
+                    "message": f"✅ All settings validated successfully.{suffix}"}
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error during settings validation: {e}")
@@ -2845,7 +3720,7 @@ class Plugin:
             traceback.print_exc()
             return {
                 "status": "error",
-                "message": f"Validation error: {e}\n\nSee logs for details."
+                "error": f"Validation error: {e}\n\nSee logs for details."
             }
 
     def plugin_status_action(self, settings, logger):
@@ -2891,4 +3766,4 @@ class Plugin:
 
         except Exception as e:
             logger.error(f"{PLUGIN_LOG_PREFIX} Error clearing CSV exports: {e}")
-            return {"status": "error", "message": f"Error clearing CSV exports: {e}"}
+            return {"status": "error", "error": f"Error clearing CSV exports: {e}"}
