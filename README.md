@@ -249,11 +249,11 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
 ### [Newsflasharr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/newsflasharr/README.md)
 
-**Version:** `1.26.2142011` | **Author:** PiratesIRC | **Last Updated:** Aug 02 2026, 20:37 UTC
+**Version:** `1.26.2142011` | **Author:** PiratesIRC | **Last Updated:** Aug 02 2026, 20:54 UTC
 
 Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1340492560220684331/1533575430400114730) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin)
 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
@@ -261,7 +261,7 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 - [Latest Release (`1.26.2142011`)](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2142011/newsflasharr-1.26.2142011.zip)
 - [All Versions (1 available)](./metadata/newsflasharr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/newsflasharr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/newsflasharr/README.md) | **Last Change:** [`b8a8998`](https://github.com/Dispatcharr/Plugins/commit/b8a8998fd68c1f4ca9491576c11658ead84ed633)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/newsflasharr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/newsflasharr/README.md) | **Last Change:** [`bbc25fa`](https://github.com/Dispatcharr/Plugins/commit/bbc25fadeb9b4cf97279b9edf5133a5db7518725)
 
 ---
 
@@ -447,4 +447,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Aug 02 2026, 20:47 UTC*
+*Last updated: Aug 02 2026, 20:54 UTC*

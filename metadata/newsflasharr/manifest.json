@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:37:59Z",
+  "generated_at": "2026-08-02T20:54:35Z",
   "manifest": {
     "slug": "newsflasharr",
     "name": "Newsflasharr",
@@ -9,6 +9,7 @@
     "source_type": "external",
     "source_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/releases/download/{version}/Newsflasharr.zip",
     "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin",
+    "discord_thread": "https://discord.com/channels/1340492560220684331/1533575430400114730",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-08-02T16:37:32-04:00",
@@ -42,5 +43,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCam+qqgAKCRB+wDprTCI0\nzqO1AQCFUwWqewVfPivPdYfETP+dT5XTIwBpP5NcOZoD1ha6OwEAg9/KyvgmE4y+\nkQRxyZuXBS5hL2civ4EkPHXHax89QAI=\n=NZiW\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCam+ujgAKCRB+wDprTCI0\nzkCcAP99tMLutDdCOxAOJpkImrJEyWE5G/kyUuhlHesRJKXdRwEAmkp6FMdmSdGf\nle8nuDHKQtLIQe0R9kmWR2WERXHq4wM=\n=mYJq\n-----END PGP SIGNATURE-----"
 }
