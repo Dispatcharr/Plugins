@@ -7,6 +7,7 @@
   "source_type": "external",
   "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin",
   "help_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/issues",
+  "discord_thread": "https://discord.com/channels/1340492560220684331/1533575430400114730",
   "min_dispatcharr_version": "v0.20.0",
   "source_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/releases/download/{version}/Newsflasharr.zip"
 }
