@@ -202,6 +202,12 @@ class Tls(object):
                                                  cafile=self.ca_certs_file,
                                                  capath=self.ca_certs_path,
                                                  cadata=self.ca_certs_data)
+            # CodeQL's py/insecure-protocol models create_default_context()
+            # as not guaranteed to exclude TLSv1/TLSv1.1 on its own - set an
+            # explicit floor on the returned context too, not just on the
+            # now-removed custom-version branch.
+            if hasattr(ssl_context, "minimum_version") and hasattr(ssl, "TLSVersion"):
+                ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
 
             if self.certificate_file:
                 ssl_context.load_cert_chain(self.certificate_file, keyfile=self.private_key_file, password=self.private_key_password)
