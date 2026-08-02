@@ -123,6 +123,7 @@ jobs:
           has_label "Repo Update" && { echo "::notice::Has 'Repo Update' label - skipping."; OK=false; }
           has_label "Invalid" && { echo "::notice::Has 'Invalid' label - skipping."; OK=false; }
           has_label "QUARANTINE" && { echo "::notice::Has 'QUARANTINE' label - skipping."; OK=false; }
+          has_label "CodeQL Suppression Used" && { echo "::notice::PR uses a CodeQL suppression comment - skipping auto-merge, requires maintainer review."; OK=false; }
           [[ "$MERGEABLE" == "MERGEABLE" ]] || { echo "::notice::PR not cleanly mergeable (mergeable=$MERGEABLE) - skipping."; OK=false; }
 
           echo "ok=$OK" >> "$GITHUB_OUTPUT"
