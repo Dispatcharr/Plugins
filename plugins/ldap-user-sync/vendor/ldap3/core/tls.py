@@ -54,6 +54,18 @@ except ImportError:
 
 from os import path
 
+# LDAP User Sync plugin patch: block insecure protocol versions outright
+# rather than relying on ssl.SSLContext(self.version) to make them safe
+# after the fact - some of these constants pin the context to that single
+# legacy protocol, which a later minimum_version assignment can't undo.
+# Checked defensively since several of these names no longer exist on
+# newer Python (they were removed from the ssl module entirely).
+_INSECURE_TLS_PROTOCOL_VALUES = {
+    getattr(ssl, name)
+    for name in ('PROTOCOL_SSLv2', 'PROTOCOL_SSLv3', 'PROTOCOL_TLSv1', 'PROTOCOL_TLSv1_1', 'PROTOCOL_SSLv23')
+    if hasattr(ssl, name)
+}
+
 
 # noinspection PyProtectedMember
 class Tls(object):
@@ -129,6 +141,10 @@ class Tls(object):
         else:
             self.private_key_password = None
 
+        if version is not None and version in _INSECURE_TLS_PROTOCOL_VALUES:
+            if log_enabled(ERROR):
+                log(ERROR, 'insecure TLS/SSL protocol version requested')
+            raise LDAPSSLConfigurationError('insecure TLS/SSL protocol version requested; use TLS 1.2 or newer')
         self.version = version
         self.private_key_file = local_private_key_file
         self.certificate_file = local_certificate_file
