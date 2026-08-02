@@ -225,6 +225,7 @@ fi
     if [[ -n "${CODEQL_RESULT:-}" && "${CODEQL_RESULT:-}" != "skipped" && "${CODEQL_RESULT:-}" != "success" ]] || \
        [[ -n "${CODEQL_MEDIUMS:-}" && "${CODEQL_MEDIUMS}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]] || \
        [[ -n "${CODEQL_LOWS:-}" && "${CODEQL_LOWS}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]] || \
+       [[ -n "${CODEQL_SUPPRESSED:-}" && "${CODEQL_SUPPRESSED}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]] || \
        [[ "${CODEQL_RESULT:-}" == "skipped" && -n "${CODEQL_UNSCANNED_LANGS:-}" ]] || \
        [[ "${CODEQL_RESULT:-}" != "skipped" && -n "${CODEQL_RESULT:-}" && -n "${CODEQL_UNSCANNED_LANGS:-}" ]] || \
        [[ "${CLAMAV_RESULT:-}" == "failure" ]]; then
@@ -278,6 +279,15 @@ fi
       fi
       echo ""
       echo "</details>"
+    fi
+
+    if [[ -n "${CODEQL_SUPPRESSED:-}" && "${CODEQL_SUPPRESSED:-}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]]; then
+      echo ""
+      echo "**${CODEQL_SUPPRESSED} finding(s) suppressed via inline \`codeql[...]\` comment** - requires maintainer review before merging; auto-merge is blocked for this PR."
+      echo ""
+      if [[ -f "codeql-suppressed-findings/codeql-suppressed-findings.md" ]]; then
+        cat "codeql-suppressed-findings/codeql-suppressed-findings.md"
+      fi
     fi
 
     # CodeQL skipped notice (when no scannable files exist but unscannable types were found)

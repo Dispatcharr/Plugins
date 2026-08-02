@@ -416,6 +416,7 @@ jobs:
       codeql_warnings: ${{ steps.status.outputs.codeql_warnings }}
       codeql_mediums: ${{ steps.status.outputs.codeql_mediums }}
       codeql_lows: ${{ steps.status.outputs.codeql_lows }}
+      codeql_suppressed: ${{ steps.status.outputs.codeql_suppressed }}
       codeql_unscanned_langs: ${{ steps.status.outputs.codeql_unscanned_langs }}
     steps:
       - name: Checkout PR merge commit for analysis
@@ -555,6 +556,9 @@ jobs:
         run: |
           # Only block on security findings with CVSS score >= 7.0 (HIGH or CRITICAL).
           # CodeQL stores this in rule properties["security-severity"], not in result.level.
+          # A result with a non-empty .suppressions array was recognized by CodeQL's own
+          # engine as validly suppressed (e.g. a correctly-placed inline `codeql[...]`
+          # comment) - trust that signal and never let it count as blocking/medium/low.
           JQ_BLOCKING='
             [ .runs[] |
               . as $run |
@@ -564,6 +568,7 @@ jobs:
                 | from_entries
               ) as $secmap |
               ($run.results // [])[] |
+              select((.suppressions // []) | length == 0) |
               ((.ruleId // .rule.id // "") | tostring) as $rid |
               select((($secmap[$rid] // "0") | tonumber) >= 7.0)
             ] | length'
@@ -576,6 +581,7 @@ jobs:
                 | from_entries
               ) as $secmap |
               ($run.results // [])[] |
+              select((.suppressions // []) | length == 0) |
               ((.ruleId // .rule.id // "") | tostring) as $rid |
               (($secmap[$rid] // "0") | tonumber) as $sev |
               select($sev >= 6.0 and $sev < 7.0)
@@ -589,13 +595,17 @@ jobs:
                 | from_entries
               ) as $secmap |
               ($run.results // [])[] |
+              select((.suppressions // []) | length == 0) |
               ((.ruleId // .rule.id // "") | tostring) as $rid |
               (($secmap[$rid] // "0") | tonumber) as $sev |
               select($sev < 6.0)
             ] | length'
+          JQ_SUPPRESSED='
+            [ .runs[] | (.results // [])[] | select((.suppressions // []) | length > 0) ] | length'
           RESULT_COUNT=0
           MEDIUM_COUNT=0
           LOW_COUNT=0
+          SUPPRESSED_COUNT=0
           TOTAL_COUNT=0
           if [[ -d "sarif-results" ]]; then
             for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
@@ -608,28 +618,32 @@ jobs:
               COUNT=$(echo "$CONTENT" | jq "$JQ_BLOCKING")
               MED=$(echo "$CONTENT" | jq "$JQ_MEDIUM")
               LOW=$(echo "$CONTENT" | jq "$JQ_LOW")
+              SUPPRESSED=$(echo "$CONTENT" | jq "$JQ_SUPPRESSED")
               TOT=$(echo "$CONTENT" | jq '[.runs[] | (.results // [])[]] | length')
-              echo "File $f: ${COUNT:-0} blocking, ${MED:-0} medium, ${LOW:-0} low, $TOT total"
+              echo "File $f: ${COUNT:-0} blocking, ${MED:-0} medium, ${LOW:-0} low, ${SUPPRESSED:-0} suppressed, $TOT total"
               echo "$CONTENT" | jq -r \
                 '[ .runs[] | . as $run |
                    ([ (($run.tool.driver.rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}),
                       ((($run.tool.extensions // [])[].rules // [])[] | {key: (.id // ""), value: ((.properties["security-severity"] // "0") | tostring)}) ] | from_entries) as $secmap |
                    ($run.results // [])[] |
+                   select((.suppressions // []) | length == 0) |
                    ((.ruleId // .rule.id // "") | tostring) as $rid |
                    select((($secmap[$rid] // "0") | tonumber) >= 7.0) |
                    "  [blocking] \($rid) sec-sev=\($secmap[$rid] // "n/a")" ] | .[]' || true
               RESULT_COUNT=$((RESULT_COUNT + ${COUNT:-0}))
               MEDIUM_COUNT=$((MEDIUM_COUNT + ${MED:-0}))
               LOW_COUNT=$((LOW_COUNT + ${LOW:-0}))
+              SUPPRESSED_COUNT=$((SUPPRESSED_COUNT + ${SUPPRESSED:-0}))
               TOTAL_COUNT=$((TOTAL_COUNT + ${TOT:-0}))
             done
           fi
           WARN_COUNT=$(( TOTAL_COUNT > RESULT_COUNT ? TOTAL_COUNT - RESULT_COUNT : 0 ))
-          echo "Found $RESULT_COUNT high/critical, $MEDIUM_COUNT medium, $LOW_COUNT low, and $WARN_COUNT other CodeQL result(s)"
+          echo "Found $RESULT_COUNT high/critical, $MEDIUM_COUNT medium, $LOW_COUNT low, $SUPPRESSED_COUNT suppressed, and $WARN_COUNT other CodeQL result(s)"
           echo "codeql_errors=$RESULT_COUNT" >> "$GITHUB_OUTPUT"
           echo "codeql_warnings=$WARN_COUNT" >> "$GITHUB_OUTPUT"
           echo "codeql_mediums=$MEDIUM_COUNT" >> "$GITHUB_OUTPUT"
           echo "codeql_lows=$LOW_COUNT" >> "$GITHUB_OUTPUT"
+          echo "codeql_suppressed=$SUPPRESSED_COUNT" >> "$GITHUB_OUTPUT"
 
           # Build list of external plugin path prefixes so findings links are suppressed
           # for files that came from a downloaded ZIP and don't exist in this repo.
@@ -668,12 +682,13 @@ jobs:
                     | from_entries
                   ) as $secmap |
                   ($run.results // [])[] |
+                  select((.suppressions // []) | length == 0) |
                   . as $result |
                   (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
                   select((($secmap[$rid] // "0") | tonumber) >= 7.0) |
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
+                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")) as $msg |
                   ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
                   (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
@@ -705,13 +720,14 @@ jobs:
                     | from_entries
                   ) as $secmap |
                   ($run.results // [])[] |
+                  select((.suppressions // []) | length == 0) |
                   . as $result |
                   (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
                   (($secmap[$rid] // "0") | tonumber) as $sev |
                   select($sev >= 6.0 and $sev < 7.0) |
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
+                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")) as $msg |
                   ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
                   (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
@@ -743,18 +759,53 @@ jobs:
                     | from_entries
                   ) as $secmap |
                   ($run.results // [])[] |
+                  select((.suppressions // []) | length == 0) |
                   . as $result |
                   (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
                   (($secmap[$rid] // "0") | tonumber) as $sev |
                   select($sev < 6.0) |
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;") | if length > 150 then .[0:150] + "\u2026" else . end) as $msg |
+                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")) as $msg |
                   ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
                   (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
               done
             } > codeql-low-findings.md
+          fi
+          # Generate suppressed findings detail file for informational display in the PR comment.
+          # These were excluded from the blocking/medium/low tables above because CodeQL's own
+          # engine recognized and applied an inline suppression comment.
+          if [[ "$SUPPRESSED_COUNT" -gt 0 ]]; then
+            MERGE_SHA=${MERGE_SHA:-$(git rev-parse HEAD)}
+            {
+              echo "| Rule | Location | Description |"
+              echo "|------|----------|-------------|"
+              for f in sarif-results/*.sarif sarif-results/*.sarif.gz; do
+                [[ -f "$f" ]] || continue
+                if [[ "$f" == *.gz ]]; then
+                  FC=$(gunzip -c "$f")
+                else
+                  FC=$(cat "$f")
+                fi
+                echo "$FC" | jq -r \
+                  --arg repo "$GITHUB_REPOSITORY" \
+                  --arg sha "$MERGE_SHA" \
+                  --argjson external_prefixes "$EXTERNAL_PREFIXES" \
+                  '.runs[] |
+                  . as $run |
+                  ($run.results // [])[] |
+                  select((.suppressions // []) | length > 0) |
+                  . as $result |
+                  (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
+                  (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
+                  ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
+                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")) as $msg |
+                  ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
+                  (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
+                  "| `\($rid)` | \($loc) | \($msg) |"'
+              done
+            } > codeql-suppressed-findings.md
           fi
           ANALYZE_FAILED=false
           if [[ "${{ steps.detect-langs.outputs.found }}" == 'true' && "${{ steps.analyze.outcome }}" != "success" && "${{ steps.analyze.outcome }}" != "" ]]; then
@@ -809,6 +860,34 @@ jobs:
           name: codeql-low-findings
           path: codeql-low-findings.md
           if-no-files-found: ignore
+
+      - name: Upload suppressed findings detail for PR comment
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-suppressed-findings
+          path: codeql-suppressed-findings.md
+          if-no-files-found: ignore
+
+      - name: Apply/clear CodeQL suppression label
+        # Purely informational for auto-merge gating (see auto-merge-updates.yml) - never
+        # fails the job, so a maintainer can still merge by hand after reviewing.
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SUPPRESSED_COUNT: ${{ steps.status.outputs.codeql_suppressed }}
+        run: |
+          gh label create "CodeQL Suppression Used" \
+            --color "FBCA04" \
+            --description "PR relies on an inline CodeQL suppression comment - requires maintainer review" \
+            --repo "$GH_REPO" 2>/dev/null || true
+          if [[ "${SUPPRESSED_COUNT:-0}" -gt 0 ]]; then
+            gh pr edit "$PR_NUMBER" --add-label "CodeQL Suppression Used" --repo "$GH_REPO"
+          else
+            gh pr edit "$PR_NUMBER" --remove-label "CodeQL Suppression Used" --repo "$GH_REPO" 2>/dev/null || true
+          fi
 
       - name: Fail job if CodeQL found high/error/critical issues
         if: always() && steps.status.outputs.codeql_status == 'failure'
@@ -1189,6 +1268,13 @@ jobs:
           path: codeql-low-findings
         continue-on-error: true
 
+      - name: Download CodeQL suppressed findings detail
+        uses: actions/download-artifact@v8
+        with:
+          name: codeql-suppressed-findings
+          path: codeql-suppressed-findings
+        continue-on-error: true
+
       - name: Download ClamAV findings detail
         uses: actions/download-artifact@v8
         with:
@@ -1207,6 +1293,7 @@ jobs:
           CODEQL_WARNINGS: ${{ needs.codeql-analyze.outputs.codeql_warnings }}
           CODEQL_MEDIUMS: ${{ needs.codeql-analyze.outputs.codeql_mediums }}
           CODEQL_LOWS: ${{ needs.codeql-analyze.outputs.codeql_lows }}
+          CODEQL_SUPPRESSED: ${{ needs.codeql-analyze.outputs.codeql_suppressed }}
           CODEQL_UNSCANNED_LANGS: ${{ needs.codeql-analyze.outputs.codeql_unscanned_langs }}
           CLAMAV_RESULT: ${{ needs.clamav-scan.outputs.clamav_status }}
           CLAMAV_INFECTED: ${{ needs.clamav-scan.outputs.clamav_infected }}
