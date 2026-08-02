@@ -180,6 +180,13 @@ class Tls(object):
                                                      cadata=self.ca_certs_data)
             else:  # code from create_default_context in the Python standard library 3.5.1, creates a ssl context with the specificd protocol version
                 ssl_context = ssl.SSLContext(self.version)
+                # Unlike create_default_context() above, a bare SSLContext(version)
+                # enforces no minimum protocol version on its own - explicitly floor
+                # it at TLS 1.2 (LDAP User Sync plugin patch) so this branch can't be
+                # used to negotiate SSLv3/TLSv1/TLSv1.1 regardless of what `version`
+                # was requested.
+                if hasattr(ssl_context, "minimum_version") and hasattr(ssl, "TLSVersion"):
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
                 if self.ca_certs_file or self.ca_certs_path or self.ca_certs_data:
                     ssl_context.load_verify_locations(self.ca_certs_file, self.ca_certs_path, self.ca_certs_data)
                 elif self.validate != ssl.CERT_NONE:

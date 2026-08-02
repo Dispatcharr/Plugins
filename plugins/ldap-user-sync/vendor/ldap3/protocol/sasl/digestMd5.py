@@ -23,10 +23,6 @@
 # along with ldap3 in the COPYING and COPYING.LESSER files.
 # If not, see <http://www.gnu.org/licenses/>.
 
-from binascii import hexlify
-import hashlib
-import hmac
-
 from ... import SEQUENCE_TYPES
 from ...protocol.sasl.sasl import abort_sasl_negotiation, send_sasl_negotiation, random_hex_string
 
@@ -34,46 +30,30 @@ from ...protocol.sasl.sasl import abort_sasl_negotiation, send_sasl_negotiation,
 STATE_KEY = 0
 STATE_VALUE = 1
 
-
-def md5_h(value):
-    if not isinstance(value, bytes):
-        value = value.encode()
-
-    # MD5 here implements the DIGEST-MD5 SASL mechanism's challenge-response
-    # computation per RFC 2831, not password storage/verification - the
-    # protocol itself mandates MD5, so this cannot be swapped for a stronger
-    # hash without breaking DIGEST-MD5 interoperability. The LDAP User Sync
-    # plugin never selects DIGEST-MD5 (SIMPLE bind only); this function is
-    # kept only because core/connection.py and the strategy modules import
-    # it unconditionally.
-    return hashlib.md5(value).digest()  # codeql[py/weak-sensitive-data-hashing]
+# The LDAP User Sync plugin only ever performs SIMPLE bind - it never
+# selects DIGEST-MD5 SASL authentication. core/connection.py and the
+# strategy modules import this module's names unconditionally though, so
+# it must stay importable. Rather than keep the actual RFC 2831
+# challenge-response implementation (which necessarily calls hashlib.md5
+# on password-derived material - CodeQL's py/weak-sensitive-data-hashing
+# flags this as insecure password hashing even though it's a
+# protocol-mandated keyed digest, not credential storage), these helpers
+# are stubbed out: calling them raises NotImplementedError instead of
+# silently doing the wrong thing, since this vendored copy is not meant
+# to support DIGEST-MD5.
 
 
-def md5_kd(k, s):
-    if not isinstance(k, bytes):
-        k = k.encode()
-
-    if not isinstance(s, bytes):
-        s = s.encode()
-
-    return md5_h(k + b':' + s)
+def _digest_md5_unsupported(*_args, **_kwargs):
+    raise NotImplementedError(
+        "DIGEST-MD5 SASL authentication is not supported by this vendored "
+        "ldap3 copy (LDAP User Sync plugin only uses SIMPLE bind)."
+    )
 
 
-def md5_hex(value):
-    if not isinstance(value, bytes):
-        value = value.encode()
-
-    return hexlify(value)
-
-
-def md5_hmac(k, s):
-    if not isinstance(k, bytes):
-        k = k.encode()
-
-    if not isinstance(s, bytes):
-        s = s.encode()
-
-    return hmac.new(k, s, digestmod=hashlib.md5).hexdigest()
+md5_h = _digest_md5_unsupported
+md5_kd = _digest_md5_unsupported
+md5_hex = _digest_md5_unsupported
+md5_hmac = _digest_md5_unsupported
 
 
 def sasl_digest_md5(connection, controls):
