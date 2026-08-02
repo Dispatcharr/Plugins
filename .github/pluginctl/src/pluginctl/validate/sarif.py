@@ -20,7 +20,6 @@ import re
 from dataclasses import dataclass
 
 ZWSP = "​"
-ELLIPSIS = "…"
 
 # jq: \[(?<c>[^\]]+)\][(][0-9]+[)]  ->  .c   (strip markdown [text](123) links)
 _MD_LINK_RE = re.compile(r"\[([^\]]+)\]\([0-9]+\)")
@@ -82,11 +81,21 @@ def severity_of(result: dict, secmap: dict[str, float]) -> float:
     return secmap.get(_rule_id(result), 0.0)
 
 
+def is_suppressed(result: dict) -> bool:
+    """True when CodeQL's own engine recognized and applied a suppression
+
+    (e.g. a correctly-placed inline ``codeql[...]`` comment) - trust that
+    signal and never let the result count as blocking/medium/low.
+    """
+    return len(result.get("suppressions") or []) > 0
+
+
 @dataclass
 class Counts:
     blocking: int = 0
     medium: int = 0
     low: int = 0
+    suppressed: int = 0
     total: int = 0
 
     @property
@@ -101,6 +110,9 @@ def classify(sarif_objs: list[dict]) -> Counts:
             secmap = build_secmap(run)
             for result in (run.get("results") or []):
                 counts.total += 1
+                if is_suppressed(result):
+                    counts.suppressed += 1
+                    continue
                 sev = severity_of(result, secmap)
                 if is_blocking(sev):
                     counts.blocking += 1
@@ -120,8 +132,6 @@ def process_message(text) -> str:
     msg = _HASH_DIGIT_RE.sub(f"#{ZWSP}", msg)
     msg = _MD_LINK_RE.sub(r"\1", msg)
     msg = msg.replace("[", "&#91;").replace("]", "&#93;")
-    if len(msg) > 150:
-        msg = msg[:150] + ELLIPSIS
     return msg
 
 
@@ -149,8 +159,34 @@ def findings_table(sarif_objs: list[dict], predicate, repo: str, sha: str,
         for run in obj.get("runs", []):
             secmap = build_secmap(run)
             for result in (run.get("results") or []):
+                if is_suppressed(result):
+                    continue
                 sev = severity_of(result, secmap)
                 if not predicate(sev):
+                    continue
+                rid = _rule_id(result)
+                uri, line = _location(result)
+                msg = process_message((result.get("message") or {}).get("text"))
+                is_external = any(uri.startswith(p) for p in external_prefixes)
+                if uri != "?" and line != "?" and not is_external:
+                    loc = f"[{uri}:{line}](https://github.com/{repo}/blob/{sha}/{uri}#L{line})"
+                else:
+                    loc = f"{uri}:{line}"
+                lines.append(f"| `{rid}` | {loc} | {msg} |")
+    return "\n".join(lines) + "\n"
+
+
+def suppressed_findings_table(sarif_objs: list[dict], repo: str, sha: str,
+                              external_prefixes: list[str]) -> str:
+    """Same shape as :func:`findings_table`, but for suppressed results.
+
+    Selection is by ``.suppressions`` rather than a severity bucket.
+    """
+    lines = ["| Rule | Location | Description |", "|------|----------|-------------|"]
+    for obj in sarif_objs:
+        for run in obj.get("runs", []):
+            for result in (run.get("results") or []):
+                if not is_suppressed(result):
                     continue
                 rid = _rule_id(result)
                 uri, line = _location(result)
@@ -216,12 +252,14 @@ def run(results_dir: str, repo: str, sha: str, matrix: list[str],
 
     actions.log(
         f"Found {counts.blocking} high/critical, {counts.medium} medium, "
-        f"{counts.low} low, and {counts.warnings} other CodeQL result(s)"
+        f"{counts.low} low, {counts.suppressed} suppressed, and "
+        f"{counts.warnings} other CodeQL result(s)"
     )
     actions.set_output("codeql_errors", str(counts.blocking))
     actions.set_output("codeql_warnings", str(counts.warnings))
     actions.set_output("codeql_mediums", str(counts.medium))
     actions.set_output("codeql_lows", str(counts.low))
+    actions.set_output("codeql_suppressed", str(counts.suppressed))
 
     if counts.blocking > 0 and results_dir:
         _write("codeql-findings.md",
@@ -232,6 +270,9 @@ def run(results_dir: str, repo: str, sha: str, matrix: list[str],
     if counts.low > 0:
         _write("codeql-low-findings.md",
                findings_table(objs, is_low, repo, sha, external_prefixes))
+    if counts.suppressed > 0:
+        _write("codeql-suppressed-findings.md",
+               suppressed_findings_table(objs, repo, sha, external_prefixes))
 
     analyze_failed = languages_found and analyze_outcome not in ("success", "")
     config_error_langs = ""

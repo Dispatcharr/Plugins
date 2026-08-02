@@ -36,6 +36,12 @@
           "ruleId": "py/unused-import",
           "message": {"text": "Unused import."},
           "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/x.py"}, "region": {"startLine": 1}}}]
+        },
+        {
+          "ruleId": "py/sql-injection",
+          "message": {"text": "Suppressed via inline codeql[py/sql-injection] comment."},
+          "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/other.py"}, "region": {"startLine": 9}}}],
+          "suppressions": [{"kind": "inSource"}]
         }
       ]
     }

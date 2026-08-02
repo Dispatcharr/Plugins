@@ -23,8 +23,9 @@ def test_classify_buckets():
     assert counts.blocking == 1
     assert counts.medium == 1
     assert counts.low == 2
-    assert counts.total == 4
-    assert counts.warnings == 3
+    assert counts.suppressed == 1
+    assert counts.total == 5
+    assert counts.warnings == 4
 
 
 def test_missing_severity_defaults_to_low():
@@ -46,9 +47,9 @@ def test_process_message_zero_width_spaces():
     assert "#​4" in out
 
 
-def test_process_message_truncation():
+def test_process_message_not_truncated():
     out = sarif.process_message("a" * 200)
-    assert len(out) == 151 and out.endswith("…")
+    assert out == "a" * 200
 
 
 def test_findings_table_blocking_links_internal():
@@ -63,6 +64,19 @@ def test_findings_table_external_prefix_plain_location():
                                  ["plugins/demo/"])
     assert "https://github.com/org/repo/blob" not in table
     assert "plugins/demo/main.py:42" in table
+
+
+def test_findings_table_excludes_suppressed_results():
+    table = sarif.findings_table(_load(), lambda sev: True, "org/repo", "abc123", [])
+    assert "Suppressed via inline codeql" not in table
+
+
+def test_suppressed_findings_table_includes_only_suppressed():
+    table = sarif.suppressed_findings_table(_load(), "org/repo", "abc123", [])
+    assert "Suppressed via inline codeql" in table
+    assert "plugins/demo/other.py:9" in table
+    # only the suppressed py/sql-injection result appears, not the blocking one
+    assert table.count("`py/sql-injection`") == 1
 
 
 def test_compute_status():

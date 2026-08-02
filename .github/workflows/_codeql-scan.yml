@@ -30,10 +30,14 @@ on:
         value: ${{ jobs.analyze.outputs.codeql_lows }}
       codeql_unscanned_langs:
         value: ${{ jobs.analyze.outputs.codeql_unscanned_langs }}
+      codeql_suppressed:
+        value: ${{ jobs.analyze.outputs.codeql_suppressed }}
 
 permissions:
   contents: read
   security-events: write
+  pull-requests: write
+  issues: write
 
 env:
   PYTHONPATH: ${{ github.workspace }}/_trusted/.github/pluginctl/src
@@ -49,6 +53,7 @@ jobs:
       codeql_mediums: ${{ steps.status.outputs.codeql_mediums }}
       codeql_lows: ${{ steps.status.outputs.codeql_lows }}
       codeql_unscanned_langs: ${{ steps.status.outputs.codeql_unscanned_langs }}
+      codeql_suppressed: ${{ steps.status.outputs.codeql_suppressed }}
     steps:
       - name: Checkout PR merge commit for analysis
         uses: actions/checkout@v6
@@ -152,6 +157,39 @@ jobs:
           name: codeql-low-findings
           path: codeql-low-findings.md
           if-no-files-found: ignore
+
+      - name: Upload suppressed findings detail for PR comment
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-suppressed-findings
+          path: codeql-suppressed-findings.md
+          if-no-files-found: ignore
+
+      - name: Apply/clear CodeQL suppression label
+        # Purely informational for auto-merge gating (see automerge.py's
+        # BLOCKING_LABELS) - never fails the job, so a maintainer can still
+        # merge by hand after reviewing.
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SUPPRESSED_COUNT: ${{ steps.status.outputs.codeql_suppressed }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          gh label create "CodeQL Suppression Used" \
+            --color "FBCA04" \
+            --description "PR relies on an inline CodeQL suppression comment - requires maintainer review" \
+            --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+          if [[ "${SUPPRESSED_COUNT:-0}" -gt 0 ]]; then
+            gh pr edit "$PR_NUMBER" \
+              --add-label "CodeQL Suppression Used" \
+              --repo "$GITHUB_REPOSITORY"
+          else
+            gh pr edit "$PR_NUMBER" \
+              --remove-label "CodeQL Suppression Used" \
+              --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+          fi
 
       - name: Fail job if CodeQL found high/error/critical issues
         if: always() && steps.status.outputs.codeql_status == 'failure'

@@ -18,6 +18,11 @@ def test_automerge_blocks_on_quarantine():
     assert not d.ok and "QUARANTINE" in d.reason
 
 
+def test_automerge_blocks_on_codeql_suppression():
+    d = automerge.evaluate_labels(["Plugin Update", "CodeQL Suppression Used"], "MERGEABLE")
+    assert not d.ok and "CodeQL Suppression Used" in d.reason
+
+
 def test_automerge_requires_mergeable():
     d = automerge.evaluate_labels(["Plugin Update"], "CONFLICTING")
     assert not d.ok and "mergeable" in d.reason

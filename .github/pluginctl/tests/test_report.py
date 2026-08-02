@@ -87,6 +87,22 @@ def test_test_suite_skipped_renders_nothing():
     assert "Tooling test suite" not in c
 
 
+def test_codeql_suppressed_block_is_informational_only():
+    c = report.build_comment(**_base_kwargs(
+        codeql_result="success", codeql_suppressed="2",
+        codeql_suppressed_findings="| Rule | Location | Description |\n"))
+    assert "**2 finding(s) suppressed via inline `codeql[...]` comment**" in c
+    assert "requires maintainer review before merging" in c
+    # informational only - must not flip the overall pass/fail state
+    assert "## 🎉 All validation checks passed!" in c
+
+
+def test_codeql_suppressed_skipped_when_codeql_skipped():
+    c = report.build_comment(**_base_kwargs(
+        codeql_result="skipped", codeql_suppressed="2"))
+    assert "suppressed via inline" not in c
+
+
 def test_codeql_skipped_notice_no_separator_when_only_success():
     c = report.build_comment(**_base_kwargs(codeql_result="success"))
     # success + no unscanned -> no findings separator, still passes

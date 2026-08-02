@@ -91,7 +91,8 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
                   fragment_failed: bool, test_result: str = "skipped",
                   codeql_findings: str = "", codeql_medium_findings: str = "",
                   codeql_low_findings: str = "", clamav_findings: str = "",
-                  other_plugins_section: str = "") -> str:
+                  other_plugins_section: str = "", codeql_suppressed: str = "",
+                  codeql_suppressed_findings: str = "") -> str:
     L: list[str] = []
     overall_failed = fragment_failed
     if title_valid and title_valid != "true":
@@ -200,7 +201,7 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append("")
 
         if _needs_separator(codeql_result, codeql_mediums, codeql_lows,
-                            codeql_unscanned_langs, clamav_result):
+                            codeql_unscanned_langs, clamav_result, codeql_suppressed):
             L.append("")
             L.append("---")
             L.append("")
@@ -242,6 +243,15 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
                 L.append(codeql_low_findings.rstrip("\n"))
             L.append("")
             L.append("</details>")
+
+        if codeql_suppressed and codeql_suppressed != "0" and codeql_result != "skipped":
+            L.append("")
+            L.append(f"**{codeql_suppressed} finding(s) suppressed via inline `codeql[...]` "
+                     "comment** - requires maintainer review before merging; auto-merge is "
+                     "blocked for this PR.")
+            L.append("")
+            if codeql_suppressed_findings:
+                L.append(codeql_suppressed_findings.rstrip("\n"))
 
         if codeql_result == "skipped" and codeql_unscanned_langs:
             display = codeql_unscanned_langs.replace(",", " ")
@@ -300,12 +310,14 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
 
 
 def _needs_separator(codeql_result, codeql_mediums, codeql_lows,
-                     codeql_unscanned_langs, clamav_result) -> bool:
+                     codeql_unscanned_langs, clamav_result, codeql_suppressed="") -> bool:
     if codeql_result and codeql_result != "skipped" and codeql_result != "success":
         return True
     if codeql_mediums and codeql_mediums != "0" and codeql_result != "skipped":
         return True
     if codeql_lows and codeql_lows != "0" and codeql_result != "skipped":
+        return True
+    if codeql_suppressed and codeql_suppressed != "0" and codeql_result != "skipped":
         return True
     if codeql_result == "skipped" and codeql_unscanned_langs:
         return True
@@ -405,6 +417,7 @@ def run(pr_number: str, pr_author: str, plugin_count: str, close_pr: bool,
         codeql_mediums=os.environ.get("CODEQL_MEDIUMS", ""),
         codeql_lows=os.environ.get("CODEQL_LOWS", ""),
         codeql_unscanned_langs=os.environ.get("CODEQL_UNSCANNED_LANGS", ""),
+        codeql_suppressed=os.environ.get("CODEQL_SUPPRESSED", ""),
         clamav_result=os.environ.get("CLAMAV_RESULT", ""),
         clamav_infected=os.environ.get("CLAMAV_INFECTED", ""),
         title_valid=os.environ.get("TITLE_VALID", ""),
@@ -418,6 +431,7 @@ def run(pr_number: str, pr_author: str, plugin_count: str, close_pr: bool,
         codeql_low_findings=_read("codeql-low-findings/codeql-low-findings.md"),
         clamav_findings=_read("clamav-findings/clamav-findings.md"),
         other_plugins_section=other_section,
+        codeql_suppressed_findings=_read("codeql-suppressed-findings/codeql-suppressed-findings.md"),
     )
 
     with open("pr_comment.txt", "w", encoding="utf-8") as fh:
