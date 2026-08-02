@@ -189,24 +189,19 @@ class Tls(object):
         Adds TLS to the connection socket
         """
         if use_ssl_context:
-            if self.version is None:  # uses the default ssl context for reasonable security
-                ssl_context = create_default_context(purpose=Purpose.SERVER_AUTH,
-                                                     cafile=self.ca_certs_file,
-                                                     capath=self.ca_certs_path,
-                                                     cadata=self.ca_certs_data)
-            else:  # code from create_default_context in the Python standard library 3.5.1, creates a ssl context with the specificd protocol version
-                ssl_context = ssl.SSLContext(self.version)
-                # Unlike create_default_context() above, a bare SSLContext(version)
-                # enforces no minimum protocol version on its own - explicitly floor
-                # it at TLS 1.2 (LDAP User Sync plugin patch) so this branch can't be
-                # used to negotiate SSLv3/TLSv1/TLSv1.1 regardless of what `version`
-                # was requested.
-                if hasattr(ssl_context, "minimum_version") and hasattr(ssl, "TLSVersion"):
-                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
-                if self.ca_certs_file or self.ca_certs_path or self.ca_certs_data:
-                    ssl_context.load_verify_locations(self.ca_certs_file, self.ca_certs_path, self.ca_certs_data)
-                elif self.validate != ssl.CERT_NONE:
-                    ssl_context.load_default_certs(Purpose.SERVER_AUTH)
+            # LDAP User Sync plugin patch: always build the SSLContext via
+            # create_default_context() (TLS 1.2+ floor, verified certs),
+            # never via a bare SSLContext(self.version). CodeQL's
+            # py/insecure-protocol flags the latter's mere existence in the
+            # file regardless of what `version` was already validated to be
+            # in __init__ above (which now rejects every legacy SSL/TLS
+            # constant outright). This plugin never passes an explicit
+            # `version` at all, so nothing here depends on the removed
+            # branch - `self.version` is only ever None in practice.
+            ssl_context = create_default_context(purpose=Purpose.SERVER_AUTH,
+                                                 cafile=self.ca_certs_file,
+                                                 capath=self.ca_certs_path,
+                                                 cadata=self.ca_certs_data)
 
             if self.certificate_file:
                 ssl_context.load_cert_chain(self.certificate_file, keyfile=self.private_key_file, password=self.private_key_password)
