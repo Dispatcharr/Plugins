@@ -1,0 +1,8 @@
+{
+  "name": "LDAP User Sync",
+  "version": "1.0.0",
+  "description": "Syncs Dispatcharr user accounts from any standard LDAP directory (Active Directory, OpenLDAP, 389 Directory Server, Authentik's LDAP outpost, etc.). On a configurable schedule or on demand, binds to your directory, finds members of two configurable group DNs, and creates/updates the matching Dispatcharr users as Admins or Streamers, disabling accounts that fall out of both groups. Generates and emails a random Xtream Codes API password for each newly created user via plain SMTP, with a manual per-user reset action. Optionally enables true LDAP pass-through login so a user's Dispatcharr login password always matches their live LDAP password.",
+  "author": "ModdingFriendly",
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.20.0"
+}
