@@ -56,8 +56,8 @@ mirroring:
 
 Dispatcharr plugins run inside the app's existing Python environment
 with no dependency-installation step, and neither `ldap3` nor
-`python-ldap` ships with Dispatcharr. This plugin vendors, unmodified,
-as plain Python source under `vendor/`:
+`python-ldap` ships with Dispatcharr. This plugin vendors, as plain
+Python source under `vendor/`:
 
 - [`ldap3`](https://pypi.org/project/ldap3/) 2.9.1 — LGPL-3.0-only.
   Full license text: `vendor/licenses/ldap3/`.
@@ -65,10 +65,26 @@ as plain Python source under `vendor/`:
   Full license text: `vendor/licenses/pyasn1/LICENSE.rst`.
 
 Both are pure Python with no compiled extensions. They are vendored as
-clearly-separable, unmodified source trees with their original license
-text preserved, satisfying LGPL's combination terms. This plugin's own
-code is MIT-licensed; the vendored libraries keep their original
-licenses regardless.
+clearly-separable source trees with their original license text
+preserved, satisfying LGPL's combination terms. This plugin's own code
+is MIT-licensed; the vendored libraries keep their original licenses
+regardless.
+
+Two small, deliberate deviations from the unmodified upstream `ldap3`
+source, both driven by static-analysis findings against SASL/NTLM code
+paths this plugin never exercises (it only ever performs SIMPLE bind):
+
+- `vendor/ldap3/utils/ntlm.py` is removed entirely. It's only reached
+  via a lazy `import` inside `Connection.do_ntlm_bind()`, which this
+  plugin never calls, so removing it doesn't affect SIMPLE-bind/search
+  functionality at all.
+- `vendor/ldap3/protocol/sasl/digestMd5.py`'s `md5_h()` has an inline
+  `# codeql[py/weak-sensitive-data-hashing]` suppression comment. MD5
+  there implements the DIGEST-MD5 SASL mechanism's RFC 2831
+  challenge-response computation (mandated by the protocol spec, not a
+  password-storage weakness), and the function is kept only because
+  `core/connection.py` and the strategy modules import it
+  unconditionally — this plugin never selects DIGEST-MD5 authentication.
 
 ## Settings reference
 

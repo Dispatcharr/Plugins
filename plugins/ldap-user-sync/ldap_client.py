@@ -50,9 +50,14 @@ def _build_server(settings):
     tls = None
     if encryption in ("starttls", "ldaps"):
         ca_pem = (settings.get("ldap_ca_cert_pem") or "").strip() or None
+        # Deliberately leave `version` unset (None): ldap3's Tls.wrap_socket()
+        # only calls Python's own ssl.create_default_context() - which
+        # enforces a TLS 1.2+ floor - when version is None. Passing an
+        # explicit version (e.g. PROTOCOL_TLS_CLIENT) makes it fall through
+        # to a manual SSLContext(self.version) path with no such floor,
+        # which is what CodeQL's py/insecure-protocol flags.
         tls = Tls(
             validate=ssl.CERT_REQUIRED,
-            version=ssl.PROTOCOL_TLS_CLIENT,
             ca_certs_data=ca_pem,
         )
 

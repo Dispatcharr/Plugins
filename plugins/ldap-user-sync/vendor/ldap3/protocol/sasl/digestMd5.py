@@ -39,7 +39,14 @@ def md5_h(value):
     if not isinstance(value, bytes):
         value = value.encode()
 
-    return hashlib.md5(value).digest()
+    # MD5 here implements the DIGEST-MD5 SASL mechanism's challenge-response
+    # computation per RFC 2831, not password storage/verification - the
+    # protocol itself mandates MD5, so this cannot be swapped for a stronger
+    # hash without breaking DIGEST-MD5 interoperability. The LDAP User Sync
+    # plugin never selects DIGEST-MD5 (SIMPLE bind only); this function is
+    # kept only because core/connection.py and the strategy modules import
+    # it unconditionally.
+    return hashlib.md5(value).digest()  # codeql[py/weak-sensitive-data-hashing]
 
 
 def md5_kd(k, s):
