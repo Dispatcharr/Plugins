@@ -1,0 +1,12 @@
+{
+  "name": "Newsflasharr",
+  "version": "1.26.2142011",
+  "description": "Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.",
+  "author": "PiratesIRC",
+  "license": "MIT",
+  "source_type": "external",
+  "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin",
+  "help_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/issues",
+  "min_dispatcharr_version": "v0.20.0",
+  "source_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/releases/download/{version}/Newsflasharr.zip"
+}
