@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T12:34:24Z",
+  "generated_at": "2026-08-02T20:37:59Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -183,6 +183,21 @@
         "min_dispatcharr_version": "v0.27.0"
       },
       {
+        "slug": "newsflasharr",
+        "name": "Newsflasharr",
+        "description": "Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttl...",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/newsflasharr/manifest.json",
+        "author": "PiratesIRC",
+        "license": "MIT",
+        "last_updated": "2026-08-02T16:37:32-04:00",
+        "latest_version": "1.26.2142011",
+        "latest_md5": "8d0e25158ba305752e053e7f76922034",
+        "latest_sha256": "a056087da39ca2dc2fcdd89c2debf2218e20233438a6894254f9f3fc471f97f4",
+        "latest_url": "newsflasharr-1.26.2142011/newsflasharr-1.26.2142011.zip",
+        "latest_size": 186,
+        "min_dispatcharr_version": "v0.20.0"
+      },
+      {
         "slug": "pirate-weatharr-station",
         "name": "PWS - Pirate Weatharr Station",
         "description": "TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel.",
@@ -331,5 +346,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCam85VAAKCRB+wDprTCI0\nzkGGAP9EOKCBgNEyyT9Q6Z0GOw9r0fbFTDY0Qnnwz7GCrKLuEAD/W9vhSIe1UJ8S\nfDQVu4te6ehD/3su3LlOZ+sYx5lDKAE=\n=2+P+\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCam+qrAAKCRB+wDprTCI0\nznZKAP0cf+cOTFlANJIMjcA4nRnIX88gPc8mWMg9k2wzxZqr7gEA4OzLkuX60oiY\n7jbr14hsLAaklMd0wEG1+D/TkBIssAw=\n=JxTE\n-----END PGP SIGNATURE-----"
 }
