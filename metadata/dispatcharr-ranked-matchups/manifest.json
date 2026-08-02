@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-08-02T12:26:27Z",
+  "generated_at": "2026-08-02T12:34:24Z",
   "manifest": {
     "slug": "dispatcharr-ranked-matchups",
     "name": "Ranked Matchups (Top Games)",
-    "description": "Never miss a good game. Scores every upcoming game across 37 leagues and competitions (20 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description.",
+    "description": "Never miss a good game. Scores every upcoming game across 37 leagues, tours and competitions (20 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description.",
     "author": "Jacob-Lasky",
     "license": "MIT",
     "source_type": "external",
@@ -149,5 +149,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCam83dAAKCRB+wDprTCI0\nzp2DAQDqGgNPDgfvrm/osqJdUwi998N19gRLyYjhaoyht/xYXgD/aU8xtksMjff7\nip85S4pc65nk4Okgt5Xzhl8x51e/6As=\n=N0ZT\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCam85UQAKCRB+wDprTCI0\nzp72AP0RD2fNJuQ9LwMqaWzvquJ9xliU1AgWMWOeNAIPiBWFogEA/e72BuUA8FmP\nkZ6axQM7XO4LOn8pHODK+bm40w6OJQw=\n=OWyY\n-----END PGP SIGNATURE-----"
 }
