@@ -1,11 +1,12 @@
 {
   "name": "Ranked Matchups (Top Games)",
   "version": "1.16.0",
-  "description": "Cross-sport interestingness curator. Pulls upcoming games per enabled sport, scores them on interestingness, matches to Dispatcharr channels via EPG, and renames+groups them into a Top Matchups channel profile so your guide shows only the games worth watching. Channels are numbered by kickoff time, so the list sorts soonest-first and the guide binds correctly in both the default M3U/EPG output and the Xtream Codes API with no special settings.",
+  "description": "Never miss a good game. Scores every upcoming game across 37 leagues and competitions (20 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description.",
   "author": "Jacob-Lasky",
   "license": "MIT",
   "repo_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups",
   "help_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups#readme",
+  "discord_thread": "https://discord.com/channels/1340492560220684331/1508938899865604167",
   "source_type": "external",
   "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v{version}/plugin.zip"
 }
