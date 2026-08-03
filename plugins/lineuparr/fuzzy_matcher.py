@@ -227,6 +227,41 @@ def detect_stream_country(name):
     return None
 
 
+def detect_name_country_prefix(channel_name):
+    """Split a "CC_" country prefix off a lineup channel name.
+
+    A lineup channel may declare its own country by name: "UK_CNN" inside a US
+    lineup means match this channel against UK streams. Returns
+    (country_code, stripped_name), or (None, channel_name) unchanged when there
+    is no recognized prefix.
+
+    Only the curated _KNOWN_COUNTRY_CODES are accepted, so an ordinary name that
+    happens to contain an underscore ("MTV_Live", "My_Channel") is left alone.
+    The two letters must be followed by an underscore and by something other
+    than whitespace, so a name ending at the prefix is not turned into an empty
+    channel name.
+
+    This lives beside detect_category_country because both answer the same
+    question from a different string, and both need the country vocabulary that
+    is private to this module.
+    """
+    if not channel_name:
+        return None, channel_name
+
+    m = re.match(r'^([A-Za-z]{2})_(.+)$', channel_name)
+    if not m:
+        return None, channel_name
+
+    code = m.group(1).upper()
+    if code not in _KNOWN_COUNTRY_CODES:
+        return None, channel_name
+
+    stripped = m.group(2).strip()
+    if not stripped:
+        return None, channel_name
+    return code, stripped
+
+
 def detect_category_country(category_name):
     """Detect an ISO-2 country code from a lineup category-name prefix.
 
@@ -307,6 +342,11 @@ class FuzzyMatcher(FuzzyMatcherCore):
         # match_all_streams calls. Callers reset this before a matching loop
         # and read it after, so they can log a summary.
         self.country_filter_drops = 0
+        # Compiled whole-token matchers keyed by callsign, built on demand by
+        # the alias-anchored callsign rescue. The same handful of callsigns is
+        # re-tested against every stream for every lineup channel, so compiling
+        # once per callsign matters.
+        self._alias_callsign_patterns = {}
 
     def precompute_normalizations(self, names, user_ignored_tags=None):
         """
@@ -466,9 +506,99 @@ class FuzzyMatcher(FuzzyMatcherCore):
             if score >= effective_threshold:
                 matches.append((candidate, score, "alias"))
 
+        # Stage 0b: alias-anchored callsign rescue.
+        matches.extend(
+            self._alias_callsign_matches(aliases, candidate_names,
+                                         already_matched={m[0] for m in matches})
+        )
+
         # Sort by score descending
         matches.sort(key=lambda x: x[1], reverse=True)
         return matches
+
+    # A US broadcast callsign is K/W plus 2-4 letters, optionally carrying a
+    # broadcast suffix. The suffix may be hyphenated (WWOR-TV) or run together
+    # (WWORDT), and lineup data uses both.
+    _CALLSIGN_SHAPE = re.compile(r'^[KW][A-Z]{2,4}$')
+    _CALLSIGN_SUFFIX = re.compile(r'(TV|DT|CD|LP|LD)$')
+
+    def _alias_callsign(self, alias):
+        """Return the bare callsign an alias declares, or None.
+
+        Only an alias that is ENTIRELY a callsign counts. A phrase that merely
+        contains a K/W word ("MY NETWORK TV NEW YORK") is not a declaration that
+        the channel has that callsign, and treating it as one would anchor on an
+        ordinary word.
+
+        The core callsign denylist is applied, so common English words with
+        callsign shape (KIDS, WORLD, WOMEN, WEST, KISS, WWE) never anchor. That
+        denylist exists because regex alone cannot tell "WITH" from "WABC".
+        """
+        compact = re.sub(r'[^A-Za-z0-9]', '', alias or "").upper()
+        if not compact:
+            return None
+
+        stem = compact
+        if not self._CALLSIGN_SHAPE.match(stem):
+            # Try again without a run-together broadcast suffix (WWORDT -> WWOR).
+            stripped = self._CALLSIGN_SUFFIX.sub('', compact)
+            if stripped == compact:
+                return None
+            stem = stripped
+
+        if not self._CALLSIGN_SHAPE.match(stem):
+            return None
+        if stem in self._CALLSIGN_DENYLIST:
+            return None
+        return stem
+
+    def _alias_callsign_pattern(self, callsign):
+        """Compiled whole-token matcher for a callsign inside a stream name.
+
+        Matched against the ORIGINAL stream name, not the normalized form:
+        normalize_name strips parenthesized text, which would discard the single
+        most reliable callsign form there is ("... SECAUCUS NY (WWOR)").
+        """
+        pattern = self._alias_callsign_patterns.get(callsign)
+        if pattern is None:
+            # A run-together suffix is accepted only for TV and DT, the two forms
+            # lineup data actually uses (WWORTV, WWORDT). Accepting LD run-together
+            # would make callsign WWOR match the word WWORLD, since the regex would
+            # read the trailing "LD" as a broadcast suffix.
+            pattern = re.compile(
+                r'(?<![A-Za-z0-9])' + re.escape(callsign)
+                + r'(?:[-\s](?:TV|DT|CD|LP|LD)|TV|DT)?(?![A-Za-z0-9])',
+                re.IGNORECASE,
+            )
+            self._alias_callsign_patterns[callsign] = pattern
+        return pattern
+
+    def _alias_callsign_matches(self, aliases, candidate_names, already_matched):
+        """Match streams that carry a callsign this channel's aliases declare.
+
+        The core callsign anchor in match_all_streams only fires when the LINEUP
+        channel name carries a callsign, so a lineup entry named "My9 New York"
+        could never reach a stream named "US: MY 9 WWOR NEW YORK". An alias of
+        "WWOR" states the callsign explicitly, which is the missing half.
+
+        Scored at 95 to sit level with the core callsign anchor and below an
+        exact alias match, and returned with its own match type so a report can
+        tell the two apart. These matches stay subject to the country and region
+        filters in match_all_streams.
+        """
+        callsigns = {cs for cs in (self._alias_callsign(a) for a in aliases) if cs}
+        if not callsigns:
+            return []
+
+        rescued = []
+        for candidate in candidate_names:
+            if candidate in already_matched or self._is_group_header(candidate):
+                continue
+            for callsign in callsigns:
+                if self._alias_callsign_pattern(callsign).search(candidate):
+                    rescued.append((candidate, 95, "alias-callsign"))
+                    break
+        return rescued
 
     def fuzzy_match(self, query_name, candidate_names, user_ignored_tags=None,
                     ignore_quality=True, ignore_regional=True, ignore_geographic=True, ignore_misc=True):

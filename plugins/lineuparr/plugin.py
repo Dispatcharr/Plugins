@@ -18,9 +18,11 @@ from glob import glob
 
 from django.db import transaction
 
-from .fuzzy_matcher import FuzzyMatcher, has_upgrade_quality, detect_category_country, country_codes_in_text
+from .fuzzy_matcher import (FuzzyMatcher, has_upgrade_quality, detect_category_country,
+                            detect_name_country_prefix, country_codes_in_text)
 from .aliases import CHANNEL_ALIASES, COUNTRY_ALIASES
 from .progress_status import save_progress_atomic, load_progress, build_status_message
+from . import notify_bridge, reports
 
 from apps.channels.models import Channel, ChannelGroup, ChannelProfile, ChannelProfileMembership, ChannelStream, Stream
 from apps.m3u.models import M3UAccount
@@ -64,7 +66,7 @@ def _clean_json_text(s):
 
 
 class PluginConfig:
-    PLUGIN_VERSION = "1.26.1791747"
+    PLUGIN_VERSION = "1.26.2142327"
 
     DEFAULT_FUZZY_MATCH_THRESHOLD = 80
     DEFAULT_PRIORITIZE_QUALITY = True
@@ -499,6 +501,43 @@ class Plugin:
                 "placeholder": "{\"Channel Name\": [\"alias 1\", \"alias 2\"]}",
                 "help_text": "JSON object mapping a lineup channel name to extra alias names (a bare string is accepted as a single alias). Leave blank to use built-in aliases only.",
             },
+            # --- Section: Notifications ---
+            {
+                "id": "_sec_notify",
+                "type": "info",
+                "label": "Report delivery",
+                "help_text": "Every run that exports a CSV also writes a shareable HTML report with a sortable table. Newsflasharr can email it. This is off by default and needs the Newsflasharr plugin installed, enabled, and routing this plugin's usage_report event to your email channel.",
+            },
+            {
+                "id": "notify_enabled",
+                "label": "Send reports to Newsflasharr",
+                "type": "boolean",
+                "default": False,
+                "help_text": "Master switch. When off, reports are still written to disk and nothing is sent.",
+            },
+            {
+                "id": "notify_report_on",
+                "label": "When to send",
+                "type": "select",
+                "default": "never",
+                "options": [
+                    {"value": "never", "label": "Never - write the report, send nothing"},
+                    {"value": "every_run", "label": "Every run that produces a report"},
+                ],
+                "help_text": "Applies to the channel sync preview, preview stream match, apply stream match, and EPG match.",
+            },
+            {
+                "id": "notify_report_format",
+                "label": "What to attach",
+                "type": "select",
+                "default": "both",
+                "options": [
+                    {"value": "both", "label": "Both the HTML page and the CSV"},
+                    {"value": "html", "label": "HTML page only"},
+                    {"value": "csv", "label": "CSV only"},
+                ],
+                "help_text": "A notification carries one attachment, so choosing both sends two emails per run.",
+            },
             # --- Section: Advanced ---
             {
                 "id": "_sec_advanced",
@@ -538,6 +577,7 @@ class Plugin:
                 "apply_logo_match": self._apply_logo_match,
                 "resort_streams": self._resort_streams,
                 "clear_csv_exports": self._clear_csv_exports,
+                "email_report": self._email_report,
                 # Legacy actions (no UI buttons, kept for API compatibility)
                 "preview_groups": self._preview_groups,
                 "sync_groups": self._sync_groups,
@@ -620,6 +660,8 @@ class Plugin:
         if "categories" not in data:
             raise ValueError(f"Invalid lineup file: missing 'categories' key")
 
+        self._rewrite_country_prefixes(data, logger)
+
         # Apply category detail level transformation
         data = self._apply_category_detail(data, detail)
 
@@ -627,6 +669,60 @@ class Plugin:
         self._lineup_cache_file = cache_key
         logger.info(f"{LOG_PREFIX} Loaded lineup: {data.get('package', 'Unknown')} ({sum(len(v) for v in data['categories'].values())} channels, {len(data['categories'])} categories, detail={detail})")
         return data
+
+    @staticmethod
+    def _rewrite_country_prefixes(data, logger):
+        """Turn a "CC_" channel-name prefix into the channel's own country.
+
+        "UK_CNN" inside a US lineup becomes name "CNN" with country UK. Done here,
+        once, before anything else sees the lineup: the name is used for channel
+        creation, for matching, for reports and for EPG matching, so a prefix left
+        in place would have to be stripped correctly in several unrelated places.
+
+        Mutates data in place. Runs before _apply_category_detail so every detail
+        level sees the rewritten entries.
+        """
+        rewritten = 0
+        for channels in data.get("categories", {}).values():
+            if not isinstance(channels, list):
+                continue
+            for entry in channels:
+                if not isinstance(entry, dict):
+                    continue
+                country, stripped = detect_name_country_prefix(entry.get("name"))
+                if not country:
+                    continue
+                entry["name"] = stripped
+                entry["_country"] = country
+                rewritten += 1
+
+        if rewritten:
+            logger.info(
+                f"{LOG_PREFIX} {rewritten} lineup "
+                f"{'channel carries' if rewritten == 1 else 'channels carry'} a "
+                f"country prefix in the name"
+            )
+
+    @staticmethod
+    def _resolve_entry_country(entry, category_cc, logger=None):
+        """Country code to enforce for ONE channel.
+
+        Most specific first: the channel's own country (from its name prefix),
+        then the category's, then the lineup filename's, which category_cc already
+        carries. Mirrors _resolve_category_country one level down.
+
+        The override is logged for the same reason the category-level one is: a
+        channel that does not match is otherwise guesswork.
+        """
+        entry_cc = entry.get("_country") if isinstance(entry, dict) else None
+        if not entry_cc:
+            return category_cc
+        if logger is not None and entry_cc != category_cc:
+            logger.info(
+                f"{LOG_PREFIX} Channel '{entry.get('name')}' country: {entry_cc} "
+                f"(from name prefix, overriding {category_cc or 'lineup default'})"
+            )
+        return entry_cc
 
     def _apply_category_detail(self, data, detail):
         """Transform lineup categories based on the detail level setting.
@@ -888,24 +984,57 @@ class Plugin:
         logger.info(f"{LOG_PREFIX} Loaded {len(streams)} streams" + (f" from {len(valid_ids)} M3U sources" if valid_ids else ""))
         return streams
 
-    def _build_alias_map(self, settings, logger):
+    def _alias_map_provider(self, settings, logger):
+        """Return a callable mapping a country code to that country's alias map.
+
+        A lineup can carry channels from several countries (a category named
+        "UK| Sports" inside a mixed lineup), and each needs the alias table for
+        ITS country, not for the lineup filename's country.
+
+        Memoized for the life of ONE run and no longer. The map depends on the
+        custom_aliases setting and on the selected lineup's embedded aliases,
+        both of which change between runs while the plugin object survives in a
+        long-lived worker process. Instance-level caching would serve a stale
+        map after a settings edit, and would carry one lineup's embedded aliases
+        into another lineup of the same country.
+        """
+        cache = {}
+
+        def alias_map_for(country):
+            key = (country or "").upper()
+            if key not in cache:
+                cache[key] = self._build_alias_map(settings, logger, country=key or None)
+            return cache[key]
+
+        return alias_map_for
+
+    def _build_alias_map(self, settings, logger, country=None):
         """Merge built-in aliases with user custom aliases.
 
         Built-in aliases are global (keyed by channel name). Country-scoped
-        overrides from COUNTRY_ALIASES are merged on top for THIS lineup's
-        country only, so a name that exists in multiple markets (e.g. "TLC",
-        "MTV") doesn't leak one country's stream-name variants into another
-        (bug-063). Custom user aliases are merged last and win.
+        overrides from COUNTRY_ALIASES are merged on top for ONE country only, so
+        a name that exists in multiple markets (e.g. "TLC", "MTV") does not leak
+        one country's stream-name variants into another (bug-063). Custom user
+        aliases are merged last and win.
+
+        The country defaults to the one in the lineup filename. Callers that know
+        a channel's own country (from its category name or its name prefix) pass
+        it explicitly, so a UK channel inside a US lineup gets UK aliases.
         """
         alias_map = dict(CHANNEL_ALIASES)
 
-        try:
-            lineup_cc, _ = self._parse_lineup_filename(settings.get("lineup_file", ""))
-        except Exception:
-            lineup_cc = None
+        if country:
+            lineup_cc = country
+        else:
+            try:
+                lineup_cc, _ = self._parse_lineup_filename(settings.get("lineup_file", ""))
+            except Exception:
+                lineup_cc = None
         if lineup_cc:
             for k, v in COUNTRY_ALIASES.get(lineup_cc.upper(), {}).items():
                 alias_map[k] = list(dict.fromkeys(alias_map.get(k, []) + list(v)))
+
+        self._merge_embedded_aliases(alias_map, settings, logger)
 
         custom_str = _clean_json_text(settings.get("custom_aliases") or "")
         if custom_str:
@@ -957,6 +1086,76 @@ class Plugin:
                 )
 
         return alias_map
+
+    def _merge_embedded_aliases(self, alias_map, settings, logger):
+        """Merge per-channel "aliases" arrays carried inside the lineup JSON.
+
+        A lineup channel entry may declare its own aliases:
+
+            {"name": "My9 New York", "number": 509,
+             "aliases": ["WWOR", "WWOR-TV", "MY9"]}
+
+        This lets a lineup ship the stream-name variants that are specific to it
+        (provider callsigns, HDHomeRun and XMLTV display names) without adding
+        them to the global built-in table, where a name that exists in several
+        markets would leak across countries.
+
+        Merged after the built-in and country-scoped tables and before the user's
+        custom aliases, so the user setting still has the last word. A lineup
+        that cannot be read leaves the alias map untouched: aliases are an
+        enhancement, and failing the whole matching run over them would trade a
+        missing alias for no matches at all.
+        """
+        try:
+            lineup = self._load_lineup(settings, logger)
+        except Exception as e:
+            logger.warning(f"{LOG_PREFIX} Could not read embedded lineup aliases: {e}")
+            return
+
+        categories = lineup.get("categories") if isinstance(lineup, dict) else None
+        if not isinstance(categories, dict):
+            return
+
+        merged = 0
+        for channels in categories.values():
+            if not isinstance(channels, list):
+                continue
+            for channel in channels:
+                if not isinstance(channel, dict):
+                    continue
+
+                name = str(channel.get("name") or "").strip()
+                raw = channel.get("aliases")
+                if not name or not raw:
+                    continue
+
+                # Same shapes the custom_aliases setting accepts: a list, or a
+                # bare string for a single alias. Anything else is a mistake in
+                # the lineup file and is reported rather than dropped silently.
+                if isinstance(raw, str):
+                    candidates = [raw]
+                elif isinstance(raw, list):
+                    candidates = raw
+                else:
+                    logger.warning(
+                        f"{LOG_PREFIX} Lineup aliases for '{name}' must be a string "
+                        f"or list, got {type(raw).__name__} - ignored"
+                    )
+                    continue
+
+                clean = [a.strip() for a in candidates
+                         if isinstance(a, str) and a.strip()]
+                if not clean:
+                    continue
+
+                alias_map[name] = list(dict.fromkeys(alias_map.get(name, []) + clean))
+                merged += 1
+
+        if merged:
+            logger.info(
+                f"{LOG_PREFIX} Merged embedded aliases from {merged} lineup "
+                f"{'channel' if merged == 1 else 'channels'}"
+            )
 
     def _build_upgrade_twin_set(self, lineup, matcher):
         """Return lineup channel names (both tiers) that have a twin in the other tier.
@@ -1229,6 +1428,133 @@ class Plugin:
                 os.remove(PluginConfig.OPERATION_LOCK_FILE)
         except Exception as e:
             logger.error(f"{LOG_PREFIX} Failed to release lock: {e}")
+
+    def _m3u_account_names(self, logger):
+        """Active M3U account names, or None when the lookup failed.
+
+        None and an empty list mean different things to the report builder: an
+        installation may legitimately have no active accounts, but a failed
+        lookup must not be mistaken for one, because these names are the report's
+        primary redaction input.
+        """
+        try:
+            return [a['name'] for a in M3UAccount.objects.filter(is_active=True).values('name')
+                    if a.get('name')]
+        except Exception as e:
+            logger.warning(f"{LOG_PREFIX} Could not read M3U account names for the report: {e}")
+            return None
+
+    def _write_html_report(self, title, columns, rows, settings, logger, export_filename=None):
+        """Write the shareable HTML and CSV report for a run. Returns the HTML
+        path, or None.
+
+        Never raises and never fails the run that produced the rows: a report is
+        not the plugin's real work. A failure is logged and the action carries on.
+
+        `columns` is the allow-list of (row key, header) pairs. A key absent from
+        it never reaches the report, so a column added to a CSV writer later
+        cannot start appearing in a shared file on its own.
+        """
+        try:
+            accounts = self._m3u_account_names(logger)
+            if accounts is None:
+                logger.warning(f"{LOG_PREFIX} HTML report skipped: M3U account names unavailable, "
+                               f"so stream names could not be scrubbed")
+                return None
+            model = reports.build_model(
+                title, columns, rows,
+                account_names=accounts,
+                settings=settings or {},
+                lineup=(settings or {}).get("lineup_file", ""),
+                version=PluginConfig.PLUGIN_VERSION,
+                now=time.time(),
+                export_filename=export_filename,
+            )
+            result = reports.write_report(model, reports.REPORT_DIR, time.time())
+            if result.get("error"):
+                logger.warning(f"{LOG_PREFIX} HTML report not written: {result['error']}")
+                return None
+            logger.info(f"{LOG_PREFIX} Report written: {result['html_path']}")
+            self._emit_reports(result, settings, logger)
+            return result["html_path"]
+        except Exception as e:
+            logger.warning(f"{LOG_PREFIX} HTML report failed: {e}")
+            return None
+
+    @staticmethod
+    def _notify_client():
+        """Import the vendored client lazily.
+
+        Deliberately not a module-scope import: a notification path is never worth
+        failing the plugin's load over, and the fallback form is what lets the
+        module be imported by a test harness that has no package parent.
+        """
+        try:
+            from . import notify_client
+        except ImportError:
+            import notify_client
+        return notify_client
+
+    def _emit_reports(self, written, settings, logger):
+        """Hand the written report files to Newsflasharr. Returns its result dict.
+
+        Never raises and never fails the run that produced the report.
+        """
+        try:
+            result = notify_bridge.emit_reports(
+                self._notify_client().notify, settings or {}, written)
+            if result.get("sent"):
+                logger.info(f"{LOG_PREFIX} Report queued for delivery: "
+                            f"{result['sent']} notification(s)")
+            elif result.get("skipped_reason"):
+                logger.debug(f"{LOG_PREFIX} Report not sent: {result['skipped_reason']}")
+            return result
+        except Exception as e:
+            logger.warning(f"{LOG_PREFIX} Report delivery failed: {e}")
+            return {"sent": 0, "skipped_reason": str(e)}
+
+    def _email_report(self, settings, logger):
+        """Send the newest report on disk, on demand.
+
+        Sends what is already there rather than re-running a match: a match is
+        minutes of work and the operator asked to send a report, not to produce
+        one.
+        """
+        if not notify_bridge.is_enabled(settings):
+            return {"status": "error",
+                    "error": "Sending reports to Newsflasharr is switched off. Turn on "
+                             "'Send reports to Newsflasharr' in the settings above, save, "
+                             "and try again."}
+        try:
+            entries = []
+            for suffix in (".html", ".csv"):
+                found = sorted(
+                    (os.path.join(reports.REPORT_DIR, n)
+                     for n in os.listdir(reports.REPORT_DIR)
+                     if n.startswith(reports.FILENAME_PREFIX) and n.endswith(suffix)),
+                    key=os.path.getmtime, reverse=True)
+                entries.append(found[0] if found else None)
+        except OSError:
+            entries = [None, None]
+
+        if not any(entries):
+            return {"status": "error",
+                    "error": "No report to send yet. Run Preview Stream Match, or any "
+                             "action that exports a CSV, and a report is written "
+                             f"to {reports.REPORT_DIR}."}
+
+        written = {"html_path": entries[0], "csv_path": entries[1], "error": None}
+        # The on-demand button always sends, whatever the schedule setting says:
+        # the operator pressing it IS the trigger.
+        result = self._emit_reports(written, dict(settings or {}, notify_report_on="every_run"),
+                                    logger)
+        if not result.get("sent"):
+            reason = result.get("skipped_reason") or "no report file could be read"
+            return {"status": "error", "error": f"Nothing was sent: {reason}"}
+        names = ", ".join(os.path.basename(p) for p in entries if p)
+        return {"status": "ok",
+                "message": f"Queued {result['sent']} notification(s) with Newsflasharr: {names}",
+                "file": entries[0] or entries[1]}
 
     def _export_csv(self, filename, rows, fieldnames, logger, settings=None):
         """Export data to CSV in the exports directory with settings header."""
@@ -1601,8 +1927,14 @@ class Plugin:
 
         # Export CSV
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self._export_csv(f"lineuparr_preview_channels_{ts}.csv", results,
+        csv_name = f"lineuparr_preview_channels_{ts}.csv"
+        self._export_csv(csv_name, results,
                          ["Channel", "Number", "Category", "Group", "Status"], logger, settings)
+        self._write_html_report(
+            "Channel sync preview",
+            [("Channel", "Channel"), ("Number", "Number"), ("Category", "Category"),
+             ("Group", "Group"), ("Status", "Status")],
+            results, settings, logger, export_filename=csv_name)
 
         return {
             "status": "ok",
@@ -1642,7 +1974,7 @@ class Plugin:
             if lineup.get("status") == "error":
                 return lineup
             matcher = self._init_fuzzy_matcher(settings, logger)
-            alias_map = self._build_alias_map(settings, logger)
+            alias_map_for = self._alias_map_provider(settings, logger)
             upgrade_twin_set = self._get_upgrade_twin_set(settings, lineup, matcher)
             streams = self._get_all_streams(settings, logger)
             assigner = self._init_assigner_state(settings)
@@ -1685,13 +2017,14 @@ class Plugin:
                         return
 
                     ch_name = entry["name"]
+                    entry_cc = self._resolve_entry_country(entry, cat_cc, logger)
                     ch_number = self._get_channel_number(settings, entry, assigner)
                     boost_number = self._parse_channel_number(entry.get("number")) if use_number_boost else None
 
                     matches = matcher.match_all_streams(
-                        ch_name, unique_stream_names, alias_map,
+                        ch_name, unique_stream_names, alias_map_for(entry_cc),
                         channel_number=boost_number,
-                        lineup_country=cat_cc,
+                        lineup_country=entry_cc,
                         quality_aware=(ch_name in upgrade_twin_set),
                     )
 
@@ -1739,9 +2072,16 @@ class Plugin:
             results.sort(key=lambda r: (0 if r["Score"] == 0 else 1, r["Score"]))
 
             ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self._export_csv(f"lineuparr_preview_match_{ts}.csv", results,
+            csv_name = f"lineuparr_preview_match_{ts}.csv"
+            self._export_csv(csv_name, results,
                              ["Channel", "Number", "Category", "Best Match", "Score", "Match Type", "Total Matches", "Top Matches"],
                              logger, settings)
+            report_path = self._write_html_report(
+                "Preview stream match",
+                [("Channel", "Channel"), ("Number", "Number"), ("Category", "Category"),
+                 ("Best Match", "Best match"), ("Score", "Score"), ("Match Type", "Match type"),
+                 ("Total Matches", "Total matches")],
+                results, settings, logger, export_filename=csv_name)
 
             total = matched_count + unmatched_count
             type_breakdown = ", ".join(f"{v} {k}" for k, v in sorted(type_counts.items(), key=lambda x: -x[1]))
@@ -1751,6 +2091,9 @@ class Plugin:
                 f"{unmatched_count} unmatched. "
                 f"Types: {type_breakdown}. CSV exported."
             )
+            if report_path:
+                msg += f" Report: {report_path}"
+
             progress.finish(summary=msg)
             logger.info(f"{LOG_PREFIX} {msg}")
             send_websocket_update('updates', 'update', {
@@ -2312,7 +2655,7 @@ class Plugin:
                 return lineup
             prefix = self._get_group_prefix(settings, lineup)
             matcher = self._init_fuzzy_matcher(settings, logger)
-            alias_map = self._build_alias_map(settings, logger)
+            alias_map_for = self._alias_map_provider(settings, logger)
             rate_limiter = SmartRateLimiter(settings.get("rate_limiting", PluginConfig.DEFAULT_RATE_LIMITING))
             lineup_cc, _ = self._parse_lineup_filename(settings.get("lineup_file", ""))
             if lineup_cc:
@@ -2371,6 +2714,7 @@ class Plugin:
                         return {"status": "ok", "message": "Stream matching cancelled by user."}
 
                     ch_name = entry["name"]
+                    entry_cc = self._resolve_entry_country(entry, cat_cc, logger)
                     ch_number = self._parse_channel_number(entry.get("number")) if use_number_boost else None
                     channel_id = existing_channels.get((ch_name, group_id))
 
@@ -2382,9 +2726,9 @@ class Plugin:
 
                     # Match streams using deduplicated names
                     matches = matcher.match_all_streams(
-                        ch_name, unique_stream_names, alias_map,
+                        ch_name, unique_stream_names, alias_map_for(entry_cc),
                         channel_number=ch_number,
-                        lineup_country=cat_cc,
+                        lineup_country=entry_cc,
                         quality_aware=(ch_name in upgrade_twin_set),
                     )
 
@@ -2495,11 +2839,18 @@ class Plugin:
             # Export CSV
             ts = datetime.now().strftime("%Y%m%d_%H%M%S")
             mode = "dryrun" if dry_run else "applied"
+            csv_name = f"lineuparr_match_{mode}_{ts}.csv"
             self._export_csv(
-                f"lineuparr_match_{mode}_{ts}.csv", csv_rows,
+                csv_name, csv_rows,
                 ["Channel", "Number", "Category", "Streams Attached", "Best Match", "Best Score", "Match Type"],
                 logger, settings
             )
+            self._write_html_report(
+                "Stream match (dry run)" if dry_run else "Stream match applied",
+                [("Channel", "Channel"), ("Number", "Number"), ("Category", "Category"),
+                 ("Streams Attached", "Streams attached"), ("Best Match", "Best match"),
+                 ("Best Score", "Best score"), ("Match Type", "Match type")],
+                csv_rows, settings, logger, export_filename=csv_name)
 
             # Save state
             self._save_state({
@@ -2621,7 +2972,7 @@ class Plugin:
                 return lineup
             prefix = self._get_group_prefix(settings, lineup)
             matcher = self._init_fuzzy_matcher(settings, logger)
-            alias_map = self._build_alias_map(settings, logger)
+            alias_map_for = self._alias_map_provider(settings, logger)
             rate_limiter = SmartRateLimiter(settings.get("rate_limiting", PluginConfig.DEFAULT_RATE_LIMITING))
 
             # Extract lineup country code for EPG country matching
@@ -2708,8 +3059,6 @@ class Plugin:
                     continue
 
                 cat_cc = self._resolve_category_country(category, lineup_cc, logger)
-                # Lineup country first, then relaxed (None) if nothing matched.
-                countries = (cat_cc, None) if cat_cc else (None,)
 
                 for entry in channels:
                     if self._stop_event.is_set():
@@ -2717,6 +3066,9 @@ class Plugin:
                         return {"status": "ok", "message": "EPG matching cancelled by user."}
 
                     ch_name = entry["name"]
+                    entry_cc = self._resolve_entry_country(entry, cat_cc, logger)
+                    # Channel country first, then relaxed (None) if nothing matched.
+                    countries = (entry_cc, None) if entry_cc else (None,)
                     ch_number = self._parse_channel_number(entry.get("number")) if use_number_boost else None
                     ch_data = existing_channels.get((ch_name, group_id))
 
@@ -2746,7 +3098,7 @@ class Plugin:
                             if not pool:
                                 continue
                             ms = matcher.match_all_streams(
-                                ch_name, pool, alias_map,
+                                ch_name, pool, alias_map_for(entry_cc),
                                 channel_number=ch_number,
                                 lineup_country=country,
                             )
@@ -2756,13 +3108,13 @@ class Plugin:
                             top_entries = lookup.get(top_name, [])
                             if not top_entries:
                                 continue
-                            best_epg = self._pick_epg_by_country(top_entries, cat_cc)
+                            best_epg = self._pick_epg_by_country(top_entries, entry_cc)
                             best_score = top_score
                             best_method = top_method
                             has_program_data = has_prog
                             if not has_prog:
                                 logger.debug(f"{LOG_PREFIX} EPG fallback (no program data): {ch_name} -> {best_epg['name']}")
-                            if country is None and cat_cc:
+                            if country is None and entry_cc:
                                 logger.debug(f"{LOG_PREFIX} EPG country-relaxed match: {ch_name} -> {best_epg['name']}")
                             break
                         if best_epg:
@@ -2823,13 +3175,22 @@ class Plugin:
             # Export CSV
             if csv_rows:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                csv_name = f"lineuparr_epg_match_{timestamp}.csv"
                 self._export_csv(
-                    f"lineuparr_epg_match_{timestamp}.csv",
+                    csv_name,
                     csv_rows,
                     ["channel_name", "channel_number", "channel_group", "matched_epg_name",
                      "epg_source", "confidence_score", "has_program_data", "match_method", "status"],
                     logger, settings,
                 )
+                self._write_html_report(
+                    "EPG match",
+                    [("channel_name", "Channel"), ("channel_number", "Number"),
+                     ("channel_group", "Group"), ("matched_epg_name", "Matched EPG entry"),
+                     ("epg_source", "EPG source"), ("confidence_score", "Score"),
+                     ("has_program_data", "Has programme data"), ("match_method", "Match method"),
+                     ("status", "Status")],
+                    csv_rows, settings, logger, export_filename=csv_name)
 
             progress.finish()
             self._trigger_frontend_refresh(logger)
