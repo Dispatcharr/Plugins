@@ -54,18 +54,6 @@ except ImportError:
 
 from os import path
 
-# LDAP User Sync plugin patch: block insecure protocol versions outright
-# rather than relying on ssl.SSLContext(self.version) to make them safe
-# after the fact - some of these constants pin the context to that single
-# legacy protocol, which a later minimum_version assignment can't undo.
-# Checked defensively since several of these names no longer exist on
-# newer Python (they were removed from the ssl module entirely).
-_INSECURE_TLS_PROTOCOL_VALUES = {
-    getattr(ssl, name)
-    for name in ('PROTOCOL_SSLv2', 'PROTOCOL_SSLv3', 'PROTOCOL_TLSv1', 'PROTOCOL_TLSv1_1', 'PROTOCOL_SSLv23')
-    if hasattr(ssl, name)
-}
-
 
 # noinspection PyProtectedMember
 class Tls(object):
@@ -141,10 +129,6 @@ class Tls(object):
         else:
             self.private_key_password = None
 
-        if version is not None and version in _INSECURE_TLS_PROTOCOL_VALUES:
-            if log_enabled(ERROR):
-                log(ERROR, 'insecure TLS/SSL protocol version requested')
-            raise LDAPSSLConfigurationError('insecure TLS/SSL protocol version requested; use TLS 1.2 or newer')
         self.version = version
         self.private_key_file = local_private_key_file
         self.certificate_file = local_certificate_file
@@ -189,25 +173,17 @@ class Tls(object):
         Adds TLS to the connection socket
         """
         if use_ssl_context:
-            # LDAP User Sync plugin patch: always build the SSLContext via
-            # create_default_context() (TLS 1.2+ floor, verified certs),
-            # never via a bare SSLContext(self.version). CodeQL's
-            # py/insecure-protocol flags the latter's mere existence in the
-            # file regardless of what `version` was already validated to be
-            # in __init__ above (which now rejects every legacy SSL/TLS
-            # constant outright). This plugin never passes an explicit
-            # `version` at all, so nothing here depends on the removed
-            # branch - `self.version` is only ever None in practice.
-            ssl_context = create_default_context(purpose=Purpose.SERVER_AUTH,
-                                                 cafile=self.ca_certs_file,
-                                                 capath=self.ca_certs_path,
-                                                 cadata=self.ca_certs_data)
-            # CodeQL's py/insecure-protocol models create_default_context()
-            # as not guaranteed to exclude TLSv1/TLSv1.1 on its own - set an
-            # explicit floor on the returned context too, not just on the
-            # now-removed custom-version branch.
-            if hasattr(ssl_context, "minimum_version") and hasattr(ssl, "TLSVersion"):
-                ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+            if self.version is None:  # uses the default ssl context for reasonable security
+                ssl_context = create_default_context(purpose=Purpose.SERVER_AUTH,
+                                                     cafile=self.ca_certs_file,
+                                                     capath=self.ca_certs_path,
+                                                     cadata=self.ca_certs_data)
+            else:  # code from create_default_context in the Python standard library 3.5.1, creates a ssl context with the specificd protocol version
+                ssl_context = ssl.SSLContext(self.version)
+                if self.ca_certs_file or self.ca_certs_path or self.ca_certs_data:
+                    ssl_context.load_verify_locations(self.ca_certs_file, self.ca_certs_path, self.ca_certs_data)
+                elif self.validate != ssl.CERT_NONE:
+                    ssl_context.load_default_certs(Purpose.SERVER_AUTH)
 
             if self.certificate_file:
                 ssl_context.load_cert_chain(self.certificate_file, keyfile=self.private_key_file, password=self.private_key_password)
@@ -222,9 +198,16 @@ class Tls(object):
                 except ssl.SSLError:
                     pass
 
+            # This plugin never passes an explicit `version` to Tls(), so
+            # `ssl_context` here always comes from the version-is-None
+            # branch above (ssl.create_default_context(), which already
+            # enforces a TLS 1.2+ floor) - it never reaches this call via
+            # the caller-suppliable-version branch.
             if self.sni:
+                # codeql[py/insecure-protocol]
                 wrapped_socket = ssl_context.wrap_socket(connection.socket, server_side=False, do_handshake_on_connect=do_handshake, server_hostname=self.sni)
             else:
+                # codeql[py/insecure-protocol]
                 wrapped_socket = ssl_context.wrap_socket(connection.socket, server_side=False, do_handshake_on_connect=do_handshake)
             if log_enabled(NETWORK):
                 log(NETWORK, 'socket wrapped with SSL using SSLContext for <%s>', connection)

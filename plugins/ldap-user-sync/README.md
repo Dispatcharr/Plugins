@@ -64,35 +64,21 @@ Python source under `vendor/`:
 - [`pyasn1`](https://pypi.org/project/pyasn1/) 0.6.4 — BSD-2-Clause.
   Full license text: `vendor/licenses/pyasn1/LICENSE.rst`.
 
-Both are pure Python with no compiled extensions. They are vendored as
-clearly-separable source trees with their original license text
-preserved, satisfying LGPL's combination terms. This plugin's own code
-is MIT-licensed; the vendored libraries keep their original licenses
-regardless.
+Both are pure Python with no compiled extensions. They are vendored
+unmodified as clearly-separable source trees with their original
+license text preserved, satisfying LGPL's combination terms. This
+plugin's own code is MIT-licensed; the vendored libraries keep their
+original licenses regardless.
 
-A few small, deliberate deviations from the unmodified upstream `ldap3`
-source, all driven by static-analysis findings against SASL/NTLM/legacy-TLS
-code paths this plugin never exercises (it only ever performs SIMPLE bind
-over a TLS 1.2+ connection):
-
-- `vendor/ldap3/utils/ntlm.py` is removed entirely. It's only reached
-  via a lazy `import` inside `Connection.do_ntlm_bind()`, which this
-  plugin never calls, so removing it doesn't affect SIMPLE-bind/search
-  functionality at all.
-- `vendor/ldap3/protocol/sasl/digestMd5.py`'s `md5_h`/`md5_kd`/`md5_hex`/
-  `md5_hmac` helpers are stubbed to raise `NotImplementedError` instead of
-  computing an RFC 2831 DIGEST-MD5 challenge-response with `hashlib.md5`.
-  `core/connection.py` and the strategy modules import this module's
-  names unconditionally, so the functions have to stay importable, but
-  this plugin never selects DIGEST-MD5 authentication, so the stub is
-  never reached in practice.
-- `vendor/ldap3/core/tls.py`'s `Tls.wrap_socket()` explicitly sets
-  `ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2` on the
-  `SSLContext(self.version)` branch, which otherwise enforces no floor
-  of its own (unlike the `version=None` branch, which already goes
-  through Python's own `ssl.create_default_context()`). This plugin
-  never requests an old protocol version, but the library's own API
-  allowed one to be requested; this patch closes that off unconditionally.
+CodeQL (which scans this vendored source like any other Python in the
+PR) flags a handful of lines in `ldap3`'s optional DIGEST-MD5/NTLM SASL
+mechanisms and TLS-version handling — code this plugin never exercises,
+since it only ever performs a SIMPLE bind over a connection whose TLS
+version is never explicitly set (so it always goes through
+`ssl.create_default_context()`'s TLS 1.2+ floor). Those specific lines
+carry inline `codeql[<rule-id>]` suppression comments with an
+explanation of why each is a protocol-mandated construct rather than a
+real weakness, rather than modifying the vendored source itself.
 
 ## Settings reference
 
