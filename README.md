@@ -20,7 +20,7 @@ This branch contains all published plugin releases.
 | [`EPGeditARR`](#epgeditarr) | `0.2.10` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.1711720` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.1741204` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
-| [`Lineuparr`](#lineuparr) | `1.26.2142327` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
+| [`Lineuparr`](#lineuparr) | `1.26.2171315` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
 | [`Multiview`](#multiview) | `0.4.2` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2142011` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
@@ -197,7 +197,7 @@ A Dispatcharr Plugin that goes through a playlist to check IPTV channels
 
 ### [Lineuparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/lineuparr/README.md)
 
-**Version:** `1.26.2142327` | **Author:** PiratesIRC | **Last Updated:** Aug 03 2026, 00:35 UTC
+**Version:** `1.26.2171315` | **Author:** PiratesIRC | **Last Updated:** Aug 05 2026, 14:25 UTC
 
 Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them.
 
@@ -206,10 +206,10 @@ Mirror real-world provider channel lineups by creating channel groups, channels,
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.2142327`)](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2142327/lineuparr-1.26.2142327.zip)
-- [All Versions (8 available)](./metadata/lineuparr)
+- [Latest Release (`1.26.2171315`)](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2171315/lineuparr-1.26.2171315.zip)
+- [All Versions (9 available)](./metadata/lineuparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/lineuparr) | **Last Change:** [`3d801fb`](https://github.com/Dispatcharr/Plugins/commit/3d801fb4530196dc46c3c38d9843548ecb65d097)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/lineuparr) | **Last Change:** [`ec73378`](https://github.com/Dispatcharr/Plugins/commit/ec73378d08dfa6275c691e26d7f1264d0ac24255)
 
 ---
 
@@ -447,4 +447,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Aug 05 2026, 14:19 UTC*
+*Last updated: Aug 05 2026, 14:26 UTC*
