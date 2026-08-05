@@ -11,7 +11,7 @@ This branch contains all published plugin releases.
 
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
-| [`Channel Mapparr`](#channel-mapparr) | `1.26.2141433` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
+| [`Channel Mapparr`](#channel-mapparr) | `1.26.2170831` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.1.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.16.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 37 leagues, tours and competitions (20 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.6` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
@@ -39,7 +39,7 @@ This branch contains all published plugin releases.
 
 ### [Channel Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-mapparr/README.md)
 
-**Version:** `1.26.2141433` | **Author:** PiratesIRC | **Last Updated:** Aug 02 2026, 21:02 UTC
+**Version:** `1.26.2170831` | **Author:** PiratesIRC | **Last Updated:** Aug 05 2026, 14:18 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries.
 
@@ -48,10 +48,10 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.2141433`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2141433/channel-mapparr-1.26.2141433.zip)
-- [All Versions (6 available)](./metadata/channel-mapparr)
+- [Latest Release (`1.26.2170831`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2170831/channel-mapparr-1.26.2170831.zip)
+- [All Versions (7 available)](./metadata/channel-mapparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | **Last Change:** [`0e49141`](https://github.com/Dispatcharr/Plugins/commit/0e4914159f6eb2e81928d03d4233a93d10ae0965)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | **Last Change:** [`3826bb2`](https://github.com/Dispatcharr/Plugins/commit/3826bb24bfc5de22f36bad3cbaa7ea8cdba50432)
 
 ---
 
@@ -447,4 +447,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Aug 03 2026, 00:35 UTC*
+*Last updated: Aug 05 2026, 14:19 UTC*
