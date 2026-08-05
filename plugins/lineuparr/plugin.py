@@ -22,7 +22,7 @@ from .fuzzy_matcher import (FuzzyMatcher, has_upgrade_quality, detect_category_c
                             detect_name_country_prefix, country_codes_in_text)
 from .aliases import CHANNEL_ALIASES, COUNTRY_ALIASES
 from .progress_status import save_progress_atomic, load_progress, build_status_message
-from . import notify_bridge, reports
+from . import notify_bridge, report_count, reports
 
 from apps.channels.models import Channel, ChannelGroup, ChannelProfile, ChannelProfileMembership, ChannelStream, Stream
 from apps.m3u.models import M3UAccount
@@ -66,7 +66,7 @@ def _clean_json_text(s):
 
 
 class PluginConfig:
-    PLUGIN_VERSION = "1.26.2142327"
+    PLUGIN_VERSION = "1.26.2171315"
 
     DEFAULT_FUZZY_MATCH_THRESHOLD = 80
     DEFAULT_PRIORITIZE_QUALITY = True
@@ -1476,9 +1476,65 @@ class Plugin:
                 return None
             logger.info(f"{LOG_PREFIX} Report written: {result['html_path']}")
             self._emit_reports(result, settings, logger)
+            # Last, deliberately. This is the cosmetic step and delivery is the
+            # one the operator asked for, so nothing here can delay or precede
+            # it. Were this ever to raise, the enclosing except would swallow
+            # the return value and the caller would read a written report as a
+            # failed one.
+            self._publish_report_count(result, logger)
             return result["html_path"]
         except Exception as e:
             logger.warning(f"{LOG_PREFIX} HTML report failed: {e}")
+            return None
+
+    @staticmethod
+    def _publish_report_count(written, logger):
+        """Add one to the count Newsflasharr shows for this plugin.
+
+        Called from the one place a report build is known to have succeeded.
+        write_report degrades instead of raising, so a failed publish otherwise
+        looks exactly like a good one, and a counter that incremented anyway
+        would turn that failure into apparent success.
+
+        Two independent conditions are required, because they can disagree. The
+        result dict must carry no error, which is how write_report reports a
+        failure, and the named file must exist. write_report can return a path
+        AND an error together: the paths are assigned before the old-report
+        pruning step, so a failure inside pruning leaves both keys populated.
+        Checking only the path would count that as a clean build. Checking only
+        the error would count a build whose file was deleted underneath it.
+
+        The reverse case is a deliberate under-count. If the HTML file is
+        written and the CSV write then fails, write_report reports the whole
+        build as failed and this does not increment, even though a complete
+        HTML report is sitting on disk. That is the safe direction: the
+        alternative counts half-written builds as successes.
+
+        Counts builds, not deliveries: a report built while notifications are
+        off still counts, because it was still published to disk. The on-demand
+        Email Report Now action deliberately does not call this, since it sends
+        a report that already exists rather than building one.
+
+        Never raises and never fails the run. A cosmetic number is not worth a
+        report for.
+        """
+        try:
+            written = written or {}
+            path = written.get("html_path")
+            if written.get("error") or not path or not os.path.isfile(path):
+                return None
+            value = report_count.increment(report_count.counter_path())
+            if value is None:
+                # Logged at warning, not debug. The usual cause is the counter
+                # directory having been created root-owned by something run as
+                # root inside the container, which the plugin can then never
+                # rewrite. Nothing else about the plugin looks unhealthy when
+                # that happens, so a debug line would hide it permanently.
+                logger.warning(f"{LOG_PREFIX} Report counter not updated. Check that "
+                               f"{report_count.counter_dir()} is owned by dispatch.")
+            return value
+        except Exception as e:
+            logger.warning(f"{LOG_PREFIX} Report counter not updated: {e}")
             return None
 
     @staticmethod
