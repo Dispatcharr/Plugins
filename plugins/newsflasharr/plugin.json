@@ -1,6 +1,6 @@
 {
   "name": "Newsflasharr",
-  "version": "1.26.2142011",
+  "version": "1.26.2171427",
   "description": "Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.",
   "author": "PiratesIRC",
   "license": "MIT",
