@@ -23,7 +23,7 @@ This branch contains all published plugin releases.
 | [`Lineuparr`](#lineuparr) | `1.26.2171315` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
 | [`Multiview`](#multiview) | `0.4.2` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
-| [`Newsflasharr`](#newsflasharr) | `1.26.2171427` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
+| [`Newsflasharr`](#newsflasharr) | `1.26.2191208` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.0.0` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`reservoarr`](#reservoarr) | `6.3.1` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `1.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
@@ -249,7 +249,7 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
 ### [Newsflasharr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/newsflasharr/README.md)
 
-**Version:** `1.26.2171427` | **Author:** PiratesIRC | **Last Updated:** Aug 06 2026, 11:42 UTC
+**Version:** `1.26.2191208` | **Author:** PiratesIRC | **Last Updated:** Aug 07 2026, 13:48 UTC
 
 Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.
 
@@ -258,10 +258,10 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.2171427`)](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2171427/newsflasharr-1.26.2171427.zip)
-- [All Versions (2 available)](./metadata/newsflasharr)
+- [Latest Release (`1.26.2191208`)](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2191208/newsflasharr-1.26.2191208.zip)
+- [All Versions (3 available)](./metadata/newsflasharr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/newsflasharr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/newsflasharr/README.md) | **Last Change:** [`b8b1f11`](https://github.com/Dispatcharr/Plugins/commit/b8b1f116536b65e2a4394e55491240254d1075a3)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/newsflasharr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/newsflasharr/README.md) | **Last Change:** [`1df507c`](https://github.com/Dispatcharr/Plugins/commit/1df507c31074da7de450b53082a325fe8e604644)
 
 ---
 
@@ -447,4 +447,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Aug 07 2026, 12:01 UTC*
+*Last updated: Aug 07 2026, 13:49 UTC*

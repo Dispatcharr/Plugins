@@ -2,7 +2,7 @@
 
 # Newsflasharr
 
-**Version:** `1.26.2171427` | **Author:** PiratesIRC | **Last Updated:** Aug 06 2026, 11:42 UTC
+**Version:** `1.26.2191208` | **Author:** PiratesIRC | **Last Updated:** Aug 07 2026, 13:48 UTC
 
 Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.
 
@@ -14,20 +14,21 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 
 ### Latest Release
 
-- **Download:** [`newsflasharr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2171427/newsflasharr-1.26.2171427.zip)
-- **Built:** Aug 06 2026, 11:42 UTC
-- **Source Commit:** [`b8b1f11`](https://github.com/Dispatcharr/Plugins/commit/b8b1f116536b65e2a4394e55491240254d1075a3)
+- **Download:** [`newsflasharr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2191208/newsflasharr-1.26.2191208.zip)
+- **Built:** Aug 07 2026, 13:49 UTC
+- **Source Commit:** [`1df507c`](https://github.com/Dispatcharr/Plugins/commit/1df507c31074da7de450b53082a325fe8e604644)
 
 **Checksums:**
 ```
-MD5:    ecf6724f53f31440ff94a76eeef820bf
-SHA256: fac709e3810574cb727d92218fb7308519c2ba65c989bd0144cf535c9d9c11da
+MD5:    5e9a3272ce95845282e4e2f85302db2d
+SHA256: ee926fe8a4bd90518ac00bce29edfdbe8eba84471b802a3a870b8c90d087b6ae
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2191208` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2191208/newsflasharr-1.26.2191208.zip) | Aug 07 2026, 13:49 UTC | [`1df507c`](https://github.com/Dispatcharr/Plugins/commit/1df507c31074da7de450b53082a325fe8e604644) | 5e9a3272ce95845282e4e2f85302db2d | ee926fe8a4bd90518ac00bce29edfdbe8eba84471b802a3a870b8c90d087b6ae |
 | `1.26.2171427` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2171427/newsflasharr-1.26.2171427.zip) | Aug 06 2026, 11:42 UTC | [`b8b1f11`](https://github.com/Dispatcharr/Plugins/commit/b8b1f116536b65e2a4394e55491240254d1075a3) | ecf6724f53f31440ff94a76eeef820bf | fac709e3810574cb727d92218fb7308519c2ba65c989bd0144cf535c9d9c11da |
 | `1.26.2142011` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2142011/newsflasharr-1.26.2142011.zip) | Aug 02 2026, 20:37 UTC | [`b8a8998`](https://github.com/Dispatcharr/Plugins/commit/b8a8998fd68c1f4ca9491576c11658ead84ed633) | 8d0e25158ba305752e053e7f76922034 | a056087da39ca2dc2fcdd89c2debf2218e20233438a6894254f9f3fc471f97f4 |
 

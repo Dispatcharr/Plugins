@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-06T11:42:26Z",
+  "generated_at": "2026-08-07T13:49:17Z",
   "manifest": {
     "slug": "newsflasharr",
     "name": "Newsflasharr",
@@ -12,22 +12,35 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1533575430400114730",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-08-06T11:42:06Z",
+    "last_updated": "2026-08-07T13:48:52Z",
     "latest": {
-      "version": "1.26.2171427",
-      "commit_sha": "b8b1f116536b65e2a4394e55491240254d1075a3",
-      "commit_sha_short": "b8b1f11",
-      "build_timestamp": "2026-08-06T11:42:20Z",
-      "last_updated": "2026-08-06T11:42:06Z",
-      "checksum_md5": "ecf6724f53f31440ff94a76eeef820bf",
-      "checksum_sha256": "fac709e3810574cb727d92218fb7308519c2ba65c989bd0144cf535c9d9c11da",
+      "version": "1.26.2191208",
+      "commit_sha": "1df507c31074da7de450b53082a325fe8e604644",
+      "commit_sha_short": "1df507c",
+      "build_timestamp": "2026-08-07T13:49:11Z",
+      "last_updated": "2026-08-07T13:48:52Z",
+      "checksum_md5": "5e9a3272ce95845282e4e2f85302db2d",
+      "checksum_sha256": "ee926fe8a4bd90518ac00bce29edfdbe8eba84471b802a3a870b8c90d087b6ae",
       "min_dispatcharr_version": "v0.20.0",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/releases/download/1.26.2171427/Newsflasharr.zip",
-      "latest_url": "newsflasharr-1.26.2171427/newsflasharr-1.26.2171427.zip",
-      "url": "newsflasharr-1.26.2171427/newsflasharr-1.26.2171427.zip",
-      "size": 189
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/releases/download/1.26.2191208/Newsflasharr.zip",
+      "latest_url": "newsflasharr-1.26.2191208/newsflasharr-1.26.2191208.zip",
+      "url": "newsflasharr-1.26.2191208/newsflasharr-1.26.2191208.zip",
+      "size": 190
     },
     "versions": [
+      {
+        "version": "1.26.2191208",
+        "commit_sha": "1df507c31074da7de450b53082a325fe8e604644",
+        "commit_sha_short": "1df507c",
+        "build_timestamp": "2026-08-07T13:49:11Z",
+        "last_updated": "2026-08-07T13:48:52Z",
+        "checksum_md5": "5e9a3272ce95845282e4e2f85302db2d",
+        "checksum_sha256": "ee926fe8a4bd90518ac00bce29edfdbe8eba84471b802a3a870b8c90d087b6ae",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/releases/download/1.26.2191208/Newsflasharr.zip",
+        "url": "newsflasharr-1.26.2191208/newsflasharr-1.26.2191208.zip",
+        "size": 190
+      },
       {
         "version": "1.26.2171427",
         "commit_sha": "b8b1f116536b65e2a4394e55491240254d1075a3",
@@ -56,5 +69,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCanRzJAAKCRB+wDprTCI0\nzkhpAP9+uVW1WSk7PE3xaUnReDExcx/ugs0QlmkvpXDhY9+zBgD/WaUv/MaOspEB\n97ci2cQjGF7rpejllRmltYW3UOM73gA=\n=l7Qu\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCanXiXwAKCRB+wDprTCI0\nzowvAP93Fk6kNUbDyimBHC2NVVMQ7VwMh5EXsVhCpgXyzSEhAwD9EACKpXcctUO3\nNdNHmHOPWBW1BmU6YwY6ClzhiE9LYwk=\n=4yc5\n-----END PGP SIGNATURE-----"
 }
