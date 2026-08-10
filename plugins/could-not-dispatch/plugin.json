@@ -1,0 +1,11 @@
+{
+  "name": "Could Not Dispatch",
+  "version": "0.1.0",
+  "description": "Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen.",
+  "author": "PilaScat",
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v{version}/could-not-dispatch-{version}.zip",
+  "repo_url": "https://github.com/PilaScat/could-not-dispatch",
+  "help_url": "https://github.com/PilaScat/could-not-dispatch#readme"
+}
