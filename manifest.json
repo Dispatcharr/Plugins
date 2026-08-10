@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08T10:47:32Z",
+  "generated_at": "2026-08-10T20:11:52Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -19,6 +19,20 @@
         "latest_url": "channel-mapparr-1.26.2170831/channel-mapparr-1.26.2170831.zip",
         "latest_size": 640,
         "min_dispatcharr_version": "v0.20.0"
+      },
+      {
+        "slug": "could-not-dispatch",
+        "name": "Could Not Dispatch",
+        "description": "Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/could-not-dispatch/manifest.json",
+        "author": "PilaScat",
+        "license": "MIT",
+        "last_updated": "2026-08-10T16:11:26-04:00",
+        "latest_version": "0.1.0",
+        "latest_md5": "42c9dd34574a5fb1beafa5ab4cd3e56e",
+        "latest_sha256": "3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886",
+        "latest_url": "could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip",
+        "latest_size": 57
       },
       {
         "slug": "dispatcharr-exporter",
@@ -346,5 +360,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCancJSQAKCRB+wDprTCI0\nzmYHAP4vz2ECF887mTeYxOIsShe7uG9ndRlkgk62OblUwY3DSAD9ENxUi9WxPp8D\nmWL10QC0hwIP715aRJKqlVVpwoSL8wU=\n=uymJ\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCanowjQAKCRB+wDprTCI0\nzqMOAQDcwTnfG074I5wWb0VqakTYwy/nTy4nJ6qKYiT94HbA9wD+Iri6B/4uyx1P\n7ZQzZwJ0uPZIH9upTY0WMgOX3KQyuQA=\n=pbOs\n-----END PGP SIGNATURE-----"
 }

@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-08-10T20:11:52Z",
+  "manifest": {
+    "slug": "could-not-dispatch",
+    "name": "Could Not Dispatch",
+    "description": "Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen.",
+    "author": "PilaScat",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v{version}/could-not-dispatch-{version}.zip",
+    "repo_url": "https://github.com/PilaScat/could-not-dispatch",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-08-10T16:11:26-04:00",
+    "latest": {
+      "version": "0.1.0",
+      "commit_sha": "67532805aec060ec4ae02d60d874ada54f64c63f",
+      "commit_sha_short": "6753280",
+      "build_timestamp": "2026-08-10T20:11:44Z",
+      "last_updated": "2026-08-10T16:11:26-04:00",
+      "checksum_md5": "42c9dd34574a5fb1beafa5ab4cd3e56e",
+      "checksum_sha256": "3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886",
+      "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.1.0/could-not-dispatch-0.1.0.zip",
+      "latest_url": "could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip",
+      "url": "could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip",
+      "size": 57
+    },
+    "versions": [
+      {
+        "version": "0.1.0",
+        "commit_sha": "67532805aec060ec4ae02d60d874ada54f64c63f",
+        "commit_sha_short": "6753280",
+        "build_timestamp": "2026-08-10T20:11:44Z",
+        "last_updated": "2026-08-10T16:11:26-04:00",
+        "checksum_md5": "42c9dd34574a5fb1beafa5ab4cd3e56e",
+        "checksum_sha256": "3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886",
+        "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.1.0/could-not-dispatch-0.1.0.zip",
+        "url": "could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip",
+        "size": 57
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCanowiQAKCRB+wDprTCI0\nzqAKAQD61LRBKb03fzmYnSDBUBsWV8GHE+nWZtrWHTqKVnWjIQD+I+nhHDf0vMUf\nTjCve4goNvNHXyjQ39BJ8L4EasySLAE=\n=CVQI\n-----END PGP SIGNATURE-----"
+}
