@@ -2,7 +2,7 @@
 
 # Embyfin Stream Cleanup
 
-**Version:** `1.3.0` | **Author:** sethwv | **Last Updated:** Jul 17 2026, 21:38 UTC
+**Version:** `1.3.0` | **Author:** sethwv | **Last Updated:** Aug 11 2026, 01:56 UTC
 
 Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections
 

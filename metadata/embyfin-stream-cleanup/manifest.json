@@ -1,11 +1,12 @@
 {
-  "generated_at": "2026-07-17T21:39:26Z",
+  "generated_at": "2026-08-11T01:57:22Z",
   "manifest": {
     "slug": "embyfin-stream-cleanup",
     "name": "Embyfin Stream Cleanup",
     "description": "Monitors Dispatcharr client activity and terminates idle Emby/Jellyfin connections",
     "author": "sethwv",
     "license": "MIT",
+    "deprecated": true,
     "repo_url": "https://github.com/swvn-dispatch/embyfin-stream-cleanup",
     "discord_thread": "https://discord.com/channels/1340492560220684331/1491487318832447668",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
@@ -111,5 +112,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCalqhDwAKCRB+wDprTCI0\nzlBxAP0baE5Hp58xQBarK4gR7SOmhYrpBV1IgiOzml93KuclNAD/caATtYS9xZXR\ngr/YHLZ8Eh2VGMXhgx6u2mVR4ODZmws=\n=kfod\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCanqBgwAKCRB+wDprTCI0\nzvBFAQC6yLLrNu4MrIaGDLHpKDMXOGh9I+S/rK5SlUUU3rpEDQEAlublOA4iGoz1\nCwAvivCu4VuQAC8dNXqRthlMQiQTOA0=\n=psk3\n-----END PGP SIGNATURE-----"
 }
