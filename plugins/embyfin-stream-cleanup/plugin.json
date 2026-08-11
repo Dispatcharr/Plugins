@@ -7,5 +7,8 @@
   "author": "sethwv",
   "min_dispatcharr_version": "v0.22.0",
   "help_url": "https://github.com/swvn-dispatch/embyfin-stream-cleanup",
-  "repo_url": "https://github.com/swvn-dispatch/embyfin-stream-cleanup"
+  "repo_url": "https://github.com/swvn-dispatch/embyfin-stream-cleanup",
+
+  "deprecated": true,
+  "unlisted": true
 }
