@@ -172,9 +172,11 @@ jobs:
 
       - name: Validate PR title format
         id: check
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           python -m pluginctl check-title \
-            --title "${{ github.event.pull_request.title }}" \
+            --title "$PR_TITLE" \
             --author "${{ github.event.pull_request.user.login }}" \
             --plugin-count "${{ needs.detect-changes.outputs.plugin_count }}" \
             --matrix '${{ needs.detect-changes.outputs.matrix }}'
