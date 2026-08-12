@@ -1,5 +1,5 @@
 # Extra CodeQL query applied alongside the `security-extended` suite used by
-# validate-plugin.yml. `packs:` is required here (rather than the simpler
+# _codeql-scan.yml. `packs:` is required here (rather than the simpler
 # `packs:` input on codeql-action/init) because that input only works for
 # single-language analyses, and our workflow can initialize multiple
 # languages at once.

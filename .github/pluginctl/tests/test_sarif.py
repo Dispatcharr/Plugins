@@ -52,6 +52,16 @@ def test_process_message_not_truncated():
     assert out == "a" * 200
 
 
+def test_process_message_dedupes_repeated_sentences():
+    out = sarif.process_message("This value flows here. This value flows here. Then here.")
+    assert out == "This value flows here. Then here."
+
+
+def test_process_message_no_repeats_untouched():
+    out = sarif.process_message("First sentence. Second sentence.")
+    assert out == "First sentence. Second sentence."
+
+
 def test_findings_table_blocking_links_internal():
     table = sarif.findings_table(_load(), sarif.is_blocking, "org/repo", "abc123", [])
     assert "| Rule | Location | Description |" in table

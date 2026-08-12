@@ -25,6 +25,8 @@ ZWSP = "​"
 _MD_LINK_RE = re.compile(r"\[([^\]]+)\]\([0-9]+\)")
 _HASH_DIGIT_RE = re.compile(r"#(?=[0-9])")
 _WWW_RE = re.compile(r"www\.")
+# jq: splits("(?<=[.!?]) ")  ->  split into sentences, dedup, rejoin
+_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?]) ")
 
 
 def load_sarif_dir(path: str) -> list[dict]:
@@ -132,7 +134,14 @@ def process_message(text) -> str:
     msg = _HASH_DIGIT_RE.sub(f"#{ZWSP}", msg)
     msg = _MD_LINK_RE.sub(r"\1", msg)
     msg = msg.replace("[", "&#91;").replace("]", "&#93;")
-    return msg
+    # Data-flow queries can repeat the same sentence once per source/flow reaching
+    # the same sink - collapse repeats while preserving first-seen order.
+    sentences = _SENTENCE_SPLIT_RE.split(msg)
+    seen: list[str] = []
+    for sentence in sentences:
+        if sentence not in seen:
+            seen.append(sentence)
+    return " ".join(seen)
 
 
 def _location(result: dict) -> tuple[str, str]:
