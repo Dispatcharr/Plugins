@@ -51,6 +51,39 @@ LOGGER.setLevel(logging.DEBUG)
 LOG_PREFIX = "[Lineuparr]"
 
 
+def result_text(result, default=""):
+    """The human-readable text of an action result, whichever key carries it.
+
+    Dispatcharr renders `error` in red and persistently, and `message` as a
+    green toast that closes itself, so a failure puts its reason under `error`
+    and a success puts its summary under `message`. Nothing sets both. Anything
+    that consumes another action's result therefore has to look in both places,
+    and reading only `message` would raise a KeyError at the exact moment a
+    step failed, which is the moment the text is most needed.
+
+    `error` wins when both are somehow present, because a failure the operator
+    must see outranks a summary. An empty string counts as absent.
+    """
+    if not isinstance(result, dict):
+        return default
+    return result.get("error") or result.get("message") or default
+
+
+def action_result(status, text, **extra):
+    """Build an action result whose text lands under the key that gets rendered.
+
+    An action whose status is decided at run time, from how much of the work
+    succeeded, cannot know at the point of writing which key to use. Building
+    the dict by hand always picked `message`, so a failure was shown as a green
+    toast that closed itself after about four seconds.
+
+    A warning is deliberately not red: the run happened and produced a partial
+    result, so it reads as a summary rather than as a refusal.
+    """
+    key = "error" if status == "error" else "message"
+    return {"status": status, key: text, **extra}
+
+
 # BOM + zero-width characters that sneak in from rich-text paste (editors,
 # Slack/Discord, web docs). Python's str.strip() treats none of these as
 # whitespace, so they survive `.strip()` and trip json.loads with
@@ -66,7 +99,7 @@ def _clean_json_text(s):
 
 
 class PluginConfig:
-    PLUGIN_VERSION = "1.26.2171315"
+    PLUGIN_VERSION = "1.26.2241618"
 
     DEFAULT_FUZZY_MATCH_THRESHOLD = 80
     DEFAULT_PRIORITIZE_QUALITY = True
@@ -587,12 +620,12 @@ class Plugin:
             handler = action_map.get(action)
             if not handler:
                 logger.warning(f"{LOG_PREFIX} Unknown action: {action}")
-                return {"status": "error", "message": f"Unknown action: {action}"}
+                return {"status": "error", "error": f"Unknown action: {action}"}
 
             logger.info(f"{LOG_PREFIX} ▶ Action triggered: {action}")
             result = handler(settings, logger)
             status = result.get("status", "?") if isinstance(result, dict) else "ok"
-            msg = result.get("message", "")[:200] if isinstance(result, dict) else ""
+            msg = result_text(result)[:200]
             is_bg = result.get("background", False) if isinstance(result, dict) else False
             logger.info(f"{LOG_PREFIX} ◀ Action complete: {action} → {status} | {msg}")
 
@@ -615,7 +648,7 @@ class Plugin:
 
         except Exception as e:
             logger.exception(f"{LOG_PREFIX} Error in action '{action}': {e}")
-            return {"status": "error", "message": f"Internal error: {str(e)}"}
+            return {"status": "error", "error": f"Internal error: {str(e)}"}
 
     def stop(self, context):
         logger = context.get("logger", LOGGER)
@@ -1878,7 +1911,7 @@ class Plugin:
             msg = f"❌ {errors} error(s) found.\n" + "\n".join(error_details)
         if warn_details:
             msg += f"\n\n⚠️ {len(warn_details)} warning(s):\n" + "\n".join(warn_details)
-        return {"status": status, "message": msg, "data": results}
+        return action_result(status, msg, data=results)
 
     def _scan_lineups(self, settings, logger):
         """Discover available lineup JSON files."""
@@ -1889,7 +1922,7 @@ class Plugin:
         lineup_files = [f for f in lineup_files if os.path.basename(f) != "plugin.json"]
 
         if not lineup_files:
-            return {"status": "error", "message": "No lineup JSON files found in plugin directory."}
+            return {"status": "error", "error": "No lineup JSON files found in plugin directory."}
 
         results = []
         for f in lineup_files:
@@ -2014,7 +2047,7 @@ class Plugin:
             eta_str = "unknown"
 
         if not self._try_start_thread(self._do_preview_stream_match, (dict(settings), logger)):
-            return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
+            return {"status": "error", "error": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
             "message": f"Preview started: matching {total_channels} channels against {stream_count} streams. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
@@ -2225,7 +2258,7 @@ class Plugin:
             eta_str = "unknown"
 
         if not self._try_start_thread(self._do_sync_channels_bg, (dict(settings), logger)):
-            return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
+            return {"status": "error", "error": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
             "message": f"Sync Channels started: {total_channels} channels. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
@@ -2265,7 +2298,7 @@ class Plugin:
             if group_name not in existing_groups:
                 if dry_run:
                     logger.info(f"{LOG_PREFIX} [DRY RUN] Group '{group_name}' does not exist, would need sync_groups first")
-                    return {"status": "error", "message": f"Group '{group_name}' does not exist. Run 'Sync Groups' first."}
+                    return {"status": "error", "error": f"Group '{group_name}' does not exist. Run 'Sync Groups' first."}
                 else:
                     group, _ = ChannelGroup.objects.get_or_create(name=group_name)
                     existing_groups[group_name] = group.id
@@ -2346,7 +2379,7 @@ class Plugin:
             status = "error"
         else:
             status = "warning"
-        return {"status": status, "message": msg}
+        return action_result(status, msg)
 
     def _apply_stream_match(self, settings, logger):
         """Attach matched streams to channels with quality ordering.
@@ -2365,7 +2398,7 @@ class Plugin:
             eta_str = "unknown"
 
         if not self._try_start_thread(self._do_apply_stream_match_bg, (dict(settings), logger)):
-            return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
+            return {"status": "error", "error": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
             "message": f"Stream matching started for {total_channels} channels. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
@@ -2376,7 +2409,7 @@ class Plugin:
         """Assign EPG data to channels via fuzzy matching.
         Runs as daemon thread to avoid HTTP timeout."""
         if not _EPG_AVAILABLE:
-            return {"status": "error", "message": "EPG models not available in this Dispatcharr installation."}
+            return {"status": "error", "error": "EPG models not available in this Dispatcharr installation."}
 
         # When called from _do_full_sync (already in a thread), run inline
         if threading.current_thread() is not threading.main_thread():
@@ -2392,7 +2425,7 @@ class Plugin:
             eta_str = "unknown"
 
         if not self._try_start_thread(self._do_apply_epg_match_bg, (dict(settings), logger)):
-            return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
+            return {"status": "error", "error": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
             "message": f"EPG matching started for {total_channels} channels. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
@@ -2403,7 +2436,7 @@ class Plugin:
         """Assign logos to channels via 3-tier fallback.
         Runs as daemon thread to avoid HTTP timeout."""
         if not _LOGO_AVAILABLE:
-            return {"status": "error", "message": "Logo model not available in this Dispatcharr installation."}
+            return {"status": "error", "error": "Logo model not available in this Dispatcharr installation."}
 
         # When called from _do_full_sync (already in a thread), run inline
         if threading.current_thread() is not threading.main_thread():
@@ -2419,7 +2452,7 @@ class Plugin:
             eta_str = "unknown"
 
         if not self._try_start_thread(self._do_apply_logo_match_bg, (dict(settings), logger)):
-            return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
+            return {"status": "error", "error": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
             "message": f"Logo assignment started for {total_channels} channels. ETA: ~{eta_str}. Click 📊 Status to watch progress.",
@@ -2430,7 +2463,7 @@ class Plugin:
         """Background wrapper for logo assignment."""
         try:
             result = self._do_apply_logo_match(settings, logger)
-            msg = result.get("message", "Logo assignment complete.")
+            msg = result_text(result, "Logo assignment complete.")
             logger.info(f"{LOG_PREFIX} LOGO MATCH COMPLETED: {msg}")
             send_websocket_update('updates', 'update', {
                 "type": "plugin", "plugin": "Lineuparr",
@@ -2449,7 +2482,7 @@ class Plugin:
             return {"status": "ok", "message": "Logo model not available. Skipping logo assignment."}
 
         if not self._acquire_lock(logger):
-            return {"status": "error", "message": "Another operation is in progress. Try again later."}
+            return {"status": "error", "error": "Another operation is in progress. Try again later."}
 
         try:
             from .logo_matcher import (
@@ -2622,7 +2655,7 @@ class Plugin:
         """Background wrapper that sends WebSocket updates on completion."""
         try:
             result = self._do_apply_stream_match(settings, logger)
-            msg = result.get("message", "Stream matching complete.")
+            msg = result_text(result, "Stream matching complete.")
             logger.info(f"{LOG_PREFIX} ✅ APPLY STREAM MATCH COMPLETED: {msg}")
             send_websocket_update('updates', 'update', {
                 "type": "plugin", "plugin": "Lineuparr",
@@ -2644,7 +2677,7 @@ class Plugin:
         """
         target = raw_name.strip().casefold()
         if not target:
-            return {"status": "error", "message": "Channel name must not be empty."}
+            return {"status": "error", "error": "Channel name must not be empty."}
         src_categories = lineup.get("categories", {})
 
         filtered_categories = {}
@@ -2671,7 +2704,7 @@ class Plugin:
             if hints:
                 msg += " Did you mean: " + ", ".join(hints) + "?"
             logger.warning(f"{LOG_PREFIX} Single-channel filter: {msg}")
-            return {"status": "error", "message": msg}
+            return {"status": "error", "error": msg}
 
         suffix = "y" if match_count == 1 else "ies"
         logger.info(
@@ -2703,7 +2736,7 @@ class Plugin:
         preserve = settings.get("preserve_existing_streams", False)
 
         if not self._acquire_lock(logger):
-            return {"status": "error", "message": "Another operation is in progress. Try again later."}
+            return {"status": "error", "error": "Another operation is in progress. Try again later."}
 
         try:
             lineup = self._load_filtered_lineup(settings, logger)
@@ -2720,7 +2753,7 @@ class Plugin:
             # Get streams
             all_streams = self._get_all_streams(settings, logger)
             if not all_streams:
-                return {"status": "error", "message": "No streams found. Check M3U sources."}
+                return {"status": "error", "error": "No streams found. Check M3U sources."}
 
             # Build name -> stream objects lookup
             stream_by_name = {}
@@ -3000,7 +3033,7 @@ class Plugin:
         """Background wrapper for EPG matching."""
         try:
             result = self._do_apply_epg_match(settings, logger)
-            msg = result.get("message", "EPG matching complete.")
+            msg = result_text(result, "EPG matching complete.")
             logger.info(f"{LOG_PREFIX} EPG MATCH COMPLETED: {msg}")
             send_websocket_update('updates', 'update', {
                 "type": "plugin", "plugin": "Lineuparr",
@@ -3019,7 +3052,7 @@ class Plugin:
             return {"status": "ok", "message": "EPG models not available. Skipping EPG matching."}
 
         if not self._acquire_lock(logger):
-            return {"status": "error", "message": "Another operation is in progress. Try again later."}
+            return {"status": "error", "error": "Another operation is in progress. Try again later."}
 
         try:
             use_number_boost = (self._resolve_numbering_mode(settings) == "lineup")
@@ -3276,7 +3309,7 @@ class Plugin:
         ).values_list('id', flat=True))
 
         if not lineuparr_group_ids:
-            return {"status": "error", "message": "No Lineuparr channel groups found. Run Full Sync first."}
+            return {"status": "error", "error": "No Lineuparr channel groups found. Run Full Sync first."}
 
         # Get all channels in Lineuparr groups that have streams attached
         channels_with_streams = Channel.objects.filter(
@@ -3339,7 +3372,7 @@ class Plugin:
             eta_msg = ""
 
         if not self._try_start_thread(self._do_full_sync, (dict(settings), logger)):
-            return {"status": "error", "message": "An operation is already running. Please wait for it to finish."}
+            return {"status": "error", "error": "An operation is already running. Please wait for it to finish."}
         return {
             "status": "ok",
             "message": f"Full Sync started: groups, channels, stream matching, EPG matching, and logo assignment.{eta_msg} Click 📊 Status to watch progress.",
@@ -3373,11 +3406,11 @@ class Plugin:
             send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": "Step 1/5: Syncing groups..."})
             result = self._sync_groups(settings, logger)
             if result["status"] == "error":
-                logger.error(f"{LOG_PREFIX} Full sync aborted at groups: {result['message']}")
-                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Full sync aborted: {result['message']}"})
+                logger.error(f"{LOG_PREFIX} Full sync aborted at groups: {result_text(result)}")
+                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Full sync aborted: {result_text(result)}"})
                 return
-            logger.info(f"{LOG_PREFIX} Step 1/5 complete: {result['message']}")
-            send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 1/5 complete: {result['message']}"})
+            logger.info(f"{LOG_PREFIX} Step 1/5 complete: {result_text(result)}")
+            send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 1/5 complete: {result_text(result)}"})
 
             # Step 2: Sync channels
             if self._stop_event.is_set():
@@ -3388,15 +3421,15 @@ class Plugin:
             send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": "Step 2/5: Syncing channels..."})
             result = self._sync_channels(settings, logger)
             if result["status"] == "error":
-                logger.error(f"{LOG_PREFIX} Full sync aborted at channels: {result['message']}")
-                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Full sync aborted: {result['message']}"})
+                logger.error(f"{LOG_PREFIX} Full sync aborted at channels: {result_text(result)}")
+                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Full sync aborted: {result_text(result)}"})
                 return
             if result["status"] == "warning":
-                logger.warning(f"{LOG_PREFIX} Step 2/5 complete with warnings: {result['message']}")
-                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 2/5 complete (some failures): {result['message']}"})
+                logger.warning(f"{LOG_PREFIX} Step 2/5 complete with warnings: {result_text(result)}")
+                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 2/5 complete (some failures): {result_text(result)}"})
             else:
-                logger.info(f"{LOG_PREFIX} Step 2/5 complete: {result['message']}")
-                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 2/5 complete: {result['message']}"})
+                logger.info(f"{LOG_PREFIX} Step 2/5 complete: {result_text(result)}")
+                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 2/5 complete: {result_text(result)}"})
 
             # Step 3: Match streams
             if self._stop_event.is_set():
@@ -3406,8 +3439,8 @@ class Plugin:
             logger.info(f"{LOG_PREFIX} Step 3/5: Matching streams...")
             send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": "Step 3/5: Matching streams..."})
             result = self._apply_stream_match(settings, logger)
-            logger.info(f"{LOG_PREFIX} Step 3/5 complete: {result['message']}")
-            send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 3/5 complete: {result['message']}"})
+            logger.info(f"{LOG_PREFIX} Step 3/5 complete: {result_text(result)}")
+            send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 3/5 complete: {result_text(result)}"})
 
             # Step 4: Match EPG
             if self._stop_event.is_set():
@@ -3418,8 +3451,8 @@ class Plugin:
                 logger.info(f"{LOG_PREFIX} Step 4/5: Matching EPG data...")
                 send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": "Step 4/5: Matching EPG data..."})
                 result = self._apply_epg_match(settings, logger)
-                logger.info(f"{LOG_PREFIX} Step 4/5 complete: {result['message']}")
-                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 4/5 complete: {result['message']}"})
+                logger.info(f"{LOG_PREFIX} Step 4/5 complete: {result_text(result)}")
+                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 4/5 complete: {result_text(result)}"})
             else:
                 logger.info(f"{LOG_PREFIX} Step 4/5: Skipped (EPG models not available)")
                 send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": "Step 4/5: Skipped (EPG not available)"})
@@ -3433,8 +3466,8 @@ class Plugin:
                 logger.info(f"{LOG_PREFIX} Step 5/5: Assigning logos...")
                 send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": "Step 5/5: Assigning logos..."})
                 result = self._apply_logo_match(settings, logger)
-                logger.info(f"{LOG_PREFIX} Step 5/5 complete: {result['message']}")
-                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 5/5 complete: {result['message']}"})
+                logger.info(f"{LOG_PREFIX} Step 5/5 complete: {result_text(result)}")
+                send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": f"Step 5/5 complete: {result_text(result)}"})
             else:
                 logger.info(f"{LOG_PREFIX} Step 5/5: Skipped (Logo model not available)")
                 send_websocket_update('updates', 'update', {"type": "plugin", "plugin": "Lineuparr", "message": "Step 5/5: Skipped (Logo model not available)"})
