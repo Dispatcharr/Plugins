@@ -324,13 +324,23 @@ ISSUES_URL = "https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin/issues"
 # saying something untrue in its own footer.
 NEWSFLASHARR_URL = "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin"
 
-LOGO_FILE = "logo.png"
+LOGO_FILE = "logo_report.png"
 
 # A logo larger than this is not embedded. The page is mailed as an attachment
 # and every byte of the image is carried in every report, so an oversized file
-# is a cost paid repeatedly by the person receiving the mail. The current
-# logo.png is 440 by 440 and about 181 KB, which encodes to roughly 247 KB of
-# base64; a 256 by 256 version would be about a quarter of that.
+# is a cost paid repeatedly by the person receiving the mail.
+#
+# logo_report.png is a report sized copy of the plugin icon: 96 by 96 and about
+# 23 KB, which encodes to roughly 31 KB of base64 and makes a whole rendered
+# report about 41 KB. The plugin icon itself, logo.png, is 440 by 440 and about
+# 181 KB, which encoded to roughly 247 KB and was the bulk of every report until
+# 2026-08-12. The page displays the image at 48 by 48, so 96 covers a two times
+# density display and nothing on the page can use more.
+#
+# The cap is left well above the file it guards on purpose. It exists to stop a
+# replacement image being embedded unnoticed, not to sit one byte above the
+# current one, and tests/test_reports.py pins the size of the shipped file
+# separately and much more tightly.
 MAX_LOGO_BYTES = 262144
 
 # One slot: empty means not yet resolved, one entry means resolved. The failure
@@ -397,9 +407,18 @@ def _fmt_ts(ts):
 # the cell displays. Two values that both parse as numbers are compared as
 # numbers, because comparing them as text puts 10 before 2, which matters here:
 # every report has a channel number column and most have a score column.
+#
+# EVERY table on the page is wired up, not just the first. The page renders one
+# table per section, and an earlier version bound only document.querySelector,
+# so a click in any section after the first did nothing at all while the header
+# still carried the pointer cursor, the sort arrow and the aria-sort attribute.
+# Sorting is per table by design: each section is read on its own, and reordering
+# one has no meaning for the others. tests/test_report_sorting.py runs this
+# script in Node and fails if a later section stops sorting.
 _SORT_SCRIPT = """
 (function () {
-  var table = document.querySelector('table');
+  var tables = [].slice.call(document.querySelectorAll('table'));
+  tables.forEach(function (table) {
   if (!table || !table.tBodies.length) { return; }
   var headers = [].slice.call(table.querySelectorAll('th.sortable'));
   function value(row, index) {
@@ -434,6 +453,7 @@ _SORT_SCRIPT = """
         apply(header, index);
       }
     });
+  });
   });
 })();
 """
