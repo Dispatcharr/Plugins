@@ -1,0 +1,24 @@
+# Extra CodeQL packs applied alongside the `security-extended` suite used by
+# validate-plugin.yml. `packs:` is required here (rather than the simpler
+# `packs:` input on codeql-action/init) because that input only works for
+# single-language analyses, and our workflow can initialize multiple
+# languages at once. Each pack bundles that language's built-in
+# AlertSuppression.ql (kind: alert-suppression), which is what makes inline
+# `codeql[<rule-id>]` comments actually populate SARIF `suppressions` -
+# without it, our custom `queries:` override silently drops suppression
+# support and inline suppression comments are ignored.
+queries:
+  - uses: security-extended
+packs:
+  python:
+    - advanced-security/python-alert-suppression
+  javascript:
+    - advanced-security/javascript-alert-suppression
+  go:
+    - advanced-security/go-alert-suppression
+  ruby:
+    - advanced-security/ruby-alert-suppression
+  java:
+    - advanced-security/java-alert-suppression
+  cpp:
+    - advanced-security/cpp-alert-suppression

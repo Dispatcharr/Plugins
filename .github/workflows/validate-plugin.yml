@@ -432,9 +432,10 @@ jobs:
 
       - name: Limit checkout to changed plugin folders only
         run: |
-          echo '${{ needs.detect-changes.outputs.matrix }}' \
-            | jq -r '.[] | "plugins/\(.)"' \
-            | git sparse-checkout set --stdin
+          {
+            echo '.github/codeql'
+            echo '${{ needs.detect-changes.outputs.matrix }}' | jq -r '.[] | "plugins/\(.)"'
+          } | git sparse-checkout set --stdin
           git checkout
 
       - name: Populate external plugin source for analysis
@@ -534,11 +535,10 @@ jobs:
         with:
           languages: ${{ steps.detect-langs.outputs.languages }}
           build-mode: none
-          # Query suite options (slowest → fastest):
-          #   security-and-quality  – security + maintainability/style (quality results are discarded by our SARIF filter anyway)
-          #   security-extended     – all security severities, no quality queries (current)
-          #   (omit queries:)       – high-confidence security only; drops CVSS 6.0–6.9 medium findings our report surfaces
-          queries: security-extended
+          # Query suite (security-extended: all security severities, no quality queries) and
+          # per-language alert-suppression packs (so inline `codeql[<rule-id>]` comments work)
+          # both live in this config file - see .github/codeql/codeql-config.yml for why.
+          config-file: .github/codeql/codeql-config.yml
 
       - name: Perform CodeQL Analysis
         if: steps.detect-langs.outputs.found == 'true'
@@ -688,7 +688,12 @@ jobs:
                   select((($secmap[$rid] // "0") | tonumber) >= 7.0) |
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")) as $msg |
+                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")
+                   # Data-flow queries can repeat the same sentence once per source/flow reaching
+                   # the same sink - collapse repeats while preserving first-seen order.
+                   | [splits("(?<=[.!?]) ")] as $sentences
+                   | reduce $sentences[] as $s ([]; if any(.[]; . == $s) then . else . + [$s] end)
+                   | join(" ")) as $msg |
                   ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
                   (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
@@ -727,7 +732,12 @@ jobs:
                   select($sev >= 6.0 and $sev < 7.0) |
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")) as $msg |
+                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")
+                   # Data-flow queries can repeat the same sentence once per source/flow reaching
+                   # the same sink - collapse repeats while preserving first-seen order.
+                   | [splits("(?<=[.!?]) ")] as $sentences
+                   | reduce $sentences[] as $s ([]; if any(.[]; . == $s) then . else . + [$s] end)
+                   | join(" ")) as $msg |
                   ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
                   (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
@@ -766,7 +776,12 @@ jobs:
                   select($sev < 6.0) |
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")) as $msg |
+                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")
+                   # Data-flow queries can repeat the same sentence once per source/flow reaching
+                   # the same sink - collapse repeats while preserving first-seen order.
+                   | [splits("(?<=[.!?]) ")] as $sentences
+                   | reduce $sentences[] as $s ([]; if any(.[]; . == $s) then . else . + [$s] end)
+                   | join(" ")) as $msg |
                   ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
                   (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
@@ -800,7 +815,12 @@ jobs:
                   (($result.ruleId // $result.rule.id // "") | tostring) as $rid |
                   (.locations[0].physicalLocation.artifactLocation.uri // "?") as $uri |
                   ((.locations[0].physicalLocation.region.startLine // "?") | tostring) as $line |
-                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")) as $msg |
+                  (.message.text // "no description" | gsub("\n"; " ") | gsub("://"; "\u200b://") | gsub("www\\."; "www\u200b.") | gsub("#(?=[0-9])"; "#\u200b") | gsub("\\[(?<c>[^\\]]+)\\][(][0-9]+[)]"; .c) | gsub("\\["; "&#91;") | gsub("\\]"; "&#93;")
+                   # Data-flow queries can repeat the same sentence once per source/flow reaching
+                   # the same sink - collapse repeats while preserving first-seen order.
+                   | [splits("(?<=[.!?]) ")] as $sentences
+                   | reduce $sentences[] as $s ([]; if any(.[]; . == $s) then . else . + [$s] end)
+                   | join(" ")) as $msg |
                   ([$external_prefixes[] | . as $p | $uri | startswith($p)] | any) as $is_external |
                   (if ($uri != "?" and $line != "?" and ($is_external | not)) then "[\($uri):\($line)](https://github.com/\($repo)/blob/\($sha)/\($uri)#L\($line))" else "\($uri):\($line)" end) as $loc |
                   "| `\($rid)` | \($loc) | \($msg) |"'
