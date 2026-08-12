@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T17:54:14Z",
+  "generated_at": "2026-08-12T18:50:48Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -15,22 +15,35 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1422963882548265110",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-08-12T17:53:50Z",
+    "last_updated": "2026-08-12T18:50:25Z",
     "latest": {
-      "version": "1.26.2241232",
-      "commit_sha": "00843e45ed034b156b5f0dd1d431536dda40c01e",
-      "commit_sha_short": "00843e4",
-      "build_timestamp": "2026-08-12T17:54:05Z",
-      "last_updated": "2026-08-12T17:53:50Z",
-      "checksum_md5": "cf88a109918ce86f3df460dceeea71ee",
-      "checksum_sha256": "77a4fefcb8c7f883fac7d792f3d5b59d35057b4faa709c3af52607bcbd1d1e06",
+      "version": "1.26.2241315",
+      "commit_sha": "e745323441f3a9aa3c7a5712db5c931c5e488383",
+      "commit_sha_short": "e745323",
+      "build_timestamp": "2026-08-12T18:50:38Z",
+      "last_updated": "2026-08-12T18:50:25Z",
+      "checksum_md5": "f28e5f90e155131fc07c5dd622b43ece",
+      "checksum_sha256": "e992a3b732d4659e1dbff54ca0f8fb3b3d25bcde9b738b958086f2d172a5b222",
       "min_dispatcharr_version": "v0.20.0",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2241232/Channel-Maparr.zip",
-      "latest_url": "channel-mapparr-1.26.2241232/channel-mapparr-1.26.2241232.zip",
-      "url": "channel-mapparr-1.26.2241232/channel-mapparr-1.26.2241232.zip",
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2241315/Channel-Maparr.zip",
+      "latest_url": "channel-mapparr-1.26.2241315/channel-mapparr-1.26.2241315.zip",
+      "url": "channel-mapparr-1.26.2241315/channel-mapparr-1.26.2241315.zip",
       "size": 737
     },
     "versions": [
+      {
+        "version": "1.26.2241315",
+        "commit_sha": "e745323441f3a9aa3c7a5712db5c931c5e488383",
+        "commit_sha_short": "e745323",
+        "build_timestamp": "2026-08-12T18:50:38Z",
+        "last_updated": "2026-08-12T18:50:25Z",
+        "checksum_md5": "f28e5f90e155131fc07c5dd622b43ece",
+        "checksum_sha256": "e992a3b732d4659e1dbff54ca0f8fb3b3d25bcde9b738b958086f2d172a5b222",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2241315/Channel-Maparr.zip",
+        "url": "channel-mapparr-1.26.2241315/channel-mapparr-1.26.2241315.zip",
+        "size": 737
+      },
       {
         "version": "1.26.2241232",
         "commit_sha": "00843e45ed034b156b5f0dd1d431536dda40c01e",
@@ -143,5 +156,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCanyzRwAKCRB+wDprTCI0\nzh4QAP9DN0Osav+I9xQqM/UlZn19Puf8Mfavttn3fPlTCWBnlwD/WzHRHGVxNJ8C\nHGQ78OOhVMWjpwmoexI3JEjDWHtLKw4=\n=fVX0\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCanzAiAAKCRB+wDprTCI0\nzgcZAP9XHYelHyXtMEHV+XJr9u8rFUMjqHe+0Tlw8pW47vi7sAEAhBC0L/T7/61M\nXbrp/Sf0iJBli7vIWspUnmG8Gz0vmgk=\n=VgAJ\n-----END PGP SIGNATURE-----"
 }
