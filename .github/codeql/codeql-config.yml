@@ -1,24 +1,29 @@
-# Extra CodeQL packs applied alongside the `security-extended` suite used by
+# Extra CodeQL query applied alongside the `security-extended` suite used by
 # validate-plugin.yml. `packs:` is required here (rather than the simpler
 # `packs:` input on codeql-action/init) because that input only works for
 # single-language analyses, and our workflow can initialize multiple
-# languages at once. Each pack bundles that language's built-in
-# AlertSuppression.ql (kind: alert-suppression), which is what makes inline
-# `codeql[<rule-id>]` comments actually populate SARIF `suppressions` -
-# without it, our custom `queries:` override silently drops suppression
-# support and inline suppression comments are ignored.
+# languages at once.
+#
+# Each entry below points at AlertSuppression.ql, the built-in
+# (kind: alert-suppression) query already shipped inside that language's
+# standard codeql/<lang>-queries pack - the same pack `security-extended`
+# already resolves against, so this doesn't fetch anything extra from the
+# registry. Running it is what makes inline `codeql[<rule-id>]` comments
+# actually populate SARIF `suppressions`; without it, our custom `queries:`
+# override silently drops suppression support and inline suppression
+# comments are ignored.
 queries:
   - uses: security-extended
 packs:
   python:
-    - advanced-security/python-alert-suppression
+    - codeql/python-queries:AlertSuppression.ql
   javascript:
-    - advanced-security/javascript-alert-suppression
+    - codeql/javascript-queries:AlertSuppression.ql
   go:
-    - advanced-security/go-alert-suppression
+    - codeql/go-queries:AlertSuppression.ql
   ruby:
-    - advanced-security/ruby-alert-suppression
+    - codeql/ruby-queries:AlertSuppression.ql
   java:
-    - advanced-security/java-alert-suppression
+    - codeql/java-queries:AlertSuppression.ql
   cpp:
-    - advanced-security/cpp-alert-suppression
+    - codeql/cpp-queries:AlertSuppression.ql
