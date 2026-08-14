@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-13T16:23:35Z",
+  "generated_at": "2026-08-14T16:49:33Z",
   "manifest": {
     "slug": "event-channel-managarr",
     "name": "Event Channel Managarr",
@@ -14,22 +14,35 @@
     "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-08-13T16:23:07Z",
+    "last_updated": "2026-08-14T16:48:56Z",
     "latest": {
-      "version": "1.26.2251616",
-      "commit_sha": "148bd037d02ee8b5a7facd2b69727bea686db59b",
-      "commit_sha_short": "148bd03",
-      "build_timestamp": "2026-08-13T16:23:24Z",
-      "last_updated": "2026-08-13T16:23:07Z",
-      "checksum_md5": "3f69f79d54292f6bb6ad84de9189b2e4",
-      "checksum_sha256": "47e88589d0a7ad86deaf6f500650f70b0300677ea3f4084a3428acb0aa13b53e",
+      "version": "1.26.2261346",
+      "commit_sha": "52b35115d8e54024d2adbc0b7fd012ba2ee94450",
+      "commit_sha_short": "52b3511",
+      "build_timestamp": "2026-08-14T16:49:20Z",
+      "last_updated": "2026-08-14T16:48:56Z",
+      "checksum_md5": "d99c890450c3606efc456087d62029c3",
+      "checksum_sha256": "e6ff89833f4bc4598a5a260c82f373abce54f00672765ef7a42598186c4fa128",
       "min_dispatcharr_version": "v0.20.0",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2251616/Event-Channel-Managarr.zip",
-      "latest_url": "event-channel-managarr-1.26.2251616/event-channel-managarr-1.26.2251616.zip",
-      "url": "event-channel-managarr-1.26.2251616/event-channel-managarr-1.26.2251616.zip",
-      "size": 206
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2261346/Event-Channel-Managarr.zip",
+      "latest_url": "event-channel-managarr-1.26.2261346/event-channel-managarr-1.26.2261346.zip",
+      "url": "event-channel-managarr-1.26.2261346/event-channel-managarr-1.26.2261346.zip",
+      "size": 207
     },
     "versions": [
+      {
+        "version": "1.26.2261346",
+        "commit_sha": "52b35115d8e54024d2adbc0b7fd012ba2ee94450",
+        "commit_sha_short": "52b3511",
+        "build_timestamp": "2026-08-14T16:49:20Z",
+        "last_updated": "2026-08-14T16:48:56Z",
+        "checksum_md5": "d99c890450c3606efc456087d62029c3",
+        "checksum_sha256": "e6ff89833f4bc4598a5a260c82f373abce54f00672765ef7a42598186c4fa128",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2261346/Event-Channel-Managarr.zip",
+        "url": "event-channel-managarr-1.26.2261346/event-channel-managarr-1.26.2261346.zip",
+        "size": 207
+      },
       {
         "version": "1.26.2251616",
         "commit_sha": "148bd037d02ee8b5a7facd2b69727bea686db59b",
@@ -139,20 +152,8 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "event-channel-managarr-1.26.1291442/event-channel-managarr-1.26.1291442.zip",
         "size": 184
-      },
-      {
-        "version": "1.26.1172336",
-        "commit_sha": "e90ade162aba17a2324846a335a846312edace5a",
-        "commit_sha_short": "e90ade1",
-        "build_timestamp": "2026-04-28T00:06:50Z",
-        "last_updated": "2026-04-27T20:06:35-04:00",
-        "checksum_md5": "aff666243dfcede7a9068ba5ac1caa08",
-        "checksum_sha256": "9db1498c318a9d1b8d4088736ac79ef6edd60d5684a4ea74dcf3c4ddc9b5bdbe",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "event-channel-managarr-1.26.1172336/event-channel-managarr-1.26.1172336.zip",
-        "size": 183
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCan3viQAKCRB+wDprTCI0\nzg6bAQDxbN/wcYtd6M4C90j2q9P02mU1NtJ2BX+x7+i+sOEUqgEAwoxNyTqW1LW+\nje9vZYAZ81eEgtRMzjWuOEpJ8U1Hrwg=\n=Be4V\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCan9HHwAKCRB+wDprTCI0\nzqG8AQCydo/Laxjlp2kggGNyZ1ju+fzVbLXooh0QpvV44lNUDwD9Em2p/XAzO73J\nOYv7h+5JI5rrH+/jJ0oTrvRYjP1oJQE=\n=xWsS\n-----END PGP SIGNATURE-----"
 }
