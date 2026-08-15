@@ -17,7 +17,7 @@ This branch contains all published plugin releases.
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.17.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 37 leagues, tours and competitions (20 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.6` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
 | [`EPG Janitor`](#epg-janitor) | `1.26.2241232` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
-| [`EPGeditARR`](#epgeditarr) | `0.2.10` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database. |
+| [`EPGeditARR`](#epgeditarr) | `0.3.00` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (NFL, NBA, MLB, NHL, NCAA Football, MLS). |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.2261346` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.2201040` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.2241618` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
@@ -143,17 +143,17 @@ Scans for channels with EPG assignments but no program data. Auto-matches EPG to
 
 ### [EPGeditARR](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/epgeditarr/README.md)
 
-**Version:** `0.2.10` | **Author:** jstevenscl | **Last Updated:** Jul 25 2026, 18:29 UTC
+**Version:** `0.3.00` | **Author:** jstevenscl | **Last Updated:** Aug 15 2026, 15:54 UTC
 
-Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database.
+Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (NFL, NBA, MLB, NHL, NCAA Football, MLS).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jstevenscl/epgeditarr)
 
 **Downloads:**
-- [Latest Release (`0.2.10`)](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.2.10/epgeditarr-0.2.10.zip)
-- [All Versions (5 available)](./metadata/epgeditarr)
+- [Latest Release (`0.3.00`)](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.00/epgeditarr-0.3.00.zip)
+- [All Versions (6 available)](./metadata/epgeditarr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epgeditarr) | **Last Change:** [`d6f94d8`](https://github.com/Dispatcharr/Plugins/commit/d6f94d8babfe12375b616399fad8672690fe757b)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epgeditarr) | **Last Change:** [`84fd4f0`](https://github.com/Dispatcharr/Plugins/commit/84fd4f03a3ea13e56dd4827bd29d2ec16a094121)
 
 ---
 
@@ -450,4 +450,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Aug 14 2026, 16:49 UTC*
+*Last updated: Aug 15 2026, 15:54 UTC*

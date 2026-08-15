@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-07-25T18:30:11Z",
+  "generated_at": "2026-08-15T15:54:21Z",
   "manifest": {
     "slug": "epgeditarr",
     "name": "EPGeditARR",
-    "description": "Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and provides a full SiriusXM toolkit: fill EPG from the community XMLTV (741 channels, sports smart blocks), sort into official lineup order, assign logos, and rename channels using the official SiriusXM API channel database.",
+    "description": "Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (NFL, NBA, MLB, NHL, NCAA Football, MLS).",
     "author": "jstevenscl",
     "license": "MIT",
     "source_type": "external",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/jstevenscl/epgeditarr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-07-25T18:29:52Z",
+    "last_updated": "2026-08-15T15:54:00Z",
     "latest": {
-      "version": "0.2.10",
-      "commit_sha": "d6f94d8babfe12375b616399fad8672690fe757b",
-      "commit_sha_short": "d6f94d8",
-      "build_timestamp": "2026-07-25T18:30:05Z",
-      "last_updated": "2026-07-25T18:29:52Z",
-      "checksum_md5": "c0f9cd0cf1785e4d6d03b3bdb68e07d8",
-      "checksum_sha256": "1998aaa02f42101d663c6fc9bb22301be406a3294d0ef2ae2a9496bb2235ac0b",
-      "source_url": "https://github.com/jstevenscl/epgeditarr/releases/download/v0.2.10/epgeditarr-v0.2.10.zip",
-      "latest_url": "epgeditarr-0.2.10/epgeditarr-0.2.10.zip",
-      "url": "epgeditarr-0.2.10/epgeditarr-0.2.10.zip",
-      "size": 139
+      "version": "0.3.00",
+      "commit_sha": "84fd4f03a3ea13e56dd4827bd29d2ec16a094121",
+      "commit_sha_short": "84fd4f0",
+      "build_timestamp": "2026-08-15T15:54:14Z",
+      "last_updated": "2026-08-15T15:54:00Z",
+      "checksum_md5": "cec4379c2db418360a27479f2b102703",
+      "checksum_sha256": "25cd38c8f0ada1ae5ca6d4961572c2b0678274cb9e6486ca27a8977b9d8d0b09",
+      "source_url": "https://github.com/jstevenscl/epgeditarr/releases/download/v0.3.00/epgeditarr-v0.3.00.zip",
+      "latest_url": "epgeditarr-0.3.00/epgeditarr-0.3.00.zip",
+      "url": "epgeditarr-0.3.00/epgeditarr-0.3.00.zip",
+      "size": 132
     },
     "versions": [
+      {
+        "version": "0.3.00",
+        "commit_sha": "84fd4f03a3ea13e56dd4827bd29d2ec16a094121",
+        "commit_sha_short": "84fd4f0",
+        "build_timestamp": "2026-08-15T15:54:14Z",
+        "last_updated": "2026-08-15T15:54:00Z",
+        "checksum_md5": "cec4379c2db418360a27479f2b102703",
+        "checksum_sha256": "25cd38c8f0ada1ae5ca6d4961572c2b0678274cb9e6486ca27a8977b9d8d0b09",
+        "source_url": "https://github.com/jstevenscl/epgeditarr/releases/download/v0.3.00/epgeditarr-v0.3.00.zip",
+        "url": "epgeditarr-0.3.00/epgeditarr-0.3.00.zip",
+        "size": 132
+      },
       {
         "version": "0.2.10",
         "commit_sha": "d6f94d8babfe12375b616399fad8672690fe757b",
@@ -82,5 +94,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCamUAtQAKCRB+wDprTCI0\nzjMpAQDTTrcU3BrAipSWE1K+zAYr4PHKFmC72BsKNu6KU5kZawD/YdKJgWsudaMw\nm7L8TE4d5O99oCFXBT2x7STZeqUNuQ4=\n=gp3L\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoCLrwAKCRB+wDprTCI0\nzvYCAQCY2KWRC1FLn7CJuvTGKuHPIoaCA6AWJRAYhKiC0uJf3wD+LUkxuldQdNSZ\n4lHI0Brf72oCNOS7wsS2/nLGfpf6XAs=\n=7IoE\n-----END PGP SIGNATURE-----"
 }
