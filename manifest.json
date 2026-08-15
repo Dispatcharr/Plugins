@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T15:54:21Z",
+  "generated_at": "2026-08-15T18:21:07Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -144,12 +144,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/lineuparr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-08-12T17:50:03Z",
-        "latest_version": "1.26.2241618",
-        "latest_md5": "00e307dbcc82f5a4a6ed4cdf81d81f2e",
-        "latest_sha256": "fc590ffa3e4351fddce850c4baa16d4876cfa9c218490304cceaa2cad9b47162",
-        "latest_url": "lineuparr-1.26.2241618/lineuparr-1.26.2241618.zip",
-        "latest_size": 373,
+        "last_updated": "2026-08-15T18:20:43Z",
+        "latest_version": "1.26.2271740",
+        "latest_md5": "04eb22929a7c6441063d47ca45800fae",
+        "latest_sha256": "17e25884accec92b05c396f7f8a2e3ee8c3f5db2df0b850c2fc075eb4b67c436",
+        "latest_url": "lineuparr-1.26.2271740/lineuparr-1.26.2271740.zip",
+        "latest_size": 376,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -345,5 +345,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoCLswAKCRB+wDprTCI0\nzoqzAQDyuMKuQNjUxSspQaNEDjY9wwtkyyHExlP2cD3snkysXAD8D7uZoJfPmwJF\n2FdM0mECMhFeopDL1N2MG4n8jh4U8Qo=\n=jIoe\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoCuGAAKCRB+wDprTCI0\nzn3XAP49tiD5NyPyq73dOIPd9mHWrW7duc0wO/6DoBPYz3oRegEA5ex+u/Wc0gQ7\n7jtgeISwfOL8+Iq3AyqI8hhxTfaiFgI=\n=XvoR\n-----END PGP SIGNATURE-----"
 }
