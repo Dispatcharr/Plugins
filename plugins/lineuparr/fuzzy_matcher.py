@@ -698,7 +698,8 @@ class FuzzyMatcher(FuzzyMatcherCore):
         return None, 0, None
 
     def match_all_streams(self, lineup_name, candidate_names, alias_map, channel_number=None,
-                          user_ignored_tags=None, lineup_country=None, quality_aware=False):
+                          user_ignored_tags=None, lineup_country=None, quality_aware=False,
+                          candidate_countries=None):
         """
         Full matching pipeline for Lineuparr: alias → exact → substring → fuzzy, with number boost.
         Returns ALL matching streams sorted by score.
@@ -712,6 +713,11 @@ class FuzzyMatcher(FuzzyMatcherCore):
             quality_aware: When True, upgrade streams (4K/8K/UHD/HDR) are excluded
                 from standard channels. Streams listed in alias_map for this channel bypass
                 the filter (e.g. "France 2": ["FRANCE 2 4K HDR"] allows that specific stream).
+            candidate_countries: Optional {stream name: ISO-2 country} taken from the
+                provider group each stream came from. Used ONLY for streams whose own
+                name carries no country marker, which is the common case for providers
+                that prefix by platform ("GO:", "RK:", "PRIME:") rather than by country.
+                Omit it and matching behaves exactly as it did before.
 
         Returns:
             List of (stream_name, score, match_type) tuples sorted by score desc.
@@ -893,6 +899,35 @@ class FuzzyMatcher(FuzzyMatcherCore):
                         continue
                     self.country_filter_drops += 1
                 all_matches = kept
+
+                # Second pass, on the provider GROUP rather than the name. A
+                # provider that prefixes streams by platform ("GO:", "RK:",
+                # "PRIME:") leaves every name untagged, so the pass above keeps
+                # all of them and a United States feed reaches an Australian
+                # lineup. The group the stream came from is named for its
+                # country, so use it wherever the name said nothing.
+                #
+                # Skipped entirely when it would remove every remaining
+                # candidate, which is the same escape the regionless branch of
+                # the region filter uses below. A provider whose groups are
+                # mislabelled therefore loses no matches, it just gains nothing.
+                if candidate_countries:
+                    group_kept = {}
+                    for name, val in all_matches.items():
+                        if detect_stream_country(name) is not None:
+                            group_kept[name] = val  # already judged on its name
+                            continue
+                        gc = candidate_countries.get(name)
+                        if gc is None or gc == lc:
+                            group_kept[name] = val
+                            continue
+                        shared = _CROSS_BORDER_SHARED.get(frozenset({lc, gc}))
+                        if shared and nq_fold in shared:
+                            group_kept[name] = val
+                            continue
+                    if group_kept:
+                        self.country_filter_drops += len(all_matches) - len(group_kept)
+                        all_matches = group_kept
 
         # Filter out wrong-region matches (East vs West vs Pacific).
         # Detect the lineup channel's region from the ORIGINAL un-normalized
