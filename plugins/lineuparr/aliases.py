@@ -456,6 +456,39 @@ CHANNEL_ALIASES = {
 # These overrides are merged on top of CHANNEL_ALIASES by _build_alias_map()
 # only for the lineup's own country, so they never leak across markets.
 COUNTRY_ALIASES = {
+    "AU": {
+        # Australian providers and guide sources spell a national channel with a
+        # suffix the lineup does not carry: the word National, a city, or a feed
+        # number. Every right-hand name below was read off a live install on
+        # 2026-08-15, not guessed.
+        #
+        # These are AU-scoped rather than global for two reasons. "ESPN"
+        # reaching "ESPN 1" is correct in Australia, where the carried feed is
+        # numbered, and wrong in the United States and the United Kingdom, where
+        # ESPN is not. And stripping a trailing "National" in normalize_name
+        # instead would damage "YES National" and "Sportsnet New York National"
+        # in the US lineups, which are genuinely different channels from "YES"
+        # and "Sportsnet New York".
+        #
+        # DELIBERATELY ABSENT: "CNN International" -> "CNN". It won the guide
+        # entry, and it also reached the United States stream "GO: CNN", which
+        # then attached as a backup feed carrying different programming. The
+        # alias table applies to streams and guide entries alike with no way to
+        # scope an entry to one of them, so the guide is not worth the wrong
+        # stream. Operator decision, 2026-08-15.
+        "ABC News": ["ABC News Australia"],
+        "Racing.com": ["Racing.com National"],
+        "SBS Food": ["SBS Food National"],
+        "SBS World Movies": ["SBS World Movies National"],
+        # Foxtel lists the channel as ESPN; the Australian feed is carried as
+        # ESPN 1. Without this the channel took a United States ESPN feed,
+        # because the Australian one never scored against the bare name.
+        "ESPN": ["ESPN 1"],
+        # NITV is one national channel. The guide source publishes a separate
+        # entry per capital city (Sydney, Melbourne, Brisbane, Perth, Adelaide,
+        # Hobart) carrying the same schedule, so one of them is picked.
+        "NITV": ["NITV Sydney"],
+    },
     "FR": {
         # TLC France airs on the former Discovery Science feed; some French
         # IPTV sources still label the stream "Discovery Science".

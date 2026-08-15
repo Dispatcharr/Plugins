@@ -99,7 +99,7 @@ def _clean_json_text(s):
 
 
 class PluginConfig:
-    PLUGIN_VERSION = "1.26.2241618"
+    PLUGIN_VERSION = "1.26.2271740"
 
     DEFAULT_FUZZY_MATCH_THRESHOLD = 80
     DEFAULT_PRIORITIZE_QUALITY = True
@@ -1005,7 +1005,9 @@ class Plugin:
         """Get all streams, optionally filtered by M3U sources."""
         valid_ids, priority_map, _ = self._resolve_m3u_sources(settings, logger)
 
-        qs = Stream.objects.all().values('id', 'name', 'm3u_account', 'stream_stats')
+        qs = Stream.objects.all().values(
+            'id', 'name', 'm3u_account', 'stream_stats', 'channel_group__name'
+        )
         if valid_ids is not None:
             qs = qs.filter(m3u_account__in=valid_ids)
 
@@ -1013,9 +1015,77 @@ class Plugin:
         for s in streams:
             s['_m3u_priority'] = priority_map.get(s.get('m3u_account'), 999)
             s['_stream_stats'] = s.pop('stream_stats', None) or {}
+            # The provider group this stream came from. Its name usually carries
+            # a country ("AU| AUSTRALIA VIP"), which is the only country signal
+            # available for a provider that prefixes stream names by platform
+            # ("GO:", "RK:") rather than by country.
+            s['_group_name'] = s.pop('channel_group__name', None)
 
         logger.info(f"{LOG_PREFIX} Loaded {len(streams)} streams" + (f" from {len(valid_ids)} M3U sources" if valid_ids else ""))
         return streams
+
+    @staticmethod
+    def _disabled_selected_sources(sources, tokens, select_all):
+        """Names of EPG sources this run will match against that are switched off.
+
+        EPG matching reads every EPGData row without checking whether its source
+        is enabled, so a disabled source still supplies candidates. Dispatcharr
+        will never refresh those rows, so a channel matched to one gets a guide
+        that quietly stops being true, and nothing else about the plugin looks
+        wrong when it happens.
+
+        Args:
+            sources: rows of {"name", "is_active", "entry_count"}
+            tokens: the source-filter tokens, which may carry shell wildcards
+            select_all: True when the filter selects every source
+
+        Returns the names in alphabetical order, so the reported list is stable.
+        """
+        hits = []
+        for src in sources or []:
+            if src.get("is_active"):
+                continue
+            name = src.get("name") or ""
+            if select_all:
+                # Every source is in the candidate pool, so only a source that
+                # actually holds entries can mislead anyone.
+                if src.get("entry_count"):
+                    hits.append(name)
+                continue
+            for token in tokens or []:
+                if fnmatch.fnmatch(name.upper(), str(token).upper()):
+                    hits.append(name)
+                    break
+        return sorted(hits)
+
+    @staticmethod
+    def _stream_countries_by_name(streams):
+        """Map each stream NAME to the country of the provider group it came from.
+
+        Only the stream name reaches the matcher, and a provider that prefixes
+        names by platform ("GO: ESPN", "RK: VEVO POP") leaves the matcher with no
+        country to work from, so a United States feed passes the country filter
+        into an Australian lineup. The provider group name carries the country
+        that the stream name does not.
+
+        A name that appears under groups of two different countries is left OUT
+        of the map rather than resolved by whichever row was read first: an
+        ambiguous answer here silently drops the wrong stream, and absence just
+        falls back to the previous behaviour.
+        """
+        seen = {}
+        for s in streams:
+            name = s.get('name')
+            if not name:
+                continue
+            cc = detect_category_country(s.get('_group_name'))
+            if cc is None:
+                continue
+            if name in seen and seen[name] != cc:
+                seen[name] = None  # ambiguous, and stays that way
+            elif name not in seen:
+                seen[name] = cc
+        return {k: v for k, v in seen.items() if v is not None}
 
     def _alias_map_provider(self, settings, logger):
         """Return a callable mapping a country code to that country's alias map.
@@ -1853,6 +1923,30 @@ class Plugin:
                     results.append({"Setting": "EPG Sources Filter", "Value": epg_sources_str, "Status": f"OK ({len(filtered)} entries after filtering)"})
                 else:
                     results.append({"Setting": "EPG Sources Filter", "Value": "All sources", "Status": "OK"})
+
+                # A disabled EPG source is still matched against, because EPG
+                # matching does not filter on EPGSource.is_active. Dispatcharr
+                # never refreshes a disabled source, so any channel matched to
+                # one gets a guide that stops being true and nothing looks wrong.
+                epg_tokens, epg_select_all = self._parse_source_filter(epg_sources_str)
+                source_rows = []
+                for src in EPGSource.objects.all().values('id', 'name', 'is_active'):
+                    source_rows.append({
+                        "name": src['name'],
+                        "is_active": src['is_active'],
+                        "entry_count": EPGData.objects.filter(epg_source_id=src['id']).count(),
+                    })
+                disabled = self._disabled_selected_sources(source_rows, epg_tokens, epg_select_all)
+                if disabled:
+                    results.append({
+                        "Setting": "EPG Sources: disabled",
+                        "Value": ", ".join(disabled),
+                        "Status": ("WARNING: these EPG sources are switched off in Dispatcharr but "
+                                   "are still matched against. Dispatcharr does not refresh a "
+                                   "disabled source, so channels matched to one keep a guide that "
+                                   "stops being updated. Enable them, or exclude them from the "
+                                   "EPG Sources for Matching filter."),
+                    })
             except Exception as e:
                 results.append({"Setting": "EPG Data", "Value": str(e), "Status": "ERROR"})
                 errors += 1
@@ -2081,6 +2175,7 @@ class Plugin:
 
             # Deduplicate stream names for matching (performance: avoid redundant fuzzy comparisons)
             unique_stream_names = list(set(s['name'] for s in streams))
+            stream_countries = self._stream_countries_by_name(streams)
             logger.info(f"{LOG_PREFIX} Matching against {len(unique_stream_names)} unique stream names (from {len(streams)} total)")
 
             # Pre-normalize stream names for performance
@@ -2115,6 +2210,7 @@ class Plugin:
                         channel_number=boost_number,
                         lineup_country=entry_cc,
                         quality_aware=(ch_name in upgrade_twin_set),
+                        candidate_countries=stream_countries,
                     )
 
                     if matches:
@@ -2762,6 +2858,7 @@ class Plugin:
 
             # Deduplicate stream names for matching performance
             unique_stream_names = list(stream_by_name.keys())
+            stream_countries = self._stream_countries_by_name(all_streams)
             logger.info(f"{LOG_PREFIX} Matching against {len(unique_stream_names)} unique stream names (from {len(all_streams)} total)")
 
             # Pre-normalize stream names for performance
@@ -2819,6 +2916,7 @@ class Plugin:
                         channel_number=ch_number,
                         lineup_country=entry_cc,
                         quality_aware=(ch_name in upgrade_twin_set),
+                        candidate_countries=stream_countries,
                     )
 
                     if matches:
@@ -3085,7 +3183,19 @@ class Plugin:
             logger.info(f"{LOG_PREFIX} Pre-filtered to {len(epg_data_with_programs)} EPG entries with program data (from {len(epg_data)} total)")
 
             if not epg_data_with_programs:
-                return {"status": "ok", "message": "No EPG entries have program data in the next 12 hours. Skipping EPG matching."}
+                # Do NOT stop here. Dispatcharr downloads programme data only for
+                # EPG entries that are already mapped to a channel, and mapping
+                # them is what this action does, so a source that has never been
+                # matched always has zero programmes. Stopping would make such a
+                # source permanently unmatchable. The second match pass below
+                # searches every entry regardless of programme data, so let the
+                # run continue and fall through to it.
+                logger.warning(
+                    f"{LOG_PREFIX} No EPG entry has programme data in the next 12 hours. "
+                    f"Matching against all {len(epg_data)} entries instead. This is normal "
+                    f"for an EPG source that has never been matched to a channel: Dispatcharr "
+                    f"fetches programmes only for mapped entries."
+                )
 
             # Build source ID -> name lookup for CSV
             epg_source_names = {}
