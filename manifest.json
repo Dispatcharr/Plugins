@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T18:21:07Z",
+  "generated_at": "2026-08-16T16:17:34Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -85,12 +85,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epg-janitor/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-08-12T18:14:24Z",
-        "latest_version": "1.26.2241232",
-        "latest_md5": "8421a27d9dd9c7ba8e2f0732f573a16a",
-        "latest_sha256": "07b8e5bfa73cd1505278eadb9dd20965be45b6f10e75f6b426015e7cb4fbb739",
-        "latest_url": "epg-janitor-1.26.2241232/epg-janitor-1.26.2241232.zip",
-        "latest_size": 460,
+        "last_updated": "2026-08-16T16:17:04Z",
+        "latest_version": "1.26.2281111",
+        "latest_md5": "8e7ade420998eadd4c60fcb617672989",
+        "latest_sha256": "239cf4955b3d079ab76c97983a6989472470af7d7cd847b87ac9cabfd8761e30",
+        "latest_url": "epg-janitor-1.26.2281111/epg-janitor-1.26.2281111.zip",
+        "latest_size": 462,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -345,5 +345,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoCuGAAKCRB+wDprTCI0\nzn3XAP49tiD5NyPyq73dOIPd9mHWrW7duc0wO/6DoBPYz3oRegEA5ex+u/Wc0gQ7\n7jtgeISwfOL8+Iq3AyqI8hhxTfaiFgI=\n=XvoR\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoHiowAKCRB+wDprTCI0\nzs0DAP4qgyygvbAM6hTgITUF2wUuMN38uhAa72/xnI4LXYftdgD/TGLKvOSbfKq+\ntYr+ftrX4XdigHMroMCoQYAfyp8Bqgk=\n=4fYb\n-----END PGP SIGNATURE-----"
 }
