@@ -32,6 +32,10 @@ on:
         value: ${{ jobs.analyze.outputs.codeql_unscanned_langs }}
       codeql_suppressed:
         value: ${{ jobs.analyze.outputs.codeql_suppressed }}
+      codeql_sandbox_bypass:
+        value: ${{ jobs.analyze.outputs.codeql_sandbox_bypass }}
+      codeql_sandbox_bypass_detected:
+        value: ${{ jobs.analyze.outputs.codeql_sandbox_bypass_detected }}
 
 permissions:
   contents: read
@@ -54,6 +58,8 @@ jobs:
       codeql_lows: ${{ steps.status.outputs.codeql_lows }}
       codeql_unscanned_langs: ${{ steps.status.outputs.codeql_unscanned_langs }}
       codeql_suppressed: ${{ steps.status.outputs.codeql_suppressed }}
+      codeql_sandbox_bypass: ${{ steps.status.outputs.codeql_sandbox_bypass }}
+      codeql_sandbox_bypass_detected: ${{ steps.status.outputs.codeql_sandbox_bypass_detected }}
     steps:
       - name: Checkout PR merge commit for analysis
         uses: actions/checkout@v6
@@ -172,6 +178,14 @@ jobs:
           path: codeql-suppressed-findings.md
           if-no-files-found: ignore
 
+      - name: Upload sandbox-bypass findings detail for PR comment
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-sandbox-findings
+          path: codeql-sandbox-findings.md
+          if-no-files-found: ignore
+
       - name: Apply/clear CodeQL suppression label
         # Purely informational for auto-merge gating (see automerge.py's
         # BLOCKING_LABELS) - never fails the job, so a maintainer can still
@@ -194,6 +208,28 @@ jobs:
           else
             gh pr edit "$PR_NUMBER" \
               --remove-label "CodeQL Suppression Used" \
+              --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+          fi
+
+      - name: Apply/clear sandbox bypass label
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SANDBOX_BYPASS_COUNT: ${{ steps.status.outputs.codeql_sandbox_bypass_detected }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          gh label create "Sandbox Bypass Detected" \
+            --color "FBCA04" \
+            --description "Plugin sandbox-bypass finding requires maintainer review" \
+            --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+          if [[ "${SANDBOX_BYPASS_COUNT:-0}" -gt 0 ]]; then
+            gh pr edit "$PR_NUMBER" \
+              --add-label "Sandbox Bypass Detected" \
+              --repo "$GITHUB_REPOSITORY"
+          else
+            gh pr edit "$PR_NUMBER" \
+              --remove-label "Sandbox Bypass Detected" \
               --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
           fi
 

@@ -7,7 +7,9 @@
             {"id": "py/sql-injection", "properties": {"security-severity": "8.8"}},
             {"id": "py/weak-hash", "properties": {"security-severity": "6.5"}},
             {"id": "py/clear-text-logging", "properties": {"security-severity": "5.0"}},
-            {"id": "py/unused-import", "properties": {}}
+            {"id": "py/unused-import", "properties": {}},
+            {"id": "plugin/sandbox-bypass/ctypes-usage", "properties": {}},
+            {"id": "plugin/sandbox-bypass/builtins-mutation", "properties": {}}
           ]
         },
         "extensions": [
@@ -41,6 +43,17 @@
           "ruleId": "py/sql-injection",
           "message": {"text": "Suppressed via inline codeql[py/sql-injection] comment."},
           "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/other.py"}, "region": {"startLine": 9}}}],
+          "suppressions": [{"kind": "inSource"}]
+        },
+        {
+          "ruleId": "plugin/sandbox-bypass/ctypes-usage",
+          "message": {"text": "ctypes can bypass the plugin sandbox."},
+          "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/native.py"}, "region": {"startLine": 12}}}]
+        },
+        {
+          "ruleId": "plugin/sandbox-bypass/builtins-mutation",
+          "message": {"text": "Suppressed sandbox finding."},
+          "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/builtins.py"}, "region": {"startLine": 4}}}],
           "suppressions": [{"kind": "inSource"}]
         }
       ]

@@ -28,6 +28,25 @@ def test_classify_buckets():
     assert counts.warnings == 4
 
 
+def test_sandbox_bypass_is_dormant_by_default():
+    counts = sarif.classify(_load())
+    assert counts.sandbox_bypass == 0
+    assert counts.sandbox_bypass_detected == 0
+    assert counts.total == 5
+
+
+def test_sandbox_bypass_is_informational_when_enabled(monkeypatch):
+    monkeypatch.setattr(sarif.feature_flags, "SANDBOX_BYPASS_DETECTION", True)
+    counts = sarif.classify(_load())
+    assert counts.blocking == 1
+    assert counts.medium == 1
+    assert counts.low == 3
+    assert counts.suppressed == 2
+    assert counts.sandbox_bypass == 1
+    assert counts.sandbox_bypass_detected == 2
+    assert counts.total == 7
+
+
 def test_missing_severity_defaults_to_low():
     counts = sarif.classify(_load())
     # py/unused-import has no security-severity -> 0 -> low bucket
@@ -87,6 +106,20 @@ def test_suppressed_findings_table_includes_only_suppressed():
     assert "plugins/demo/other.py:9" in table
     # only the suppressed py/sql-injection result appears, not the blocking one
     assert table.count("`py/sql-injection`") == 1
+
+
+def test_sandbox_findings_table_when_enabled(monkeypatch):
+    monkeypatch.setattr(sarif.feature_flags, "SANDBOX_BYPASS_DETECTION", True)
+    table = sarif.sandbox_findings_table(_load(), "org/repo", "abc123", [])
+    assert "`plugin/sandbox-bypass/ctypes-usage`" in table
+    assert "Suppressed sandbox finding" not in table
+
+
+def test_generic_low_table_excludes_enabled_sandbox_findings(monkeypatch):
+    monkeypatch.setattr(sarif.feature_flags, "SANDBOX_BYPASS_DETECTION", True)
+    table = sarif.findings_table(_load(), sarif.is_low, "org/repo", "abc123", [],
+                                 exclude_sandbox_bypass=True)
+    assert "plugin/sandbox-bypass" not in table
 
 
 def test_compute_status():

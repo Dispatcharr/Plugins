@@ -12,7 +12,8 @@ runner; there is no build step.
 
 ```
 src/pluginctl/
-  cli.py            argparse dispatch (one subcommand per verb)
+   cli.py            argparse dispatch (one subcommand per verb)
+   feature_flags.py  hardcoded, reviewed rollout switches
   core/             shared infra: actions, git, gh, jsonio, hashing, timeutil, version
   validate/         PR-time pipeline: detect, title, labels, gate, sarif,
                     langs, clamav, plugin (per-plugin checks), report

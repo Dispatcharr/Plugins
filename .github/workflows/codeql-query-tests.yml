@@ -1,0 +1,26 @@
+name: CodeQL Query Tests
+
+on:
+  pull_request:
+    paths:
+      - .github/codeql/queries/**
+  push:
+    branches: [main]
+    paths:
+      - .github/codeql/queries/**
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: python
+      # --learn creates the initial expected output in the ephemeral runner while
+      # still compiling and evaluating the query against its fixture.
+      - run: codeql test run --learn --search-path=.github/codeql/queries .github/codeql/queries/python/tests

@@ -17,6 +17,7 @@ queries:
 packs:
   python:
     - codeql/python-queries:AlertSuppression.ql
+    - .github/codeql/queries/python
   javascript:
     - codeql/javascript-queries:AlertSuppression.ql
   go:

@@ -23,6 +23,11 @@ def test_automerge_blocks_on_codeql_suppression():
     assert not d.ok and "CodeQL Suppression Used" in d.reason
 
 
+def test_automerge_blocks_on_sandbox_bypass_detection():
+    d = automerge.evaluate_labels(["Plugin Update", "Sandbox Bypass Detected"], "MERGEABLE")
+    assert not d.ok and "Sandbox Bypass Detected" in d.reason
+
+
 def test_automerge_requires_mergeable():
     d = automerge.evaluate_labels(["Plugin Update"], "CONFLICTING")
     assert not d.ok and "mergeable" in d.reason

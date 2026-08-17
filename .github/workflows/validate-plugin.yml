@@ -333,6 +333,13 @@ jobs:
           path: codeql-suppressed-findings
         continue-on-error: true
 
+      - name: Download CodeQL sandbox-bypass findings detail
+        uses: actions/download-artifact@v8
+        with:
+          name: codeql-sandbox-findings
+          path: codeql-sandbox-findings
+        continue-on-error: true
+
       - name: Download ClamAV findings detail
         uses: actions/download-artifact@v8
         with:
@@ -352,6 +359,7 @@ jobs:
           CODEQL_MEDIUMS: ${{ needs.codeql-analyze.outputs.codeql_mediums }}
           CODEQL_LOWS: ${{ needs.codeql-analyze.outputs.codeql_lows }}
           CODEQL_SUPPRESSED: ${{ needs.codeql-analyze.outputs.codeql_suppressed }}
+          CODEQL_SANDBOX_BYPASS: ${{ needs.codeql-analyze.outputs.codeql_sandbox_bypass }}
           CODEQL_UNSCANNED_LANGS: ${{ needs.codeql-analyze.outputs.codeql_unscanned_langs }}
           CLAMAV_RESULT: ${{ needs.clamav-scan.outputs.clamav_status }}
           CLAMAV_INFECTED: ${{ needs.clamav-scan.outputs.clamav_infected }}

@@ -19,7 +19,10 @@ import os
 import re
 from dataclasses import dataclass
 
+from .. import feature_flags
+
 ZWSP = "​"
+SANDBOX_BYPASS_PREFIX = "plugin/sandbox-bypass/"
 
 # jq: \[(?<c>[^\]]+)\][(][0-9]+[)]  ->  .c   (strip markdown [text](123) links)
 _MD_LINK_RE = re.compile(r"\[([^\]]+)\]\([0-9]+\)")
@@ -92,12 +95,19 @@ def is_suppressed(result: dict) -> bool:
     return len(result.get("suppressions") or []) > 0
 
 
+def is_sandbox_bypass_rule(rule_id: str) -> bool:
+    """True for rules provided by the dormant plugin sandbox query pack."""
+    return rule_id.startswith(SANDBOX_BYPASS_PREFIX)
+
+
 @dataclass
 class Counts:
     blocking: int = 0
     medium: int = 0
     low: int = 0
     suppressed: int = 0
+    sandbox_bypass: int = 0
+    sandbox_bypass_detected: int = 0
     total: int = 0
 
     @property
@@ -111,10 +121,17 @@ def classify(sarif_objs: list[dict]) -> Counts:
         for run in obj.get("runs", []):
             secmap = build_secmap(run)
             for result in (run.get("results") or []):
+                is_sandbox = is_sandbox_bypass_rule(_rule_id(result))
+                if is_sandbox and not feature_flags.SANDBOX_BYPASS_DETECTION:
+                    continue
                 counts.total += 1
+                if is_sandbox:
+                    counts.sandbox_bypass_detected += 1
                 if is_suppressed(result):
                     counts.suppressed += 1
                     continue
+                if is_sandbox:
+                    counts.sandbox_bypass += 1
                 sev = severity_of(result, secmap)
                 if is_blocking(sev):
                     counts.blocking += 1
@@ -156,7 +173,7 @@ def _location(result: dict) -> tuple[str, str]:
 
 
 def findings_table(sarif_objs: list[dict], predicate, repo: str, sha: str,
-                   external_prefixes: list[str]) -> str:
+                   external_prefixes: list[str], *, exclude_sandbox_bypass: bool = False) -> str:
     """Render the ``| Rule | Location | Description |`` markdown table.
 
     ``predicate(sev)`` selects the severity bucket. Locations for files sourced
@@ -170,10 +187,38 @@ def findings_table(sarif_objs: list[dict], predicate, repo: str, sha: str,
             for result in (run.get("results") or []):
                 if is_suppressed(result):
                     continue
+                rid = _rule_id(result)
+                if is_sandbox_bypass_rule(rid):
+                    if not feature_flags.SANDBOX_BYPASS_DETECTION or exclude_sandbox_bypass:
+                        continue
                 sev = severity_of(result, secmap)
                 if not predicate(sev):
                     continue
+                uri, line = _location(result)
+                msg = process_message((result.get("message") or {}).get("text"))
+                is_external = any(uri.startswith(p) for p in external_prefixes)
+                if uri != "?" and line != "?" and not is_external:
+                    loc = f"[{uri}:{line}](https://github.com/{repo}/blob/{sha}/{uri}#L{line})"
+                else:
+                    loc = f"{uri}:{line}"
+                lines.append(f"| `{rid}` | {loc} | {msg} |")
+    return "\n".join(lines) + "\n"
+
+
+def sandbox_findings_table(sarif_objs: list[dict], repo: str, sha: str,
+                           external_prefixes: list[str]) -> str:
+    """Render unsuppressed custom sandbox-bypass findings only."""
+    lines = ["| Rule | Location | Description |", "|------|----------|-------------|"]
+    if not feature_flags.SANDBOX_BYPASS_DETECTION:
+        return "\n".join(lines) + "\n"
+    for obj in sarif_objs:
+        for run in obj.get("runs", []):
+            for result in (run.get("results") or []):
+                if is_suppressed(result):
+                    continue
                 rid = _rule_id(result)
+                if not is_sandbox_bypass_rule(rid):
+                    continue
                 uri, line = _location(result)
                 msg = process_message((result.get("message") or {}).get("text"))
                 is_external = any(uri.startswith(p) for p in external_prefixes)
@@ -198,6 +243,8 @@ def suppressed_findings_table(sarif_objs: list[dict], repo: str, sha: str,
                 if not is_suppressed(result):
                     continue
                 rid = _rule_id(result)
+                if is_sandbox_bypass_rule(rid) and not feature_flags.SANDBOX_BYPASS_DETECTION:
+                    continue
                 uri, line = _location(result)
                 msg = process_message((result.get("message") or {}).get("text"))
                 is_external = any(uri.startswith(p) for p in external_prefixes)
@@ -261,7 +308,8 @@ def run(results_dir: str, repo: str, sha: str, matrix: list[str],
 
     actions.log(
         f"Found {counts.blocking} high/critical, {counts.medium} medium, "
-        f"{counts.low} low, {counts.suppressed} suppressed, and "
+        f"{counts.low} low, {counts.suppressed} suppressed, "
+        f"{counts.sandbox_bypass} sandbox-bypass, and "
         f"{counts.warnings} other CodeQL result(s)"
     )
     actions.set_output("codeql_errors", str(counts.blocking))
@@ -269,16 +317,24 @@ def run(results_dir: str, repo: str, sha: str, matrix: list[str],
     actions.set_output("codeql_mediums", str(counts.medium))
     actions.set_output("codeql_lows", str(counts.low))
     actions.set_output("codeql_suppressed", str(counts.suppressed))
+    actions.set_output("codeql_sandbox_bypass", str(counts.sandbox_bypass))
+    actions.set_output("codeql_sandbox_bypass_detected", str(counts.sandbox_bypass_detected))
 
     if counts.blocking > 0 and results_dir:
         _write("codeql-findings.md",
-               findings_table(objs, is_blocking, repo, sha, external_prefixes))
+               findings_table(objs, is_blocking, repo, sha, external_prefixes,
+                              exclude_sandbox_bypass=True))
     if counts.medium > 0:
         _write("codeql-medium-findings.md",
-               findings_table(objs, is_medium, repo, sha, external_prefixes))
+               findings_table(objs, is_medium, repo, sha, external_prefixes,
+                              exclude_sandbox_bypass=True))
     if counts.low > 0:
         _write("codeql-low-findings.md",
-               findings_table(objs, is_low, repo, sha, external_prefixes))
+               findings_table(objs, is_low, repo, sha, external_prefixes,
+                              exclude_sandbox_bypass=True))
+    if counts.sandbox_bypass > 0:
+        _write("codeql-sandbox-findings.md",
+               sandbox_findings_table(objs, repo, sha, external_prefixes))
     if counts.suppressed > 0:
         _write("codeql-suppressed-findings.md",
                suppressed_findings_table(objs, repo, sha, external_prefixes))
