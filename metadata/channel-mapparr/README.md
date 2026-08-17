@@ -2,7 +2,7 @@
 
 # Channel Mapparr
 
-**Version:** `1.26.2241315` | **Author:** PiratesIRC | **Last Updated:** Aug 12 2026, 18:50 UTC
+**Version:** `1.26.2291823` | **Author:** PiratesIRC | **Last Updated:** Aug 17 2026, 23:38 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries.
 
@@ -14,20 +14,21 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 
 ### Latest Release
 
-- **Download:** [`channel-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2241315/channel-mapparr-1.26.2241315.zip)
-- **Built:** Aug 12 2026, 18:50 UTC
-- **Source Commit:** [`e745323`](https://github.com/Dispatcharr/Plugins/commit/e745323441f3a9aa3c7a5712db5c931c5e488383)
+- **Download:** [`channel-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2291823/channel-mapparr-1.26.2291823.zip)
+- **Built:** Aug 17 2026, 23:39 UTC
+- **Source Commit:** [`f12b615`](https://github.com/Dispatcharr/Plugins/commit/f12b61552da0f0cb899d87fffde316cf2223f351)
 
 **Checksums:**
 ```
-MD5:    f28e5f90e155131fc07c5dd622b43ece
-SHA256: e992a3b732d4659e1dbff54ca0f8fb3b3d25bcde9b738b958086f2d172a5b222
+MD5:    e73db45b7c6a29be4a5fb1407fa56312
+SHA256: e51b802391b0f3f8e2e3f0fbbc9360f265970c3fdc1279cc0af297be86126ac1
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2291823` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2291823/channel-mapparr-1.26.2291823.zip) | Aug 17 2026, 23:39 UTC | [`f12b615`](https://github.com/Dispatcharr/Plugins/commit/f12b61552da0f0cb899d87fffde316cf2223f351) | e73db45b7c6a29be4a5fb1407fa56312 | e51b802391b0f3f8e2e3f0fbbc9360f265970c3fdc1279cc0af297be86126ac1 |
 | `1.26.2241315` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2241315/channel-mapparr-1.26.2241315.zip) | Aug 12 2026, 18:50 UTC | [`e745323`](https://github.com/Dispatcharr/Plugins/commit/e745323441f3a9aa3c7a5712db5c931c5e488383) | f28e5f90e155131fc07c5dd622b43ece | e992a3b732d4659e1dbff54ca0f8fb3b3d25bcde9b738b958086f2d172a5b222 |
 | `1.26.2241232` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2241232/channel-mapparr-1.26.2241232.zip) | Aug 12 2026, 17:54 UTC | [`00843e4`](https://github.com/Dispatcharr/Plugins/commit/00843e45ed034b156b5f0dd1d431536dda40c01e) | cf88a109918ce86f3df460dceeea71ee | 77a4fefcb8c7f883fac7d792f3d5b59d35057b4faa709c3af52607bcbd1d1e06 |
 | `1.26.2241126` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2241126/channel-mapparr-1.26.2241126.zip) | Aug 12 2026, 16:35 UTC | [`e1a9ede`](https://github.com/Dispatcharr/Plugins/commit/e1a9edebfaae2939ac2bec36c056aba9df7cbe7f) | f370daf7e5fa206d54ada2dddb386c80 | 39ef3e0147f9014f9f50a244a0edb74600a87b3749489e0cdd950c9018af28cc |
@@ -37,7 +38,6 @@ SHA256: e992a3b732d4659e1dbff54ca0f8fb3b3d25bcde9b738b958086f2d172a5b222
 | `1.26.1701952` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.1701952/channel-mapparr-1.26.1701952.zip) | Jun 20 2026, 02:05 UTC | [`c6ecfb3`](https://github.com/Dispatcharr/Plugins/commit/c6ecfb3757353fec70e7a15ca070cb46edf83d35) | 0fbfea3acbff32f93c8d59940b48aac8 | e282f8fccd96de95d43412ccd684a98dc721dbb202198a9f1775e81e0d189c8b |
 | `1.26.1651015` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.1651015/channel-mapparr-1.26.1651015.zip) | Jun 14 2026, 17:08 UTC | [`7a91063`](https://github.com/Dispatcharr/Plugins/commit/7a910634c7472b5b43c8bf7cff854541cb4be4df) | 69716b742e2a6e5c46eeb4d14e5b5d70 | 5be9c39e8f4fe13c5dbde533458a34564e3e75b7e2a3ce3a1f087063acdbe0de |
 | `1.26.1430910` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.1430910/channel-mapparr-1.26.1430910.zip) | May 23 2026, 17:06 UTC | [`309559e`](https://github.com/Dispatcharr/Plugins/commit/309559e7795e3c0447f90067e0c011d8c1eb9d45) | aa387c179e2a81f814a1e19aa9d2f6e0 | 0a3d23345096d4552b47ec57018322b48e35c72d34f21aa3c7a924769648bf27 |
-| `1.26.1001200` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.1001200/channel-mapparr-1.26.1001200.zip) | Apr 10 2026, 16:07 UTC | [`11388be`](https://github.com/Dispatcharr/Plugins/commit/11388be99c171d1cf47cbbbea99cfc2b27565081) | 10f435ba7aeb6cd57a19ed25a2a19a2a | 90beb0b199f9f98b253b3024b7de683c1ba8ceee820072b63fd16b63bbb7bbca |
 
 ---
 
