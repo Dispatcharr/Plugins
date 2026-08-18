@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-17T23:39:16Z",
+  "generated_at": "2026-08-18T04:54:21Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -203,12 +203,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/pirate-weatharr-station/manifest.json",
         "author": "dexdeadly",
         "license": "MIT",
-        "last_updated": "2026-07-31T08:47:14-04:00",
-        "latest_version": "1.0.0",
-        "latest_md5": "e190adfe0b8739be04fa80291c4dffcc",
-        "latest_sha256": "a44cef5f3470854f1b05faaf64c76fecb67df23050ad5439e900f35e07499263",
-        "latest_url": "pirate-weatharr-station-1.0.0/pirate-weatharr-station-1.0.0.zip",
-        "latest_size": 34811
+        "last_updated": "2026-08-18T04:53:57Z",
+        "latest_version": "1.3.2",
+        "latest_md5": "0a2369bfb13318e04ccc14e00e8a605f",
+        "latest_sha256": "40bc77a571270d47205d4ec5cb74b172352c2465845dfa59e574e1ca26a3165b",
+        "latest_url": "pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip",
+        "latest_size": 35852
       },
       {
         "slug": "reservoarr",
@@ -345,5 +345,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoObqQAKCRB+wDprTCI0\nzl9GAP4o6T+NKzGp+oOQE2lBVsUqfGZN+V9WgX5Kv42Du/OMsQD/R0pmpdFNomqz\nZdDU/PxgZXxTm0kBgA1QvnQVL2W2Twc=\n=PLei\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoPlggAKCRB+wDprTCI0\nzvtAAP0RN81HzT8tc4CARltQwjAPNKpa8Ef56YappLoxOBjYVgEAhz4NmuG6xUM5\nKrM4+ZzBkUrwYIpAWAXNS8A1OEFnfAU=\n=qOK+\n-----END PGP SIGNATURE-----"
 }

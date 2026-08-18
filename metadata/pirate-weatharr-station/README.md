@@ -2,7 +2,7 @@
 
 # PWS - Pirate Weatharr Station
 
-**Version:** `1.0.0` | **Author:** dexdeadly | **Last Updated:** Jul 31 2026, 12:47 UTC
+**Version:** `1.3.2` | **Author:** dexdeadly | **Last Updated:** Aug 18 2026, 04:53 UTC
 
 TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel.
 
@@ -12,20 +12,21 @@ TV-style weather channels powered by the Pirate Weather API. Runs up to three st
 
 ### Latest Release
 
-- **Download:** [`pirate-weatharr-station-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.0.0/pirate-weatharr-station-1.0.0.zip)
-- **Built:** Jul 31 2026, 12:47 UTC
-- **Source Commit:** [`6411b97`](https://github.com/Dispatcharr/Plugins/commit/6411b9759caf40f17bcc38e88e358fc669c71488)
+- **Download:** [`pirate-weatharr-station-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip)
+- **Built:** Aug 18 2026, 04:54 UTC
+- **Source Commit:** [`878b01c`](https://github.com/Dispatcharr/Plugins/commit/878b01c6f9a5f53c8c9c9e1e78994b5d7fc69d07)
 
 **Checksums:**
 ```
-MD5:    e190adfe0b8739be04fa80291c4dffcc
-SHA256: a44cef5f3470854f1b05faaf64c76fecb67df23050ad5439e900f35e07499263
+MD5:    0a2369bfb13318e04ccc14e00e8a605f
+SHA256: 40bc77a571270d47205d4ec5cb74b172352c2465845dfa59e574e1ca26a3165b
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.3.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip) | Aug 18 2026, 04:54 UTC | [`878b01c`](https://github.com/Dispatcharr/Plugins/commit/878b01c6f9a5f53c8c9c9e1e78994b5d7fc69d07) | 0a2369bfb13318e04ccc14e00e8a605f | 40bc77a571270d47205d4ec5cb74b172352c2465845dfa59e574e1ca26a3165b |
 | `1.0.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.0.0/pirate-weatharr-station-1.0.0.zip) | Jul 31 2026, 12:47 UTC | [`6411b97`](https://github.com/Dispatcharr/Plugins/commit/6411b9759caf40f17bcc38e88e358fc669c71488) | e190adfe0b8739be04fa80291c4dffcc | a44cef5f3470854f1b05faaf64c76fecb67df23050ad5439e900f35e07499263 |
 
 ---
