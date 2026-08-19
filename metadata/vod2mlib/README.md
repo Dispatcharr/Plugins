@@ -2,7 +2,7 @@
 
 # VOD to Media Library
 
-**Version:** `1.17.0` | **Author:** R3XCHRIS | **Last Updated:** Aug 19 2026, 14:36 UTC
+**Version:** `1.18.0` | **Author:** R3XCHRIS | **Last Updated:** Aug 19 2026, 16:22 UTC
 
 Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries.
 
@@ -14,20 +14,21 @@ Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD cata
 
 ### Latest Release
 
-- **Download:** [`vod2mlib-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/vod2mlib-1.17.0/vod2mlib-1.17.0.zip)
-- **Built:** Aug 19 2026, 14:36 UTC
-- **Source Commit:** [`33446ca`](https://github.com/Dispatcharr/Plugins/commit/33446ca63b31f9f6e59bf931f53de1080a01433a)
+- **Download:** [`vod2mlib-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/vod2mlib-1.18.0/vod2mlib-1.18.0.zip)
+- **Built:** Aug 19 2026, 16:22 UTC
+- **Source Commit:** [`b7a546e`](https://github.com/Dispatcharr/Plugins/commit/b7a546ea5c82bd2e2889a0a4258c695e82aea041)
 
 **Checksums:**
 ```
-MD5:    02666fd7551008539b1dd7eea254db4a
-SHA256: 8d2ce537e6b2a9ade947e746c87d8d944753c73ee702598af8846dc34b45a27a
+MD5:    f7699d183e538422fdf0d2c7c6ca8e7b
+SHA256: 1a2e10b1ae86c393c54715ab7c79ea170dbb63883d940dd621e0ded2694fe5e2
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.18.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/vod2mlib-1.18.0/vod2mlib-1.18.0.zip) | Aug 19 2026, 16:22 UTC | [`b7a546e`](https://github.com/Dispatcharr/Plugins/commit/b7a546ea5c82bd2e2889a0a4258c695e82aea041) | f7699d183e538422fdf0d2c7c6ca8e7b | 1a2e10b1ae86c393c54715ab7c79ea170dbb63883d940dd621e0ded2694fe5e2 |
 | `1.17.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/vod2mlib-1.17.0/vod2mlib-1.17.0.zip) | Aug 19 2026, 14:36 UTC | [`33446ca`](https://github.com/Dispatcharr/Plugins/commit/33446ca63b31f9f6e59bf931f53de1080a01433a) | 02666fd7551008539b1dd7eea254db4a | 8d2ce537e6b2a9ade947e746c87d8d944753c73ee702598af8846dc34b45a27a |
 | `1.16.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/vod2mlib-1.16.1/vod2mlib-1.16.1.zip) | Aug 19 2026, 14:22 UTC | [`d626aa9`](https://github.com/Dispatcharr/Plugins/commit/d626aa95aed5a08194b158ffefc54e8a0cacbc2c) | a4750dffd091410c5802814dd7506533 | 8bc8d8f48e02b4d67c2a53aa13dafe69756d963689cb3f015776963b5024b1c6 |
 | `1.16.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/vod2mlib-1.16.0/vod2mlib-1.16.0.zip) | Jul 01 2026, 21:57 UTC | [`3b8487b`](https://github.com/Dispatcharr/Plugins/commit/3b8487b78899906c8181804749514627eccd2f06) | 26e098d325cfc3197539fe2196cbf3be | b992b95d8d0c30249afe3d816118c5f360ce7c2d3ce0347953d2cabda60136e4 |
