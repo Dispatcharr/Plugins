@@ -72,6 +72,43 @@ refreshes.
 
 **Advanced.** `Rate Limiting` slows database writes on large runs.
 
+## Two things that catch people out
+
+**A channel named for tomorrow's event is visible on purpose.** The rule that
+handles upcoming events, `[FutureDate:2]`, hides a channel only when its date is
+more than two days away, so a fixture tomorrow stays on the lineup today. If you
+want a channel to appear only on the day of its event, change that tag to
+`[FutureDate:0]`.
+
+**Hiding only affects Dispatcharr's profile-scoped outputs.** A client such as
+Jellyfin, Plex or Emby must be pointed at the URLs for the profile you are
+managing, and it must be given the guide URL rather than the playlist URL:
+
+| Client field | URL |
+|---|---|
+| Tuner / M3U playlist | `http://<dispatcharr>:<port>/output/m3u/<Profile>` |
+| Guide / XMLTV provider | `http://<dispatcharr>:<port>/output/epg/<Profile>` |
+
+Putting the M3U URL into the guide field is the single most common mistake: an
+XMLTV parser cannot read a playlist, so the client ends up with no guide and
+keeps the channel list it imported previously. Clients also cache, so run their
+guide refresh after a change rather than waiting for the nightly one.
+
+Note that Dispatcharr's own TV Guide page shows hidden channels when its filter
+is set to All Profiles. Select the managed profile to see what your clients get.
+
+## Reading a run
+
+Every run writes a CSV giving the action, the reason and the rule that decided
+each channel. Two things are reported that would otherwise be silent: channel
+group names that matched no channels, and regular expression settings that
+matched nothing. A setting that is quietly doing nothing shows up rather than
+looking like it works.
+
+`Channel Groups` is comma-separated. The `|` character belongs only in the three
+regular expression settings; using it to separate group names joins them into one
+name that matches nothing.
+
 ## Getting started
 
 1. Install the plugin and open its page in Dispatcharr.
@@ -83,3 +120,10 @@ refreshes.
 5. Run Validate Configuration, then Dry Run, and read the result.
 6. When the preview looks right, run Run Now, and only then set
    `Scheduled Run Times` for unattended operation.
+
+## Full documentation
+
+The source repository carries the complete
+[user guide](https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/blob/main/docs/USER-GUIDE.md),
+covering every setting and action, the hide rules in detail, the managed dummy
+EPG, client setup, file locations, the CSV format, and troubleshooting by symptom.
