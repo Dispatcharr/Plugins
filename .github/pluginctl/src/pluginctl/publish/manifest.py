@@ -22,6 +22,7 @@ from ..core import jsonio
 from ..core.jsonio import drop_none
 from ..core.timeutil import now_iso
 from ..core.version import versioned_tags
+from . import ai_assisted
 
 
 def _metadata_fields(metadata: dict, min_da, max_da) -> dict:
@@ -79,7 +80,7 @@ def override_current_min_max(versioned_zips: list[dict], current_version: str,
 def build_plugin_entry(plugin_raw: dict, plugin_name: str, latest_url: str,
                        registry_url: str, registry_name: str,
                        versioned_zips: list[dict], latest_metadata: dict,
-                       latest_size_kb) -> dict:
+                       latest_size_kb, ai_assisted_disclosed: bool = False) -> dict:
     """Per-plugin manifest ``.manifest`` payload (metadata/<slug>/manifest.json)."""
     def g(key):
         return plugin_raw.get(key)
@@ -102,6 +103,7 @@ def build_plugin_entry(plugin_raw: dict, plugin_name: str, latest_url: str,
         "author": g("author"),
         "maintainers": g("maintainers"),
         "license": g("license"),
+        "ai_assisted": True if ai_assisted_disclosed else None,
         "deprecated": True if g("deprecated") is True else None,
         "source_type": "external" if g("source_type") == "external" else None,
         "source_url": g("source_url"),
@@ -121,8 +123,9 @@ def trim_description(desc: str) -> str:
 
 
 def build_root_entry(plugin_raw: dict, plugin_name: str, latest_metadata: dict,
-                     latest_size_kb, min_da: str, max_da: str,
-                     latest_url: str, manifest_url: str) -> dict:
+                      latest_size_kb, min_da: str, max_da: str,
+                      latest_url: str, manifest_url: str,
+                      ai_assisted_disclosed: bool = False) -> dict:
     """Compact entry for the root manifest's ``plugins[]``."""
     license_id = plugin_raw.get("license") or ""
     return drop_none({
@@ -132,6 +135,7 @@ def build_root_entry(plugin_raw: dict, plugin_name: str, latest_metadata: dict,
         "manifest_url": manifest_url,
         "author": plugin_raw.get("author") or "",
         "license": license_id if license_id != "" else None,
+        "ai_assisted": True if ai_assisted_disclosed else None,
         "deprecated": True if plugin_raw.get("deprecated") is True else None,
         "last_updated": latest_metadata.get("last_updated") if latest_metadata else None,
         "latest_version": latest_metadata.get("version") if latest_metadata else None,
@@ -342,6 +346,11 @@ def generate(source_branch: str, releases_branch: str, repository: str,
         min_da = str(raw.get("min_dispatcharr_version") or "")
         max_da = str(raw.get("max_dispatcharr_version") or "")
         unlisted = raw.get("unlisted") is True
+        ai_assisted_disclosed = (
+            feature_flags.AI_ASSISTED_MANIFEST_DISCLOSURE and
+            (raw.get("ai_assisted") is True or
+             ai_assisted.has_attribution(source_branch, plugin_name))
+        )
         actions.log(f"  {plugin_name}")
 
         existing_manifest_file = f"metadata/{plugin_name}/manifest.json"
@@ -400,8 +409,8 @@ def generate(source_branch: str, releases_branch: str, repository: str,
         versioned_zips = override_current_min_max(versioned_zips, current_version, min_da, max_da)
 
         plugin_entry = build_plugin_entry(raw, plugin_name, latest_url, registry_url,
-                                          registry_name, versioned_zips, latest_metadata,
-                                          latest_size_kb)
+                                           registry_name, versioned_zips, latest_metadata,
+                                           latest_size_kb, ai_assisted_disclosed)
         written = write_manifest_if_changed(existing_manifest_file, plugin_entry, generated_at)
         sign_if_needed(existing_manifest_file, written)
 
@@ -412,8 +421,9 @@ def generate(source_branch: str, releases_branch: str, repository: str,
                         if feature_flags.SPLIT_MANIFEST_BASE_URLS
                         else f"{raw_releases_url}/metadata/{plugin_name}/manifest.json")
         root_entries.append(build_root_entry(raw, plugin_name, latest_metadata,
-                                             latest_size_kb, min_da, max_da,
-                                             latest_url, manifest_url))
+                                              latest_size_kb, min_da, max_da,
+                                              latest_url, manifest_url,
+                                              ai_assisted_disclosed))
         plugin_count += 1
 
     inner_root = build_root_manifest(

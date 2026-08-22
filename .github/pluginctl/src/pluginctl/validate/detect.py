@@ -19,7 +19,7 @@ SAFE_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 PUB_KEY_PATH = ".github/scripts/keys/dispatcharr-plugins.pub"
 METADATA_ONLY_FIELDS = {
     "description", "repo_url", "discord_thread", "min_dispatcharr_version",
-    "max_dispatcharr_version", "deprecated", "unlisted", "maintainers",
+    "max_dispatcharr_version", "deprecated", "unlisted", "maintainers", "ai_assisted",
 }
 
 

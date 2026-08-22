@@ -130,3 +130,28 @@ def test_description_newline_cannot_forge_meta_row(plugin_repo):
     f_repo, f_discord = fields[5], fields[6]
     assert "evil.example" not in f_repo
     assert "discord.gg/evil" not in f_discord
+
+
+def test_ai_assisted_true_is_accepted(plugin_repo):
+    tmp_path, out = plugin_repo
+    pj = tmp_path / "plugins" / "demo-plugin" / "plugin.json"
+    data = json.loads(pj.read_text())
+    data["ai_assisted"] = True
+    pj.write_text(json.dumps(data), encoding="utf-8")
+
+    assert validate.run("demo-plugin", "alice", "main", str(tmp_path / "frag.md"), repo="org/repo") == 0
+    assert _outputs(out)["result"] == "pass"
+
+
+@pytest.mark.parametrize("value", [False, None, "true", 1])
+def test_ai_assisted_non_positive_values_are_ignored(plugin_repo, value):
+    tmp_path, out = plugin_repo
+    pj = tmp_path / "plugins" / "demo-plugin" / "plugin.json"
+    data = json.loads(pj.read_text())
+    data["ai_assisted"] = value
+    pj.write_text(json.dumps(data), encoding="utf-8")
+
+    fragment = tmp_path / "frag.md"
+    assert validate.run("demo-plugin", "alice", "main", str(fragment), repo="org/repo") == 0
+    assert _outputs(out)["result"] == "pass"
+    assert "ai_assisted" not in fragment.read_text(encoding="utf-8")

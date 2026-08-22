@@ -99,6 +99,19 @@ def test_metadata_only_update_accepts_approved_field_removal(tmp_path, monkeypat
     )
 
 
+def test_metadata_only_update_accepts_ai_assisted_disclosure(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    pdir = tmp_path / "plugins" / "demo-plugin"
+    pdir.mkdir(parents=True)
+    (pdir / "plugin.json").write_text(
+        json.dumps({"version": "1.0.0", "ai_assisted": True}), encoding="utf-8")
+    monkeypatch.setattr(git, "show", lambda *_: json.dumps({"version": "1.0.0"}))
+
+    assert detect.is_metadata_only_update(
+        "demo-plugin", "main", ["plugins/demo-plugin/plugin.json"]
+    )
+
+
 @pytest.mark.parametrize(
     ("changed_files", "current"),
     [

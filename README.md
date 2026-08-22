@@ -77,6 +77,7 @@ The root `manifest.json` uses a `root_url` plus relative paths for ZIP downloads
         "slug": "my-plugin",
         "name": "My Plugin",
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/my-plugin/manifest.json",
+        "ai_assisted": true,
         "latest_url": "my-plugin-latest/my-plugin-latest.zip",
         ...
       }
@@ -88,6 +89,11 @@ The root `manifest.json` uses a `root_url` plus relative paths for ZIP downloads
 To resolve a full ZIP download URL: `root_url + "/" + latest_url`.
 
 The `slug` matches the plugin folder name and can be used to construct other paths (e.g. icon: `plugins/<slug>/logo.png` on the source branch).
+
+`ai_assisted` may be voluntarily disclosed by a plugin author or detected from
+recognized AI attribution in registry history. When present, the same boolean
+appears in the per-plugin manifest. Omission does not assert that AI was not
+used.
 
 ## Verifying Manifest Signatures
 

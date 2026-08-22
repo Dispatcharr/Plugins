@@ -110,6 +110,7 @@ At least one of `author` or `maintainers` must include your GitHub username. `au
 | `discord_thread` | `string` | URL to the associated Discord thread (must start with `http://` or `https://`) |
 | `deprecated` | `boolean` | Marks the plugin as deprecated. Default: `false` |
 | `unlisted` | `boolean` | Excludes the plugin from the root `manifest.json` (and the releases README) but still generates a per-plugin manifest. Default: `false` |
+| `ai_assisted` | `boolean` | Set to `true` to voluntarily disclose AI assistance with this plugin. |
 | `source_type` | `string` | Set to `"external"` to declare this as an external plugin. Omit (or `"local"`) for standard plugins |
 | `source_url` | `string` | Required when `source_type` is `"external"`. Must be a GitHub Releases URL containing a `{version}` placeholder, e.g. `https://github.com/owner/repo/releases/download/v{version}/plugin.zip` |
 
@@ -122,6 +123,7 @@ At least one of `author` or `maintainers` must include your GitHub username. `au
   "description": "Does something useful for Dispatcharr",
   "author": "your-github-username",
   "license": "MIT",
+  "ai_assisted": true,
   "source_type": "external",
   "source_url": "https://github.com/your-github-username/my-plugin/releases/download/v{version}/my-plugin.zip",
   "repo_url": "https://github.com/your-github-username/my-plugin",
@@ -212,8 +214,13 @@ Version increments are enforced by the validation workflow. You cannot submit a 
 - `max_dispatcharr_version`
 - `deprecated`
 - `unlisted`
+- `ai_assisted`
 
 All other fields - including `name`, `author`, `license`, `source_url`, `source_type`, and any code changes - require a version bump.
+
+`ai_assisted` may be voluntarily disclosed by a plugin author or detected from
+recognized AI attribution in registry history. Omission does not assert that AI
+was not used.
 
 > **Changing the license?** A version bump is required because the license you publish under is binding for that release. Users who installed the previous version hold rights under the old license and those cannot be revoked. The new version carries the new license going forward.
 

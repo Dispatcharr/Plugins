@@ -73,6 +73,17 @@ def test_plugin_entry_key_order():
     ]
 
 
+def test_ai_assisted_is_emitted_only_for_positive_disclosure():
+    zips = [m.build_version_entry(META, "u", 10, "1.2.0")]
+    plugin = m.build_plugin_entry(PLUGIN_RAW, "demo", "u", "registry", "registry", zips, META, 10, True)
+    root = m.build_root_entry(PLUGIN_RAW, "demo", META, 10, "", "", "u", "manifest", True)
+
+    assert plugin["ai_assisted"] is True
+    assert root["ai_assisted"] is True
+    assert list(plugin).index("ai_assisted") == list(plugin).index("license") + 1
+    assert list(root).index("ai_assisted") == list(root).index("license") + 1
+
+
 def test_root_entry_key_order():
     entry = m.build_root_entry(
         PLUGIN_RAW, "demo", META, 10, "v0.9.0", "",
@@ -192,3 +203,39 @@ def test_generate_uses_split_manifest_and_copies_icon_when_enabled(tmp_path, mon
     assert "root_url" not in root
     assert root["plugins"][0]["manifest_url"] == "metadata/demo/manifest.json"
     assert (tmp_path / "metadata" / "demo" / "logo.png").read_bytes() == b"png"
+
+
+def test_generate_emits_and_strips_ai_assisted_with_feature_flag(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(json.dumps({
+        "name": "Demo", "version": "1.0.0", "description": "d", "ai_assisted": True,
+    }), encoding="utf-8")
+    monkeypatch.setattr(gh, "release_list_tags", lambda repo: [])
+    monkeypatch.setattr(feature_flags, "AI_ASSISTED_MANIFEST_DISCLOSURE", True)
+
+    assert m.generate("main", "releases", "org/repo", "") == 0
+    plugin_manifest = tmp_path / "metadata" / "demo" / "manifest.json"
+    assert json.loads(plugin_manifest.read_text(encoding="utf-8"))["manifest"]["ai_assisted"] is True
+    assert json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]["plugins"][0]["ai_assisted"] is True
+
+    monkeypatch.setattr(feature_flags, "AI_ASSISTED_MANIFEST_DISCLOSURE", False)
+    assert m.generate("main", "releases", "org/repo", "") == 0
+    assert "ai_assisted" not in json.loads(plugin_manifest.read_text(encoding="utf-8"))["manifest"]
+    assert "ai_assisted" not in json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]["plugins"][0]
+
+
+def test_generate_emits_ai_assisted_for_history_evidence(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(
+        json.dumps({"name": "Demo", "version": "1.0.0", "description": "d"}), encoding="utf-8")
+    monkeypatch.setattr(gh, "release_list_tags", lambda repo: [])
+    monkeypatch.setattr(feature_flags, "AI_ASSISTED_MANIFEST_DISCLOSURE", True)
+    monkeypatch.setattr(m.ai_assisted, "has_attribution", lambda branch, plugin: True)
+
+    assert m.generate("main", "releases", "org/repo", "") == 0
+    root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert root["plugins"][0]["ai_assisted"] is True
