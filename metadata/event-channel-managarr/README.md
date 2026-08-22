@@ -2,7 +2,7 @@
 
 # Event Channel Managarr
 
-**Version:** `1.26.2261346` | **Author:** PiratesIRC | **Last Updated:** Aug 14 2026, 16:48 UTC
+**Version:** `1.26.2341504` | **Author:** PiratesIRC | **Last Updated:** Aug 22 2026, 15:48 UTC
 
 Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG.
 
@@ -14,20 +14,21 @@ Automates channel visibility by hiding channels without events and showing those
 
 ### Latest Release
 
-- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2261346/event-channel-managarr-1.26.2261346.zip)
-- **Built:** Aug 14 2026, 16:49 UTC
-- **Source Commit:** [`52b3511`](https://github.com/Dispatcharr/Plugins/commit/52b35115d8e54024d2adbc0b7fd012ba2ee94450)
+- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2341504/event-channel-managarr-1.26.2341504.zip)
+- **Built:** Aug 22 2026, 15:49 UTC
+- **Source Commit:** [`59fc293`](https://github.com/Dispatcharr/Plugins/commit/59fc293d1d236ef1fc73068b7ca8eb76f62724f0)
 
 **Checksums:**
 ```
-MD5:    d99c890450c3606efc456087d62029c3
-SHA256: e6ff89833f4bc4598a5a260c82f373abce54f00672765ef7a42598186c4fa128
+MD5:    708b7ca9b3b61155074785085d3d238d
+SHA256: 56ae74a767fd8894585cbd30f6712d8100a7d48912b8c2e885b19a24a6fbff93
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2341504` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2341504/event-channel-managarr-1.26.2341504.zip) | Aug 22 2026, 15:49 UTC | [`59fc293`](https://github.com/Dispatcharr/Plugins/commit/59fc293d1d236ef1fc73068b7ca8eb76f62724f0) | 708b7ca9b3b61155074785085d3d238d | 56ae74a767fd8894585cbd30f6712d8100a7d48912b8c2e885b19a24a6fbff93 |
 | `1.26.2261346` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2261346/event-channel-managarr-1.26.2261346.zip) | Aug 14 2026, 16:49 UTC | [`52b3511`](https://github.com/Dispatcharr/Plugins/commit/52b35115d8e54024d2adbc0b7fd012ba2ee94450) | d99c890450c3606efc456087d62029c3 | e6ff89833f4bc4598a5a260c82f373abce54f00672765ef7a42598186c4fa128 |
 | `1.26.2251616` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2251616/event-channel-managarr-1.26.2251616.zip) | Aug 13 2026, 16:23 UTC | [`148bd03`](https://github.com/Dispatcharr/Plugins/commit/148bd037d02ee8b5a7facd2b69727bea686db59b) | 3f69f79d54292f6bb6ad84de9189b2e4 | 47e88589d0a7ad86deaf6f500650f70b0300677ea3f4084a3428acb0aa13b53e |
 | `1.26.2242049` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2242049/event-channel-managarr-1.26.2242049.zip) | Aug 12 2026, 23:06 UTC | [`97b0d17`](https://github.com/Dispatcharr/Plugins/commit/97b0d170c21b2c05cea84dd781d08abad8f8fb7d) | 9335dc02176e6cbeecfc9aa65dae46bd | 32d96e74526298656b1769a4c1b24a9d8f6374acbefd02d0ab6c40483112e32b |
@@ -37,7 +38,6 @@ SHA256: e6ff89833f4bc4598a5a260c82f373abce54f00672765ef7a42598186c4fa128
 | `1.26.1600157` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.1600157/event-channel-managarr-1.26.1600157.zip) | Jun 09 2026, 13:28 UTC | [`76083e4`](https://github.com/Dispatcharr/Plugins/commit/76083e4d8945665024f9d01cd14041be1b5ad2ab) | 05f88d7725b336c051f25e30eca4266e | 4437ff705de9b5215a150d7c80431c281aa02e800df78ff2ac48b55516a33ce8 |
 | `1.26.1401103` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.1401103/event-channel-managarr-1.26.1401103.zip) | May 20 2026, 11:53 UTC | [`618a835`](https://github.com/Dispatcharr/Plugins/commit/618a835b69185ab601e3cce394cb4d9bcc0e5258) | 7d0da04de40bf8f971bd4997a504c488 | 10408f221d17eed66fca8465b96debe7b49ac6ffc0b7576bce130c16aa45c1e2 |
 | `1.26.1362004` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.1362004/event-channel-managarr-1.26.1362004.zip) | May 16 2026, 20:45 UTC | [`19fd3e6`](https://github.com/Dispatcharr/Plugins/commit/19fd3e6db4a7f3f6c95c46eb74c2136cc1846a52) | 17a914694e0232f82f9b9bbb69e84175 | d877772b2f6122abfd98ee9b987ee8f3d923d5cd39152c89d1d41fec3d4cf7db |
-| `1.26.1291442` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.1291442/event-channel-managarr-1.26.1291442.zip) | May 09 2026, 17:03 UTC | [`ff391f3`](https://github.com/Dispatcharr/Plugins/commit/ff391f33bcb804bf26f73f399a30819d8f3509b5) | ad735788912de3d5866690ec73a2f446 | 8029e366e7fc221822fad9de88a44975076d913ae40e96c7f500fff07bd7ee70 |
 
 ---
 
@@ -123,6 +123,43 @@ refreshes.
 
 **Advanced.** `Rate Limiting` slows database writes on large runs.
 
+## Two things that catch people out
+
+**A channel named for tomorrow's event is visible on purpose.** The rule that
+handles upcoming events, `[FutureDate:2]`, hides a channel only when its date is
+more than two days away, so a fixture tomorrow stays on the lineup today. If you
+want a channel to appear only on the day of its event, change that tag to
+`[FutureDate:0]`.
+
+**Hiding only affects Dispatcharr's profile-scoped outputs.** A client such as
+Jellyfin, Plex or Emby must be pointed at the URLs for the profile you are
+managing, and it must be given the guide URL rather than the playlist URL:
+
+| Client field | URL |
+|---|---|
+| Tuner / M3U playlist | `http://<dispatcharr>:<port>/output/m3u/<Profile>` |
+| Guide / XMLTV provider | `http://<dispatcharr>:<port>/output/epg/<Profile>` |
+
+Putting the M3U URL into the guide field is the single most common mistake: an
+XMLTV parser cannot read a playlist, so the client ends up with no guide and
+keeps the channel list it imported previously. Clients also cache, so run their
+guide refresh after a change rather than waiting for the nightly one.
+
+Note that Dispatcharr's own TV Guide page shows hidden channels when its filter
+is set to All Profiles. Select the managed profile to see what your clients get.
+
+## Reading a run
+
+Every run writes a CSV giving the action, the reason and the rule that decided
+each channel. Two things are reported that would otherwise be silent: channel
+group names that matched no channels, and regular expression settings that
+matched nothing. A setting that is quietly doing nothing shows up rather than
+looking like it works.
+
+`Channel Groups` is comma-separated. The `|` character belongs only in the three
+regular expression settings; using it to separate group names joins them into one
+name that matches nothing.
+
 ## Getting started
 
 1. Install the plugin and open its page in Dispatcharr.
@@ -134,3 +171,10 @@ refreshes.
 5. Run Validate Configuration, then Dry Run, and read the result.
 6. When the preview looks right, run Run Now, and only then set
    `Scheduled Run Times` for unattended operation.
+
+## Full documentation
+
+The source repository carries the complete
+[user guide](https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/blob/main/docs/USER-GUIDE.md),
+covering every setting and action, the hide rules in detail, the managed dummy
+EPG, client setup, file locations, the CSV format, and troubleshooting by symptom.
