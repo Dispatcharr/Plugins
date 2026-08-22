@@ -1,6 +1,8 @@
 import json
 
 from pluginctl.core import jsonio
+from pluginctl.core import gh
+from pluginctl import feature_flags
 from pluginctl.publish import manifest as m
 
 
@@ -101,3 +103,92 @@ def test_root_manifest_compact_matches_jq(tmp_path):
                                 capture_output=True, text=True, check=True).stdout.strip()
         assert compact == jq_out  # stable round-trip through real jq
     assert json.loads(compact)["plugins"][0]["slug"] == "demo"
+
+
+def test_root_manifest_split_base_urls_key_order():
+    entry = m.build_root_entry(PLUGIN_RAW, "demo", META, 10, "", "",
+                               "u", "metadata/demo/manifest.json")
+    root = m.build_root_manifest(
+        "https://github.com/org/repo", "org/repo",
+        "https://github.com/org/repo/releases/download", [entry],
+        "https://org.github.io/repo")
+    assert list(root) == [
+        "registry_url", "registry_name", "download_base_url",
+        "metadata_base_url", "plugins",
+    ]
+    assert "root_url" not in root
+    assert root["plugins"][0]["manifest_url"] == "metadata/demo/manifest.json"
+
+
+def test_write_manifest_uses_formatted_json_and_ignores_existing_whitespace(tmp_path):
+    dest = tmp_path / "manifest.json"
+    payload = {"registry_name": "demo", "plugins": []}
+
+    assert m.write_manifest_if_changed(str(dest), payload, "2026-01-01T00:00:00Z")
+    rendered = dest.read_text(encoding="utf-8")
+    assert rendered.startswith("{\n  \"generated_at\":")
+    assert rendered.endswith("\n")
+    assert json.loads(rendered)["manifest"] == payload
+
+    dest.write_text(json.dumps({"manifest": payload}), encoding="utf-8")
+    assert not m.write_manifest_if_changed(str(dest), payload, "2026-01-02T00:00:00Z")
+    assert dest.read_text(encoding="utf-8") == json.dumps({"manifest": payload})
+
+
+def test_pages_url_returns_empty_string_when_pages_is_unavailable(monkeypatch):
+    monkeypatch.setattr(gh, "api", lambda *args, **kwargs: None)
+    assert gh.pages_url("org/repo") == ""
+
+
+def test_sync_icon_prefers_png(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "logo.png").write_bytes(b"png")
+    (plugin_dir / "logo.svg").write_bytes(b"svg")
+    (tmp_path / "metadata" / "demo").mkdir(parents=True)
+
+    m._sync_icon(str(plugin_dir), "demo")
+
+    assert (tmp_path / "metadata" / "demo" / "logo.png").read_bytes() == b"png"
+    assert not (tmp_path / "metadata" / "demo" / "logo.svg").exists()
+
+
+def test_generate_uses_legacy_manifest_by_default(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(
+        json.dumps({"name": "Demo", "version": "1.0.0", "description": "d"}),
+        encoding="utf-8")
+    monkeypatch.setattr(feature_flags, "SPLIT_MANIFEST_BASE_URLS", False)
+    monkeypatch.setattr(gh, "release_list_tags", lambda repo: [])
+    monkeypatch.setattr(gh, "pages_url", lambda repo: (_ for _ in ()).throw(AssertionError()))
+
+    assert m.generate("main", "releases", "org/repo", "") == 0
+
+    root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert root["root_url"] == "https://github.com/org/repo/releases/download"
+    assert root["plugins"][0]["manifest_url"].startswith("https://raw.githubusercontent.com/")
+
+
+def test_generate_uses_split_manifest_and_copies_icon_when_enabled(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(
+        json.dumps({"name": "Demo", "version": "1.0.0", "description": "d"}),
+        encoding="utf-8")
+    (plugin_dir / "logo.png").write_bytes(b"png")
+    monkeypatch.setattr(feature_flags, "SPLIT_MANIFEST_BASE_URLS", True)
+    monkeypatch.setattr(gh, "release_list_tags", lambda repo: [])
+    monkeypatch.setattr(gh, "pages_url", lambda repo: "https://org.github.io/repo/")
+
+    assert m.generate("main", "releases", "org/repo", "") == 0
+
+    root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert root["download_base_url"] == "https://github.com/org/repo/releases/download"
+    assert root["metadata_base_url"] == "https://org.github.io/repo"
+    assert "root_url" not in root
+    assert root["plugins"][0]["manifest_url"] == "metadata/demo/manifest.json"
+    assert (tmp_path / "metadata" / "demo" / "logo.png").read_bytes() == b"png"

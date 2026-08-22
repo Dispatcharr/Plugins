@@ -61,7 +61,7 @@ def _g(data: Optional[dict], key: str, default: str = "") -> str:
 # Per-plugin README (metadata/<plugin>/README.md)
 # --------------------------------------------------------------------------- #
 def render_plugin_readme(plugin_name: str, plugin_raw: dict, manifest: dict,
-                         root_url: str, repository: str, source_branch: str,
+                         download_base_url: str, repository: str, source_branch: str,
                          last_updated: str, has_readme: bool,
                          source_readme: str = "") -> str:
     name = _g(plugin_raw, "name")
@@ -78,7 +78,7 @@ def render_plugin_readme(plugin_name: str, plugin_raw: dict, manifest: dict,
     manifest_body = manifest.get("manifest", {}) if manifest else {}
     latest = manifest_body.get("latest") or {}
     latest_url_path = latest.get("latest_url") or ""
-    latest_full_url = f"{root_url}/{latest_url_path}" if root_url and latest_url_path else ""
+    latest_full_url = f"{download_base_url}/{latest_url_path}" if download_base_url and latest_url_path else ""
 
     L: list[str] = []
     L.append("[Back to All Plugins](../../README.md)")
@@ -134,7 +134,7 @@ def render_plugin_readme(plugin_name: str, plugin_raw: dict, manifest: dict,
         if not v:
             continue
         url_path = ver.get("url") or ""
-        full_url = f"{root_url}/{url_path}" if root_url and url_path else ""
+        full_url = f"{download_base_url}/{url_path}" if download_base_url and url_path else ""
         commit_sha = ver.get("commit_sha") or ""
         commit_short = ver.get("commit_sha_short") or ""
         build_ts = ver.get("build_timestamp") or ""
@@ -229,7 +229,7 @@ def table_row(plugin_raw: dict, deprecated_pass: bool) -> str:
 def render_plugin_block(*, is_deprecated: bool, plugin_name: str, plugin_raw: dict,
                         manifest: Optional[dict], last_updated: str, commit_sha: str,
                         commit_sha_short: str, version_count, repository: str,
-                        source_branch: str, releases_branch: str, root_url: str,
+                        source_branch: str, releases_branch: str, download_base_url: str,
                         has_source_readme: bool) -> str:
     name = _g(plugin_raw, "name")
     version = _g(plugin_raw, "version")
@@ -245,7 +245,7 @@ def render_plugin_block(*, is_deprecated: bool, plugin_name: str, plugin_raw: di
     latest_url_path = ""
     if manifest:
         latest_url_path = ((manifest.get("manifest") or {}).get("latest") or {}).get("latest_url") or ""
-    zip_url = f"{root_url}/{latest_url_path}" if root_url and latest_url_path else ""
+    zip_url = f"{download_base_url}/{latest_url_path}" if download_base_url and latest_url_path else ""
 
     source_url = f"https://github.com/{repository}/tree/{source_branch}/plugins/{plugin_name}"
     readme_url = f"https://github.com/{repository}/blob/{source_branch}/plugins/{plugin_name}/README.md"
@@ -312,7 +312,8 @@ def _plugin_last_updated(source_branch: str, plugin_dir: str) -> str:
 def generate_plugin_readmes(source_branch: str, repository: str) -> None:
     """Write metadata/<plugin>/README.md for every plugin (plugin-readmes.sh)."""
     root = _load_json("manifest.json") or {}
-    root_url = (root.get("manifest") or {}).get("root_url") or ""
+    root_manifest = root.get("manifest") or {}
+    download_base_url = root_manifest.get("download_base_url") or root_manifest.get("root_url") or ""
     for plugin_dir in sorted(glob.glob("plugins/*/")):
         plugin_name = os.path.basename(plugin_dir.rstrip("/"))
         plugin_file = os.path.join(plugin_dir, "plugin.json")
@@ -328,7 +329,7 @@ def generate_plugin_readmes(source_branch: str, repository: str) -> None:
         has_readme = os.path.isfile(source_readme_path)
         source_readme = _read(source_readme_path) if has_readme else ""
         content = render_plugin_readme(
-            plugin_name, plugin_raw, manifest, root_url, repository, source_branch,
+            plugin_name, plugin_raw, manifest, download_base_url, repository, source_branch,
             last_updated, has_readme, source_readme)
         with open(f"metadata/{plugin_name}/README.md", "w", encoding="utf-8") as fh:
             fh.write(content)
@@ -337,7 +338,8 @@ def generate_plugin_readmes(source_branch: str, repository: str) -> None:
 def generate_releases_readme(source_branch: str, releases_branch: str, repository: str) -> None:
     """Write the root README.md (releases-readme.sh)."""
     root = _load_json("manifest.json") or {}
-    root_url = (root.get("manifest") or {}).get("root_url") or ""
+    root_manifest = root.get("manifest") or {}
+    download_base_url = root_manifest.get("download_base_url") or root_manifest.get("root_url") or ""
 
     raws: dict[str, dict] = {}
     has_deprecated = False
@@ -391,7 +393,7 @@ def generate_releases_readme(source_branch: str, releases_branch: str, repositor
             manifest=manifest, last_updated=last_updated, commit_sha=commit_sha,
             commit_sha_short=commit_short, version_count=version_count,
             repository=repository, source_branch=source_branch,
-            releases_branch=releases_branch, root_url=root_url,
+            releases_branch=releases_branch, download_base_url=download_base_url,
             has_source_readme=has_source_readme))
 
     # Active detailed sections

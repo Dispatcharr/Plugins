@@ -132,6 +132,11 @@ def release_create(tag: str, repo: str, title: str, notes: str, asset: str) -> i
                  "--notes", notes, asset]).returncode
 
 
+def pages_url(repo: str) -> str:
+    """GitHub Pages site URL for the repo, or an empty string when unavailable."""
+    return api(f"repos/{repo}/pages", jq=".html_url // empty") or ""
+
+
 def release_delete(tag: str, repo: str, cleanup_tag: bool = True) -> int:
     args = ["release", "delete", tag, "--repo", repo, "--yes"]
     if cleanup_tag:

@@ -17,6 +17,7 @@ import subprocess
 import tempfile
 from typing import Optional
 
+from .. import feature_flags
 from ..core import jsonio
 from ..core.jsonio import drop_none
 from ..core.timeutil import now_iso
@@ -143,14 +144,19 @@ def build_root_entry(plugin_raw: dict, plugin_name: str, latest_metadata: dict,
     })
 
 
-def build_root_manifest(registry_url: str, registry_name: str, root_url: str,
-                        root_entries: list[dict]) -> dict:
-    return {
+def build_root_manifest(registry_url: str, registry_name: str, download_base_url: str,
+                        root_entries: list[dict], metadata_base_url: Optional[str] = None) -> dict:
+    root = {
         "registry_url": registry_url,
         "registry_name": registry_name,
-        "root_url": root_url,
-        "plugins": root_entries,
     }
+    if metadata_base_url is None:
+        root["root_url"] = download_base_url
+    else:
+        root["download_base_url"] = download_base_url
+        root["metadata_base_url"] = metadata_base_url
+    root["plugins"] = root_entries
+    return root
 
 
 def _num(value) -> float:
@@ -178,7 +184,7 @@ def write_manifest_if_changed(dest: str, payload: dict, generated_at: str) -> bo
             pass
     wrapper = {"generated_at": generated_at, "manifest": json.loads(new_compact)}
     with open(dest, "w", encoding="utf-8") as fh:
-        fh.write(jsonio.dumps(wrapper))
+        fh.write(jsonio.dumps_formatted(wrapper))
     return True
 
 
@@ -223,7 +229,7 @@ def sign_manifest(file: str, gpg_key_id: str, passphrase: Optional[str]) -> bool
         return False
     data["signature"] = sig
     with open(file, "w", encoding="utf-8") as fh:
-        fh.write(jsonio.dumps(data))
+        fh.write(jsonio.dumps_formatted(data))
     return True
 
 
@@ -259,6 +265,20 @@ def _canonical(version: str) -> str:
     return re.sub(r"-[0-9]+$", "", version)
 
 
+ICON_EXTS = ("png", "svg", "jpg", "webp")
+
+
+def _sync_icon(plugin_dir: str, plugin_name: str) -> None:
+    """Copy the first supported source logo beside the plugin metadata."""
+    import shutil
+
+    for ext in ICON_EXTS:
+        source = os.path.join(plugin_dir, f"logo.{ext}")
+        if os.path.isfile(source):
+            shutil.copy(source, f"metadata/{plugin_name}/logo.{ext}")
+            return
+
+
 def strip_signatures() -> None:
     """Remove ``.signature`` from every manifest (no key configured or signing failed)."""
     import glob as _glob
@@ -273,7 +293,7 @@ def strip_signatures() -> None:
         if "signature" in data:
             del data["signature"]
             with open(f, "w", encoding="utf-8") as fh:
-                fh.write(jsonio.dumps(data))
+                fh.write(jsonio.dumps_formatted(data))
 
 
 def generate(source_branch: str, releases_branch: str, repository: str,
@@ -285,8 +305,11 @@ def generate(source_branch: str, releases_branch: str, repository: str,
     generated_at = now_iso()
     registry_url = f"https://github.com/{repository}"
     registry_name = repository
-    root_url = f"https://github.com/{repository}/releases/download"
+    download_base_url = f"https://github.com/{repository}/releases/download"
     raw_releases_url = f"https://raw.githubusercontent.com/{repository}/{releases_branch}"
+    metadata_base_url = ""
+    if feature_flags.SPLIT_MANIFEST_BASE_URLS:
+        metadata_base_url = gh.pages_url(repository).rstrip("/") or raw_releases_url
 
     key_id, signing_failed = import_gpg_key(os.environ.get("GPG_PRIVATE_KEY", ""))
     passphrase = os.environ.get("GPG_PASSPHRASE") or None
@@ -323,6 +346,8 @@ def generate(source_branch: str, releases_branch: str, repository: str,
 
         existing_manifest_file = f"metadata/{plugin_name}/manifest.json"
         os.makedirs(f"metadata/{plugin_name}", exist_ok=True)
+        if feature_flags.SPLIT_MANIFEST_BASE_URLS:
+            _sync_icon(plugin_dir, plugin_name)
         existing_manifest = None
         if os.path.isfile(existing_manifest_file):
             try:
@@ -383,13 +408,17 @@ def generate(source_branch: str, releases_branch: str, repository: str,
         if unlisted:
             continue
 
-        manifest_url = f"{raw_releases_url}/metadata/{plugin_name}/manifest.json"
+        manifest_url = (f"metadata/{plugin_name}/manifest.json"
+                        if feature_flags.SPLIT_MANIFEST_BASE_URLS
+                        else f"{raw_releases_url}/metadata/{plugin_name}/manifest.json")
         root_entries.append(build_root_entry(raw, plugin_name, latest_metadata,
                                              latest_size_kb, min_da, max_da,
                                              latest_url, manifest_url))
         plugin_count += 1
 
-    inner_root = build_root_manifest(registry_url, registry_name, root_url, root_entries)
+    inner_root = build_root_manifest(
+        registry_url, registry_name, download_base_url, root_entries,
+        metadata_base_url if feature_flags.SPLIT_MANIFEST_BASE_URLS else None)
     written = write_manifest_if_changed("manifest.json", inner_root, generated_at)
     sign_if_needed("manifest.json", written)
 

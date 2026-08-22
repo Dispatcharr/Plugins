@@ -1,11 +1,10 @@
-"""Canonical JSON helpers that reproduce the exact byte output of the V1 jq programs.
+"""Canonical JSON helpers for manifest payloads and on-disk wrappers.
 
-The V1 publish pipeline builds manifests with `jq` and emits them with `jq -c`.
-To keep the published `releases`-branch output byte-identical, every manifest
-object here is built as an insertion-ordered ``dict`` in the same key order as the
-corresponding jq program, nulls are dropped the same way jq's
-``with_entries(select(.value != null))`` does, and the compact form is produced
-with the same separators jq uses.
+Manifest objects are built as insertion-ordered ``dict`` objects in the same key
+order as the corresponding jq program. Nulls are dropped the same way jq's
+``with_entries(select(.value != null))`` does, and compact JSON is retained for
+stable payload comparisons and GPG signing. Published wrapper files use formatted
+JSON so humans can inspect them easily.
 """
 
 from __future__ import annotations
@@ -22,6 +21,11 @@ def dumps(obj: Any) -> str:
     matches on all three counts.
     """
     return json.dumps(obj, separators=(",", ":"), ensure_ascii=False)
+
+
+def dumps_formatted(obj: Any) -> str:
+    """Indented JSON for generated files, with a conventional trailing newline."""
+    return json.dumps(obj, indent=2, ensure_ascii=False) + "\n"
 
 
 def drop_none(obj: dict) -> dict:

@@ -78,3 +78,6 @@ PYTHONPATH=.github/pluginctl/src python -m pluginctl \
 - `publish/readmes.py` intentionally corrects one old bug: deprecated plugins'
   version count now comes from the manifest's `versions[]` instead of the
   removed `zips/` path (which always rendered 0).
+- Publishing defaults to the legacy `root_url` manifest format while the shell
+  publisher remains in service. `SPLIT_MANIFEST_BASE_URLS` is a reviewed,
+  hardcoded rollout flag for `download_base_url` and `metadata_base_url`.
