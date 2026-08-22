@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-13T01:06:53Z",
+  "generated_at": "2026-08-22T22:54:21Z",
   "manifest": {
     "slug": "dispatcharr-ranked-matchups",
     "name": "Ranked Matchups (Top Games)",
@@ -12,21 +12,33 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1508938899865604167",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-08-13T01:06:25Z",
+    "last_updated": "2026-08-22T22:53:59Z",
     "latest": {
-      "version": "1.17.0",
-      "commit_sha": "167070efe899345536ec04e72306ceb2f6d37833",
-      "commit_sha_short": "167070e",
-      "build_timestamp": "2026-08-13T01:06:41Z",
-      "last_updated": "2026-08-13T01:06:25Z",
-      "checksum_md5": "e17bf7b188d41fa18de7a1fb6e8bed7d",
-      "checksum_sha256": "ec79d1d3fe76a093c89fd5129278bf80b025c08c52ed2ffb25c4b05129b523f2",
-      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.17.0/plugin.zip",
-      "latest_url": "dispatcharr-ranked-matchups-1.17.0/dispatcharr-ranked-matchups-1.17.0.zip",
-      "url": "dispatcharr-ranked-matchups-1.17.0/dispatcharr-ranked-matchups-1.17.0.zip",
-      "size": 408
+      "version": "1.20.0",
+      "commit_sha": "57e5b93763f0a5f48121f596bb05b45c057c6716",
+      "commit_sha_short": "57e5b93",
+      "build_timestamp": "2026-08-22T22:54:12Z",
+      "last_updated": "2026-08-22T22:53:59Z",
+      "checksum_md5": "fb47fe4c51c6c9b9209185eb7962c74a",
+      "checksum_sha256": "cc62033105fcba3a74dcb08558beed22d4171b5b56683c6497e3537eead3e264",
+      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.20.0/plugin.zip",
+      "latest_url": "dispatcharr-ranked-matchups-1.20.0/dispatcharr-ranked-matchups-1.20.0.zip",
+      "url": "dispatcharr-ranked-matchups-1.20.0/dispatcharr-ranked-matchups-1.20.0.zip",
+      "size": 430
     },
     "versions": [
+      {
+        "version": "1.20.0",
+        "commit_sha": "57e5b93763f0a5f48121f596bb05b45c057c6716",
+        "commit_sha_short": "57e5b93",
+        "build_timestamp": "2026-08-22T22:54:12Z",
+        "last_updated": "2026-08-22T22:53:59Z",
+        "checksum_md5": "fb47fe4c51c6c9b9209185eb7962c74a",
+        "checksum_sha256": "cc62033105fcba3a74dcb08558beed22d4171b5b56683c6497e3537eead3e264",
+        "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.20.0/plugin.zip",
+        "url": "dispatcharr-ranked-matchups-1.20.0/dispatcharr-ranked-matchups-1.20.0.zip",
+        "size": 430
+      },
       {
         "version": "1.17.0",
         "commit_sha": "167070efe899345536ec04e72306ceb2f6d37833",
@@ -134,20 +146,8 @@
         "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.10.0/plugin.zip",
         "url": "dispatcharr-ranked-matchups-1.10.0/dispatcharr-ranked-matchups-1.10.0.zip",
         "size": 334
-      },
-      {
-        "version": "1.9.0",
-        "commit_sha": "ca8ef525fce703ff246206308442ed9ec141c35e",
-        "commit_sha_short": "ca8ef52",
-        "build_timestamp": "2026-06-22T17:39:04Z",
-        "last_updated": "2026-06-22T13:38:42-04:00",
-        "checksum_md5": "3f3acd3845ad7097d17a3ae4730d9c9e",
-        "checksum_sha256": "6abd8bd267c5258374f5ca0d1c9acbe5be6c7052e38ed4f7fa6123c654fd3aa2",
-        "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.9.0/plugin.zip",
-        "url": "dispatcharr-ranked-matchups-1.9.0/dispatcharr-ranked-matchups-1.9.0.zip",
-        "size": 330
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCan0YrgAKCRB+wDprTCI0\nzsnSAQC/ooBfkL74UGYaQaXq4ZfbZxLJMWGnrtKFps3vwp9mdAEA/PcC3sBPZArq\nsHQUa2t80FjqwmGo7fclK1HfSz7hawk=\n=e6Ku\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaooongAKCRB+wDprTCI0\nzmU1AP4+aPzIYo1FgM3NJXicdiw0fedX+G4TBVNEEQcpB1M2uwD9EbWpUVbGHB6h\n3ed/ypg6LGf/jYHa1u7Lvs5QteEWdwk=\n=WTty\n-----END PGP SIGNATURE-----"
 }
