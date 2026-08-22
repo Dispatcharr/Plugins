@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  security-events: read
 
 jobs:
   test:
@@ -18,9 +19,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - uses: github/codeql-action/init@v4
+      - id: init
+        uses: github/codeql-action/init@v4
         with:
           languages: python
       # --learn creates the initial expected output in the ephemeral runner while
       # still compiling and evaluating the query against its fixture.
-      - run: codeql test run --learn --search-path=.github/codeql/queries .github/codeql/queries/python/tests
+      - run: ${{ steps.init.outputs.codeql-path }} test run --learn --search-path=.github/codeql/queries .github/codeql/queries/python/tests
