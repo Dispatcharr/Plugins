@@ -85,6 +85,7 @@ jobs:
       pub_key_changed: ${{ steps.detect.outputs.pub_key_changed }}
       has_new_plugin: ${{ steps.detect.outputs.has_new_plugin }}
       has_updated_plugin: ${{ steps.detect.outputs.has_updated_plugin }}
+      metadata_only: ${{ steps.detect.outputs.metadata_only }}
     steps:
       - name: Trusted checkout
         uses: ./.github/actions/trusted-checkout
@@ -186,7 +187,7 @@ jobs:
   # --------------------------------------------------------------------------
   codeql-analyze:
     needs: [detect-changes, validate-plugin, validate-title]
-    if: needs.validate-plugin.result == 'success' && needs.detect-changes.outputs.skip_validation != 'true' && needs.validate-title.outputs.title_valid == 'true'
+    if: needs.validate-plugin.result == 'success' && needs.detect-changes.outputs.skip_validation != 'true' && needs.detect-changes.outputs.metadata_only != 'true' && needs.validate-title.outputs.title_valid == 'true'
     uses: ./.github/workflows/_codeql-scan.yml
     with:
       matrix: ${{ needs.detect-changes.outputs.matrix }}
@@ -204,6 +205,7 @@ jobs:
       matrix: ${{ needs.detect-changes.outputs.matrix }}
       pr_number: ${{ github.event.pull_request.number }}
       base_ref: ${{ github.event.pull_request.base.ref }}
+      metadata_only: ${{ needs.detect-changes.outputs.metadata_only }}
 
   # --------------------------------------------------------------------------
   # Job 6b: Tooling test suite (reusable workflow) for authorized repo updates

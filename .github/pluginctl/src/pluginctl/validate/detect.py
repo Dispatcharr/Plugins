@@ -17,6 +17,10 @@ from ..core import actions, gh, git
 
 SAFE_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 PUB_KEY_PATH = ".github/scripts/keys/dispatcharr-plugins.pub"
+METADATA_ONLY_FIELDS = {
+    "description", "repo_url", "discord_thread", "min_dispatcharr_version",
+    "max_dispatcharr_version", "deprecated", "unlisted", "maintainers",
+}
 
 
 def is_safe_name(name: str) -> bool:
@@ -42,6 +46,29 @@ def author_has_plugin_permission(pr_author: str, base_json_text: Optional[str]) 
     except json.JSONDecodeError:
         return False
     return author_in_plugin_json(pr_author, data)
+
+
+def changed_json_fields(old: dict, new: dict) -> set[str]:
+    """Return manifest keys whose value changed, including additions and removals."""
+    return {key for key in old.keys() | new.keys() if old.get(key) != new.get(key)}
+
+
+def is_metadata_only_update(plugin_name: str, base_ref: str, changed_files: list[str]) -> bool:
+    """Whether an existing plugin only changes approved metadata in plugin.json."""
+    plugin_json_path = f"plugins/{plugin_name}/plugin.json"
+    if changed_files != [plugin_json_path]:
+        return False
+
+    base_json_text = git.show(f"origin/{base_ref}:{plugin_json_path}")
+    if base_json_text is None:
+        return False
+    try:
+        with open(plugin_json_path, encoding="utf-8") as fh:
+            current = json.load(fh)
+        base = json.loads(base_json_text)
+    except (OSError, json.JSONDecodeError):
+        return False
+    return bool(changed_json_fields(base, current)) and changed_json_fields(base, current) <= METADATA_ONLY_FIELDS
 
 
 @dataclass
@@ -94,7 +121,8 @@ def run(pr_author: str, base_ref: str, head_ref: str = "",
         actions.set_outputs(matrix="[]", plugin_count="0", close_pr="false",
                             close_reason="", skip_validation="true",
                             outside_violation="false", pub_key_changed="false",
-                            has_new_plugin="false", has_updated_plugin="false")
+                            has_new_plugin="false", has_updated_plugin="false",
+                            metadata_only="false")
         return 0
 
     merge_base = git.merge_base(f"origin/{base_ref}", "HEAD")
@@ -126,14 +154,16 @@ def run(pr_author: str, base_ref: str, head_ref: str = "",
         actions.error(f"Unsafe plugin folder name(s) detected: {', '.join(unsafe_list)}")
         actions.set_outputs(close_pr="true", close_reason="unsafe-plugin-name",
                             plugin_count="0", matrix="[]",
-                            has_new_plugin="false", has_updated_plugin="false")
+                            has_new_plugin="false", has_updated_plugin="false",
+                            metadata_only="false")
         return 0
 
     if not plugin_list:
         actions.error("No valid plugin changes detected in this PR.")
         actions.set_outputs(close_pr="true", close_reason="no-valid-plugins",
                             plugin_count="0", matrix="[]",
-                            has_new_plugin="false", has_updated_plugin="false")
+                            has_new_plugin="false", has_updated_plugin="false",
+                            metadata_only="false")
         return 0
 
     plugin_count = len(plugin_list)
@@ -145,6 +175,15 @@ def run(pr_author: str, base_ref: str, head_ref: str = "",
             has_updated_plugin = True
         else:
             has_new_plugin = True
+
+    metadata_only = all(
+        is_metadata_only_update(
+            plugin,
+            base_ref,
+            sorted(f for f in changed if f.startswith(f"plugins/{plugin}/")),
+        )
+        for plugin in plugin_list
+    )
 
     is_maintainer = write_access()
     has_any_permission = is_maintainer
@@ -170,7 +209,8 @@ def run(pr_author: str, base_ref: str, head_ref: str = "",
                         close_pr="true" if close_pr else "false",
                         skip_validation="false",
                         outside_violation="true" if has_outside_violation else "false",
-                        close_reason=close_reason)
+                        close_reason=close_reason,
+                        metadata_only="true" if metadata_only else "false")
     if outside_changes:
         actions.set_output("outside_files", "\n".join(outside_changes))
 
@@ -189,7 +229,8 @@ def _no_plugins(pr_author, outside_changes, has_outside_violation, write_access)
         actions.set_outputs(matrix="[]", plugin_count="0", close_pr="false",
                             close_reason="", skip_validation="false",
                             outside_violation="true",
-                            has_new_plugin="false", has_updated_plugin="false")
+                            has_new_plugin="false", has_updated_plugin="false",
+                            metadata_only="false")
         actions.set_output("outside_files", "\n".join(outside_changes))
         return 0
     if write_access():
@@ -198,7 +239,8 @@ def _no_plugins(pr_author, outside_changes, has_outside_violation, write_access)
                             close_reason="", skip_validation="true",
                             outside_violation="false",
                             pub_key_changed="true" if pub_key_changed else "false",
-                            has_new_plugin="false", has_updated_plugin="false")
+                            has_new_plugin="false", has_updated_plugin="false",
+                            metadata_only="false")
         if outside_changes:
             actions.set_output("outside_files", "\n".join(outside_changes))
         actions.log("No plugin changes detected - skipping plugin validation (author has write access).")

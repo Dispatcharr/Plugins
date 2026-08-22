@@ -19,12 +19,7 @@ from typing import Optional
 
 from ..core import actions, gh, git
 from ..core.version import is_semver, is_dispatcharr_version, version_greater_than
-from .detect import author_in_plugin_json, is_safe_name
-
-METADATA_ONLY_FIELDS = [
-    "description", "repo_url", "discord_thread", "min_dispatcharr_version",
-    "max_dispatcharr_version", "deprecated", "unlisted", "maintainers",
-]
+from .detect import METADATA_ONLY_FIELDS, author_in_plugin_json, changed_json_fields, is_safe_name
 
 _GH_DOWNLOAD_RE = re.compile(r"^https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/")
 
@@ -311,7 +306,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         if version_greater_than(version, old_version):
             rows.append(f"| Version bump | ✅ | `{old_version}` → `{version}` |")
         else:
-            changed_fields = _changed_fields(base_raw, raw)
+            changed_fields = changed_json_fields(base_raw, raw)
             metadata_only = all(f in METADATA_ONLY_FIELDS for f in changed_fields)
             if metadata_only and changed_fields:
                 rows.append(f"| Version bump | ✅ | `{old_version}` (unchanged - metadata-only update) |")
@@ -388,12 +383,6 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         has_permission="true" if has_permission else "false",
     )
     return 1 if failed else 0
-
-
-def _changed_fields(old: dict, new: dict) -> list[str]:
-    """Keys of NEW whose value differs from OLD (missing old -> null), sorted like jq keys."""
-    changed = [k for k in new.keys() if old.get(k) != new[k]]
-    return sorted(changed)
 
 
 def _write(path: str, text: str) -> None:

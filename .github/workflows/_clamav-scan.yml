@@ -16,6 +16,9 @@ on:
       base_ref:
         required: true
         type: string
+      metadata_only:
+        required: true
+        type: string
     outputs:
       clamav_status:
         value: ${{ jobs.scan.outputs.clamav_status }}
@@ -120,7 +123,7 @@ jobs:
             plugin_json="plugins/$plugin_name/plugin.json"
             [[ ! -f "$plugin_json" ]] && continue
             source_type=$(jq -r '.source_type // "local"' "$plugin_json")
-            if [[ "$source_type" == "external" ]]; then
+            if [[ "$source_type" == "external" && "${{ inputs.metadata_only }}" != "true" ]]; then
               version=$(jq -r '.version' "$plugin_json")
               source_url_template=$(jq -r '.source_url // ""' "$plugin_json")
               source_url="${source_url_template//\{version\}/$version}"
@@ -136,6 +139,9 @@ jobs:
                 SCAN_TARGETS+=("plugins/$plugin_name")
               fi
             else
+              if [[ "$source_type" == "external" ]]; then
+                echo "Metadata-only update, scanning checked-out metadata for $plugin_name"
+              fi
               SCAN_TARGETS+=("plugins/$plugin_name")
             fi
           done < <(echo '${{ inputs.matrix }}' | jq -r '.[]')
