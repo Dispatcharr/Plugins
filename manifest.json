@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-22T15:49:15Z",
+  "generated_at": "2026-08-22T22:50:38Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -18,6 +18,21 @@
         "latest_sha256": "e51b802391b0f3f8e2e3f0fbbc9360f265970c3fdc1279cc0af297be86126ac1",
         "latest_url": "channel-mapparr-1.26.2291823/channel-mapparr-1.26.2291823.zip",
         "latest_size": 738,
+        "min_dispatcharr_version": "v0.20.0"
+      },
+      {
+        "slug": "clapparr",
+        "name": "Clapparr",
+        "description": "The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/clapparr/manifest.json",
+        "author": "v8eta",
+        "license": "MIT",
+        "last_updated": "2026-08-22T18:50:11-04:00",
+        "latest_version": "1.3.0",
+        "latest_md5": "9a1952028dc26dcf136dfdfb00e450cf",
+        "latest_sha256": "a5887f905b8ef6f84f2c090d1f450ff07640ac78364404ea8de88d5a72055f3b",
+        "latest_url": "clapparr-1.3.0/clapparr-1.3.0.zip",
+        "latest_size": 43,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -345,5 +360,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaonFAQAKCRB+wDprTCI0\nzoWGAQD7wUobXxuOT+bPNW584Fz1OCZIzs8ZGC8033m8NVPjywEAgUUMcHbln6Hr\nZMcGLmTU2S8RyroTud+1RL3G2KkGhQ8=\n=s9h4\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoonwwAKCRB+wDprTCI0\nzqNbAP9S8L9hTtavOnjxotyBARHtyoInsEqmL68DFtOSrjBjQwD/QneC7IoYC3id\n+6xwtuM4092w2dYJPBDfEhc9lkO3PgQ=\n=fos3\n-----END PGP SIGNATURE-----"
 }
