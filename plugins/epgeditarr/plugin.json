@@ -1,6 +1,6 @@
 {
   "name": "EPGeditARR",
-  "version": "0.3.02",
+  "version": "0.3.03",
   "description": "Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more).",
   "author": "jstevenscl",
   "license": "MIT",
