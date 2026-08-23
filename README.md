@@ -18,7 +18,7 @@ This branch contains all published plugin releases.
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.20.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 37 leagues, tours and competitions (20 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.6` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
 | [`EPG Janitor`](#epg-janitor) | `1.26.2281111` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
-| [`EPGeditARR`](#epgeditarr) | `0.3.01` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). |
+| [`EPGeditARR`](#epgeditarr) | `0.3.02` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.2351639` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.2201040` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.2291211` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
@@ -162,17 +162,17 @@ Scans for channels with EPG assignments but no program data. Auto-matches EPG to
 
 ### [EPGeditARR](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/epgeditarr/README.md)
 
-**Version:** `0.3.01` | **Author:** jstevenscl | **Last Updated:** Aug 16 2026, 18:09 UTC
+**Version:** `0.3.02` | **Author:** jstevenscl | **Last Updated:** Aug 23 2026, 17:46 UTC
 
 Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jstevenscl/epgeditarr)
 
 **Downloads:**
-- [Latest Release (`0.3.01`)](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.01/epgeditarr-0.3.01.zip)
-- [All Versions (7 available)](./metadata/epgeditarr)
+- [Latest Release (`0.3.02`)](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.02/epgeditarr-0.3.02.zip)
+- [All Versions (8 available)](./metadata/epgeditarr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epgeditarr) | **Last Change:** [`d8a3e9f`](https://github.com/Dispatcharr/Plugins/commit/d8a3e9f862e10622e9f4541430bab0628a2adcb5)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epgeditarr) | **Last Change:** [`845984a`](https://github.com/Dispatcharr/Plugins/commit/845984acf52f5079a11b9b072b772680c4dd1702)
 
 ---
 
@@ -469,4 +469,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Aug 23 2026, 17:10 UTC*
+*Last updated: Aug 23 2026, 17:47 UTC*

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-16T18:10:08Z",
+  "generated_at": "2026-08-23T17:47:17Z",
   "manifest": {
     "slug": "epgeditarr",
     "name": "EPGeditARR",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/jstevenscl/epgeditarr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-08-16T18:09:39Z",
+    "last_updated": "2026-08-23T17:46:43Z",
     "latest": {
-      "version": "0.3.01",
-      "commit_sha": "d8a3e9f862e10622e9f4541430bab0628a2adcb5",
-      "commit_sha_short": "d8a3e9f",
-      "build_timestamp": "2026-08-16T18:09:58Z",
-      "last_updated": "2026-08-16T18:09:39Z",
-      "checksum_md5": "d88ed41227654b78fd2aafbdf8a65aab",
-      "checksum_sha256": "5be870b22493b72b1acfab141614ad4bad7bb68ca7e8b6ec77bdfc07ceac4560",
-      "source_url": "https://github.com/jstevenscl/epgeditarr/releases/download/v0.3.01/epgeditarr-v0.3.01.zip",
-      "latest_url": "epgeditarr-0.3.01/epgeditarr-0.3.01.zip",
-      "url": "epgeditarr-0.3.01/epgeditarr-0.3.01.zip",
-      "size": 141
+      "version": "0.3.02",
+      "commit_sha": "845984acf52f5079a11b9b072b772680c4dd1702",
+      "commit_sha_short": "845984a",
+      "build_timestamp": "2026-08-23T17:47:06Z",
+      "last_updated": "2026-08-23T17:46:43Z",
+      "checksum_md5": "c8ef3d1672907063ef126c73a225bce0",
+      "checksum_sha256": "b48510d79480ab7d15072d3edf46a798fde7fe8997ee47a2f52dc1f8f63746a9",
+      "source_url": "https://github.com/jstevenscl/epgeditarr/releases/download/v0.3.02/epgeditarr-v0.3.02.zip",
+      "latest_url": "epgeditarr-0.3.02/epgeditarr-0.3.02.zip",
+      "url": "epgeditarr-0.3.02/epgeditarr-0.3.02.zip",
+      "size": 142
     },
     "versions": [
+      {
+        "version": "0.3.02",
+        "commit_sha": "845984acf52f5079a11b9b072b772680c4dd1702",
+        "commit_sha_short": "845984a",
+        "build_timestamp": "2026-08-23T17:47:06Z",
+        "last_updated": "2026-08-23T17:46:43Z",
+        "checksum_md5": "c8ef3d1672907063ef126c73a225bce0",
+        "checksum_sha256": "b48510d79480ab7d15072d3edf46a798fde7fe8997ee47a2f52dc1f8f63746a9",
+        "source_url": "https://github.com/jstevenscl/epgeditarr/releases/download/v0.3.02/epgeditarr-v0.3.02.zip",
+        "url": "epgeditarr-0.3.02/epgeditarr-0.3.02.zip",
+        "size": 142
+      },
       {
         "version": "0.3.01",
         "commit_sha": "d8a3e9f862e10622e9f4541430bab0628a2adcb5",
@@ -106,5 +118,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoH9AgAKCRB+wDprTCI0\nzoKdAP9U6GBUrqM8bCj3LkKdZEtRqm6d2wx8Np25HiIpZMZltQEA4zul4g0ue2ft\n+okKNePnPqNu2WQGmJZuU75YCEXlfQs=\n=gb2s\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaosyJwAKCRB+wDprTCI0\nzqUvAP48ioEQnksBw5xXvlgU18PReg26i3N7j+1jwNPOu7TIwQEAlmesBBXhWu1L\nlNzWSxo4SMpVSdWlSVF6c7OX9L/4MQw=\n=PPRI\n-----END PGP SIGNATURE-----"
 }

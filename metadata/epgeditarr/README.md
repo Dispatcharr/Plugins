@@ -2,7 +2,7 @@
 
 # EPGeditARR
 
-**Version:** `0.3.01` | **Author:** jstevenscl | **Last Updated:** Aug 16 2026, 18:09 UTC
+**Version:** `0.3.02` | **Author:** jstevenscl | **Last Updated:** Aug 23 2026, 17:46 UTC
 
 Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more).
 
@@ -12,20 +12,21 @@ Transform and clean your EPG data using regex and find/replace rules. Creates vi
 
 ### Latest Release
 
-- **Download:** [`epgeditarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.01/epgeditarr-0.3.01.zip)
-- **Built:** Aug 16 2026, 18:09 UTC
-- **Source Commit:** [`d8a3e9f`](https://github.com/Dispatcharr/Plugins/commit/d8a3e9f862e10622e9f4541430bab0628a2adcb5)
+- **Download:** [`epgeditarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.02/epgeditarr-0.3.02.zip)
+- **Built:** Aug 23 2026, 17:47 UTC
+- **Source Commit:** [`845984a`](https://github.com/Dispatcharr/Plugins/commit/845984acf52f5079a11b9b072b772680c4dd1702)
 
 **Checksums:**
 ```
-MD5:    d88ed41227654b78fd2aafbdf8a65aab
-SHA256: 5be870b22493b72b1acfab141614ad4bad7bb68ca7e8b6ec77bdfc07ceac4560
+MD5:    c8ef3d1672907063ef126c73a225bce0
+SHA256: b48510d79480ab7d15072d3edf46a798fde7fe8997ee47a2f52dc1f8f63746a9
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.3.02` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.02/epgeditarr-0.3.02.zip) | Aug 23 2026, 17:47 UTC | [`845984a`](https://github.com/Dispatcharr/Plugins/commit/845984acf52f5079a11b9b072b772680c4dd1702) | c8ef3d1672907063ef126c73a225bce0 | b48510d79480ab7d15072d3edf46a798fde7fe8997ee47a2f52dc1f8f63746a9 |
 | `0.3.01` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.01/epgeditarr-0.3.01.zip) | Aug 16 2026, 18:09 UTC | [`d8a3e9f`](https://github.com/Dispatcharr/Plugins/commit/d8a3e9f862e10622e9f4541430bab0628a2adcb5) | d88ed41227654b78fd2aafbdf8a65aab | 5be870b22493b72b1acfab141614ad4bad7bb68ca7e8b6ec77bdfc07ceac4560 |
 | `0.3.00` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.00/epgeditarr-0.3.00.zip) | Aug 15 2026, 15:54 UTC | [`84fd4f0`](https://github.com/Dispatcharr/Plugins/commit/84fd4f03a3ea13e56dd4827bd29d2ec16a094121) | cec4379c2db418360a27479f2b102703 | 25cd38c8f0ada1ae5ca6d4961572c2b0678274cb9e6486ca27a8977b9d8d0b09 |
 | `0.2.10` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.2.10/epgeditarr-0.2.10.zip) | Jul 25 2026, 18:30 UTC | [`d6f94d8`](https://github.com/Dispatcharr/Plugins/commit/d6f94d8babfe12375b616399fad8672690fe757b) | c0f9cd0cf1785e4d6d03b3bdb68e07d8 | 1998aaa02f42101d663c6fc9bb22301be406a3294d0ef2ae2a9496bb2235ac0b |
