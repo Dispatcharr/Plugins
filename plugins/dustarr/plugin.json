@@ -1,0 +1,15 @@
+{
+  "name": "Dustarr",
+  "version": "1.26.2362242",
+  "description": "Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.",
+  "author": "PiratesIRC",
+  "maintainers": [
+    "PiratesIRC"
+  ],
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/{version}/Dustarr-{version}.zip",
+  "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin",
+  "help_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md",
+  "min_dispatcharr_version": "v0.20.0"
+}
