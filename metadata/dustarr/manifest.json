@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-08-26T12:08:51Z",
+  "manifest": {
+    "slug": "dustarr",
+    "name": "Dustarr",
+    "description": "Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.",
+    "author": "PiratesIRC",
+    "maintainers": [
+      "PiratesIRC"
+    ],
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/{version}/Dustarr-{version}.zip",
+    "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin",
+    "discord_thread": "https://discord.com/channels/1340492560220684331/1542141054080524310",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-08-26T08:08:26-04:00",
+    "latest": {
+      "version": "1.26.2362242",
+      "commit_sha": "cc538fa2dca15a194a553bb083b02f7debc5ddec",
+      "commit_sha_short": "cc538fa",
+      "build_timestamp": "2026-08-26T12:08:42Z",
+      "last_updated": "2026-08-26T08:08:26-04:00",
+      "checksum_md5": "4b4b4e996ee41545b0e683fbee4fdba6",
+      "checksum_sha256": "450c67ec615c055dfc774a3f151e4b9537884b9f27b9aadf13a6056d5676299f",
+      "min_dispatcharr_version": "v0.20.0",
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.2362242/Dustarr-1.26.2362242.zip",
+      "latest_url": "dustarr-1.26.2362242/dustarr-1.26.2362242.zip",
+      "url": "dustarr-1.26.2362242/dustarr-1.26.2362242.zip",
+      "size": 118
+    },
+    "versions": [
+      {
+        "version": "1.26.2362242",
+        "commit_sha": "cc538fa2dca15a194a553bb083b02f7debc5ddec",
+        "commit_sha_short": "cc538fa",
+        "build_timestamp": "2026-08-26T12:08:42Z",
+        "last_updated": "2026-08-26T08:08:26-04:00",
+        "checksum_md5": "4b4b4e996ee41545b0e683fbee4fdba6",
+        "checksum_sha256": "450c67ec615c055dfc774a3f151e4b9537884b9f27b9aadf13a6056d5676299f",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.2362242/Dustarr-1.26.2362242.zip",
+        "url": "dustarr-1.26.2362242/dustarr-1.26.2362242.zip",
+        "size": 118
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCao7XVQAKCRB+wDprTCI0\nzs9yAP4vP9Lqc6aQg4TTRkjve5JeqbOdQukZYqXj9Q7YiiSKZAD+Kr33w9u4qHKB\nJ0E62ZdgEhAnBkNZ+4+kcszX3j/14wA=\n=P4mt\n-----END PGP SIGNATURE-----"
+}

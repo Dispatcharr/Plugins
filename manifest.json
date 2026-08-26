@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-23T20:16:42Z",
+  "generated_at": "2026-08-26T12:08:51Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -92,6 +92,21 @@
         "latest_url": "dispatchwrapparr-1.7.6/dispatchwrapparr-1.7.6.zip",
         "latest_size": 47,
         "min_dispatcharr_version": "v0.25.0"
+      },
+      {
+        "slug": "dustarr",
+        "name": "Dustarr",
+        "description": "Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your prov...",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/dustarr/manifest.json",
+        "author": "PiratesIRC",
+        "license": "MIT",
+        "last_updated": "2026-08-26T08:08:26-04:00",
+        "latest_version": "1.26.2362242",
+        "latest_md5": "4b4b4e996ee41545b0e683fbee4fdba6",
+        "latest_sha256": "450c67ec615c055dfc774a3f151e4b9537884b9f27b9aadf13a6056d5676299f",
+        "latest_url": "dustarr-1.26.2362242/dustarr-1.26.2362242.zip",
+        "latest_size": 118,
+        "min_dispatcharr_version": "v0.20.0"
       },
       {
         "slug": "epg-janitor",
@@ -360,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaotVLwAKCRB+wDprTCI0\nzpdRAP91sS3GCbZXPtdj5VnINViRRsToGJ6t2b1/uCbGCMkKkAEAz17ABQNJffXY\nd/IhXid7BvuEnS9GENICl06lHBZ/kgk=\n=pJbi\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCao7XWAAKCRB+wDprTCI0\nznolAP44XhOPxtGfohKhM1yTI6WfUjelTPNnczZETluYnWqSHAEA6IF+zBf/WIYI\niE9WhR++PsIwAHgQJEdY7peeuDxmawE=\n=5w4N\n-----END PGP SIGNATURE-----"
 }
