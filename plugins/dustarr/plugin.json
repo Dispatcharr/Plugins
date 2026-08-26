@@ -11,5 +11,6 @@
   "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/{version}/Dustarr-{version}.zip",
   "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin",
   "help_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md",
-  "min_dispatcharr_version": "v0.20.0"
+  "min_dispatcharr_version": "v0.20.0",
+  "discord_thread": "https://discord.com/channels/1340492560220684331/1542141054080524310"
 }
