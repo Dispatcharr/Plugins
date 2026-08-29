@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-29T06:14:35Z",
+  "generated_at": "2026-08-29T20:02:38Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -67,16 +67,16 @@
       {
         "slug": "dispatcharr-ranked-matchups",
         "name": "Ranked Matchups (Top Games)",
-        "description": "Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then build...",
+        "description": "Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf ...",
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/dispatcharr-ranked-matchups/manifest.json",
         "author": "Jacob-Lasky",
         "license": "MIT",
-        "last_updated": "2026-08-26T20:02:18Z",
-        "latest_version": "1.21.0",
-        "latest_md5": "5e94c12465c308ff13715ce4e9f79e6d",
-        "latest_sha256": "20b7c2a959e999381925145b51a01dbdb3733dd287bb7c2183685753bdc08a71",
-        "latest_url": "dispatcharr-ranked-matchups-1.21.0/dispatcharr-ranked-matchups-1.21.0.zip",
-        "latest_size": 443
+        "last_updated": "2026-08-29T20:02:04Z",
+        "latest_version": "1.24.0",
+        "latest_md5": "ff2e72f023a3f245daeed909240c8587",
+        "latest_sha256": "271c171323c9314b3cc7eacfecd64d01dd445f6fc242ff33ed42fe8ec208cbe2",
+        "latest_url": "dispatcharr-ranked-matchups-1.24.0/dispatcharr-ranked-matchups-1.24.0.zip",
+        "latest_size": 464
       },
       {
         "slug": "dispatchwrapparr",
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapJ40AAKCRB+wDprTCI0\nziqlAQCJY9XaO5iMMb1JiXwpValUoyWjkufCDlHzLA9fXcC4qgD/bMF8jU9Oq2Is\n/tvSNTjAVl68O3nF+M6H+fj+IIk/jQ4=\n=4UWP\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapM64wAKCRB+wDprTCI0\nzho5AP9FmrRGZTXmKlQLKviE/HW82yb8gfShBt/z6qffhcMzPAD9HoXxkYqWHpJ6\nXvfuW7uv4t3yBGVBaUiVbjRVSosTFAY=\n=MmzB\n-----END PGP SIGNATURE-----"
 }

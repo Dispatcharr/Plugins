@@ -15,7 +15,7 @@ This branch contains all published plugin releases.
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.1.0` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.1.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
-| [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.21.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. |
+| [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.24.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.7` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
 | [`Dustarr`](#dustarr) | `1.26.2362242` | PiratesIRC | MIT | Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider. |
 | [`EPG Janitor`](#epg-janitor) | `1.26.2281111` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
@@ -111,17 +111,17 @@ Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitori
 
 ### [Ranked Matchups (Top Games)](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dispatcharr-ranked-matchups/README.md)
 
-**Version:** `1.21.0` | **Author:** Jacob-Lasky | **Last Updated:** Aug 26 2026, 20:02 UTC
+**Version:** `1.24.0` | **Author:** Jacob-Lasky | **Last Updated:** Aug 29 2026, 20:02 UTC
 
-Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description.
+Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1340492560220684331/1508938899865604167) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups)
 
 **Downloads:**
-- [Latest Release (`1.21.0`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.21.0/dispatcharr-ranked-matchups-1.21.0.zip)
+- [Latest Release (`1.24.0`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-ranked-matchups-1.24.0/dispatcharr-ranked-matchups-1.24.0.zip)
 - [All Versions (10 available)](./metadata/dispatcharr-ranked-matchups)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-ranked-matchups) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dispatcharr-ranked-matchups/README.md) | **Last Change:** [`c2195c3`](https://github.com/Dispatcharr/Plugins/commit/c2195c3ea10e212bdc126e9b509efb32319e1a3f)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-ranked-matchups) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dispatcharr-ranked-matchups/README.md) | **Last Change:** [`d61e6f2`](https://github.com/Dispatcharr/Plugins/commit/d61e6f2bc2b6dfd06dbc855897d9f323f2d22a06)
 
 ---
 
@@ -488,4 +488,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Aug 29 2026, 06:14 UTC*
+*Last updated: Aug 29 2026, 20:02 UTC*
