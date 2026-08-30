@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T23:08:08Z",
+  "generated_at": "2026-08-30T20:48:54Z",
   "manifest": {
     "slug": "youtubearr",
     "name": "YouTubearr",
@@ -9,21 +9,33 @@
     "repo_url": "https://github.com/jeff-gooch/youtubearr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-07-31T23:07:43Z",
+    "last_updated": "2026-08-30T20:48:27Z",
     "latest": {
-      "version": "1.30.1",
-      "commit_sha": "1e79c55fd33ce921c6c938990945e0ab23a7ef07",
-      "commit_sha_short": "1e79c55",
-      "build_timestamp": "2026-07-31T23:08:04Z",
-      "last_updated": "2026-07-31T23:07:43Z",
-      "checksum_md5": "f8b8235a327688034c30348c5752182f",
-      "checksum_sha256": "406d9039876f1bc8e466181c536076f45c4502df122b0b3ebd0c521894174876",
+      "version": "1.40.0",
+      "commit_sha": "e072e4d9c92cb6b1f8e69550ee2661c76fa30dec",
+      "commit_sha_short": "e072e4d",
+      "build_timestamp": "2026-08-30T20:48:50Z",
+      "last_updated": "2026-08-30T20:48:27Z",
+      "checksum_md5": "5fcf8e39242719fbfdf543154bec71bd",
+      "checksum_sha256": "f727da48396a8db7b693ed2b62fff37c1a29501159ecbd0f18eeb47568bebe7d",
       "min_dispatcharr_version": "v0.20.0",
-      "latest_url": "youtubearr-1.30.1/youtubearr-1.30.1.zip",
-      "url": "youtubearr-1.30.1/youtubearr-1.30.1.zip",
-      "size": 5011
+      "latest_url": "youtubearr-1.40.0/youtubearr-1.40.0.zip",
+      "url": "youtubearr-1.40.0/youtubearr-1.40.0.zip",
+      "size": 5014
     },
     "versions": [
+      {
+        "version": "1.40.0",
+        "commit_sha": "e072e4d9c92cb6b1f8e69550ee2661c76fa30dec",
+        "commit_sha_short": "e072e4d",
+        "build_timestamp": "2026-08-30T20:48:50Z",
+        "last_updated": "2026-08-30T20:48:27Z",
+        "checksum_md5": "5fcf8e39242719fbfdf543154bec71bd",
+        "checksum_sha256": "f727da48396a8db7b693ed2b62fff37c1a29501159ecbd0f18eeb47568bebe7d",
+        "min_dispatcharr_version": "v0.20.0",
+        "url": "youtubearr-1.40.0/youtubearr-1.40.0.zip",
+        "size": 5014
+      },
       {
         "version": "1.30.1",
         "commit_sha": "1e79c55fd33ce921c6c938990945e0ab23a7ef07",
@@ -98,5 +110,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCam0q3AAKCRB+wDprTCI0\nznKdAQDd5J/w1VHxRya7aWCxMOBZxOW45DqAaN7mX0W3BcqWGAD/UL3zNtg/B5Y3\nIFwtHDSXQTCKXC/ySGW2uJxcaICMsAE=\n=84+Q\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapSXOwAKCRB+wDprTCI0\nzk+mAP4r1O5ilWkdvY3U/vi3ch9rbF9Eu+EfBusqVwie8bQd7wD+N6JFs+VOy1FP\n/Roi3T7w17dsML/CUTz0Hf3uJH7vzgg=\n=AuK3\n-----END PGP SIGNATURE-----"
 }
