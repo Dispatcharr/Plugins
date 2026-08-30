@@ -2,7 +2,7 @@
 
 # Tickarr
 
-**Version:** `0.4.01` | **Author:** jstevenscl | **Last Updated:** Aug 20 2026, 20:28 UTC
+**Version:** `0.4.02` | **Author:** jstevenscl | **Last Updated:** Aug 30 2026, 05:00 UTC
 
 Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts
 
@@ -12,20 +12,21 @@ Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports 
 
 ### Latest Release
 
-- **Download:** [`tickarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.4.01/tickarr-0.4.01.zip)
-- **Built:** Aug 20 2026, 20:28 UTC
-- **Source Commit:** [`aea0bbe`](https://github.com/Dispatcharr/Plugins/commit/aea0bbe07d8fcfc5846ea3e7bec8336e9451a922)
+- **Download:** [`tickarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.4.02/tickarr-0.4.02.zip)
+- **Built:** Aug 30 2026, 05:01 UTC
+- **Source Commit:** [`2999e43`](https://github.com/Dispatcharr/Plugins/commit/2999e43ed69dc385ee0df39fb00c6e1bc55a304b)
 
 **Checksums:**
 ```
-MD5:    588a60d63980c1238d04a95a47d8bda5
-SHA256: a1a7e779d320956055dfc1e8c884df01f6e847d764810f217685b99880a60173
+MD5:    5f573ddf716712c975bbcea70f47689a
+SHA256: 7a43f404102f07e062856666f1ee75688d0625a0c0d13d8a42e867e09d14c907
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.4.02` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.4.02/tickarr-0.4.02.zip) | Aug 30 2026, 05:01 UTC | [`2999e43`](https://github.com/Dispatcharr/Plugins/commit/2999e43ed69dc385ee0df39fb00c6e1bc55a304b) | 5f573ddf716712c975bbcea70f47689a | 7a43f404102f07e062856666f1ee75688d0625a0c0d13d8a42e867e09d14c907 |
 | `0.4.01` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.4.01/tickarr-0.4.01.zip) | Aug 20 2026, 20:28 UTC | [`aea0bbe`](https://github.com/Dispatcharr/Plugins/commit/aea0bbe07d8fcfc5846ea3e7bec8336e9451a922) | 588a60d63980c1238d04a95a47d8bda5 | a1a7e779d320956055dfc1e8c884df01f6e847d764810f217685b99880a60173 |
 | `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.4.0/tickarr-0.4.0.zip) | Aug 14 2026, 06:28 UTC | [`b6631dd`](https://github.com/Dispatcharr/Plugins/commit/b6631dd1ce259173e32c28770fc45ade3cb88a86) | 05e10e6e318c5f6d324d84c300e6c08f | a3d42671af1d3051ded55c0f2bcbb36cb06bc12d44d22a1b8eefd83a067b0e77 |
 | `0.3.06` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.06/tickarr-0.3.06.zip) | Jul 28 2026, 23:02 UTC | [`6a2c051`](https://github.com/Dispatcharr/Plugins/commit/6a2c051ebb8570a04b26fc2b3187e042d6daeefa) | aeff7556515fe838cc3b098c81a3acef | e76a22c2f7ed006ae4c019b0f37934aa8fc795a6174fb263e08f86408e5c22e0 |
@@ -35,7 +36,6 @@ SHA256: a1a7e779d320956055dfc1e8c884df01f6e847d764810f217685b99880a60173
 | `0.3.02` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.02/tickarr-0.3.02.zip) | Jul 08 2026, 01:39 UTC | [`3c8d595`](https://github.com/Dispatcharr/Plugins/commit/3c8d595d76d9eda2e622c69cf90a3da478aed6bf) | 50ae72a28a846742d2c25cabef42bb94 | b4bd9729604dd950e200d37a3c2b0ab942228e620291eb9c13b2fbd10fa7d5ae |
 | `0.3.01` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.01/tickarr-0.3.01.zip) | Jun 28 2026, 11:49 UTC | [`ddd4f98`](https://github.com/Dispatcharr/Plugins/commit/ddd4f98763a2c5ebe2d51cfc14d0e1ff4bf358b5) | 9dd4298e30fd17c5eda403f3e4e2d101 | c37a19bb6d41e8417a7cdc24a2b3e0d6c3216d0074e3a1f7f73713e40e59859b |
 | `0.3.00` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.3.00/tickarr-0.3.00.zip) | Jun 28 2026, 00:19 UTC | [`de473c8`](https://github.com/Dispatcharr/Plugins/commit/de473c899c34c6179f7e9d9f398bc7165d286551) | 9293540f4d0f065f4ea540a15929af9d | fc7d6fd18c46d25841bb52467bd796debc11907212576b9db5369c9f83c668c5 |
-| `0.2.01` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/tickarr-0.2.01/tickarr-0.2.01.zip) | Jun 25 2026, 18:14 UTC | [`cd5f8e0`](https://github.com/Dispatcharr/Plugins/commit/cd5f8e06ef2929b0323f8f5e0a788bfe51ecda7a) | 9ff6e8731cb0d081c4043f7fb373f9bd | 0cd37aa18aefcaa7e28a13f304609bbb4831a0ca66ec5450032e2a44d64c2c66 |
 
 ---
 
