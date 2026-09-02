@@ -20,7 +20,7 @@ This branch contains all published plugin releases.
 | [`Dustarr`](#dustarr) | `1.26.2362242` | PiratesIRC | MIT | Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider. |
 | [`EPG Janitor`](#epg-janitor) | `1.26.2281111` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`EPGeditARR`](#epgeditarr) | `0.3.03` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). |
-| [`Event Channel Managarr`](#event-channel-managarr) | `1.26.2450117` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
+| [`Event Channel Managarr`](#event-channel-managarr) | `1.26.2451734` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.2402308` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.2421451` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
@@ -197,7 +197,7 @@ Transform and clean your EPG data using regex and find/replace rules. Creates vi
 
 ### [Event Channel Managarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/event-channel-managarr/README.md)
 
-**Version:** `1.26.2450117` | **Author:** PiratesIRC | **Last Updated:** Sep 02 2026, 11:21 UTC
+**Version:** `1.26.2451734` | **Author:** PiratesIRC | **Last Updated:** Sep 02 2026, 17:44 UTC
 
 Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG.
 
@@ -206,10 +206,10 @@ Automates channel visibility by hiding channels without events and showing those
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.2450117`)](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2450117/event-channel-managarr-1.26.2450117.zip)
+- [Latest Release (`1.26.2451734`)](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2451734/event-channel-managarr-1.26.2451734.zip)
 - [All Versions (10 available)](./metadata/event-channel-managarr)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/event-channel-managarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/event-channel-managarr/README.md) | **Last Change:** [`48014a4`](https://github.com/Dispatcharr/Plugins/commit/48014a4de3d27d043704318257fc4644db0a3be6)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/event-channel-managarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/event-channel-managarr/README.md) | **Last Change:** [`ae887e3`](https://github.com/Dispatcharr/Plugins/commit/ae887e334d94d164f7edc6acb3e54f9b83f96271)
 
 ---
 
@@ -488,4 +488,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 02 2026, 16:06 UTC*
+*Last updated: Sep 02 2026, 17:45 UTC*

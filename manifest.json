@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-02T16:06:01Z",
+  "generated_at": "2026-09-02T17:44:55Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -144,12 +144,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/event-channel-managarr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-09-02T11:21:12Z",
-        "latest_version": "1.26.2450117",
-        "latest_md5": "d911841d59779e38f53299cdeb7507ff",
-        "latest_sha256": "f1ed710f69456104b2925071944ed6f25c9c743a20b3af611ec5a899495e779a",
-        "latest_url": "event-channel-managarr-1.26.2450117/event-channel-managarr-1.26.2450117.zip",
-        "latest_size": 219,
+        "last_updated": "2026-09-02T17:44:27Z",
+        "latest_version": "1.26.2451734",
+        "latest_md5": "083d0bb5255f6a32584428146b45e301",
+        "latest_sha256": "82c731a4872cad0f222f4b075859af66cb880c75e647b8a5fafcade9f0a8c549",
+        "latest_url": "event-channel-managarr-1.26.2451734/event-channel-managarr-1.26.2451734.zip",
+        "latest_size": 228,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaphJbwAKCRB+wDprTCI0\nzpOfAQDkw7zmah414YGkzM/SKsPxR3fY22A1dDuLQYzpkMD2BQD/YrAAJ7jmHp8L\nPlgN2gRzVtqyUsnVCbtYC8q8QYg9DA4=\n=LWTn\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaphgnQAKCRB+wDprTCI0\nziQaAPoCB18aKKR2U86wdZgCBI+cz5KyY/IwbsIL4dsv5KeR+gD/fhEjKOzwZjM0\ntWz51arOmUYnNWeKMYu/bNBX2UUlnwE=\n=gTXA\n-----END PGP SIGNATURE-----"
 }
