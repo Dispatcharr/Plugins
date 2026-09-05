@@ -6,7 +6,7 @@ Records which channels are actually watched, and reports the ones that are not, 
 
 ## What it produces
 
-A self-contained HTML report and a CSV export, written to `/config/dustarr/`. The HTML page opens as an index of seven collapsed sections, each with its own count:
+A self-contained HTML report and a CSV export, written to `/config/dustarr/`. The CSV opens with a commented preamble recording what the run found and which settings it used, so tell your spreadsheet to skip lines beginning with a hash when you import it. The HTML page opens as an index of seven collapsed sections, each with its own count:
 
 | Section | What it holds |
 |---|---|
@@ -37,13 +37,13 @@ Some channels look unused but are not, so they are kept out of the never-watched
 
 ## What to expect at first
 
-**Your first month of reports will carry a red "not trustworthy" banner, and that is the plugin working rather than failing.** A dataset younger than the unused threshold cannot honestly call anything unused. There is no way to shorten this by importing history: Dispatcharr does not retain the state Dustarr reads, so a fresh installation genuinely starts at zero.
+**Your first month of reports will carry a red "not trustworthy" banner, and that is the plugin working rather than failing.** A dataset younger than the unused threshold cannot honestly call anything unused. There is no way to shorten this by importing history: Dispatcharr does not retain the state Dustarr reads, so a fresh installation really does start at zero.
 
-**Most of a typical lineup is excluded from judgment, and that is the point.** The actionable answer comes from the channels the plugin is willing to judge, not from the whole lineup.
+**Most of a typical lineup is excluded from judgment, and that is the point.** The answer you can act on comes from the channels the plugin is willing to judge, not from the whole lineup.
 
 ## Optional: emailed reports
 
-Dustarr does not send mail itself. It can hand its report to the [Newsflasharr](https://github.com/PiratesIRC/Dispatcharr_Newsflasharr) plugin, which delivers it. This is off by default, and with Newsflasharr absent or disabled nothing is sent and nothing fails.
+Dustarr does not send mail itself. It can hand its report to the [Newsflasharr](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin) plugin, which delivers it. This is off by default, and with Newsflasharr absent or disabled nothing is sent and nothing fails.
 
 ## After installing
 
