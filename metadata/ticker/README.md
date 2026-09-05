@@ -2,7 +2,7 @@
 
 # Ticker
 
-**Version:** `0.5.00` | **Author:** jstevenscl | **Last Updated:** Sep 05 2026, 14:38 UTC
+**Version:** `0.5.01` | **Author:** jstevenscl | **Last Updated:** Sep 05 2026, 17:26 UTC
 
 Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts
 
@@ -12,20 +12,21 @@ Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports 
 
 ### Latest Release
 
-- **Download:** [`ticker-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.5.00/ticker-0.5.00.zip)
-- **Built:** Sep 05 2026, 14:39 UTC
-- **Source Commit:** [`b34dafc`](https://github.com/Dispatcharr/Plugins/commit/b34dafc995c94ad7f1fc99228b57d66272a7f57f)
+- **Download:** [`ticker-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.5.01/ticker-0.5.01.zip)
+- **Built:** Sep 05 2026, 17:26 UTC
+- **Source Commit:** [`ca1fdaf`](https://github.com/Dispatcharr/Plugins/commit/ca1fdaf115d066b61b73d570add8491bd060833c)
 
 **Checksums:**
 ```
-MD5:    223d3e284f353426956f53d0ffdab8e6
-SHA256: 7d8c1daf4e9f80d9c3b8b32fcd7341738ec454ab9469cc37e7527c5ff668411b
+MD5:    d780ae1b75d76ba6f5ffaca17bd3dc63
+SHA256: d052b2bc110d75959f715bda3813d0bb11de54341f48c202295bc9ceb8ed5445
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.5.01` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.5.01/ticker-0.5.01.zip) | Sep 05 2026, 17:26 UTC | [`ca1fdaf`](https://github.com/Dispatcharr/Plugins/commit/ca1fdaf115d066b61b73d570add8491bd060833c) | d780ae1b75d76ba6f5ffaca17bd3dc63 | d052b2bc110d75959f715bda3813d0bb11de54341f48c202295bc9ceb8ed5445 |
 | `0.5.00` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.5.00/ticker-0.5.00.zip) | Sep 05 2026, 14:39 UTC | [`b34dafc`](https://github.com/Dispatcharr/Plugins/commit/b34dafc995c94ad7f1fc99228b57d66272a7f57f) | 223d3e284f353426956f53d0ffdab8e6 | 7d8c1daf4e9f80d9c3b8b32fcd7341738ec454ab9469cc37e7527c5ff668411b |
 
 ---

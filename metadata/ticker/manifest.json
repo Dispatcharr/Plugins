@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T14:39:35Z",
+  "generated_at": "2026-09-05T17:26:38Z",
   "manifest": {
     "slug": "ticker",
     "name": "Ticker",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/jstevenscl/ticker",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-05T10:38:51-04:00",
+    "last_updated": "2026-09-05T17:26:14Z",
     "latest": {
-      "version": "0.5.00",
-      "commit_sha": "b34dafc995c94ad7f1fc99228b57d66272a7f57f",
-      "commit_sha_short": "b34dafc",
-      "build_timestamp": "2026-09-05T14:39:16Z",
-      "last_updated": "2026-09-05T10:38:51-04:00",
-      "checksum_md5": "223d3e284f353426956f53d0ffdab8e6",
-      "checksum_sha256": "7d8c1daf4e9f80d9c3b8b32fcd7341738ec454ab9469cc37e7527c5ff668411b",
-      "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.00/ticker-0.5.00.zip",
-      "latest_url": "ticker-0.5.00/ticker-0.5.00.zip",
-      "url": "ticker-0.5.00/ticker-0.5.00.zip",
-      "size": 2134
+      "version": "0.5.01",
+      "commit_sha": "ca1fdaf115d066b61b73d570add8491bd060833c",
+      "commit_sha_short": "ca1fdaf",
+      "build_timestamp": "2026-09-05T17:26:34Z",
+      "last_updated": "2026-09-05T17:26:14Z",
+      "checksum_md5": "d780ae1b75d76ba6f5ffaca17bd3dc63",
+      "checksum_sha256": "d052b2bc110d75959f715bda3813d0bb11de54341f48c202295bc9ceb8ed5445",
+      "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.01/ticker-0.5.01.zip",
+      "latest_url": "ticker-0.5.01/ticker-0.5.01.zip",
+      "url": "ticker-0.5.01/ticker-0.5.01.zip",
+      "size": 2136
     },
     "versions": [
+      {
+        "version": "0.5.01",
+        "commit_sha": "ca1fdaf115d066b61b73d570add8491bd060833c",
+        "commit_sha_short": "ca1fdaf",
+        "build_timestamp": "2026-09-05T17:26:34Z",
+        "last_updated": "2026-09-05T17:26:14Z",
+        "checksum_md5": "d780ae1b75d76ba6f5ffaca17bd3dc63",
+        "checksum_sha256": "d052b2bc110d75959f715bda3813d0bb11de54341f48c202295bc9ceb8ed5445",
+        "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.01/ticker-0.5.01.zip",
+        "url": "ticker-0.5.01/ticker-0.5.01.zip",
+        "size": 2136
+      },
       {
         "version": "0.5.00",
         "commit_sha": "b34dafc995c94ad7f1fc99228b57d66272a7f57f",
@@ -40,5 +52,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapwpqwAKCRB+wDprTCI0\nzmIvAP4sEmsh2aTteEvhYW8zqziVN3+RdIbFk8kmPvL47fYysgEA8zFpzuRk++DH\nuHhvkl/XoHm64smq7NTWv+uh8zxxvgM=\n=DGvw\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapxQ0gAKCRB+wDprTCI0\nzq7sAQD9u38EcE0szZf/SbBX3DpE0nzhfW3S/wg4EZ57nzAL8QEAt/MAYPREdAY5\nsIJn6FRygP8us39FV0N5Gaa5NZdcKgE=\n=rwp9\n-----END PGP SIGNATURE-----"
 }
