@@ -2,8 +2,8 @@
 
 Central notification service for Dispatcharr plugins. One plugin owns all
 delivery: other plugins drop lightweight events into a file queue, and
-Newsflasharr routes them to Discord, a generic webhook, ntfy, Apprise, email,
-or a banner drawn over live video. Configured once, in one place, instead of
+Newsflasharr routes them to Discord, a generic webhook, a Dispatcharr Connect
+Integration, ntfy, Apprise, email, or a banner drawn over live video. Configured once, in one place, instead of
 every plugin re-inventing its own webhook code.
 
 ## What it does
@@ -22,6 +22,20 @@ every plugin re-inventing its own webhook code.
 - **It is read-only on Dispatcharr.** It writes nothing outside its own
   directory, and it never creates or edits an output profile, a channel or a
   stream.
+
+## Delivering through a Dispatcharr Connect Integration
+
+Dispatcharr has its own Connect page where you create webhook Integrations,
+each holding a URL and any headers it needs. Type the exact name of one into
+the **Dispatcharr Connect Integration** setting and Newsflasharr posts through
+that row, reusing the address and headers already configured there. It reads
+that row and never changes it.
+
+The Integration must be of type webhook, because Newsflasharr never runs a
+script. The name is looked up live rather than stored, so renaming the row
+stops delivery. These deliveries do not appear on the Connect page's own Logs
+tab, which records only Dispatcharr's own system events, so use Show status
+instead.
 
 ## After installing
 
