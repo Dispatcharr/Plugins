@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T16:22:24Z",
+  "generated_at": "2026-09-05T17:14:20Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -100,12 +100,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/dustarr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-08-26T08:08:26-04:00",
-        "latest_version": "1.26.2362242",
-        "latest_md5": "4b4b4e996ee41545b0e683fbee4fdba6",
-        "latest_sha256": "450c67ec615c055dfc774a3f151e4b9537884b9f27b9aadf13a6056d5676299f",
-        "latest_url": "dustarr-1.26.2362242/dustarr-1.26.2362242.zip",
-        "latest_size": 118,
+        "last_updated": "2026-09-05T17:13:52Z",
+        "latest_version": "1.26.2481620",
+        "latest_md5": "10420fa1c73260bb9b0659349ba6b014",
+        "latest_sha256": "280bc46c6de5af6ed3cef44f4e84a9a4704bfee4933e9245303c13df8e4a3990",
+        "latest_url": "dustarr-1.26.2481620/dustarr-1.26.2481620.zip",
+        "latest_size": 125,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapxBxQAKCRB+wDprTCI0\nzmJ5AQDuVSGEb6plZdKMJLJtqlLGfF7rJctiR5Q51hZZjyOldwD+PIm9N6Jz40nn\nKM3tm6Npb8owWetaSVHRyjpwREBthwM=\n=t2kJ\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapxN8gAKCRB+wDprTCI0\nzld2AP0W1GUcuo4DmqT1JdW5TM+ZLu7WZ1GU5X/O5d7F/PFbTgEAlzNEg4qxK7GY\nf3d0ZecZXsopimxl1jZVqs+NJop/1wg=\n=+fgn\n-----END PGP SIGNATURE-----"
 }

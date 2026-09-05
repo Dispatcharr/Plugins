@@ -2,7 +2,7 @@
 
 # Dustarr
 
-**Version:** `1.26.2362242` | **Author:** PiratesIRC | **Last Updated:** Aug 26 2026, 12:08 UTC
+**Version:** `1.26.2481620` | **Author:** PiratesIRC | **Last Updated:** Sep 05 2026, 17:13 UTC
 
 Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.
 
@@ -14,20 +14,21 @@ Records which channels are actually watched and reports the ones that are not, s
 
 ### Latest Release
 
-- **Download:** [`dustarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2362242/dustarr-1.26.2362242.zip)
-- **Built:** Aug 26 2026, 12:08 UTC
-- **Source Commit:** [`cc538fa`](https://github.com/Dispatcharr/Plugins/commit/cc538fa2dca15a194a553bb083b02f7debc5ddec)
+- **Download:** [`dustarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2481620/dustarr-1.26.2481620.zip)
+- **Built:** Sep 05 2026, 17:14 UTC
+- **Source Commit:** [`8a2dffb`](https://github.com/Dispatcharr/Plugins/commit/8a2dffb328107de46d80063dc81eff7620dab49f)
 
 **Checksums:**
 ```
-MD5:    4b4b4e996ee41545b0e683fbee4fdba6
-SHA256: 450c67ec615c055dfc774a3f151e4b9537884b9f27b9aadf13a6056d5676299f
+MD5:    10420fa1c73260bb9b0659349ba6b014
+SHA256: 280bc46c6de5af6ed3cef44f4e84a9a4704bfee4933e9245303c13df8e4a3990
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2481620` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2481620/dustarr-1.26.2481620.zip) | Sep 05 2026, 17:14 UTC | [`8a2dffb`](https://github.com/Dispatcharr/Plugins/commit/8a2dffb328107de46d80063dc81eff7620dab49f) | 10420fa1c73260bb9b0659349ba6b014 | 280bc46c6de5af6ed3cef44f4e84a9a4704bfee4933e9245303c13df8e4a3990 |
 | `1.26.2362242` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2362242/dustarr-1.26.2362242.zip) | Aug 26 2026, 12:08 UTC | [`cc538fa`](https://github.com/Dispatcharr/Plugins/commit/cc538fa2dca15a194a553bb083b02f7debc5ddec) | 4b4b4e996ee41545b0e683fbee4fdba6 | 450c67ec615c055dfc774a3f151e4b9537884b9f27b9aadf13a6056d5676299f |
 
 ---
@@ -48,7 +49,7 @@ Records which channels are actually watched, and reports the ones that are not, 
 
 ## What it produces
 
-A self-contained HTML report and a CSV export, written to `/config/dustarr/`. The HTML page opens as an index of seven collapsed sections, each with its own count:
+A self-contained HTML report and a CSV export, written to `/config/dustarr/`. The CSV opens with a commented preamble recording what the run found and which settings it used, so tell your spreadsheet to skip lines beginning with a hash when you import it. The HTML page opens as an index of seven collapsed sections, each with its own count:
 
 | Section | What it holds |
 |---|---|
@@ -79,13 +80,13 @@ Some channels look unused but are not, so they are kept out of the never-watched
 
 ## What to expect at first
 
-**Your first month of reports will carry a red "not trustworthy" banner, and that is the plugin working rather than failing.** A dataset younger than the unused threshold cannot honestly call anything unused. There is no way to shorten this by importing history: Dispatcharr does not retain the state Dustarr reads, so a fresh installation genuinely starts at zero.
+**Your first month of reports will carry a red "not trustworthy" banner, and that is the plugin working rather than failing.** A dataset younger than the unused threshold cannot honestly call anything unused. There is no way to shorten this by importing history: Dispatcharr does not retain the state Dustarr reads, so a fresh installation really does start at zero.
 
-**Most of a typical lineup is excluded from judgment, and that is the point.** The actionable answer comes from the channels the plugin is willing to judge, not from the whole lineup.
+**Most of a typical lineup is excluded from judgment, and that is the point.** The answer you can act on comes from the channels the plugin is willing to judge, not from the whole lineup.
 
 ## Optional: emailed reports
 
-Dustarr does not send mail itself. It can hand its report to the [Newsflasharr](https://github.com/PiratesIRC/Dispatcharr_Newsflasharr) plugin, which delivers it. This is off by default, and with Newsflasharr absent or disabled nothing is sent and nothing fails.
+Dustarr does not send mail itself. It can hand its report to the [Newsflasharr](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin) plugin, which delivers it. This is off by default, and with Newsflasharr absent or disabled nothing is sent and nothing fails.
 
 ## After installing
 
