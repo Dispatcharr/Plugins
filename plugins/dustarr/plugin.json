@@ -1,6 +1,6 @@
 {
   "name": "Dustarr",
-  "version": "1.26.2362242",
+  "version": "1.26.2481620",
   "description": "Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.",
   "author": "PiratesIRC",
   "maintainers": [
