@@ -2,9 +2,9 @@
 
 # Newsflasharr
 
-**Version:** `1.26.2241159` | **Author:** PiratesIRC | **Last Updated:** Aug 12 2026, 12:05 UTC
+**Version:** `1.26.2481646` | **Author:** PiratesIRC | **Last Updated:** Sep 05 2026, 17:22 UTC
 
-Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.
+Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1340492560220684331/1533575430400114730) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin)
 
@@ -14,20 +14,21 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 
 ### Latest Release
 
-- **Download:** [`newsflasharr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2241159/newsflasharr-1.26.2241159.zip)
-- **Built:** Aug 12 2026, 12:06 UTC
-- **Source Commit:** [`5c239be`](https://github.com/Dispatcharr/Plugins/commit/5c239be35a9e5d5db0cfbf45f36c9217d097631e)
+- **Download:** [`newsflasharr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2481646/newsflasharr-1.26.2481646.zip)
+- **Built:** Sep 05 2026, 17:22 UTC
+- **Source Commit:** [`c6b7006`](https://github.com/Dispatcharr/Plugins/commit/c6b7006471cbd1d5f99533347a07b6f05342a084)
 
 **Checksums:**
 ```
-MD5:    35077cbb21fe71e46e3e0c7bc8a5ac1c
-SHA256: aedcc20dc974739bd7cdc92586f565cd847fb2da03edcda448cf6c94996dc2f6
+MD5:    a71e154142d18e3b1612521562af1066
+SHA256: 1dec53fd867101fef01e44cc4dfe1bfdd2e822987712f2d34c5911b1d55757c4
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2481646` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2481646/newsflasharr-1.26.2481646.zip) | Sep 05 2026, 17:22 UTC | [`c6b7006`](https://github.com/Dispatcharr/Plugins/commit/c6b7006471cbd1d5f99533347a07b6f05342a084) | a71e154142d18e3b1612521562af1066 | 1dec53fd867101fef01e44cc4dfe1bfdd2e822987712f2d34c5911b1d55757c4 |
 | `1.26.2241159` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2241159/newsflasharr-1.26.2241159.zip) | Aug 12 2026, 12:06 UTC | [`5c239be`](https://github.com/Dispatcharr/Plugins/commit/5c239be35a9e5d5db0cfbf45f36c9217d097631e) | 35077cbb21fe71e46e3e0c7bc8a5ac1c | aedcc20dc974739bd7cdc92586f565cd847fb2da03edcda448cf6c94996dc2f6 |
 | `1.26.2191208` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2191208/newsflasharr-1.26.2191208.zip) | Aug 07 2026, 13:49 UTC | [`1df507c`](https://github.com/Dispatcharr/Plugins/commit/1df507c31074da7de450b53082a325fe8e604644) | 5e9a3272ce95845282e4e2f85302db2d | ee926fe8a4bd90518ac00bce29edfdbe8eba84471b802a3a870b8c90d087b6ae |
 | `1.26.2171427` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2171427/newsflasharr-1.26.2171427.zip) | Aug 06 2026, 11:42 UTC | [`b8b1f11`](https://github.com/Dispatcharr/Plugins/commit/b8b1f116536b65e2a4394e55491240254d1075a3) | ecf6724f53f31440ff94a76eeef820bf | fac709e3810574cb727d92218fb7308519c2ba65c989bd0144cf535c9d9c11da |
@@ -47,8 +48,8 @@ SHA256: aedcc20dc974739bd7cdc92586f565cd847fb2da03edcda448cf6c94996dc2f6
 
 Central notification service for Dispatcharr plugins. One plugin owns all
 delivery: other plugins drop lightweight events into a file queue, and
-Newsflasharr routes them to Discord, a generic webhook, ntfy, Apprise, email,
-or a banner drawn over live video. Configured once, in one place, instead of
+Newsflasharr routes them to Discord, a generic webhook, a Dispatcharr Connect
+Integration, ntfy, Apprise, email, or a banner drawn over live video. Configured once, in one place, instead of
 every plugin re-inventing its own webhook code.
 
 ## What it does
@@ -67,6 +68,20 @@ every plugin re-inventing its own webhook code.
 - **It is read-only on Dispatcharr.** It writes nothing outside its own
   directory, and it never creates or edits an output profile, a channel or a
   stream.
+
+## Delivering through a Dispatcharr Connect Integration
+
+Dispatcharr has its own Connect page where you create webhook Integrations,
+each holding a URL and any headers it needs. Type the exact name of one into
+the **Dispatcharr Connect Integration** setting and Newsflasharr posts through
+that row, reusing the address and headers already configured there. It reads
+that row and never changes it.
+
+The Integration must be of type webhook, because Newsflasharr never runs a
+script. The name is looked up live rather than stored, so renaming the row
+stops delivery. These deliveries do not appear on the Connect page's own Logs
+tab, which records only Dispatcharr's own system events, so use Show status
+instead.
 
 ## After installing
 

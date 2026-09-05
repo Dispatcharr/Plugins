@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T17:14:20Z",
+  "generated_at": "2026-09-05T17:22:42Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -214,16 +214,16 @@
       {
         "slug": "newsflasharr",
         "name": "Newsflasharr",
-        "description": "Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, or an on-screen banner over live TV, with deduplication, storm throttl...",
+        "description": "Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV...",
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/newsflasharr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-08-12T12:05:54Z",
-        "latest_version": "1.26.2241159",
-        "latest_md5": "35077cbb21fe71e46e3e0c7bc8a5ac1c",
-        "latest_sha256": "aedcc20dc974739bd7cdc92586f565cd847fb2da03edcda448cf6c94996dc2f6",
-        "latest_url": "newsflasharr-1.26.2241159/newsflasharr-1.26.2241159.zip",
-        "latest_size": 193,
+        "last_updated": "2026-09-05T17:22:13Z",
+        "latest_version": "1.26.2481646",
+        "latest_md5": "a71e154142d18e3b1612521562af1066",
+        "latest_sha256": "1dec53fd867101fef01e44cc4dfe1bfdd2e822987712f2d34c5911b1d55757c4",
+        "latest_url": "newsflasharr-1.26.2481646/newsflasharr-1.26.2481646.zip",
+        "latest_size": 207,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapxN8gAKCRB+wDprTCI0\nzld2AP0W1GUcuo4DmqT1JdW5TM+ZLu7WZ1GU5X/O5d7F/PFbTgEAlzNEg4qxK7GY\nf3d0ZecZXsopimxl1jZVqs+NJop/1wg=\n=+fgn\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapxP5wAKCRB+wDprTCI0\nzgvHAP9Sk08KcVU4jm0JwNZEXoaYJtcY+ht+HAAlHk0FBjkw1QD9Eyng6xLB0fCY\n89+ct8ZF7K2E6T9r3pDKoqLE3uHKeQQ=\n=2bTf\n-----END PGP SIGNATURE-----"
 }
