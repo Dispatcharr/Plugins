@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T14:39:35Z",
+  "generated_at": "2026-09-05T16:22:24Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -159,12 +159,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/iptv-checker/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-08-28T23:25:30Z",
-        "latest_version": "1.26.2402308",
-        "latest_md5": "ea84409f0a8024caf7e809c985fda818",
-        "latest_sha256": "4ad182d41de3364ea7e9f98749e0a82c6867188b715f6600e49ae0cc2b02af7d",
-        "latest_url": "iptv-checker-1.26.2402308/iptv-checker-1.26.2402308.zip",
-        "latest_size": 398,
+        "last_updated": "2026-09-05T16:21:54Z",
+        "latest_version": "1.26.2481600",
+        "latest_md5": "9a11728804bf3bc8081dc631c77d72fb",
+        "latest_sha256": "7f86975260fdc2c91095294f5ab4c772c3d0f219cb994fc80ccffbdff0a452a3",
+        "latest_url": "iptv-checker-1.26.2481600/iptv-checker-1.26.2481600.zip",
+        "latest_size": 405,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapwprAAKCRB+wDprTCI0\nzitgAQDuF/DH/ILeQaZ0wB4CH0yiKuDzd1A5PsX+6r83ZSw+3QD8CoIopNrfitvv\n6xCt+rPFqCDVwH351ME/e7Z9SKX7vw4=\n=U3fh\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapxBxQAKCRB+wDprTCI0\nzmJ5AQDuVSGEb6plZdKMJLJtqlLGfF7rJctiR5Q51hZZjyOldwD+PIm9N6Jz40nn\nKM3tm6Npb8owWetaSVHRyjpwREBthwM=\n=t2kJ\n-----END PGP SIGNATURE-----"
 }
