@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-02T17:44:55Z",
+  "generated_at": "2026-09-05T14:39:35Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -300,17 +300,17 @@
         "min_dispatcharr_version": "v0.20.0"
       },
       {
-        "slug": "tickarr",
-        "name": "Tickarr",
+        "slug": "ticker",
+        "name": "Ticker",
         "description": "Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts",
-        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/tickarr/manifest.json",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/ticker/manifest.json",
         "author": "jstevenscl",
         "license": "MIT",
-        "last_updated": "2026-08-30T05:00:49Z",
-        "latest_version": "0.4.02",
-        "latest_md5": "5f573ddf716712c975bbcea70f47689a",
-        "latest_sha256": "7a43f404102f07e062856666f1ee75688d0625a0c0d13d8a42e867e09d14c907",
-        "latest_url": "tickarr-0.4.02/tickarr-0.4.02.zip",
+        "last_updated": "2026-09-05T10:38:51-04:00",
+        "latest_version": "0.5.00",
+        "latest_md5": "223d3e284f353426956f53d0ffdab8e6",
+        "latest_sha256": "7d8c1daf4e9f80d9c3b8b32fcd7341738ec454ab9469cc37e7527c5ff668411b",
+        "latest_url": "ticker-0.5.00/ticker-0.5.00.zip",
         "latest_size": 2134
       },
       {
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaphgnQAKCRB+wDprTCI0\nziQaAPoCB18aKKR2U86wdZgCBI+cz5KyY/IwbsIL4dsv5KeR+gD/fhEjKOzwZjM0\ntWz51arOmUYnNWeKMYu/bNBX2UUlnwE=\n=gTXA\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapwprAAKCRB+wDprTCI0\nzitgAQDuF/DH/ILeQaZ0wB4CH0yiKuDzd1A5PsX+6r83ZSw+3QD8CoIopNrfitvv\n6xCt+rPFqCDVwH351ME/e7Z9SKX7vw4=\n=U3fh\n-----END PGP SIGNATURE-----"
 }
