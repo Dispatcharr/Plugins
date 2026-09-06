@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06T01:00:23Z",
+  "generated_at": "2026-09-06T19:43:22Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -276,12 +276,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/stream-mapparr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-09-05T19:44:22Z",
-        "latest_version": "1.26.2481756",
-        "latest_md5": "7542bb69d07fa94231db52fde80bd08f",
-        "latest_sha256": "3a646dddca0d221ea6e2765d0b33dce0e317b1b9aee0dfe61d7ba325f0ae8f23",
-        "latest_url": "stream-mapparr-1.26.2481756/stream-mapparr-1.26.2481756.zip",
-        "latest_size": 611,
+        "last_updated": "2026-09-06T19:42:59Z",
+        "latest_version": "1.26.2491549",
+        "latest_md5": "792b2cee73492e1bfdb331a1eb52be09",
+        "latest_sha256": "8e8c14cd668e94b49a29bfe6d2a64bd3f037acc13c2347bae7424df8cc194e0c",
+        "latest_url": "stream-mapparr-1.26.2491549/stream-mapparr-1.26.2491549.zip",
+        "latest_size": 576,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCapy7LAAKCRB+wDprTCI0\nzlXoAQCs7FrPFiS1c/Yf1wyYGyyfXszjwhaN7qr6xZG15cSHEwEA1muU337yQlOg\nh6eqUX4tmAI0pyQBcyjgYTnjgf8ZWAQ=\n=lYwl\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCap3CXwAKCRB+wDprTCI0\nzpL8AQDrXDUo608B3yMC0TEMUveBEZF9ElXxq7wz3vwShJPFIQEAjfY4dqhU382m\nuLgrhMbFbldQ4v5q398PkmHVk1TbMQQ=\n=9L2z\n-----END PGP SIGNATURE-----"
 }

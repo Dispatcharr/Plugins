@@ -2,7 +2,7 @@
 
 # Stream-Mapparr
 
-**Version:** `1.26.2481756` | **Author:** PiratesIRC | **Last Updated:** Sep 05 2026, 19:44 UTC
+**Version:** `1.26.2491549` | **Author:** PiratesIRC | **Last Updated:** Sep 06 2026, 19:42 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -14,20 +14,21 @@ Automatically add matching streams to channels based on name similarity and qual
 
 ### Latest Release
 
-- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2481756/stream-mapparr-1.26.2481756.zip)
-- **Built:** Sep 05 2026, 19:44 UTC
-- **Source Commit:** [`08a6559`](https://github.com/Dispatcharr/Plugins/commit/08a655912071b387a48110953f799f55f19a705a)
+- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2491549/stream-mapparr-1.26.2491549.zip)
+- **Built:** Sep 06 2026, 19:43 UTC
+- **Source Commit:** [`23d5498`](https://github.com/Dispatcharr/Plugins/commit/23d54985d7c6e71008dc376e87e3c816e5b43687)
 
 **Checksums:**
 ```
-MD5:    7542bb69d07fa94231db52fde80bd08f
-SHA256: 3a646dddca0d221ea6e2765d0b33dce0e317b1b9aee0dfe61d7ba325f0ae8f23
+MD5:    792b2cee73492e1bfdb331a1eb52be09
+SHA256: 8e8c14cd668e94b49a29bfe6d2a64bd3f037acc13c2347bae7424df8cc194e0c
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2491549` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2491549/stream-mapparr-1.26.2491549.zip) | Sep 06 2026, 19:43 UTC | [`23d5498`](https://github.com/Dispatcharr/Plugins/commit/23d54985d7c6e71008dc376e87e3c816e5b43687) | 792b2cee73492e1bfdb331a1eb52be09 | 8e8c14cd668e94b49a29bfe6d2a64bd3f037acc13c2347bae7424df8cc194e0c |
 | `1.26.2481756` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2481756/stream-mapparr-1.26.2481756.zip) | Sep 05 2026, 19:44 UTC | [`08a6559`](https://github.com/Dispatcharr/Plugins/commit/08a655912071b387a48110953f799f55f19a705a) | 7542bb69d07fa94231db52fde80bd08f | 3a646dddca0d221ea6e2765d0b33dce0e317b1b9aee0dfe61d7ba325f0ae8f23 |
 | `1.26.2241602` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2241602/stream-mapparr-1.26.2241602.zip) | Aug 12 2026, 17:14 UTC | [`dc86bdd`](https://github.com/Dispatcharr/Plugins/commit/dc86bdd35a3992c6a744465854e1c402a9bcc15c) | abd5c4f4cfba1fa9fa38a9c561c0a978 | 06c8ccf427d144ee55be1b47213ea60512903e3ffd1d9956aea9351f3585ba0f |
 | `1.26.2141957` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2141957/stream-mapparr-1.26.2141957.zip) | Aug 02 2026, 20:47 UTC | [`8f17d38`](https://github.com/Dispatcharr/Plugins/commit/8f17d382613bd3c93784eed05fa1bd500bbdf60f) | f6f6e3cdf3df10b0e4311c7ee87c89d7 | 6a8b1a5f7d4b5882a20d7bd377a67dd19368ba96127ca098bef7e728933e8b2d |
@@ -37,7 +38,6 @@ SHA256: 3a646dddca0d221ea6e2765d0b33dce0e317b1b9aee0dfe61d7ba325f0ae8f23
 | `1.26.1960020` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1960020/stream-mapparr-1.26.1960020.zip) | Jul 15 2026, 01:12 UTC | [`5d5d4d9`](https://github.com/Dispatcharr/Plugins/commit/5d5d4d97b7b00263e20ba5e8e1e5966a0bb1ef2e) | da87e44616c1738be63bd74ced95891a | 498673d561a9e7cbe34ccf50772a779668eb4fb47fdb91d10354c8c7a298ca2a |
 | `1.26.1931038` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1931038/stream-mapparr-1.26.1931038.zip) | Jul 13 2026, 02:54 UTC | [`62a7907`](https://github.com/Dispatcharr/Plugins/commit/62a790775f91eaeb5ee4e7d3576e03b32752d346) | e1046e55fe2a29092833c2f1f2d56b73 | 109e73985c11d0f880b4262decf5c01aa9be4825be82b57743118772c117e230 |
 | `1.26.1820605` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1820605/stream-mapparr-1.26.1820605.zip) | Jul 03 2026, 10:43 UTC | [`a4e29d2`](https://github.com/Dispatcharr/Plugins/commit/a4e29d2c3f8fbf9d9f99dd8ae831ed74d9872654) | 31aaa9b3f6fe2a58af26f00bdb4315ae | dd4825c1b584a826140273a4574ef973981a08514ae3347ef4427c3e077ef42d |
-| `1.26.1791529` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1791529/stream-mapparr-1.26.1791529.zip) | Jun 29 2026, 11:27 UTC | [`bcfef6f`](https://github.com/Dispatcharr/Plugins/commit/bcfef6fe3506d6c0cd5728ab18369ab66e3f1f79) | c921f5a6c26f415eadd4763d28a72b80 | 5c3f229a649e8f91e4867959bd4911353ce9beed3c8cd2c0b96d0b2ea37defb0 |
 
 ---
 
@@ -55,6 +55,13 @@ SHA256: 3a646dddca0d221ea6e2765d0b33dce0e317b1b9aee0dfe61d7ba325f0ae8f23
 
 A Dispatcharr plugin that automatically matches and assigns streams to channels
 using fuzzy matching, quality prioritization, and OTA callsign recognition.
+
+The "streams matched" badge counts stream-to-channel assignments this plugin has
+written on the maintainer's own installation, added up since the counter was
+added on 5 September 2026. It measures work done rather than distinct streams: a
+daily schedule matches the same library again and counts it again. Dry runs are
+not counted, and neither is sorting alternate streams, which reorders
+assignments that already exist.
 
 ## Backup Your Database
 
@@ -74,14 +81,14 @@ database. This plugin modifies channel and stream assignments.
 
 **From the Dispatcharr Plugin Hub (recommended):**
 
-1. In Dispatcharr, go to **Settings → Plugin Hub**
+1. In Dispatcharr, go to **Settings -> Plugin Hub**
 2. Find **Stream-Mapparr** in the catalog and click **Install**
 3. Enable the plugin
 
 **Manual install:**
 
 1. Download the latest zip from [Releases](https://github.com/PiratesIRC/Stream-Mapparr/releases)
-2. In Dispatcharr, go to **Plugins → Import Plugin** and upload the zip
+2. In Dispatcharr, go to **Plugins -> Import Plugin** and upload the zip
 3. Enable the plugin
 
 ## Further reading
@@ -107,11 +114,12 @@ database. This plugin modifies channel and stream assignments.
   stream names before anything else. See
   [Regex pre-processing](https://github.com/PiratesIRC/Stream-Mapparr/blob/main/docs/regex-preprocessing.md)
 - **Stylized-name normalization**: handles superscript and small-caps markers
-  such as `ᴿᴬᵂ`, emoji used as letters (`beIN SP⚽RTS`), and numeric resolution
+  such as superscript RAW, emoji used as letters (a ball glyph standing in for the O of SPORTS), and numeric resolution
   tags like `3840P`
-- **Box-bar tag stripping**: removes provider and country tags built from `┃`
-  and `│`, such as `┃CANAL+┃ NPO 1` or `NL┃ NPO 1`. A stray single bar is left
-  alone
+- **Box-bar tag stripping**: removes provider and country tags built from the
+  box-drawing bars U+2503 and U+2502 (not the ASCII pipe), such as a bouquet name
+  enclosed in those bars before `NPO 1`, or a two-letter country code followed by
+  one. A stray single bar is left alone
 - **Invisible character stripping**: removes zero-width spaces, joiners, word
   joiners, byte order marks, soft hyphens and bidi marks. Providers use these as
   padding, often around a decorative glyph, and they used to wreck matching for
@@ -209,7 +217,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Stream Groups** | string | (all) | Stream groups to draw candidate streams from, comma-separated |
 | **Stream Groups Mode** | select | Only the groups listed | The same choice for stream groups, resolved separately from the channel-group list |
 | **M3U Sources** | string | (all) | M3U sources to use, comma-separated. Order sets priority |
-| **Custom Aliases** | string | (none) | JSON object of extra `"channel": ["alias", …]` mappings. Channel names and aliases are both matched case-insensitively, and whitespace around a channel name is ignored |
+| **Custom Aliases** | string | (none) | JSON object of extra `"channel": ["alias", ...]` mappings. Channel names and aliases are both matched case-insensitively, and whitespace around a channel name is ignored |
 | **Stream Name Regex Rules** | string | (none) | JSON list of `[find, replace]` pairs applied to stream names before matching. See [Regex pre-processing](https://github.com/PiratesIRC/Stream-Mapparr/blob/main/docs/regex-preprocessing.md) |
 | **Prioritize Quality** | boolean | False | Sort by quality first, then by M3U source priority |
 | **Custom Ignore Tags** | string | (none) | Tags to strip before matching, for example `[Dead], (Backup)` |
@@ -226,7 +234,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Stream Prefix Countries** | string | (empty) | Tell the country filter what a provider prefix means, as comma-separated `PREFIX=COUNTRY` entries such as `NOW=UK, GO=US`. Use it when a prefix names a platform rather than a country, which the plugin cannot know: NOW is Sky's service in the United Kingdom and also in Italy, so no default is right for everyone. Consulted last, so it fills a gap and never overrules a country the provider stated. Matches only at the start of a name, never a word inside a title |
 | **Keep Same-Named Streams From One Source** | boolean | False | Enable if your provider publishes several genuinely different feeds under one identical name. By default those are treated as duplicates |
 | **Enable EPG-Based Placeholder Matching** | boolean | False | Match a placeholder-named channel or stream by the programme currently airing on it, taken from EPG data, instead of by its literal name. For providers that name event slots generically, such as `PPV EVENT 04`, and put the real event only in the guide. Channel and stream names are never modified |
-| **Placeholder Name Patterns** | string | (see plugin) | One regex per line. A name is only ever treated as a placeholder if it matches one of these, so nothing else changes behaviour |
+| **Placeholder Name Patterns** | string | (see plugin) | One regex per line. A name is only ever treated as a placeholder if it matches one of these, so nothing else changes behaviour. Press **Scan for Placeholder Patterns** to find the families your patterns miss |
 | **EPG Title Cleanup Rules** | string | (see plugin) | JSON list of `[find, replace]` pairs applied to the raw programme title before it is used for matching, for example stripping a `Next Event: X at 6:00AM` wrapper down to `X` |
 | **Skip Titles** | string | (see plugin) | Comma-separated. If the cleaned programme title matches one of these, the channel keeps its literal name for that pass, because an idle slot carries no useful event |
 | **Channel Schedule Suffix Cleanup Rules** | string | (see plugin) | JSON list of `[find, replace]` pairs that strip a schedule annotation such as `\| Monday @ 5` from the channel name before it is compared against a programme title |
@@ -254,6 +262,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Validate Settings** | Check configuration, profiles, groups and databases |
 | **Test Regex Rules** | Preview what your regex rules would change, with before and after samples and invisible characters made visible. Writes the full readout to `/config/stream-mapparr/test-regex-rules.txt`, since a notification shows only about 280 characters |
 | **Check Stream Country Labels** | Compare each stream's group country against its EPG identifier suffix and report where they disagree. Reads two database columns, opens no provider connection and changes nothing. A disagreement is not automatically a fault: a channel carried in one country and made in another is ordinary |
+| **Scan for Placeholder Patterns** | Group every stream name into a numbered family, by replacing its numbers with a slot, and report the families that no Placeholder Name Pattern covers, each with a regex to paste. The largest families come first. Each one says how many of its streams carry an EPG identifier, and a family where most of them do is marked, because that is more likely to be an ordinary numbered channel lineup, where a pattern replaces a name that is already matching. A digit followed by K is left alone, since `4K` is a resolution tag rather than a slot number. Writes the full readout to `/config/stream-mapparr/placeholder-name-scan.txt`. Reads one database column, opens no provider connection and changes nothing |
 | **Load/Process Channels** | Load channel and stream data from the database |
 | **Preview Changes** | Dry run with a CSV export |
 | **Match & Assign Streams** | Fuzzy match and assign streams to channels |
@@ -304,12 +313,12 @@ because the exports contain your M3U source names.
 ## Versioning
 
 This plugin uses calver, `1.MAJOR.DDDHHMM`, being the UTC day of year plus the
-UTC time. Run `python3 Stream-Mapparr/bump_version.py` to bump `plugin.json` and
+UTC time. Run `python scripts/bump_version.py` to bump `plugin.json` and
 `plugin.py` together.
 
 ## Changelog
 
-See [CHANGELOG.md](https://github.com/PiratesIRC/Stream-Mapparr/blob/main/Stream-Mapparr/CHANGELOG.md) for full version history.
+See [CHANGELOG.md](https://github.com/PiratesIRC/Stream-Mapparr/blob/main/CHANGELOG.md) for full version history.
 
 ## Disclaimer
 
