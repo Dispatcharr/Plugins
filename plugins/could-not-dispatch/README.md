@@ -1,7 +1,8 @@
 # Could Not Dispatch
 
 A Dispatcharr plugin that plays a looping image or video when every real stream on a
-channel has failed, so viewers see a message instead of a black screen.
+channel has failed, so viewers see a message instead of a black screen. With an API key,
+it later sends the channel back to its first stream.
 
 When all of a channel's streams are down, Dispatcharr runs out of alternatives and drops
 the client with a 503. From the sofa that looks the same as a broken router. This plugin
@@ -33,6 +34,7 @@ and pressing refresh on the Plugins page. Enable the plugin, fill in the setting
 | Excluded groups | One channel group name per line |
 | Excluded channels | One channel number or channel name per line |
 | Cover new channels automatically | Attaches the fallback to channels added by an M3U refresh |
+| API key | A Dispatcharr API key. With it, channels left on the fallback are sent back to their first stream, see below. Empty keeps them on the card |
 
 ## Actions
 
@@ -114,9 +116,14 @@ megabyte, so nothing is given up.
 stream, so Dispatcharr considers the channel up. To spot real outages, watch the
 `channel_failover` system events rather than channel state.
 
-**Playback does not return to the provider on its own.** Once a viewer is on the card
-they stay there until they change channel. This is deliberate: cutting away mid-message
-would be worse than leaving it up.
+**Playback returns to the provider only with an API key.** Dispatcharr never leaves the
+fallback by itself: a channel stays on the card for as long as a client holds it, even
+after the provider is back. Without a key that stays true. With one, the fallback asks
+Dispatcharr every ten seconds, while it has viewers, which channels are playing it, and
+switches a channel still on it after two minutes to its first stream. If that stream is
+still down, the failover walks the chain and lands on the card again, and the next try
+waits longer: 4, 8, then 15 minutes. The wait starts over once the channel has stayed off
+the card for 15 minutes.
 
 **One edge case in failover order.** Dispatcharr rotates the alternate list starting from
 the current stream and wraps around. If the first stream of a channel was unavailable
