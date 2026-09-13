@@ -2,9 +2,9 @@
 
 # Could Not Dispatch
 
-**Version:** `0.1.0` | **Author:** PilaScat | **Last Updated:** Aug 10 2026, 20:11 UTC
+**Version:** `0.2.1` | **Author:** PilaScat | **Last Updated:** Sep 13 2026, 15:39 UTC
 
-Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen.
+Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/could-not-dispatch)
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip)
-- **Built:** Aug 10 2026, 20:11 UTC
-- **Source Commit:** [`6753280`](https://github.com/Dispatcharr/Plugins/commit/67532805aec060ec4ae02d60d874ada54f64c63f)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip)
+- **Built:** Sep 13 2026, 15:39 UTC
+- **Source Commit:** [`16324c6`](https://github.com/Dispatcharr/Plugins/commit/16324c6a0bf775e171aa736586c74085a365909f)
 
 **Checksums:**
 ```
-MD5:    42c9dd34574a5fb1beafa5ab4cd3e56e
-SHA256: 3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886
+MD5:    3ffbb0a9442059c1b045441e6f646081
+SHA256: ddfc17667fd8704f31154f72a6faf2296df01e4cca1c1d41d79ac32bde3f0114
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.2.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip) | Sep 13 2026, 15:39 UTC | [`16324c6`](https://github.com/Dispatcharr/Plugins/commit/16324c6a0bf775e171aa736586c74085a365909f) | 3ffbb0a9442059c1b045441e6f646081 | ddfc17667fd8704f31154f72a6faf2296df01e4cca1c1d41d79ac32bde3f0114 |
 | `0.1.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip) | Aug 10 2026, 20:11 UTC | [`6753280`](https://github.com/Dispatcharr/Plugins/commit/67532805aec060ec4ae02d60d874ada54f64c63f) | 42c9dd34574a5fb1beafa5ab4cd3e56e | 3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886 |
 
 ---
@@ -41,7 +42,8 @@ SHA256: 3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886
 # Could Not Dispatch
 
 A Dispatcharr plugin that plays a looping image or video when every real stream on a
-channel has failed, so viewers see a message instead of a black screen.
+channel has failed, so viewers see a message instead of a black screen. With an API key,
+it later sends the channel back to its first stream.
 
 When all of a channel's streams are down, Dispatcharr runs out of alternatives and drops
 the client with a 503. From the sofa that looks the same as a broken router. This plugin
@@ -73,6 +75,7 @@ and pressing refresh on the Plugins page. Enable the plugin, fill in the setting
 | Excluded groups | One channel group name per line |
 | Excluded channels | One channel number or channel name per line |
 | Cover new channels automatically | Attaches the fallback to channels added by an M3U refresh |
+| API key | A Dispatcharr API key. With it, channels left on the fallback are sent back to their first stream, see below. Empty keeps them on the card |
 
 ## Actions
 
@@ -154,9 +157,14 @@ megabyte, so nothing is given up.
 stream, so Dispatcharr considers the channel up. To spot real outages, watch the
 `channel_failover` system events rather than channel state.
 
-**Playback does not return to the provider on its own.** Once a viewer is on the card
-they stay there until they change channel. This is deliberate: cutting away mid-message
-would be worse than leaving it up.
+**Playback returns to the provider only with an API key.** Dispatcharr never leaves the
+fallback by itself: a channel stays on the card for as long as a client holds it, even
+after the provider is back. Without a key that stays true. With one, the fallback asks
+Dispatcharr every ten seconds, while it has viewers, which channels are playing it, and
+switches a channel still on it after two minutes to its first stream. If that stream is
+still down, the failover walks the chain and lands on the card again, and the next try
+waits longer: 4, 8, then 15 minutes. The wait starts over once the channel has stayed off
+the card for 15 minutes.
 
 **One edge case in failover order.** Dispatcharr rotates the alternate list starting from
 the current stream and wraps around. If the first stream of a channel was unavailable

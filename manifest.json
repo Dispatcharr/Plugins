@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T15:08:02Z",
+  "generated_at": "2026-09-13T15:39:45Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -38,16 +38,16 @@
       {
         "slug": "could-not-dispatch",
         "name": "Could Not Dispatch",
-        "description": "Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen.",
+        "description": "Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.",
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/could-not-dispatch/manifest.json",
         "author": "PilaScat",
         "license": "MIT",
-        "last_updated": "2026-08-10T16:11:26-04:00",
-        "latest_version": "0.1.0",
-        "latest_md5": "42c9dd34574a5fb1beafa5ab4cd3e56e",
-        "latest_sha256": "3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886",
-        "latest_url": "could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip",
-        "latest_size": 57
+        "last_updated": "2026-09-13T15:39:19Z",
+        "latest_version": "0.2.1",
+        "latest_md5": "3ffbb0a9442059c1b045441e6f646081",
+        "latest_sha256": "ddfc17667fd8704f31154f72a6faf2296df01e4cca1c1d41d79ac32bde3f0114",
+        "latest_url": "could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip",
+        "latest_size": 60
       },
       {
         "slug": "dispatcharr-exporter",
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqa8VwAKCRB+wDprTCI0\nzlWqAPsGZp4dEEcVd0YouTR/5MA4kD4/fS7mEvu5+JDwv5VLXwD/dsCOFLU/IaT9\nYGARW1hYBEjim8Gv61QEpc0WTPN4qA0=\n=cx+a\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqbDxgAKCRB+wDprTCI0\nztCZAQCzwOJm+05JvYC92yEFt8f9O97VXgASTZSwRV7RgSAZXwEAu8S30Y8/8UkB\n3kzObVwpOGmWtNnEKJTtWY9KulzR7Ag=\n=zW3t\n-----END PGP SIGNATURE-----"
 }
