@@ -18,8 +18,8 @@ This branch contains all published plugin releases.
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.28.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.7` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
 | [`Dustarr`](#dustarr) | `1.26.2481620` | PiratesIRC | MIT | Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider. |
+| [`EPG & Sports Editor`](#epg-sports-editor) | `0.4.00` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). Renamed from EPGeditARR; existing installs carry their settings forward automatically. |
 | [`EPG Janitor`](#epg-janitor) | `1.26.2481223` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
-| [`EPGeditARR`](#epgeditarr) | `0.3.03` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.2490035` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.2481600` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.2481702` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
@@ -161,6 +161,22 @@ Records which channels are actually watched and reports the ones that are not, s
 
 ---
 
+### [EPG & Sports Editor](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/epg-and-sports-editor/README.md)
+
+**Version:** `0.4.00` | **Author:** jstevenscl | **Last Updated:** Sep 13 2026, 14:37 UTC
+
+Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). Renamed from EPGeditARR; existing installs carry their settings forward automatically.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jstevenscl/epg-and-sports-editor)
+
+**Downloads:**
+- [Latest Release (`0.4.00`)](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.4.00/epg-and-sports-editor-0.4.00.zip)
+- [All Versions (1 available)](./metadata/epg-and-sports-editor)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epg-and-sports-editor) | **Last Change:** [`583f10b`](https://github.com/Dispatcharr/Plugins/commit/583f10bfe4f765f674735ff7dfcea93d70737d62)
+
+---
+
 ### [EPG Janitor](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/epg-janitor/README.md)
 
 **Version:** `1.26.2481223` | **Author:** PiratesIRC | **Last Updated:** Sep 05 2026, 19:57 UTC
@@ -176,22 +192,6 @@ Scans for channels with EPG assignments but no program data. Auto-matches EPG to
 - [All Versions (8 available)](./metadata/epg-janitor)
 
 **Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epg-janitor) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/epg-janitor/README.md) | **Last Change:** [`ceb7847`](https://github.com/Dispatcharr/Plugins/commit/ceb784785395a3750996e248f9cd24812d52987f)
-
----
-
-### [EPGeditARR](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/epgeditarr/README.md)
-
-**Version:** `0.3.03` | **Author:** jstevenscl | **Last Updated:** Aug 23 2026, 20:16 UTC
-
-Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more).
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jstevenscl/epgeditarr)
-
-**Downloads:**
-- [Latest Release (`0.3.03`)](https://github.com/Dispatcharr/Plugins/releases/download/epgeditarr-0.3.03/epgeditarr-0.3.03.zip)
-- [All Versions (9 available)](./metadata/epgeditarr)
-
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epgeditarr) | **Last Change:** [`41bc3e7`](https://github.com/Dispatcharr/Plugins/commit/41bc3e7c3f2862b43962c1d3cf47ee36ad98b994)
 
 ---
 
@@ -488,4 +488,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 13 2026, 14:11 UTC*
+*Last updated: Sep 13 2026, 14:38 UTC*

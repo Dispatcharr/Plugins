@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T14:11:33Z",
+  "generated_at": "2026-09-13T14:37:48Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -109,6 +109,20 @@
         "min_dispatcharr_version": "v0.20.0"
       },
       {
+        "slug": "epg-and-sports-editor",
+        "name": "EPG & Sports Editor",
+        "description": "Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and...",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epg-and-sports-editor/manifest.json",
+        "author": "jstevenscl",
+        "license": "MIT",
+        "last_updated": "2026-09-13T10:37:17-04:00",
+        "latest_version": "0.4.00",
+        "latest_md5": "ce452934aef37a44ca1317098401a8bc",
+        "latest_sha256": "5723fcb4171029e59ac7d86d8bf020c49cf23eb61c7a24d89bc04d8d174eb90c",
+        "latest_url": "epg-and-sports-editor-0.4.00/epg-and-sports-editor-0.4.00.zip",
+        "latest_size": 145
+      },
+      {
         "slug": "epg-janitor",
         "name": "EPG Janitor",
         "description": "Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments.",
@@ -122,20 +136,6 @@
         "latest_url": "epg-janitor-1.26.2481223/epg-janitor-1.26.2481223.zip",
         "latest_size": 469,
         "min_dispatcharr_version": "v0.20.0"
-      },
-      {
-        "slug": "epgeditarr",
-        "name": "EPGeditARR",
-        "description": "Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and...",
-        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epgeditarr/manifest.json",
-        "author": "jstevenscl",
-        "license": "MIT",
-        "last_updated": "2026-08-23T20:16:20Z",
-        "latest_version": "0.3.03",
-        "latest_md5": "7cdf015ca3bbaabfbb5c290e563d5b4e",
-        "latest_sha256": "4f1cae87f4e3796cceb9e1f9ac8bc4a136598996f71efca45243e296f3faf1a3",
-        "latest_url": "epgeditarr-0.3.03/epgeditarr-0.3.03.zip",
-        "latest_size": 143
       },
       {
         "slug": "event-channel-managarr",
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqavGgAKCRB+wDprTCI0\nzjlmAQD9tTF2M5vq6RGLnVR6qAm4CfGdf3rXujmDixXXQl2cmQEAibQ5XBpYJdEu\nHsdA1VYop/FpAv/5NKczVgCUWKDNoQI=\n=WkVa\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqa1QQAKCRB+wDprTCI0\nzl11AP48Oxmj2wJy3vg+Yozcf1fDZmreQvZvohs9XAK/JNO/LAD/Wm7j608scCRu\nt8U9TZoLKTJRF3z6da0pimRvIZqzvAU=\n=hkmc\n-----END PGP SIGNATURE-----"
 }
