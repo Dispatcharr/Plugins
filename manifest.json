@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T08:03:29Z",
+  "generated_at": "2026-09-14T08:44:23Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -247,12 +247,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/reservoarr/manifest.json",
         "author": "brko7",
         "license": "MIT",
-        "last_updated": "2026-09-13T14:11:06Z",
-        "latest_version": "6.3.4",
-        "latest_md5": "c276f9b6b3319e4ca699e8ba35e916c9",
-        "latest_sha256": "d1c7b3bbfe50c3368f2eca4865bca8dbc564002f5f9162f0d08b5efcbad485e9",
-        "latest_url": "reservoarr-6.3.4/reservoarr-6.3.4.zip",
-        "latest_size": 37,
+        "last_updated": "2026-09-14T08:43:59Z",
+        "latest_version": "6.3.5",
+        "latest_md5": "e8ad994d2fb042202a8b125c3d7ac871",
+        "latest_sha256": "54d23d495393da7773a495b5ac40ce08a05ca4a7189b606453354d981295bdb6",
+        "latest_url": "reservoarr-6.3.5/reservoarr-6.3.5.zip",
+        "latest_size": 38,
         "min_dispatcharr_version": "v0.25.0"
       },
       {
@@ -375,5 +375,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqeqVgAKCRB+wDprTCI0\nzo9IAP9ZJZpiW5WVv6r8IC2SptsVyvG5ufhewCGwDb2jb38AvQEAjdmD5LKGkMHL\n6B5OdxxW51HRQkMpV+QkXZhI4dQ5jAA=\n=AHbA\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqez7AAKCRB+wDprTCI0\nzlVTAP46z+Zu+45EAozPDRk2csMRfqgqiS3wjpLtLqMY2Bq/bQEA1X1jnDrc/IxS\nfFMhvoWJ1VcgFMd394b1gBEzcWkisgU=\n=pUYK\n-----END PGP SIGNATURE-----"
 }
