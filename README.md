@@ -21,6 +21,7 @@ This branch contains all published plugin releases.
 | [`EPG & Sports Editor`](#epg-sports-editor) | `0.4.00` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). Renamed from EPGeditARR; existing installs carry their settings forward automatically. |
 | [`EPG Janitor`](#epg-janitor) | `1.26.2481223` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.2561545` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
+| [`Gluetun Rotate`](#gluetun-rotate) | `0.2.1` | PilaScat | MIT | Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.2481600` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.2561550` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
@@ -33,6 +34,7 @@ This branch contains all published plugin releases.
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
 | [`Ticker`](#ticker) | `0.5.03` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
 | [`Twitcharr`](#twitcharr) | `1.3.2` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
+| [`Underfed`](#underfed) | `0.3.2` | PilaScat | MIT | Moves a channel to its next source when the provider keeps delivering the stream, but at a fraction of the bitrate the content needs. |
 | [`VOD to Media Library`](#vod-to-media-library) | `1.18.0` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
 | [`Waybill`](#waybill) | `1.3.0` | Matthew-Beckett | MIT | Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control. |
 | [`YouTubearr`](#youtubearr) | `1.40.0` | jeff-gooch | Unlicense | Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering |
@@ -210,6 +212,22 @@ Automates channel visibility by hiding channels without events and showing those
 - [All Versions (10 available)](./metadata/event-channel-managarr)
 
 **Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/event-channel-managarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/event-channel-managarr/README.md) | **Last Change:** [`dbd5ce4`](https://github.com/Dispatcharr/Plugins/commit/dbd5ce4e72538e478415e3a02721f5e0d7ae8fa2)
+
+---
+
+### [Gluetun Rotate](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/gluetun-rotate/README.md)
+
+**Version:** `0.2.1` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 20:12 UTC
+
+Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/gluetun-rotate)
+
+**Downloads:**
+- [Latest Release (`0.2.1`)](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.2.1/gluetun-rotate-0.2.1.zip)
+- [All Versions (1 available)](./metadata/gluetun-rotate)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/gluetun-rotate) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/gluetun-rotate/README.md) | **Last Change:** [`4d30179`](https://github.com/Dispatcharr/Plugins/commit/4d3017960cd2e203ca01cf0c6d210b0fc54a982b)
 
 ---
 
@@ -419,6 +437,22 @@ Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV gu
 
 ---
 
+### [Underfed](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/underfed/README.md)
+
+**Version:** `0.3.2` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 20:13 UTC
+
+Moves a channel to its next source when the provider keeps delivering the stream, but at a fraction of the bitrate the content needs.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/underfed)
+
+**Downloads:**
+- [Latest Release (`0.3.2`)](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.3.2/underfed-0.3.2.zip)
+- [All Versions (1 available)](./metadata/underfed)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/underfed) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/underfed/README.md) | **Last Change:** [`68f1181`](https://github.com/Dispatcharr/Plugins/commit/68f11812be1864f33d9fc130497071908dbdca97)
+
+---
+
 ### [VOD to Media Library](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/vod2mlib/README.md)
 
 **Version:** `1.18.0` | **Author:** R3XCHRIS | **Last Updated:** Aug 19 2026, 16:22 UTC
@@ -488,4 +522,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 14 2026, 15:53 UTC*
+*Last updated: Sep 14 2026, 20:13 UTC*

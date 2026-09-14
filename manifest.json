@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T15:53:25Z",
+  "generated_at": "2026-09-14T20:13:44Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -151,6 +151,20 @@
         "latest_url": "event-channel-managarr-1.26.2561545/event-channel-managarr-1.26.2561545.zip",
         "latest_size": 244,
         "min_dispatcharr_version": "v0.20.0"
+      },
+      {
+        "slug": "gluetun-rotate",
+        "name": "Gluetun Rotate",
+        "description": "Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/gluetun-rotate/manifest.json",
+        "author": "PilaScat",
+        "license": "MIT",
+        "last_updated": "2026-09-14T16:12:57-04:00",
+        "latest_version": "0.2.1",
+        "latest_md5": "681861c916a6c62f919c78dccd78175a",
+        "latest_sha256": "ccd2a67bdc47db1c461d4cc96a31bd54a36a0e321b2fc667245da022adc7f5db",
+        "latest_url": "gluetun-rotate-0.2.1/gluetun-rotate-0.2.1.zip",
+        "latest_size": 54
       },
       {
         "slug": "iptv-checker",
@@ -328,6 +342,20 @@
         "latest_size": 67
       },
       {
+        "slug": "underfed",
+        "name": "Underfed",
+        "description": "Moves a channel to its next source when the provider keeps delivering the stream, but at a fraction of the bitrate the content needs.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/underfed/manifest.json",
+        "author": "PilaScat",
+        "license": "MIT",
+        "last_updated": "2026-09-14T16:13:18-04:00",
+        "latest_version": "0.3.2",
+        "latest_md5": "597f324791f1f7c5ea471e262b062e7e",
+        "latest_sha256": "a6451dcc46d5be26958cc8cd3a318797499509de713f8f0f04c9bf0dd424dd19",
+        "latest_url": "underfed-0.3.2/underfed-0.3.2.zip",
+        "latest_size": 44
+      },
+      {
         "slug": "vod2mlib",
         "name": "VOD to Media Library",
         "description": "Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that p...",
@@ -375,5 +403,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqgYegAKCRB+wDprTCI0\nzs5IAQDYuenVNDf0XfVlaXU3BgVi+3aSGNA9TLU9yd5UulldtQEAr7NzTOPtcS3t\n1ZTLnVi0N6oyL6d3Nb27dZryh4UnFwM=\n=8k4o\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqhVfQAKCRB+wDprTCI0\nzrwsAQDxjnmA6KZehiI4adJiYasXJUbgyqUEPYu75qPQRyeNigEAzyecK/mI9tgJ\nbFIdxaBGaOwvBA3QhF7GkRgUh08n4wo=\n=34EB\n-----END PGP SIGNATURE-----"
 }

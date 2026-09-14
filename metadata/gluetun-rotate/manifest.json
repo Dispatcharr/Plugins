@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-09-14T20:13:44Z",
+  "manifest": {
+    "slug": "gluetun-rotate",
+    "name": "Gluetun Rotate",
+    "description": "Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.",
+    "author": "PilaScat",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/PilaScat/gluetun-rotate/releases/download/v{version}/gluetun-rotate-{version}.zip",
+    "repo_url": "https://github.com/PilaScat/gluetun-rotate",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-09-14T16:12:57-04:00",
+    "latest": {
+      "version": "0.2.1",
+      "commit_sha": "4d3017960cd2e203ca01cf0c6d210b0fc54a982b",
+      "commit_sha_short": "4d30179",
+      "build_timestamp": "2026-09-14T20:13:28Z",
+      "last_updated": "2026-09-14T16:12:57-04:00",
+      "checksum_md5": "681861c916a6c62f919c78dccd78175a",
+      "checksum_sha256": "ccd2a67bdc47db1c461d4cc96a31bd54a36a0e321b2fc667245da022adc7f5db",
+      "source_url": "https://github.com/PilaScat/gluetun-rotate/releases/download/v0.2.1/gluetun-rotate-0.2.1.zip",
+      "latest_url": "gluetun-rotate-0.2.1/gluetun-rotate-0.2.1.zip",
+      "url": "gluetun-rotate-0.2.1/gluetun-rotate-0.2.1.zip",
+      "size": 54
+    },
+    "versions": [
+      {
+        "version": "0.2.1",
+        "commit_sha": "4d3017960cd2e203ca01cf0c6d210b0fc54a982b",
+        "commit_sha_short": "4d30179",
+        "build_timestamp": "2026-09-14T20:13:28Z",
+        "last_updated": "2026-09-14T16:12:57-04:00",
+        "checksum_md5": "681861c916a6c62f919c78dccd78175a",
+        "checksum_sha256": "ccd2a67bdc47db1c461d4cc96a31bd54a36a0e321b2fc667245da022adc7f5db",
+        "source_url": "https://github.com/PilaScat/gluetun-rotate/releases/download/v0.2.1/gluetun-rotate-0.2.1.zip",
+        "url": "gluetun-rotate-0.2.1/gluetun-rotate-0.2.1.zip",
+        "size": 54
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHQEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqhVegAKCRB+wDprTCI0\nzmQsAPj7LlQDmdBvjToMb42C6oxNw6Wxv/0v+2T+SsuhNlXTAQCeiDoCrVndxIBH\nt0xT49A+8cRKCNn3k7gCKK8VJeTBBQ==\n=hlR1\n-----END PGP SIGNATURE-----"
+}
