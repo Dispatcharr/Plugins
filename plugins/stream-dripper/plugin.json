@@ -1,7 +1,9 @@
 {
   "name": "Stream Dripper",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Automatically drops all active streams once per day at a configured time, with a manual drop-now button.",
   "author": "Megamannen",
-  "license": "Artistic-2.0"
+  "license": "Artistic-2.0",
+  "min_dispatcharr_version": "0.25.0",
+  "repo_url": "https://github.com/Megamannen/dispatcharr-plugin-stream-dripper/"
 }
