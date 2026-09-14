@@ -1,0 +1,51 @@
+name: Repository Issue
+description: Report a problem with the plugin repository, validation workflow, or submission process. Not for plugin-specific issues.
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > **Plugin issues belong elsewhere.**
+        > If your issue is about a specific plugin (bugs, feature requests, compatibility), use one of these instead:
+        > - The plugin's own GitHub repository (linked in its `plugin.json`)
+        > - The plugin's thread in the [Dispatcharr Discord](https://discord.gg/Sp45V5BcxU)
+        >
+        > This form is only for issues with the repository itself: validation failures, submission process problems, workflow bugs, etc.
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue type
+      options:
+        - Validation workflow bug (false positive/negative)
+        - Submission process problem (PR was incorrectly closed/rejected)
+        - Documentation error (CONTRIBUTING.md, README, etc.)
+        - Repository tooling / scripts
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened? What did you expect?
+      placeholder: Describe the issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce (if applicable)
+      description: Include PR number, workflow run URL, or other relevant links.
+      placeholder: |
+        1. Opened PR #...
+        2. Workflow ran and...
+        3. Expected... but got...
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Paste any relevant logs, screenshots, or workflow run output.

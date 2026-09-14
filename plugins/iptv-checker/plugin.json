@@ -1,0 +1,14 @@
+{
+  "name": "IPTV Checker",
+  "version": "1.26.2481600",
+  "description": "Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead.",
+  "author": "PiratesIRC",
+  "license": "MIT",
+  "logo": "logo.png",
+  "icon": "logo.png",
+  "source_type": "external",
+  "repo_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin",
+  "help_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin",
+  "min_dispatcharr_version": "v0.20.0",
+  "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v{version}/iptv_checker-v{version}.zip"
+}

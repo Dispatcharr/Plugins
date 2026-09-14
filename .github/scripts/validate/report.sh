@@ -31,6 +31,10 @@ fi
 
 OVERALL_FAILED=0
 
+if [[ -n "${TITLE_VALID:-}" && "${TITLE_VALID}" != "true" ]]; then
+  OVERALL_FAILED=1
+fi
+
 # Parse per-plugin report files
 COMBINED_BODY=""
 TABLE_HEADER="| name | version | description | author | maintainers |"
@@ -64,6 +68,64 @@ for fragment in "$FRAGMENTS_DIR"/*.fragment.md; do
   COMBINED_BODY+="$VISIBLE"$'\n\n'
 done
 
+# Build "other plugins by this contributor" section by expanding sparse-checkout
+OTHER_PLUGINS_SECTION=""
+if git sparse-checkout add plugins 2>/dev/null && git checkout 2>/dev/null; then
+  PR_PLUGIN_NAMES=()
+  for _frag in "$FRAGMENTS_DIR"/*.fragment.md; do
+    [[ -f "$_frag" ]] || continue
+    _bn=$(basename "$_frag" .fragment.md)
+    PR_PLUGIN_NAMES+=("$_bn")
+  done
+
+  OTHER_PLUGIN_ENTRIES=()
+  for _pjson in plugins/*/plugin.json; do
+    [[ -f "$_pjson" ]] || continue
+    _pname=$(basename "$(dirname "$_pjson")")
+
+    # Skip plugins that are part of this PR
+    _skip=false
+    for _pr_p in "${PR_PLUGIN_NAMES[@]}"; do
+      [[ "$_pr_p" == "$_pname" ]] && _skip=true && break
+    done
+    $_skip && continue
+
+    _p_author=$(jq -r '.author // ""' "$_pjson" 2>/dev/null || true)
+    _p_maintainers=$(jq -r '[.maintainers[]?] | join(" ")' "$_pjson" 2>/dev/null || true)
+
+    if [[ "$_p_author" == "$PR_AUTHOR" ]] || [[ " $_p_maintainers " =~ " $PR_AUTHOR " ]]; then
+      _p_display_name=$(jq -r '.name // ""' "$_pjson" 2>/dev/null || echo "$_pname")
+      _p_version=$(jq -r '.version // ""' "$_pjson" 2>/dev/null || true)
+      _p_repo_url=$(jq -r '.repo_url // ""' "$_pjson" 2>/dev/null || true)
+      if [[ -n "$_p_repo_url" ]]; then
+        _p_link="$_p_repo_url"
+      else
+        _p_link="https://github.com/${GITHUB_REPOSITORY}/tree/${BASE_REF:-main}/plugins/${_pname}"
+      fi
+      _version_suffix=""
+      [[ -n "$_p_version" ]] && _version_suffix="$_p_version"
+      _display_link="[**${_p_display_name}**](${_p_link})"
+      _slug_link="[\`${_pname}\`](https://github.com/${GITHUB_REPOSITORY}/tree/${BASE_REF:-main}/plugins/${_pname})"
+      OTHER_PLUGIN_ENTRIES+=("| ${_display_link} | ${_slug_link} | ${_version_suffix} |")
+    fi
+  done
+
+  if [[ ${#OTHER_PLUGIN_ENTRIES[@]} -gt 0 ]]; then
+    OTHER_PLUGINS_SECTION="<details>"
+    OTHER_PLUGINS_SECTION+=$'\n'
+    OTHER_PLUGINS_SECTION+="<summary>Other plugins by <code>${PR_AUTHOR}</code> in this repository (${#OTHER_PLUGIN_ENTRIES[@]})</summary>"
+    OTHER_PLUGINS_SECTION+=$'\n\n'
+    OTHER_PLUGINS_SECTION+="| Plugin | Slug | Version |"
+    OTHER_PLUGINS_SECTION+=$'\n'
+    OTHER_PLUGINS_SECTION+="|--------|------|---------|"
+    OTHER_PLUGINS_SECTION+=$'\n'
+    for _entry in "${OTHER_PLUGIN_ENTRIES[@]}"; do
+      OTHER_PLUGINS_SECTION+="${_entry}"$'\n'
+    done
+    OTHER_PLUGINS_SECTION+=$'\n</details>'
+  fi
+fi
+
 # Build comment
 {
   echo "<!--PLUGIN_VALIDATION_COMMENT-->"
@@ -83,6 +145,24 @@ done
     if [[ -n "${DISCORD_URL:-}" ]]; then
       echo ""
       echo "For help: [Dispatcharr Discord]($DISCORD_URL)"
+    fi
+  elif [[ "${CLOSE_REASON:-}" == "author-blacklisted" ]]; then
+    echo ""
+    echo "## PR Closed: Account Restricted"
+    echo ""
+    echo "Your GitHub account (\`$PR_AUTHOR\`) is not permitted to submit plugins to this repository. This PR has been automatically closed."
+    if [[ -n "${DISCORD_URL:-}" ]]; then
+      echo ""
+      echo "If you believe this is an error, please reach out via the [Dispatcharr Discord]($DISCORD_URL)."
+    fi
+  elif [[ "${CLOSE_REASON:-}" == "plugin-blacklisted" ]]; then
+    echo ""
+    echo "## PR Closed: Plugin Restricted"
+    echo ""
+    echo "One or more plugins in this PR are on the restricted list and cannot be submitted to this repository. This PR has been automatically closed."
+    if [[ -n "${DISCORD_URL:-}" ]]; then
+      echo ""
+      echo "If you believe this is an error, please reach out via the [Dispatcharr Discord]($DISCORD_URL)."
     fi
   elif [[ "$CLOSE_PR" == "true" ]]; then
     echo ""
@@ -106,17 +186,19 @@ done
   else
     echo "$COMBINED_BODY"
 
-    if [[ -n "${OUTSIDE_FILES:-}" ]]; then
+  if [[ -n "${OUTSIDE_FILES:-}" && "${OUTSIDE_VIOLATION:-}" == "true" ]]; then
       OVERALL_FAILED=1
       echo ""
       echo "⚠️ This PR modifies files outside of \`plugins/\`, which requires write access to the repository. These changes will block merging."
+      echo ""
+      echo "External contributions to repository tooling and scripts are not accepted via PR. If you think something needs fixing, please [open an issue](https://github.com/${GITHUB_REPOSITORY}/issues/new/choose) instead."
       echo ""
       echo "**Modified files:**"
       echo "\`\`\`"
       echo "${OUTSIDE_FILES}"
       echo "\`\`\`"
       echo ""
-      echo "Please remove these changes and resubmit with only modifications inside \`plugins/\`."
+      echo "Remove these changes and resubmit with only modifications inside \`plugins/\`."
       if [[ -n "${DISCORD_URL:-}" ]]; then
         echo ""
         echo "For help: [Dispatcharr Discord]($DISCORD_URL)"
@@ -139,7 +221,30 @@ done
       echo ""
     fi
 
-    CODEQL_SCAN_URL="https://github.com/${GITHUB_REPOSITORY}/security/code-scanning?query=is%3Aopen+pr%3A${PR_NUMBER}"
+    # insert --- if there are ANY codeql/clamav findings, medium, low, or skip/unscanned notice
+    if [[ -n "${CODEQL_RESULT:-}" && "${CODEQL_RESULT:-}" != "skipped" && "${CODEQL_RESULT:-}" != "success" ]] || \
+       [[ -n "${CODEQL_MEDIUMS:-}" && "${CODEQL_MEDIUMS}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]] || \
+       [[ -n "${CODEQL_LOWS:-}" && "${CODEQL_LOWS}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]] || \
+       [[ -n "${CODEQL_SUPPRESSED:-}" && "${CODEQL_SUPPRESSED}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]] || \
+       [[ "${CODEQL_RESULT:-}" == "skipped" && -n "${CODEQL_UNSCANNED_LANGS:-}" ]] || \
+       [[ "${CODEQL_RESULT:-}" != "skipped" && -n "${CODEQL_RESULT:-}" && -n "${CODEQL_UNSCANNED_LANGS:-}" ]] || \
+       [[ "${CLAMAV_RESULT:-}" == "failure" ]]; then
+      echo ""
+      echo "---"
+      echo ""
+    fi
+
+    if [[ "${CLAMAV_RESULT:-}" == "failure" ]]; then
+      OVERALL_FAILED=1
+      INFECTED_LABEL="${CLAMAV_INFECTED:-unknown}"
+      echo ""
+      echo "❌ **ClamAV detected $INFECTED_LABEL infected file(s)**."
+      echo ""
+      if [[ -f "clamav-findings/clamav-findings.md" ]]; then
+        cat "clamav-findings/clamav-findings.md"
+      fi
+    fi
+
     if [[ -n "${CODEQL_RESULT:-}" && "${CODEQL_RESULT:-}" != "skipped" && "${CODEQL_RESULT:-}" != "success" ]]; then
       # echo ""
       # echo "## Code Quality"
@@ -155,11 +260,61 @@ done
 
     if [[ -n "${CODEQL_MEDIUMS:-}" && "${CODEQL_MEDIUMS:-}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]]; then
       echo ""
-      echo "**CodeQL found ${CODEQL_MEDIUMS} medium severity issue(s)** - these are not blocking but are worth a look."
+      echo "**CodeQL found ${CODEQL_MEDIUMS} medium severity issue(s)**"
+      echo "These are not blocking, but are included for visibility."
       echo ""
       if [[ -f "codeql-medium-findings/codeql-medium-findings.md" ]]; then
         cat "codeql-medium-findings/codeql-medium-findings.md"
       fi
+    fi
+
+    if [[ -n "${CODEQL_LOWS:-}" && "${CODEQL_LOWS:-}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]]; then
+      echo ""
+      echo "<details>"
+      echo "<summary>CodeQL found ${CODEQL_LOWS} low severity or informational result(s)</summary>"
+      echo "These are not blocking, but are included for visibility."
+      echo ""
+      if [[ -f "codeql-low-findings/codeql-low-findings.md" ]]; then
+        cat "codeql-low-findings/codeql-low-findings.md"
+      fi
+      echo ""
+      echo "</details>"
+    fi
+
+    if [[ -n "${CODEQL_SUPPRESSED:-}" && "${CODEQL_SUPPRESSED:-}" != "0" && "${CODEQL_RESULT:-}" != "skipped" ]]; then
+      echo ""
+      echo "**${CODEQL_SUPPRESSED} finding(s) suppressed via inline \`codeql[...]\` comment** - requires maintainer review before merging; auto-merge is blocked for this PR."
+      echo ""
+      if [[ -f "codeql-suppressed-findings/codeql-suppressed-findings.md" ]]; then
+        cat "codeql-suppressed-findings/codeql-suppressed-findings.md"
+      fi
+    fi
+
+    # CodeQL skipped notice (when no scannable files exist but unscannable types were found)
+    if [[ "${CODEQL_RESULT:-}" == "skipped" && -n "${CODEQL_UNSCANNED_LANGS:-}" ]]; then
+      UNSCANNED_DISPLAY=$(echo "${CODEQL_UNSCANNED_LANGS}" | tr ',' ' ')
+      echo ""
+      echo "**CodeQL analysis was skipped** - no supported source files were found. The following bundled file type(s) are not covered by CodeQL: \`${UNSCANNED_DISPLAY}\`."
+      echo ""
+    elif [[ -n "${CODEQL_UNSCANNED_LANGS:-}" && "${CODEQL_RESULT:-}" != "skipped" && -n "${CODEQL_RESULT:-}" ]]; then
+      UNSCANNED_DISPLAY=$(echo "${CODEQL_UNSCANNED_LANGS}" | tr ',' ' ')
+      echo ""
+      echo "**Note:** The following bundled file type(s) were not scanned by CodeQL (unsupported language): \`${UNSCANNED_DISPLAY}\`."
+      echo ""
+    fi
+
+    if [[ -n "${TITLE_VALID:-}" && "${TITLE_VALID}" != "true" ]]; then
+      echo ""
+      echo "---"
+      echo ""
+      echo "### ❌ PR Title Format"
+      echo ""
+      echo "${TITLE_FEEDBACK}"
+      if [[ -n "${TITLE_SUGGESTION:-}" ]]; then
+        echo ""
+        echo "**Suggested format:** \`${TITLE_SUGGESTION}\`"
+      fi
+      echo ""
     fi
 
     echo ""
@@ -173,6 +328,13 @@ done
       echo "## ❌ Validation failed"
       echo ""
       echo "Some checks failed. Please review the errors above and update your PR."
+    fi
+
+    if [[ -n "$OTHER_PLUGINS_SECTION" ]]; then
+      echo ""
+      echo "---"
+      echo ""
+      echo "$OTHER_PLUGINS_SECTION"
     fi
 
     # if [[ -n "$PLUGIN_LINKS" ]]; then
@@ -234,7 +396,7 @@ gh pr comment "$PR_NUMBER" --body "$(cat pr_comment.txt)"
 COMMENT_EXIT=$?
 
 # Close PR for unauthorized plugin modifications
-if [[ "$CLOSE_PR" == "true" && "${CLOSE_REASON:-}" == "unauthorized" ]]; then
+if [[ "$CLOSE_PR" == "true" && ( "${CLOSE_REASON:-}" == "unauthorized" || "${CLOSE_REASON:-}" == "author-blacklisted" || "${CLOSE_REASON:-}" == "plugin-blacklisted" ) ]]; then
   gh pr close "$PR_NUMBER"
   echo "PR #$PR_NUMBER closed: unauthorized"
   exit $COMMENT_EXIT

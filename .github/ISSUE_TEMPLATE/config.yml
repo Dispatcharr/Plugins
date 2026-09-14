@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Plugin bug or feature request
+    url: https://discord.gg/Sp45V5BcxU
+    about: For issues with a specific plugin, find its thread in the Dispatcharr Discord or open an issue in the plugin's own repository.

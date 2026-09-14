@@ -1,0 +1,534 @@
+name: Run Migrations
+
+# Migration history:
+#   001 (v0 → v2): Move ZIPs from releases branch git history to GitHub Release assets
+#   002 (v2 → v3): Rename zips/ to metadata/ on the releases branch
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview what would happen without making any changes.'
+        type: boolean
+        default: true
+        required: false
+      confirm:
+        description: 'Required when dry_run is unchecked: type CONFIRM to proceed.'
+        type: string
+        default: ''
+        required: false
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # Validate inputs and detect which migrations need to run.
+  # All migration jobs depend on this one.
+  # ---------------------------------------------------------------------------
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      any_pending: ${{ steps.detect.outputs.any_pending }}
+      needs_001:   ${{ steps.detect.outputs.needs_001 }}
+      needs_002:   ${{ steps.detect.outputs.needs_002 }}
+      use_app:     ${{ steps.config.outputs.use_app }}
+      app_id:      ${{ steps.config.outputs.app_id }}
+      # Add outputs for future migrations here:
+      # needs_003: ${{ steps.detect.outputs.needs_003 }}
+    steps:
+      - name: Validate inputs
+        run: |
+          if [[ "${{ inputs.dry_run }}" != "true" && "${{ inputs.confirm }}" != "CONFIRM" ]]; then
+            echo "::error::dry_run is false but confirm is not set to CONFIRM. Aborting."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Load app ID from config
+        id: config
+        env:
+          GH_APP_ID: ${{ vars.GH_APP_ID }}
+          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        run: |
+          if [[ -n "${GH_APP_ID:-}" && -n "${GH_APP_PRIVATE_KEY:-}" ]]; then
+            echo "app_id=${GH_APP_ID}" >> "$GITHUB_OUTPUT"
+            echo "use_app=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "use_app=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Detect pending migrations
+        id: detect
+        run: |
+          RELEASES_BRANCH="releases"
+          TARGET_VER=3  # bump when adding a new migration
+
+          current_ver=0
+          if git ls-remote --exit-code --heads origin "$RELEASES_BRANCH" >/dev/null 2>&1; then
+            current_ver=$(git show "origin/${RELEASES_BRANCH}:REPO_VER" 2>/dev/null || echo "0")
+          fi
+          echo "current_ver=$current_ver  target=$TARGET_VER"
+
+          (( current_ver < 2 )) && echo "needs_001=true"  >> "$GITHUB_OUTPUT" \
+                                || echo "needs_001=false" >> "$GITHUB_OUTPUT"
+
+          (( current_ver < 3 )) && echo "needs_002=true"  >> "$GITHUB_OUTPUT" \
+                                || echo "needs_002=false" >> "$GITHUB_OUTPUT"
+
+          # Add future migrations here:
+          # (( current_ver < 4 )) && echo "needs_003=true"  >> "$GITHUB_OUTPUT" \
+          #                       || echo "needs_003=false" >> "$GITHUB_OUTPUT"
+
+          (( current_ver < TARGET_VER )) && echo "any_pending=true"  >> "$GITHUB_OUTPUT" \
+                                         || echo "any_pending=false" >> "$GITHUB_OUTPUT"
+
+  # ---------------------------------------------------------------------------
+  # Migration 001 (v0 → v2): Move ZIPs to GitHub Release assets
+  # needs_rebuild=true — changing storage format requires a manifest rebuild.
+  # ---------------------------------------------------------------------------
+  migration_001:
+    needs: [setup]
+    if: needs.setup.outputs.needs_001 == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      rebuild_type: ${{ steps.flags.outputs.rebuild_type }}
+      end_version:  ${{ steps.flags.outputs.end_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Generate GitHub App token
+        if: needs.setup.outputs.use_app == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ needs.setup.outputs.app_id }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Run migration
+        env:
+          GITHUB_TOKEN: ${{ needs.setup.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          RELEASES_BRANCH="releases"
+          created=0
+          deleted=0
+
+          echo "### Migration 001: Move ZIPs to GitHub Release assets" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          [[ "$DRY_RUN" == "true" ]] \
+            && echo "**Mode: dry run** - no changes will be made." >> "$GITHUB_STEP_SUMMARY" \
+            || echo "**Mode: live** - changes will be applied."    >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          plugin_slugs=()
+          for d in plugins/*/; do
+            [[ -d "$d" ]] && plugin_slugs+=("$(basename "$d")")
+          done
+          [[ ${#plugin_slugs[@]} -eq 0 ]] && { echo "::error::No plugins found in plugins/."; exit 1; }
+          echo "Plugins: ${plugin_slugs[*]}"
+
+          # Step 1: Purge existing plugin releases (clean slate)
+          echo ""
+          echo "--- Purging existing plugin releases ---"
+          for slug in "${plugin_slugs[@]}"; do
+            matching=$(gh release list --repo "$GITHUB_REPOSITORY" --json tagName --limit 500 \
+              | jq -r '.[].tagName' | grep "^${slug}-" || true)
+            [[ -z "$matching" ]] && continue
+            while IFS= read -r tag; do
+              [[ -z "$tag" ]] && continue
+              echo "  DELETE $tag"
+              if [[ "$DRY_RUN" != "true" ]]; then
+                gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag 2>/dev/null || true
+                (( deleted++ )) || true
+              fi
+            done <<< "$matching"
+          done
+
+          # Step 2: Enumerate versioned ZIPs from the releases branch
+          echo ""
+          echo "--- Enumerating ZIPs from $RELEASES_BRANCH branch ---"
+          zip_paths=$(git ls-tree -r --name-only "origin/${RELEASES_BRANCH}" 2>/dev/null \
+            | grep 'zips/.*/.*\.zip' | grep -v '\-latest\.zip' | sort || true)
+
+          if [[ -z "$zip_paths" ]]; then
+            echo "No versioned ZIPs found on origin/${RELEASES_BRANCH} - nothing to move."
+            echo "No ZIPs found on releases branch." >> "$GITHUB_STEP_SUMMARY"
+          else
+            # Step 3: Create versioned releases
+            echo ""
+            echo "--- Creating versioned releases ---"
+            echo "| Tag | Status |" >> "$GITHUB_STEP_SUMMARY"
+            echo "|-----|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+            while IFS= read -r zip_path; do
+              [[ -z "$zip_path" ]] && continue
+              zip_basename=$(basename "$zip_path")
+              matched_slug=""
+              for slug in "${plugin_slugs[@]}"; do
+                [[ "$zip_basename" == "${slug}-"*.zip ]] && { matched_slug="$slug"; break; }
+              done
+              [[ -z "$matched_slug" ]] && continue
+              zip_version="${zip_basename#${matched_slug}-}"; zip_version="${zip_version%.zip}"
+              release_tag="${matched_slug}-${zip_version}"
+              echo "  CREATE $release_tag"
+              if [[ "$DRY_RUN" != "true" ]]; then
+                tmp_zip="/tmp/${zip_basename}"
+                git show "origin/${RELEASES_BRANCH}:${zip_path}" > "$tmp_zip"
+                readme_url="https://github.com/${GITHUB_REPOSITORY}/blob/releases/metadata/${matched_slug}/README.md"
+                release_notes=""
+                commit_sha=$(git show "origin/${RELEASES_BRANCH}:zips/${matched_slug}/manifest.json" \
+                  | jq -r --arg v "$zip_version" \
+                    '.manifest.versions[]? | select(.version == $v) | .commit_sha // empty' 2>/dev/null || true)
+                commit_sha_short=$(git show "origin/${RELEASES_BRANCH}:zips/${matched_slug}/manifest.json" \
+                  | jq -r --arg v "$zip_version" \
+                    '.manifest.versions[]? | select(.version == $v) | .commit_sha_short // empty' 2>/dev/null || true)
+                if [[ -n "$commit_sha" ]]; then
+                  commit_url="https://github.com/${GITHUB_REPOSITORY}/commit/${commit_sha}"
+                  release_notes="**Commit:** [\`${commit_sha_short:-${commit_sha:0:7}}\`](${commit_url})"
+                  pr_info=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${commit_sha}/pulls" \
+                    --jq '.[0] | {number: .number, url: .html_url}' 2>/dev/null || echo '{}')
+                  pr_number=$(echo "$pr_info" | jq -r '.number // empty')
+                  pr_url=$(echo "$pr_info"    | jq -r '.url // empty')
+                  [[ -n "$pr_number" && "$pr_number" != "null" ]] && \
+                    release_notes+=$'\n'"**PR:** [#${pr_number}](${pr_url})"
+                  release_notes+=$'\n'
+                fi
+                release_notes+="**README:** [Plugin README](${readme_url})"
+                final_tag="$release_tag"
+                tag_suffix=0
+                while true; do
+                  if gh release create "$final_tag" --repo "$GITHUB_REPOSITORY" \
+                    --title "${matched_slug} v${zip_version}" --notes "$release_notes" "$tmp_zip" 2>/tmp/rel_err; then
+                    break
+                  fi
+                  if grep -q "immutable\|Cannot create ref" /tmp/rel_err; then
+                    tag_suffix=$(( tag_suffix + 1 ))
+                    final_tag="${release_tag}-${tag_suffix}"
+                    echo "  Tag conflict on $release_tag, retrying as $final_tag"
+                  else
+                    cat /tmp/rel_err >&2; rm -f "$tmp_zip" /tmp/rel_err; exit 1
+                  fi
+                done
+                rm -f "$tmp_zip" /tmp/rel_err
+                (( created++ )) || true
+                echo "| \`${final_tag}\` (v${zip_version}) | created |" >> "$GITHUB_STEP_SUMMARY"
+              else
+                echo "| \`${release_tag}\` | would create (dry run) |" >> "$GITHUB_STEP_SUMMARY"
+              fi
+            done <<< "$zip_paths"
+
+          fi
+
+          echo ""
+          [[ "$DRY_RUN" == "true" ]] \
+            && echo "Dry run complete." \
+            || echo "Done. Deleted $deleted releases, created $created releases."
+
+      - name: Strip tracked ZIPs from releases branch
+        env:
+          GITHUB_TOKEN: ${{ needs.setup.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          RELEASES_BRANCH="releases"
+
+          if [[ "$DRY_RUN" == "true" ]]; then
+            mapfile -t tracked_zips < <(git ls-tree -r --name-only "origin/${RELEASES_BRANCH}" 2>/dev/null | grep '\.zip$' || true)
+            echo "Dry run: would remove ${#tracked_zips[@]} tracked ZIP(s) from $RELEASES_BRANCH."
+            exit 0
+          fi
+
+          if ! git ls-remote --exit-code --heads origin "$RELEASES_BRANCH" >/dev/null 2>&1; then
+            echo "No $RELEASES_BRANCH branch — nothing to strip."
+            exit 0
+          fi
+
+          if [[ -n "${APP_SLUG:-}" ]]; then
+            BOT_USER_ID=$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq '.id' 2>/dev/null || echo "")
+            git config user.name "${APP_SLUG}[bot]"
+            git config user.email "${BOT_USER_ID:+${BOT_USER_ID}+}${APP_SLUG}[bot]@users.noreply.github.com"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          fi
+
+          git fetch origin "$RELEASES_BRANCH"
+          git checkout "$RELEASES_BRANCH"
+          mapfile -t tracked_zips < <(git ls-files 'zips' | grep '\.zip$')
+          if [[ ${#tracked_zips[@]} -eq 0 ]]; then
+            echo "No tracked ZIPs found — branch already clean."
+            exit 0
+          fi
+          git rm -f "${tracked_zips[@]}"
+          git commit -m "Strip tracked ZIPs from releases branch"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$RELEASES_BRANCH"
+          echo "Removed ${#tracked_zips[@]} tracked ZIP(s) from $RELEASES_BRANCH."
+
+      - name: Set migration flags
+        id: flags
+        run: |
+          echo "rebuild_type=regular" >> "$GITHUB_OUTPUT"
+          echo "end_version=2"        >> "$GITHUB_OUTPUT"
+
+  # ---------------------------------------------------------------------------
+  # Migration 002 (v2 → v3): Rename zips/ to metadata/ on the releases branch
+  # needs_rebuild=regular — manifest_url paths change from zips/ to metadata/.
+  # ---------------------------------------------------------------------------
+  migration_002:
+    needs: [setup, migration_001]
+    if: needs.setup.outputs.needs_002 == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      rebuild_type: ${{ steps.flags.outputs.rebuild_type }}
+      end_version:  ${{ steps.flags.outputs.end_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Generate GitHub App token
+        if: needs.setup.outputs.use_app == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ needs.setup.outputs.app_id }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Rename zips/ to metadata/ on releases branch
+        env:
+          GITHUB_TOKEN: ${{ needs.setup.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          RELEASES_BRANCH="releases"
+
+          if [[ "$DRY_RUN" == "true" ]]; then
+            count=$(git ls-tree -r --name-only "origin/${RELEASES_BRANCH}" 2>/dev/null \
+              | grep '^zips/' | grep -cv '\.zip$' || true)
+            echo "Dry run: would rename $count file(s) from zips/ to metadata/."
+            exit 0
+          fi
+
+          if ! git ls-remote --exit-code --heads origin "$RELEASES_BRANCH" >/dev/null 2>&1; then
+            echo "No $RELEASES_BRANCH branch — nothing to rename."
+            exit 0
+          fi
+
+          if ! git ls-tree -r --name-only "origin/${RELEASES_BRANCH}" | grep -q '^zips/'; then
+            echo "No zips/ content found — already renamed or branch is clean."
+            exit 0
+          fi
+
+          if [[ -n "${APP_SLUG:-}" ]]; then
+            BOT_USER_ID=$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq '.id' 2>/dev/null || echo "")
+            git config user.name "${APP_SLUG}[bot]"
+            git config user.email "${BOT_USER_ID:+${BOT_USER_ID}+}${APP_SLUG}[bot]@users.noreply.github.com"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          fi
+
+          git fetch origin "$RELEASES_BRANCH"
+          git checkout "$RELEASES_BRANCH"
+
+          mapfile -t to_move < <(git ls-files 'zips/' | grep -v '\.zip$')
+          if [[ ${#to_move[@]} -eq 0 ]]; then
+            echo "No non-ZIP files under zips/ to move."
+            exit 0
+          fi
+
+          for f in "${to_move[@]}"; do
+            dest="${f/zips\//metadata/}"
+            mkdir -p "$(dirname "$dest")"
+            git mv "$f" "$dest"
+          done
+
+          git commit -m "Rename zips/ to metadata/ on releases branch"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$RELEASES_BRANCH"
+          echo "Moved ${#to_move[@]} file(s) from zips/ to metadata/."
+
+      - name: Set migration flags
+        id: flags
+        run: |
+          echo "rebuild_type=regular" >> "$GITHUB_OUTPUT"
+          echo "end_version=3"        >> "$GITHUB_OUTPUT"
+
+  # ---------------------------------------------------------------------------
+  # Add future migration jobs here following the same pattern.
+  # ---------------------------------------------------------------------------
+
+  # ---------------------------------------------------------------------------
+  # Commits REPO_VER to the releases branch after all migrations succeed.
+  # Skipped on dry runs or if no migrations were pending.
+  # ---------------------------------------------------------------------------
+  write_repo_ver:
+    needs: [setup, migration_001, migration_002]
+    if: |
+      always() &&
+      needs.setup.outputs.any_pending == 'true' &&
+      inputs.dry_run == false &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Generate GitHub App token
+        if: needs.setup.outputs.use_app == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ needs.setup.outputs.app_id }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Write REPO_VER
+        env:
+          GITHUB_TOKEN: ${{ needs.setup.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+          RELEASES_BRANCH="releases"
+          TARGET_VER=$(echo "$NEEDS_JSON" | jq '
+            [.. | objects | .outputs.end_version? | select(. != null and . != "") | tonumber] | max // 0
+          ')
+          if [[ "$TARGET_VER" -eq 0 ]]; then
+            echo "::error::No end_version found from any migration."
+            exit 1
+          fi
+          echo "Writing REPO_VER=${TARGET_VER}"
+
+          if [[ -n "${APP_SLUG:-}" ]]; then
+            BOT_USER_ID=$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq '.id' 2>/dev/null || echo "")
+            git config user.name "${APP_SLUG}[bot]"
+            if [[ -n "$BOT_USER_ID" ]]; then
+              git config user.email "${BOT_USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
+            else
+              git config user.email "${APP_SLUG}[bot]@users.noreply.github.com"
+            fi
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          fi
+
+          if git ls-remote --exit-code --heads origin "$RELEASES_BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$RELEASES_BRANCH"
+            git checkout "$RELEASES_BRANCH"
+          else
+            git checkout --orphan "$RELEASES_BRANCH"
+            git rm -rf . 2>/dev/null || true
+          fi
+
+          echo "$TARGET_VER" > REPO_VER
+          git add REPO_VER
+          if git diff --cached --quiet; then
+            echo "REPO_VER already up to date."
+          else
+            git commit -m "Set REPO_VER=${TARGET_VER}"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$RELEASES_BRANCH"
+            echo "REPO_VER=${TARGET_VER} written to $RELEASES_BRANCH."
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Aggregates rebuild_type across all migrations using toJSON(needs).
+  # When adding a new migration: add it to needs: here only.
+  # The trigger jobs below never need changing.
+  # ---------------------------------------------------------------------------
+  aggregate_migrations:
+    needs: [migration_001, migration_002]
+    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-latest
+    outputs:
+      rebuild_type: ${{ steps.compute.outputs.rebuild_type }}
+    steps:
+      - name: Compute highest rebuild type
+        id: compute
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          rebuild=$(echo "$NEEDS_JSON" | jq -r '
+            [.. | objects | .outputs.rebuild_type? | select(. != null and . != "")] |
+            if any(. == "force") then "force"
+            elif any(. == "regular") then "regular"
+            else "none" end
+          ')
+          echo "rebuild_type=$rebuild" >> "$GITHUB_OUTPUT"
+          echo "Highest rebuild type across all migrations: $rebuild"
+
+  # ---------------------------------------------------------------------------
+  # Trigger jobs check aggregate_migrations.outputs.rebuild_type — no changes
+  # needed here when adding future migrations.
+  # ---------------------------------------------------------------------------
+  trigger_publish_regular:
+    needs: [setup, aggregate_migrations, write_repo_ver]
+    if: |
+      needs.write_repo_ver.result == 'success' &&
+      needs.aggregate_migrations.outputs.rebuild_type == 'regular'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        if: needs.setup.outputs.use_app == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ needs.setup.outputs.app_id }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Trigger regular publish
+        env:
+          GITHUB_TOKEN: ${{ needs.setup.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          gh workflow run publish-plugins.yml --repo "$GITHUB_REPOSITORY"
+          echo "Regular publish triggered — manifests and READMEs will be regenerated shortly."
+          echo "Regular publish triggered." >> "$GITHUB_STEP_SUMMARY"
+
+  trigger_publish_force:
+    needs: [setup, aggregate_migrations, write_repo_ver]
+    if: |
+      needs.write_repo_ver.result == 'success' &&
+      needs.aggregate_migrations.outputs.rebuild_type == 'force'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        if: needs.setup.outputs.use_app == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ needs.setup.outputs.app_id }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Trigger force rebuild publish
+        env:
+          GITHUB_TOKEN: ${{ needs.setup.outputs.use_app == 'true' && steps.app-token.outputs.token || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          gh workflow run publish-plugins.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --field force_rebuild=true \
+            --field force_rebuild_confirm=CONFIRM
+          echo "Force rebuild triggered — releases branch will be fully regenerated shortly."
+          echo "Force rebuild triggered." >> "$GITHUB_STEP_SUMMARY"

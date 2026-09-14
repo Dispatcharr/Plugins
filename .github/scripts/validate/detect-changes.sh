@@ -18,9 +18,10 @@ set -e
 
 PR_AUTHOR=$1
 BASE_REF=$2
+HEAD_REF=${3:-}
 
 if [[ -z "$PR_AUTHOR" || -z "$BASE_REF" ]]; then
-  echo "Usage: $0 <pr_author> <base_ref>"
+  echo "Usage: $0 <pr_author> <base_ref> [head_ref]"
   exit 1
 fi
 
@@ -39,6 +40,24 @@ has_write_access() {
 }
 
 MERGE_BASE=$(git merge-base "origin/${BASE_REF}" HEAD)
+
+# --- Bot-authored yank rollback PRs bypass plugin validation ---
+# The yank workflow opens PRs on branches named yank/* using the bot identity.
+# These PRs intentionally roll back (or remove) plugin versions, so the normal
+# version-bump and format checks do not apply.
+if [[ "$PR_AUTHOR" == *"[bot]" && "$HEAD_REF" == yank/* ]]; then
+  echo "Bot-authored yank rollback PR detected ($PR_AUTHOR, $HEAD_REF) - skipping plugin validation."
+  echo "matrix=[]"               >> "$GITHUB_OUTPUT"
+  echo "plugin_count=0"          >> "$GITHUB_OUTPUT"
+  echo "close_pr=false"          >> "$GITHUB_OUTPUT"
+  echo "close_reason="           >> "$GITHUB_OUTPUT"
+  echo "skip_validation=true"    >> "$GITHUB_OUTPUT"
+  echo "outside_violation=false" >> "$GITHUB_OUTPUT"
+  echo "pub_key_changed=false"   >> "$GITHUB_OUTPUT"
+  echo "has_new_plugin=false"    >> "$GITHUB_OUTPUT"
+  echo "has_updated_plugin=false" >> "$GITHUB_OUTPUT"
+  exit 0
+fi
 
 # --- Protection check: only plugins/ may be modified by non-maintainers ---
 OUTSIDE_CHANGES=$(git diff --name-only "$MERGE_BASE" HEAD | grep -v '^plugins/' || true)

@@ -40,16 +40,16 @@ jobs:
       - name: Generate GitHub App token
         if: steps.config.outputs.skip != 'true'
         id: app-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ steps.config.outputs.app_id }}
+          client-id: ${{ steps.config.outputs.app_id }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           # Token is org-scoped; the app must be installed on the target repo
           owner: ${{ github.repository_owner }}
 
       - name: Checkout releases branch README
         if: steps.config.outputs.skip != 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: releases
           fetch-depth: 1

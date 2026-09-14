@@ -1,0 +1,12 @@
+{
+  "name": "Telegram Alerts",
+  "version": "0.4.5",
+  "description": "Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health).",
+  "author": "R3XCHRIS",
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.20.0",
+  "repo_url": "https://github.com/R3XCHRIS/telegram-alerts",
+  "help_url": "https://github.com/R3XCHRIS/telegram-alerts#readme",
+  "source_type": "external",
+  "source_url": "https://github.com/R3XCHRIS/telegram-alerts/releases/download/v{version}/plugin-telegram-alerts-v{version}.zip"
+}

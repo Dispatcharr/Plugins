@@ -1,0 +1,169 @@
+{
+  "package": "TELUS Optik TV Ultimate",
+  "date": "2026-04-05",
+  "description": "TELUS Optik TV Ultimate package for Canadian markets (AB/BC) with premium and multicultural add-ons",
+  "source": "TELUS Optik TV Channel Guide",
+  "notes": "Lineup excludes local network affiliates (ABC, CBS, NBC, FOX, PBS, CBC, CTV, City, Global, Omni). Regional availability of some channels (e.g., Sportsnet feeds) varies by province (Alberta vs. British Columbia). Premium movie, sports, and multicultural channels require additional subscriptions.",
+  "categories": {
+    "News": [
+      { "name": "Al Jazeera English", "number": 825 },
+      { "name": "BBC World News", "number": 821 },
+      { "name": "BNN Bloomberg", "number": 815 },
+      { "name": "CBC News Network", "number": 800 },
+      { "name": "CCTV News", "number": 834 },
+      { "name": "CNBC", "number": 806 },
+      { "name": "CNN", "number": 802 },
+      { "name": "CNNI", "number": 827 },
+      { "name": "CTV News Channel", "number": 801 },
+      { "name": "FOX News", "number": 811 },
+      { "name": "HLN", "number": 819 },
+      { "name": "MSNBC", "number": 804 },
+      { "name": "The Weather Network", "number": 128 }
+    ],
+    "Sports": [
+      { "name": "beIN SPORTS", "number": 983, "addon": "Premium Sports" },
+      { "name": "Fight Network", "number": 945 },
+      { "name": "FNTSY Sports Network", "number": 921 },
+      { "name": "Golf Channel", "number": 922 },
+      { "name": "MLB Extra Innings", "number": "1301-1311", "addon": "Premium Sports" },
+      { "name": "NBA League Pass", "number": "1401-1409", "addon": "Premium Sports" },
+      { "name": "NBA TV Canada", "number": 937 },
+      { "name": "NFL Network", "number": 926 },
+      { "name": "NFL RedZone", "number": 927 },
+      { "name": "NFL Sunday Ticket", "number": "1501-1516", "addon": "Premium Sports" },
+      { "name": "NHL Centre Ice", "number": "1101-1114", "addon": "Premium Sports" },
+      { "name": "radX", "number": 931 },
+      { "name": "Sportsnet 360", "number": 920 },
+      { "name": "Sportsnet ONE", "number": 907 },
+      { "name": "Sportsnet World", "number": "1001-1007", "addon": "Premium Sports" },
+      { "name": "TSN1", "number": 900 },
+      { "name": "TSN2", "number": 901 },
+      { "name": "TSN3", "number": 902 },
+      { "name": "TSN4", "number": 903 },
+      { "name": "TSN5", "number": 904 },
+      { "name": "WWE Network", "number": 947 }
+    ],
+    "Regional Sports": [
+      { "name": "Sportsnet East", "number": 917 },
+      { "name": "Sportsnet Flames", "number": 910 },
+      { "name": "Sportsnet Oilers", "number": 909 },
+      { "name": "Sportsnet Ontario", "number": 916 },
+      { "name": "Sportsnet Pacific/West", "number": 915 },
+      { "name": "Sportsnet Vancouver Hockey", "number": 909 }
+    ],
+    "Movies": [
+      { "name": "Action", "number": 449 },
+      { "name": "CraveTV On Demand", "number": 411, "addon": "Movies & Series" },
+      { "name": "FX", "number": 413 },
+      { "name": "FXX", "number": 414 },
+      { "name": "HBO Canada", "number": 400, "addon": "Movies & Series" },
+      { "name": "Hollywood Suite 70", "number": 426, "addon": "Movies & Series" },
+      { "name": "Hollywood Suite 80", "number": 427, "addon": "Movies & Series" },
+      { "name": "Hollywood Suite 90", "number": 428, "addon": "Movies & Series" },
+      { "name": "Hollywood Suite 00", "number": 429, "addon": "Movies & Series" },
+      { "name": "MovieTime", "number": 445 },
+      { "name": "Rewind", "number": 457 },
+      { "name": "Silver Screen Classics", "number": 460 },
+      { "name": "SundanceTV", "number": 453 },
+      { "name": "Super Channel 1", "number": 417, "addon": "Movies & Series" },
+      { "name": "Super Channel 2", "number": 418, "addon": "Movies & Series" },
+      { "name": "Super Channel 3", "number": 419, "addon": "Movies & Series" },
+      { "name": "Super Channel 4", "number": 420, "addon": "Movies & Series" },
+      { "name": "Crave 1", "number": 406, "addon": "Movies & Series" },
+      { "name": "Crave 2", "number": 431, "addon": "Movies & Series" },
+      { "name": "Turner Classic Movies", "number": 462 },
+      { "name": "W Movies", "number": 455 }
+    ],
+    "Kids": [
+      { "name": "BabyTV", "number": 639 },
+      { "name": "Cartoon Network", "number": 627 },
+      { "name": "Disney Channel", "number": 607 },
+      { "name": "Disney Junior", "number": 602 },
+      { "name": "Disney XD", "number": 616 },
+      { "name": "Family Channel", "number": 604 },
+      { "name": "Family Jr", "number": 603 },
+      { "name": "Nickelodeon", "number": 614 },
+      { "name": "Treehouse", "number": 601 },
+      { "name": "TumbleBooks TV", "number": 610 },
+      { "name": "YTV", "number": 600 }
+    ],
+    "Entertainment": [
+      { "name": "A&E", "number": 300 },
+      { "name": "AMC", "number": 303 },
+      { "name": "CTV Drama Channel", "number": 302 },
+      { "name": "DejaView", "number": 506 },
+      { "name": "E!", "number": 333 },
+      { "name": "Game Show Network", "number": 370 },
+      { "name": "Lifetime", "number": 386 },
+      { "name": "One", "number": 349 },
+      { "name": "OUTtv", "number": 347 },
+      { "name": "OWN", "number": 341 },
+      { "name": "Showcase", "number": 301 },
+      { "name": "CTV Sci-Fi Channel", "number": 392 },
+      { "name": "Paramount Network", "number": 390 },
+      { "name": "W Network", "number": 329 }
+    ],
+    "Reality & Lifestyle": [
+      { "name": "Cottage Life", "number": 355 },
+      { "name": "DIY Network", "number": 311 },
+      { "name": "DTOUR", "number": 504 },
+      { "name": "HGTV", "number": 306 },
+      { "name": "Slice", "number": 331 }
+    ],
+    "Comedy": [
+      { "name": "Peachtree TV", "number": 511 },
+      { "name": "CTV Comedy Channel", "number": 500 }
+    ],
+    "Discovery": [
+      { "name": "CTV Wild Channel", "number": 721 },
+      { "name": "USA Network", "number": 701 },
+      { "name": "CTV Nature Channel", "number": 702 },
+      { "name": "CTV Speed Channel", "number": 711 },
+      { "name": "Documentary", "number": 731 },
+      { "name": "H2", "number": 706 },
+      { "name": "History", "number": 704 },
+      { "name": "Love Nature", "number": 713 },
+      { "name": "National Geographic Channel", "number": 700 },
+      { "name": "Nat Geo Wild", "number": 723 },
+      { "name": "Smithsonian Channel", "number": 715 }
+    ],
+    "Crime": [
+      { "name": "Crime+ Investigation", "number": 380 },
+      { "name": "Oxygen True Crime", "number": 378 }
+    ],
+    "Faith": [
+      { "name": "Daystar Canada", "number": 872 },
+      { "name": "EWTN", "number": 874 },
+      { "name": "Hope TV", "number": 875 },
+      { "name": "Miracle Channel", "number": 870 },
+      { "name": "Salt + Light", "number": 873 },
+      { "name": "Vision TV", "number": 871 }
+    ],
+    "Music": [
+      { "name": "BET", "number": 585 },
+      { "name": "CMT", "number": 555 },
+      { "name": "HIFI", "number": 551 },
+      { "name": "MTV", "number": 561 },
+      { "name": "MTV2", "number": 582 },
+      { "name": "Much", "number": 557 },
+      { "name": "Stingray Music", "number": "7500-7962" }
+    ],
+    "Shopping": [
+      { "name": "The Shopping Channel", "number": 129 }
+    ],
+    "Spanish": [
+      { "name": "Telelatino", "number": 2659, "addon": "Multicultural" },
+      { "name": "Univision", "number": 2661, "addon": "Multicultural" }
+    ],
+    "Outdoors": [
+      { "name": "OLN", "number": 357 },
+      { "name": "Wild TV", "number": 359 },
+      { "name": "World Fishing Network", "number": 361 }
+    ],
+    "Food & Travel": [
+      { "name": "Food Network", "number": 313 },
+      { "name": "CTV Life Channel", "number": 315 },
+      { "name": "T+E", "number": 717 }
+    ]
+  }
+}

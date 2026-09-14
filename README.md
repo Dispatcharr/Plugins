@@ -2,19 +2,25 @@
 
 > **This is a listing and distribution repository.** Plugin development, testing, and pre-releases should happen in your own repository. Submit a PR here only when your plugin is ready for public distribution.
 
-A repository for publishing and distributing Dispatcharr Python plugins with automated validation and release management.
+> AI tools are used in the development of this project and repo, as well as many of the plugins included in this repo. The team personally audits and reviews every line of workflow and script generated, and all changes are tested extensively by humans. The involvement of these tools greatly increases  development velocity (nice, buzzword) and greatly assists especially where boilerplate and documentation (which we all loathe writing) are involved.
+
 
 ## Quick Links
 
 | Resource | Description |
 |----------|-------------|
-| [Browse Plugins](https://github.com/Dispatcharr/Plugins/tree/releases) | All available plugins on the releases branch |
+| [Browse Plugins](https://github.com/Dispatcharr/Plugins/tree/releases) | Manifests and READMEs on the releases branch |
 | [Plugin Manifest](https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json) | Root plugin index with metadata and download URLs |
-| [Download Releases](https://github.com/Dispatcharr/Plugins/tree/releases/zips) | Plugin ZIP files and per-plugin manifests |
+| [Download Releases](https://github.com/Dispatcharr/Plugins/releases) | Plugin ZIP assets on GitHub Releases |
 
 ## How It Works
 
-Each plugin lives in `plugins/<plugin-name>/` and must contain a valid `plugin.json` alongside `main.py` and any other code or assets. When a PR is merged to `main`, everything in the plugin folder is automatically packaged into a ZIP and published to the [`releases` branch](https://github.com/Dispatcharr/Plugins/tree/releases) - no separate build step required.
+Each plugin lives in `plugins/<plugin-name>/` and must contain a valid `plugin.json`. When a PR is merged to `main`, the publish workflow runs automatically:
+
+- **External plugins** (recommended): the ZIP is fetched from your upstream release URL
+- **Standard plugins**: everything in the plugin folder is packaged into a ZIP
+
+The ZIP is then published as a **GitHub Release** on this repository. Manifests and per-plugin READMEs are committed to the [`releases` branch](https://github.com/Dispatcharr/Plugins/tree/releases).
 
 ### PR Validation
 
@@ -26,6 +32,7 @@ Every PR runs automated validation that checks:
 - PR author is listed in `author` or `maintainers`
 - `.github/` files are not modified by non-maintainers
 - Python code is scanned by CodeQL (required check)
+- All files are scanned by ClamAV for malware (required check)
 
 PRs where the author has no permission for any modified plugin are automatically closed with instructions.
 
@@ -35,10 +42,11 @@ Results are posted as a comment on the PR.
 
 On merge to `main`, each plugin is:
 
-- Packaged into a versioned ZIP (`plugin-name-1.0.0.zip`) and a latest ZIP (`plugin-name-latest.zip`)
-- Given an MD5 checksum
-- Listed in `manifest.json` with download URLs and metadata
-- Only the 10 most recent versioned ZIPs are kept per plugin
+- Packaged or fetched as a versioned ZIP
+- Given MD5 and SHA256 checksums
+- Published as a **GitHub Release** (tag: `plugin-name-1.0.0`) with a `-latest` alias release kept up to date
+- Listed in `manifest.json` with download URLs pointing to the GitHub Release assets
+- Only the 10 most recent versioned releases are kept per plugin
 
 ## Contributing
 
@@ -46,7 +54,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, including the `plugin
 
 ## Downloading Plugins
 
-Visit the [releases branch](https://github.com/Dispatcharr/Plugins/tree/releases) to browse and download plugins, or fetch `manifest.json` programmatically:
+Visit the [releases page](https://github.com/Dispatcharr/Plugins/releases) to browse and download plugins, or fetch `manifest.json` programmatically:
 
 ```bash
 curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json
@@ -54,7 +62,7 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ## Manifest Structure
 
-The root `manifest.json` uses a `root_url` plus relative paths to save space. All URL fields (`manifest_url`, `latest_url`, versioned zip `url`) are relative to `root_url`:
+The root `manifest.json` uses a `root_url` plus relative paths for ZIP downloads. `manifest_url` is an absolute URL since per-plugin manifests live on the releases branch (not as GitHub Release assets).
 
 ```json
 {
@@ -63,13 +71,13 @@ The root `manifest.json` uses a `root_url` plus relative paths to save space. Al
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "root_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases",
+    "root_url": "https://github.com/Dispatcharr/Plugins/releases/download",
     "plugins": [
       {
         "slug": "my-plugin",
         "name": "My Plugin",
-        "manifest_url": "zips/my-plugin/manifest.json",
-        "latest_url": "zips/my-plugin/my-plugin-1.0.0.zip",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/my-plugin/manifest.json",
+        "latest_url": "my-plugin-latest/my-plugin-latest.zip",
         ...
       }
     ]
@@ -77,7 +85,7 @@ The root `manifest.json` uses a `root_url` plus relative paths to save space. Al
 }
 ```
 
-To resolve a full download URL: `root_url + "/" + latest_url`.
+To resolve a full ZIP download URL: `root_url + "/" + latest_url`.
 
 The `slug` matches the plugin folder name and can be used to construct other paths (e.g. icon: `plugins/<slug>/logo.png` on the source branch).
 
@@ -114,4 +122,4 @@ gpg: Signature made ...
 gpg: Good signature from "..." [full]
 ```
 
-The same steps apply to any per-plugin manifest - substitute the path to `zips/<plugin>/manifest.json`.
+The same steps apply to any per-plugin manifest - substitute the path to `metadata/<plugin>/manifest.json`.

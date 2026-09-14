@@ -1,0 +1,10 @@
+{
+  "name": "Ticker",
+  "version": "0.5.03",
+  "description": "Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts",
+  "author": "jstevenscl",
+  "license": "MIT",
+  "source_type": "external",
+  "repo_url": "https://github.com/jstevenscl/ticker",
+  "source_url": "https://github.com/jstevenscl/ticker/releases/download/v{version}/ticker-{version}.zip"
+}
