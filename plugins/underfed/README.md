@@ -19,8 +19,8 @@ Underfed reads the number that already exists and that nothing else acts on.
 
 ## Install
 
-From the Plugin Hub, or by unzipping the release into `/data/plugins/underfed` and pressing
-refresh on the Plugins page. Enable the plugin, fill in the API key, press **Apply**.
+From the Plugin Hub, or by unzipping the release into `/data/plugins`, which creates the
+`underfed` folder, and pressing refresh on the Plugins page. Enable the plugin, fill in the API key, press **Apply**.
 
 **Leave Observe only on for the first evening.** It records what it would have switched and
 changes nothing. Read the journal under Check status, then turn it off.
@@ -31,9 +31,9 @@ changes nothing. Read the journal under Check status, then turn it off.
 |---|---|
 | API key | A Dispatcharr API key, from Settings → Users. The watcher needs it to read channel status and to change source |
 | Observe only | Records what it would have done without doing it |
-| Trigger below | Share of the content rate under which a source counts as underfed. 70 is a sensible floor: a source that healthy sits at 100 |
+| Trigger below | Share of the content rate under which a source counts as underfed. 70 is a sensible floor: a healthy source sits at 100 |
 | Confirm for | How long the shortfall must last before acting. Short dips recover on their own |
-| Switches per hour | Per channel. Stops it bouncing between two sources that are both weak |
+| Switches per hour | Per channel, over the last hour, restarts of the watcher included. Stops it bouncing between two sources that are both weak |
 | Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
 | Excluded channels | One channel name per line |
@@ -47,7 +47,7 @@ changes nothing. Read the journal under Check status, then turn it off.
 | Apply settings | Starts the watcher, or restarts it with the new settings. Saving a setting changes nothing until Apply runs |
 | Check status | Whether the watcher is running, and the journal of what it switched, skipped and failed |
 | Replay the log | Runs the current thresholds over the whole log and reports how many times each source would have triggered. Nothing is touched, so it is the safe way to try a threshold before it goes live. It counts triggers, not switches: viewers, exclusions, the slate and the hourly limit are not in the log |
-| Restart watcher | Starts it again if it is down, with the settings of the last Apply. Also runs by itself when a channel starts, at most once a minute |
+| Restart watcher | Starts it again if it is down, with the settings of the last Apply and the API key as saved now. Also runs by itself when a channel starts, at most once a minute |
 | Stop watcher | Stops it. Channels keep whatever source they are on |
 
 ## How it works
