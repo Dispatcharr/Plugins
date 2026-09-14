@@ -2,7 +2,7 @@
 
 # Could Not Dispatch
 
-**Version:** `0.2.1` | **Author:** PilaScat | **Last Updated:** Sep 13 2026, 15:39 UTC
+**Version:** `0.3.1` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 00:19 UTC
 
 Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip)
-- **Built:** Sep 13 2026, 15:39 UTC
-- **Source Commit:** [`16324c6`](https://github.com/Dispatcharr/Plugins/commit/16324c6a0bf775e171aa736586c74085a365909f)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip)
+- **Built:** Sep 14 2026, 00:20 UTC
+- **Source Commit:** [`ec416fc`](https://github.com/Dispatcharr/Plugins/commit/ec416fca9faab05bc7e357937bf6bbdb995b3703)
 
 **Checksums:**
 ```
-MD5:    3ffbb0a9442059c1b045441e6f646081
-SHA256: ddfc17667fd8704f31154f72a6faf2296df01e4cca1c1d41d79ac32bde3f0114
+MD5:    d2a9229422eff74452c1a556a564fdba
+SHA256: f4cd9d0d302f0eb040039a16af03cb5e6996298d6466d3e7d7b9b4590c30be82
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.3.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip) | Sep 14 2026, 00:20 UTC | [`ec416fc`](https://github.com/Dispatcharr/Plugins/commit/ec416fca9faab05bc7e357937bf6bbdb995b3703) | d2a9229422eff74452c1a556a564fdba | f4cd9d0d302f0eb040039a16af03cb5e6996298d6466d3e7d7b9b4590c30be82 |
 | `0.2.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip) | Sep 13 2026, 15:39 UTC | [`16324c6`](https://github.com/Dispatcharr/Plugins/commit/16324c6a0bf775e171aa736586c74085a365909f) | 3ffbb0a9442059c1b045441e6f646081 | ddfc17667fd8704f31154f72a6faf2296df01e4cca1c1d41d79ac32bde3f0114 |
 | `0.1.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip) | Aug 10 2026, 20:11 UTC | [`6753280`](https://github.com/Dispatcharr/Plugins/commit/67532805aec060ec4ae02d60d874ada54f64c63f) | 42c9dd34574a5fb1beafa5ab4cd3e56e | 3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886 |
 
@@ -85,7 +86,7 @@ and pressing refresh on the Plugins page. Enable the plugin, fill in the setting
 | Check status | Reports whether the fallback is running and how many channels carry it |
 | Cover new channels | Attaches it to channels that do not carry it yet. Also runs by itself after an M3U refresh |
 | Restart fallback | Starts it again if it is down. Also runs by itself when a channel starts, at most once a minute |
-| Remove fallback | Detaches it everywhere, stops it, deletes its stream |
+| Remove fallback | Detaches it everywhere, stops it, deletes its streams |
 
 ## How it works
 
@@ -95,10 +96,15 @@ alive, looping your file into MPEG-TS, and serves it over HTTP at
 The encoder starts when the first viewer arrives and stops fifteen seconds after the last
 one leaves, so an idle server costs nothing.
 
-That URL is registered as a Dispatcharr custom stream and attached to each channel with
-the highest order number, which puts it last in the failover list. Dispatcharr's own
-failover does the rest: it walks the channel's streams in order, and the fallback is the
-only one that cannot fail.
+Each channel gets a Dispatcharr custom stream of its own with that URL, attached with the
+highest order number, which puts it last in the failover list. Dispatcharr's own failover
+does the rest: it walks the channel's streams in order, and the fallback is the only one
+that cannot fail.
+
+The stream is one per channel, not one for all, because Dispatcharr records which M3U
+profile a session holds under the stream. Channels sharing one stream share that record,
+and a channel sent back from the card could then take a provider connection without
+counting it, or free one another channel still held.
 
 A custom stream belongs to the built-in `custom` M3U account, which has no connection
 limit, so the fallback never competes for a slot with your provider.
@@ -172,16 +178,31 @@ when the viewer connected, the rotation can reach the fallback before retrying t
 streams that sit *before* the current one. It only happens when M3U profiles are at
 capacity, and it costs one retry.
 
-**The HDHomeRun tuner count grows by one.** Dispatcharr adds custom streams to the number
-of tuners it advertises.
+**The HDHomeRun tuner count grows by one per covered channel.** Dispatcharr adds custom
+streams to the number of tuners it advertises. The connection limit of your provider is
+unchanged.
 
 **Restarting Dispatcharr leaves the fallback down until it is needed.** The next channel
 start brings it back by itself; **Restart fallback** does it immediately.
 
 **The plugin keeps a small state file** at `.runtime/state.json` inside its own folder,
-holding the process it started and the stream it created. It cannot live in the plugin
-settings: saving those replaces the whole object, which would erase it.
+holding the process it started. It cannot live in the plugin settings: saving those
+replaces the whole object, which would erase it.
 
-## Source and licence
+## Development
 
-[github.com/PilaScat/could-not-dispatch](https://github.com/PilaScat/could-not-dispatch) — MIT.
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -e '.[dev]'
+.venv/bin/python -m pytest
+.venv/bin/python -m mypy could_not_dispatch plugin.py
+.venv/bin/python -m ruff check .
+.venv/bin/python scripts/build_zip.py
+```
+
+`build_zip.py` writes `dist/could-not-dispatch-<version>.zip`, laid out the way
+Dispatcharr expects an imported plugin.
+
+## Licence
+
+MIT. See [LICENSE](LICENSE).

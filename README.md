@@ -13,7 +13,7 @@ This branch contains all published plugin releases.
 |--------|---------|-------|---------|-------------|
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2481147` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
-| [`Could Not Dispatch`](#could-not-dispatch) | `0.2.1` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream. |
+| [`Could Not Dispatch`](#could-not-dispatch) | `0.3.1` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.1.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.28.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.7` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
@@ -77,17 +77,17 @@ The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and epis
 
 ### [Could Not Dispatch](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/could-not-dispatch/README.md)
 
-**Version:** `0.2.1` | **Author:** PilaScat | **Last Updated:** Sep 13 2026, 15:39 UTC
+**Version:** `0.3.1` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 00:19 UTC
 
 Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/could-not-dispatch)
 
 **Downloads:**
-- [Latest Release (`0.2.1`)](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip)
-- [All Versions (2 available)](./metadata/could-not-dispatch)
+- [Latest Release (`0.3.1`)](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip)
+- [All Versions (3 available)](./metadata/could-not-dispatch)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/could-not-dispatch) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/could-not-dispatch/README.md) | **Last Change:** [`16324c6`](https://github.com/Dispatcharr/Plugins/commit/16324c6a0bf775e171aa736586c74085a365909f)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/could-not-dispatch) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/could-not-dispatch/README.md) | **Last Change:** [`ec416fc`](https://github.com/Dispatcharr/Plugins/commit/ec416fca9faab05bc7e357937bf6bbdb995b3703)
 
 ---
 
@@ -488,4 +488,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 13 2026, 16:03 UTC*
+*Last updated: Sep 14 2026, 00:20 UTC*
