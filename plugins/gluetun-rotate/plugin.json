@@ -1,0 +1,11 @@
+{
+  "name": "Gluetun Rotate",
+  "version": "0.2.0",
+  "description": "Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.",
+  "author": "PilaScat",
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/PilaScat/gluetun-rotate/releases/download/v{version}/gluetun-rotate-{version}.zip",
+  "repo_url": "https://github.com/PilaScat/gluetun-rotate",
+  "help_url": "https://github.com/PilaScat/gluetun-rotate#readme"
+}
