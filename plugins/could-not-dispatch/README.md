@@ -29,7 +29,7 @@ and pressing refresh on the Plugins page. Enable the plugin, fill in the setting
 | Image or video | A path inside the data volume, such as `/data/offline.png`, or an `http(s)` link that is downloaded and cached |
 | Local port | Where the fallback listens inside the container. Change it only on a conflict |
 | Width, Height | Leave both at 0 to match the picture, up to 1920x1080. Set both to force a size; the picture is fitted inside and padded to keep its shape |
-| Frames per second | 25. Jellyfin keeps the frame rate a session starts with, so a viewer who starts on the card at a lower rate keeps it after the channel is back |
+| Frames per second | 25 by default. Jellyfin keeps the frame rate a session starts with, so a viewer who starts on the card at a lower rate keeps it after the channel is back. Upgrading from 0.3.3 or earlier keeps the value you saved, 5 unless you changed it: set 25 and press **Apply** |
 | Stream bitrate | kbit/s, default 2000. Lower it only if bandwidth matters more than the picture |
 | Excluded groups | One channel group name per line |
 | Excluded channels | One channel number or channel name per line |
