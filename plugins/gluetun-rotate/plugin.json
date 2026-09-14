@@ -1,6 +1,6 @@
 {
   "name": "Gluetun Rotate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.",
   "author": "PilaScat",
   "license": "MIT",
