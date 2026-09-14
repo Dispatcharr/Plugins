@@ -35,7 +35,8 @@ apikey = "a-long-random-key"
 ```
 
 Then install the plugin from the Plugin Hub, or by unzipping the release into
-`/data/plugins/gluetun-rotate` and pressing refresh on the Plugins page. Enable it, fill in
+`/data/plugins`, which creates the `gluetun-rotate` folder, and pressing refresh on the
+Plugins page. Enable it, fill in
 both keys, press **Apply**, and press **Ask** to see what the provider answers right now.
 
 ## Settings
@@ -76,7 +77,7 @@ It holds back when:
 - three rotations have already happened in the last hour
 
 A rotation that fails still counts toward both, so a control server that keeps refusing is
-not asked again every two minutes.
+not asked again every two minutes. Both hold across a restart of the watcher.
 
 A tunnel that comes back on the same address is recorded as a failed rotation. A rotation
 that fails part way can leave the tunnel stopped: the next round finds it stopped and starts
@@ -93,11 +94,12 @@ Some edges answer 403 to a few streams right after the exit address changes, whi
 `player_api.php` still answers 200, so the probe cannot see it. From Dispatcharr 0.31.0, which
 writes its log to `/data/logs/dispatcharr.log`, the watcher counts the `HTTP 403` lines there
 every round and records them in the journal per channel. It only records them: whether a
-rotation would help is for those numbers to show. Check status sums them up; the first
-journal entry says whether the log was found.
+rotation would help is for those numbers to show. Check status says how many rounds had
+them and the counts of the last one; the first journal entry says whether the log was found.
 
-A rotation drops every connection through the tunnel for a few seconds. When the address
-is refused nothing is flowing anyway, which is the only time it happens.
+A rotation drops every connection through the tunnel for a few seconds, including the
+streams of an account that still answers. With one provider behind the tunnel nothing is
+flowing anyway when its address is refused; with more, the others pay for the one refused.
 
 ## Development
 
