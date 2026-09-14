@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T00:20:25Z",
+  "generated_at": "2026-09-14T08:03:29Z",
   "manifest": {
     "slug": "could-not-dispatch",
     "name": "Could Not Dispatch",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/PilaScat/could-not-dispatch",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-14T00:19:57Z",
+    "last_updated": "2026-09-14T08:03:03Z",
     "latest": {
-      "version": "0.3.1",
-      "commit_sha": "ec416fca9faab05bc7e357937bf6bbdb995b3703",
-      "commit_sha_short": "ec416fc",
-      "build_timestamp": "2026-09-14T00:20:12Z",
-      "last_updated": "2026-09-14T00:19:57Z",
-      "checksum_md5": "d2a9229422eff74452c1a556a564fdba",
-      "checksum_sha256": "f4cd9d0d302f0eb040039a16af03cb5e6996298d6466d3e7d7b9b4590c30be82",
-      "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.3.1/could-not-dispatch-0.3.1.zip",
-      "latest_url": "could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip",
-      "url": "could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip",
+      "version": "0.3.3",
+      "commit_sha": "37ccdd6b23115c565056cee99dc6496056e01afa",
+      "commit_sha_short": "37ccdd6",
+      "build_timestamp": "2026-09-14T08:03:17Z",
+      "last_updated": "2026-09-14T08:03:03Z",
+      "checksum_md5": "be434828ca3eb55b7c7f52a9cc47aa81",
+      "checksum_sha256": "37fa4ac3d14775486deb328933c5258dc4fae6846cada3852e4de2752adf3640",
+      "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.3.3/could-not-dispatch-0.3.3.zip",
+      "latest_url": "could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip",
+      "url": "could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip",
       "size": 61
     },
     "versions": [
+      {
+        "version": "0.3.3",
+        "commit_sha": "37ccdd6b23115c565056cee99dc6496056e01afa",
+        "commit_sha_short": "37ccdd6",
+        "build_timestamp": "2026-09-14T08:03:17Z",
+        "last_updated": "2026-09-14T08:03:03Z",
+        "checksum_md5": "be434828ca3eb55b7c7f52a9cc47aa81",
+        "checksum_sha256": "37fa4ac3d14775486deb328933c5258dc4fae6846cada3852e4de2752adf3640",
+        "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.3.3/could-not-dispatch-0.3.3.zip",
+        "url": "could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip",
+        "size": 61
+      },
       {
         "version": "0.3.1",
         "commit_sha": "ec416fca9faab05bc7e357937bf6bbdb995b3703",
@@ -64,5 +76,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqc9ygAKCRB+wDprTCI0\nzuVQAP9aBAAZA4T6fhBloDfGmNJyP6f5f3DiMqHyPD+aRSZ2LQEAizB7QumIm+UC\nVsnXSnYExspw6slePZgwCIAkzJwsgAM=\n=ezu1\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqeqUgAKCRB+wDprTCI0\nzm59AQCb0Ea37PMSDoldD57HNZJE6GOSgTb6WmSlXU4Huu/L4gEA9E1d2lynJ+Zd\nxL9LdGyEA581U6FLOOScKt6YxcVP3As=\n=iGUf\n-----END PGP SIGNATURE-----"
 }

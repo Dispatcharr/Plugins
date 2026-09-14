@@ -2,7 +2,7 @@
 
 # Could Not Dispatch
 
-**Version:** `0.3.1` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 00:19 UTC
+**Version:** `0.3.3` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 08:03 UTC
 
 Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip)
-- **Built:** Sep 14 2026, 00:20 UTC
-- **Source Commit:** [`ec416fc`](https://github.com/Dispatcharr/Plugins/commit/ec416fca9faab05bc7e357937bf6bbdb995b3703)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip)
+- **Built:** Sep 14 2026, 08:03 UTC
+- **Source Commit:** [`37ccdd6`](https://github.com/Dispatcharr/Plugins/commit/37ccdd6b23115c565056cee99dc6496056e01afa)
 
 **Checksums:**
 ```
-MD5:    d2a9229422eff74452c1a556a564fdba
-SHA256: f4cd9d0d302f0eb040039a16af03cb5e6996298d6466d3e7d7b9b4590c30be82
+MD5:    be434828ca3eb55b7c7f52a9cc47aa81
+SHA256: 37fa4ac3d14775486deb328933c5258dc4fae6846cada3852e4de2752adf3640
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.3.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip) | Sep 14 2026, 08:03 UTC | [`37ccdd6`](https://github.com/Dispatcharr/Plugins/commit/37ccdd6b23115c565056cee99dc6496056e01afa) | be434828ca3eb55b7c7f52a9cc47aa81 | 37fa4ac3d14775486deb328933c5258dc4fae6846cada3852e4de2752adf3640 |
 | `0.3.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip) | Sep 14 2026, 00:20 UTC | [`ec416fc`](https://github.com/Dispatcharr/Plugins/commit/ec416fca9faab05bc7e357937bf6bbdb995b3703) | d2a9229422eff74452c1a556a564fdba | f4cd9d0d302f0eb040039a16af03cb5e6996298d6466d3e7d7b9b4590c30be82 |
 | `0.2.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip) | Sep 13 2026, 15:39 UTC | [`16324c6`](https://github.com/Dispatcharr/Plugins/commit/16324c6a0bf775e171aa736586c74085a365909f) | 3ffbb0a9442059c1b045441e6f646081 | ddfc17667fd8704f31154f72a6faf2296df01e4cca1c1d41d79ac32bde3f0114 |
 | `0.1.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip) | Aug 10 2026, 20:11 UTC | [`6753280`](https://github.com/Dispatcharr/Plugins/commit/67532805aec060ec4ae02d60d874ada54f64c63f) | 42c9dd34574a5fb1beafa5ab4cd3e56e | 3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886 |
@@ -82,9 +83,9 @@ and pressing refresh on the Plugins page. Enable the plugin, fill in the setting
 
 | Action | What it does |
 |---|---|
-| Apply settings | Starts the fallback and attaches it, last in order, to every channel that is not excluded. Saving a setting changes nothing until Apply runs, and a viewer already watching the card keeps the old encode until they reopen the channel |
+| Apply settings | Starts the fallback and attaches it, last in order, to every channel that is not excluded, and removes it from channels excluded since. Saving a setting changes nothing until Apply runs, and a viewer already watching the card keeps the old encode until they reopen the channel |
 | Check status | Reports whether the fallback is running and how many channels carry it |
-| Cover new channels | Attaches it to channels that do not carry it yet. Also runs by itself after an M3U refresh |
+| Cover new channels | Attaches it to channels that do not carry it yet, removes it from excluded ones, and moves it back to the end where a stream was added after it. Also runs by itself after an M3U refresh |
 | Restart fallback | Starts it again if it is down. Also runs by itself when a channel starts, at most once a minute |
 | Remove fallback | Detaches it everywhere, stops it, deletes its streams |
 
@@ -99,7 +100,9 @@ one leaves, so an idle server costs nothing.
 Each channel gets a Dispatcharr custom stream of its own with that URL, attached with the
 highest order number, which puts it last in the failover list. Dispatcharr's own failover
 does the rest: it walks the channel's streams in order, and the fallback is the only one
-that cannot fail.
+that cannot fail. A stream added to a channel later lands after the fallback, where the
+failover would never reach it; Apply and Cover new channels move the fallback back to the
+end.
 
 The stream is one per channel, not one for all, because Dispatcharr records which M3U
 profile a session holds under the stream. Channels sharing one stream share that record,
@@ -200,9 +203,12 @@ python3 -m venv .venv
 .venv/bin/python scripts/build_zip.py
 ```
 
+The same four checks run in CI on every push. Decisions, traps and the release routine are in
+[docs/MEMORY.md](https://github.com/PilaScat/could-not-dispatch/blob/master/docs/MEMORY.md).
+
 `build_zip.py` writes `dist/could-not-dispatch-<version>.zip`, laid out the way
 Dispatcharr expects an imported plugin.
 
 ## Licence
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](https://github.com/PilaScat/could-not-dispatch/blob/master/LICENSE).
