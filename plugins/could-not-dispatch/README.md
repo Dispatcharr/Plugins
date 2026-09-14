@@ -40,9 +40,9 @@ and pressing refresh on the Plugins page. Enable the plugin, fill in the setting
 
 | Action | What it does |
 |---|---|
-| Apply settings | Starts the fallback and attaches it, last in order, to every channel that is not excluded. Saving a setting changes nothing until Apply runs, and a viewer already watching the card keeps the old encode until they reopen the channel |
+| Apply settings | Starts the fallback and attaches it, last in order, to every channel that is not excluded, and removes it from channels excluded since. Saving a setting changes nothing until Apply runs, and a viewer already watching the card keeps the old encode until they reopen the channel |
 | Check status | Reports whether the fallback is running and how many channels carry it |
-| Cover new channels | Attaches it to channels that do not carry it yet. Also runs by itself after an M3U refresh |
+| Cover new channels | Attaches it to channels that do not carry it yet, removes it from excluded ones, and moves it back to the end where a stream was added after it. Also runs by itself after an M3U refresh |
 | Restart fallback | Starts it again if it is down. Also runs by itself when a channel starts, at most once a minute |
 | Remove fallback | Detaches it everywhere, stops it, deletes its streams |
 
@@ -57,7 +57,9 @@ one leaves, so an idle server costs nothing.
 Each channel gets a Dispatcharr custom stream of its own with that URL, attached with the
 highest order number, which puts it last in the failover list. Dispatcharr's own failover
 does the rest: it walks the channel's streams in order, and the fallback is the only one
-that cannot fail.
+that cannot fail. A stream added to a channel later lands after the fallback, where the
+failover would never reach it; Apply and Cover new channels move the fallback back to the
+end.
 
 The stream is one per channel, not one for all, because Dispatcharr records which M3U
 profile a session holds under the stream. Channels sharing one stream share that record,
@@ -158,9 +160,12 @@ python3 -m venv .venv
 .venv/bin/python scripts/build_zip.py
 ```
 
+The same four checks run in CI on every push. Decisions, traps and the release routine are in
+[docs/MEMORY.md](https://github.com/PilaScat/could-not-dispatch/blob/master/docs/MEMORY.md).
+
 `build_zip.py` writes `dist/could-not-dispatch-<version>.zip`, laid out the way
 Dispatcharr expects an imported plugin.
 
 ## Licence
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](https://github.com/PilaScat/could-not-dispatch/blob/master/LICENSE).
