@@ -8,7 +8,9 @@ keep arriving, just not enough of them: the picture needs 4.4 Mbps and 1.0 Mbps 
 Nothing times out, nothing errors, nothing switches. The buffer drains, the player runs
 out of segments, and viewers sit there watching a stall that no log explains.
 
-Underfed reads the number that already exists and that nothing else acts on.
+Underfed reads the number that already exists and that nothing else acts on. It also reads
+a second one: the timestamp discontinuities ffmpeg logs when a source's sound drifts away
+from the picture.
 
 ## Requirements
 
@@ -32,10 +34,11 @@ changes nothing. Read the journal under Check status, then turn it off.
 | API key | A Dispatcharr API key, from Settings → Users. The watcher needs it to read channel status and to change source |
 | Observe only | Records what it would have done without doing it |
 | Trigger below | Share of the content rate under which a source counts as underfed. 70 is a sensible floor: a healthy source sits at 100 |
-| Confirm for | How long the shortfall must last before acting. Short dips recover on their own |
+| Confirm for | How long a shortfall, or the timestamp discontinuities, must last before acting. Short dips recover on their own |
 | Switches per hour | Per channel, over the last hour, restarts of the watcher included. Stops it bouncing between two sources that are both weak |
 | Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
+| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm for, the source is switched. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
 | Dispatcharr URL | Reached from inside the container |
@@ -73,6 +76,21 @@ The watcher follows that file, and when a feed stays under the threshold for the
 confirmation window it calls `POST /proxy/ts/next_stream/<uuid>`, which is the same thing
 the Dispatcharr interface does when you change source by hand. The channel moves to the next
 entry in its chain and the viewer keeps watching.
+
+Some sources arrive with their audio and video timestamps minutes apart. ffmpeg keeps one
+offset for the whole input and flips it on every packet, so each packet gets the time ffmpeg
+expected: a gap in the video disappears instead of freezing the picture, and the sound falls
+behind by that much. Every gap adds to it, and reopening the channel only starts the count
+again. reservoarr's ffmpeg logs it in `delaybuf.log`, in pairs:
+
+```
+2026-09-14T17:35:25+0000 [542059.ts] ffmpeg: [vist#0:0/h264 @ …] timestamp discontinuity (stream id=256): 331826689, new offset= 0
+2026-09-14T17:35:25+0000 [542059.ts] ffmpeg: [aist#0:1/aac @ …] timestamp discontinuity (stream id=257): -331826689, new offset= 331826689
+```
+
+A healthy source logs a handful of these a minute; that one logged up to 1,836. When a source
+stays at Timestamp discontinuities or above for the confirmation window, counted over the last
+minute, the watcher moves the channel on the same way.
 
 It refuses to act when any of these is true:
 
