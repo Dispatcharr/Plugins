@@ -1,27 +1,41 @@
 {
-  "generated_at": "2026-06-06T22:35:54Z",
+  "generated_at": "2026-09-15T20:03:01Z",
   "manifest": {
     "slug": "stream-dripper",
     "name": "Stream Dripper",
     "description": "Automatically drops all active streams once per day at a configured time, with a manual drop-now button.",
     "author": "Megamannen",
     "license": "Artistic-2.0",
+    "repo_url": "https://github.com/Megamannen/dispatcharr-plugin-stream-dripper/",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-03-29T11:51:09-04:00",
+    "last_updated": "2026-09-15T16:02:35-04:00",
     "latest": {
-      "version": "1.0.0",
-      "commit_sha": "4e8f1b108c1e84f60520710d13e54eb2fb519648",
-      "commit_sha_short": "4e8f1b1",
-      "build_timestamp": "2026-03-31T19:20:19Z",
-      "last_updated": "2026-03-29T11:51:09-04:00",
-      "checksum_md5": "a83c3907d2221782c64feed3937d750c",
-      "checksum_sha256": "552e63a9468cc0c79584da687b58402516fcf4da639c33ecc0f2350aa6e5d619",
-      "latest_url": "stream-dripper-1.0.0/stream-dripper-1.0.0.zip",
-      "url": "stream-dripper-1.0.0/stream-dripper-1.0.0.zip",
-      "size": 30
+      "version": "2.0.0",
+      "commit_sha": "846d0fea839c1e3c2ebad8e8744c3cb4a0927eaf",
+      "commit_sha_short": "846d0fe",
+      "build_timestamp": "2026-09-15T20:02:55Z",
+      "last_updated": "2026-09-15T16:02:35-04:00",
+      "checksum_md5": "9d469471d0398d6796f1f469ef6f5a43",
+      "checksum_sha256": "af8793248f409780d101a1d053de5384db4f4e51756a6c930c9f9aa3880d2c95",
+      "min_dispatcharr_version": "0.25.0",
+      "latest_url": "stream-dripper-2.0.0/stream-dripper-2.0.0.zip",
+      "url": "stream-dripper-2.0.0/stream-dripper-2.0.0.zip",
+      "size": 31
     },
     "versions": [
+      {
+        "version": "2.0.0",
+        "commit_sha": "846d0fea839c1e3c2ebad8e8744c3cb4a0927eaf",
+        "commit_sha_short": "846d0fe",
+        "build_timestamp": "2026-09-15T20:02:55Z",
+        "last_updated": "2026-09-15T16:02:35-04:00",
+        "checksum_md5": "9d469471d0398d6796f1f469ef6f5a43",
+        "checksum_sha256": "af8793248f409780d101a1d053de5384db4f4e51756a6c930c9f9aa3880d2c95",
+        "min_dispatcharr_version": "0.25.0",
+        "url": "stream-dripper-2.0.0/stream-dripper-2.0.0.zip",
+        "size": 31
+      },
       {
         "version": "1.0.0",
         "commit_sha": "4e8f1b108c1e84f60520710d13e54eb2fb519648",
@@ -35,5 +49,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaiSgzgAKCRB+wDprTCI0\nzgOyAQDS3O/iwUDX7Uu+YRjNHI3CmWH3Apj8wu5YteugKm0Y0gEA8lIc8EKTJ8xU\nYPD1XU6agi02EOVJ39WGSRCm+tKOFAg=\n=ckxD\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqmkeQAKCRB+wDprTCI0\nzuzrAQDEXyFXwlFuKVdak51LFOsQjgierU6QvNvwqZ8cOfva6QD+Ls+UFqrYw6/R\nUuigsRNphqj99i3oY9ZbAznk/kcHlAI=\n=0cMx\n-----END PGP SIGNATURE-----"
 }
