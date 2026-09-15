@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T20:14:25Z",
+  "generated_at": "2026-09-15T11:41:37Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -348,12 +348,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/underfed/manifest.json",
         "author": "PilaScat",
         "license": "MIT",
-        "last_updated": "2026-09-14T16:13:18-04:00",
-        "latest_version": "0.3.2",
-        "latest_md5": "597f324791f1f7c5ea471e262b062e7e",
-        "latest_sha256": "a6451dcc46d5be26958cc8cd3a318797499509de713f8f0f04c9bf0dd424dd19",
-        "latest_url": "underfed-0.3.2/underfed-0.3.2.zip",
-        "latest_size": 44
+        "last_updated": "2026-09-15T11:41:06Z",
+        "latest_version": "0.4.0",
+        "latest_md5": "f2fd14dbcdc951499290bd391f0d8d43",
+        "latest_sha256": "191c82987939f14ee6c477e069037e0d02609c09793718b2e60bff8fd2e94967",
+        "latest_url": "underfed-0.4.0/underfed-0.4.0.zip",
+        "latest_size": 47
       },
       {
         "slug": "vod2mlib",
@@ -403,5 +403,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqhVpgAKCRB+wDprTCI0\nzklGAP4q50VlkbuAM+p57VnlD+Hbzc9XBD8gAq5SCaqr74mNCAD9HLjylNh0Q3O5\nGFLJzd2PgMB1D1LKTB+CZ18LKsAk2Qk=\n=O9YZ\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqku9gAKCRB+wDprTCI0\nztFAAP4qmc43DJUnA75r3BnY8AMr6P0DCPLQhbEGIqAewwC64QD9GquUQQ0DTRgj\nMuEPxBxjZDIVIBYH3vHAeLjzGJGSSg0=\n=Mbsx\n-----END PGP SIGNATURE-----"
 }

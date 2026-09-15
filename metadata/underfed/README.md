@@ -2,7 +2,7 @@
 
 # Underfed
 
-**Version:** `0.3.2` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 20:13 UTC
+**Version:** `0.4.0` | **Author:** PilaScat | **Last Updated:** Sep 15 2026, 11:41 UTC
 
 Moves a channel to its next source when the provider keeps delivering the stream, but at a fraction of the bitrate the content needs.
 
@@ -12,20 +12,21 @@ Moves a channel to its next source when the provider keeps delivering the stream
 
 ### Latest Release
 
-- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.3.2/underfed-0.3.2.zip)
-- **Built:** Sep 14 2026, 20:13 UTC
-- **Source Commit:** [`68f1181`](https://github.com/Dispatcharr/Plugins/commit/68f11812be1864f33d9fc130497071908dbdca97)
+- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.4.0/underfed-0.4.0.zip)
+- **Built:** Sep 15 2026, 11:41 UTC
+- **Source Commit:** [`c800f7e`](https://github.com/Dispatcharr/Plugins/commit/c800f7e99fea3c625a96061f2ba8a52fe596d4c3)
 
 **Checksums:**
 ```
-MD5:    597f324791f1f7c5ea471e262b062e7e
-SHA256: a6451dcc46d5be26958cc8cd3a318797499509de713f8f0f04c9bf0dd424dd19
+MD5:    f2fd14dbcdc951499290bd391f0d8d43
+SHA256: 191c82987939f14ee6c477e069037e0d02609c09793718b2e60bff8fd2e94967
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.4.0/underfed-0.4.0.zip) | Sep 15 2026, 11:41 UTC | [`c800f7e`](https://github.com/Dispatcharr/Plugins/commit/c800f7e99fea3c625a96061f2ba8a52fe596d4c3) | f2fd14dbcdc951499290bd391f0d8d43 | 191c82987939f14ee6c477e069037e0d02609c09793718b2e60bff8fd2e94967 |
 | `0.3.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.3.2/underfed-0.3.2.zip) | Sep 14 2026, 20:13 UTC | [`68f1181`](https://github.com/Dispatcharr/Plugins/commit/68f11812be1864f33d9fc130497071908dbdca97) | 597f324791f1f7c5ea471e262b062e7e | a6451dcc46d5be26958cc8cd3a318797499509de713f8f0f04c9bf0dd424dd19 |
 
 ---
@@ -48,7 +49,9 @@ keep arriving, just not enough of them: the picture needs 4.4 Mbps and 1.0 Mbps 
 Nothing times out, nothing errors, nothing switches. The buffer drains, the player runs
 out of segments, and viewers sit there watching a stall that no log explains.
 
-Underfed reads the number that already exists and that nothing else acts on.
+Underfed reads the number that already exists and that nothing else acts on. It also reads
+a second one: the timestamp discontinuities ffmpeg logs when a source's sound drifts away
+from the picture.
 
 ## Requirements
 
@@ -72,10 +75,11 @@ changes nothing. Read the journal under Check status, then turn it off.
 | API key | A Dispatcharr API key, from Settings → Users. The watcher needs it to read channel status and to change source |
 | Observe only | Records what it would have done without doing it |
 | Trigger below | Share of the content rate under which a source counts as underfed. 70 is a sensible floor: a healthy source sits at 100 |
-| Confirm for | How long the shortfall must last before acting. Short dips recover on their own |
+| Confirm for | How long a shortfall, or the timestamp discontinuities, must last before acting. Short dips recover on their own |
 | Switches per hour | Per channel, over the last hour, restarts of the watcher included. Stops it bouncing between two sources that are both weak |
 | Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
+| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm for, the source is switched. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
 | Dispatcharr URL | Reached from inside the container |
@@ -113,6 +117,21 @@ The watcher follows that file, and when a feed stays under the threshold for the
 confirmation window it calls `POST /proxy/ts/next_stream/<uuid>`, which is the same thing
 the Dispatcharr interface does when you change source by hand. The channel moves to the next
 entry in its chain and the viewer keeps watching.
+
+Some sources arrive with their audio and video timestamps minutes apart. ffmpeg keeps one
+offset for the whole input and flips it on every packet, so each packet gets the time ffmpeg
+expected: a gap in the video disappears instead of freezing the picture, and the sound falls
+behind by that much. Every gap adds to it, and reopening the channel only starts the count
+again. reservoarr's ffmpeg logs it in `delaybuf.log`, in pairs:
+
+```
+2026-09-14T17:35:25+0000 [542059.ts] ffmpeg: [vist#0:0/h264 @ …] timestamp discontinuity (stream id=256): 331826689, new offset= 0
+2026-09-14T17:35:25+0000 [542059.ts] ffmpeg: [aist#0:1/aac @ …] timestamp discontinuity (stream id=257): -331826689, new offset= 331826689
+```
+
+A healthy source logs a handful of these a minute; that one logged up to 1,836. When a source
+stays at Timestamp discontinuities or above for the confirmation window, counted over the last
+minute, the watcher moves the channel on the same way.
 
 It refuses to act when any of these is true:
 
