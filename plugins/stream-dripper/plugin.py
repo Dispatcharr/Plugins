@@ -27,11 +27,21 @@ _LOCK_PATH = "/tmp/stream-dripper-scheduler.lock"
 # Helpers
 # ---------------------------------------------------------------------------
 
+def _get_config():
+    """Return this plugin's PluginConfig row."""
+    from apps.plugins.models import PluginConfig
+    # Current Dispatcharr normalizes plugin keys to underscores; older installs used dashes.
+    for key in ("stream_dripper", "stream-dripper"):
+        cfg = PluginConfig.objects.filter(key=key).first()
+        if cfg:
+            return cfg
+    raise PluginConfig.DoesNotExist("no PluginConfig found for stream_dripper")
+
+
 def _get_drop_time():
     """Read the configured drop_time from DB, falling back to the default."""
     try:
-        from apps.plugins.models import PluginConfig
-        cfg = PluginConfig.objects.get(key="stream-dripper")
+        cfg = _get_config()
         return (cfg.settings or {}).get("drop_time", "03:00")
     except Exception as e:
         logger.warning(f"stream-dripper: could not read drop_time from DB, using default 03:00: {e}")
@@ -41,7 +51,7 @@ def _get_drop_time():
 def _drop_all_streams(log):
     """Stop every channel via the ORM + ChannelService. Returns a list of result dicts."""
     from apps.channels.models import Channel
-    from apps.proxy.ts_proxy.services.channel_service import ChannelService
+    from apps.proxy.live_proxy.services.channel_service import ChannelService
 
     uuids = list(Channel.objects.values_list("uuid", flat=True))
     if not uuids:
@@ -63,8 +73,7 @@ def _drop_all_streams(log):
 
 def _save_last_drop(timestamp: str, channel_count: int, triggered_by: str):
     try:
-        from apps.plugins.models import PluginConfig
-        cfg = PluginConfig.objects.get(key="stream-dripper")
+        cfg = _get_config()
         settings = dict(cfg.settings or {})
         settings["last_drop"] = {
             "timestamp": timestamp,
@@ -79,8 +88,7 @@ def _save_last_drop(timestamp: str, channel_count: int, triggered_by: str):
 
 def _load_last_drop():
     try:
-        from apps.plugins.models import PluginConfig
-        cfg = PluginConfig.objects.get(key="stream-dripper")
+        cfg = _get_config()
         return (cfg.settings or {}).get("last_drop")
     except Exception:
         return None
@@ -159,7 +167,7 @@ def _scheduler_loop(stop_event):
 
 class Plugin:
     name = "Stream Dripper"
-    version = "1.0.0"
+    version = "2.0.0"
     description = (
         "Automatically drops all active streams once per day at a configured time, "
         "with a manual drop-now button."
