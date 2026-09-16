@@ -2,32 +2,33 @@
 
 # Dispatchwrapparr
 
-**Version:** `1.7.7` | **Author:** jordandalley | **Last Updated:** Aug 29 2026, 06:14 UTC
+**Version:** `1.7.8` | **Author:** jordandalley | **Last Updated:** Sep 16 2026, 09:25 UTC
 
 An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1340492560220684331/1422776847703212132) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jordandalley/dispatchwrapparr)
 
-![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.25.0-brightgreen?style=flat-square)
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.31.0-brightgreen?style=flat-square)
 
 ## Downloads
 
 ### Latest Release
 
-- **Download:** [`dispatchwrapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.7/dispatchwrapparr-1.7.7.zip)
-- **Built:** Aug 29 2026, 06:14 UTC
-- **Source Commit:** [`6d5a961`](https://github.com/Dispatcharr/Plugins/commit/6d5a96150c39656871907c3b51b72b372dd5a76a)
+- **Download:** [`dispatchwrapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.8/dispatchwrapparr-1.7.8.zip)
+- **Built:** Sep 16 2026, 09:25 UTC
+- **Source Commit:** [`0543ea1`](https://github.com/Dispatcharr/Plugins/commit/0543ea1f4086b0da4e80e400422b2d0b72c70da9)
 
 **Checksums:**
 ```
-MD5:    f79ccce07def50864caafe3694007d84
-SHA256: 3a1720ffad79d0d986bb7bb3f843d9c95f2328560a528ec45a87fa635e911fb8
+MD5:    2cdf3ba27e9539708fedcbfcd4b04f18
+SHA256: 3bfef561db3a96d57580de5ad0662b53332524c09920fd3ee678bacfb4d359fe
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.7.8` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.8/dispatchwrapparr-1.7.8.zip) | Sep 16 2026, 09:25 UTC | [`0543ea1`](https://github.com/Dispatcharr/Plugins/commit/0543ea1f4086b0da4e80e400422b2d0b72c70da9) | 2cdf3ba27e9539708fedcbfcd4b04f18 | 3bfef561db3a96d57580de5ad0662b53332524c09920fd3ee678bacfb4d359fe |
 | `1.7.7` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.7/dispatchwrapparr-1.7.7.zip) | Aug 29 2026, 06:14 UTC | [`6d5a961`](https://github.com/Dispatcharr/Plugins/commit/6d5a96150c39656871907c3b51b72b372dd5a76a) | f79ccce07def50864caafe3694007d84 | 3a1720ffad79d0d986bb7bb3f843d9c95f2328560a528ec45a87fa635e911fb8 |
 | `1.7.6` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.6/dispatchwrapparr-1.7.6.zip) | Jul 08 2026, 01:38 UTC | [`9fc5ffc`](https://github.com/Dispatcharr/Plugins/commit/9fc5ffc13904e456ba251ceecc747d3b2d837221) | bb32c7764a70f5d8e348b5b5070e183c | 1ebb732ae7bbc911f18a1a035a3f34eb2a6a99e8e62afe24a3621d499aff374c |
 | `1.7.5` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.5/dispatchwrapparr-1.7.5.zip) | Jun 27 2026, 05:59 UTC | [`2f419a0`](https://github.com/Dispatcharr/Plugins/commit/2f419a064b0332118cccc8ee680904fe399e51b6) | c3a0074b2382390a16ff5b6c04c9e39b | 82c6a6690e9b29214e2caa8cf8b31a266c567cb470b0cc4062fa82914f217d99 |
@@ -37,7 +38,6 @@ SHA256: 3a1720ffad79d0d986bb7bb3f843d9c95f2328560a528ec45a87fa635e911fb8
 | `1.7.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.1/dispatchwrapparr-1.7.1.zip) | May 24 2026, 21:57 UTC | [`447eca9`](https://github.com/Dispatcharr/Plugins/commit/447eca99c56ceaa0e90d6f3b430f4027e7329025) | 39b03ca5cc4c809bc7e118e5258f2a52 | 5d56a759f1fb479dfb0c5f8ce525408510ad19598238c8f56dbca899e8e74f4a |
 | `1.7.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.7.0/dispatchwrapparr-1.7.0.zip) | May 22 2026, 04:46 UTC | [`ef5e336`](https://github.com/Dispatcharr/Plugins/commit/ef5e336dad2396db99535c190be7e6c58d8cb2f9) | 0b2a4e714d6541133b8a8dcf6849d9e0 | 93f3a833c585294fb396442172c399457413a1962607ac5bb01f69ffb3b70fd2 |
 | `1.6.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.6.2/dispatchwrapparr-1.6.2.zip) | Apr 28 2026, 01:30 UTC | [`44fbc6b`](https://github.com/Dispatcharr/Plugins/commit/44fbc6b96eebd52ea29b27fc371af3c20f997702) | f33c4a46e9012498858ac1770370888c | 49137d25684dfab53fd571aed6b94a2432fa2dcdfb6aa9629755b05bd0bcc02b |
-| `1.6.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dispatchwrapparr-1.6.1/dispatchwrapparr-1.6.1.zip) | Apr 16 2026, 11:17 UTC | [`7ac9bb7`](https://github.com/Dispatcharr/Plugins/commit/7ac9bb7cacde52e3a3ba7a9a5925789c97c5f65b) | 2fe71caf70f35c68caae8760cab65034 | 0ee0ff2e49b363ce83eef7db68420581e52514191762a1f490ad10cd33481fe7 |
 
 ---
 
@@ -66,7 +66,6 @@ SHA256: 3a1720ffad79d0d986bb7bb3f843d9c95f2328560a528ec45a87fa635e911fb8
 ✅ **Extended Stream Type Detection** — Fallback option that checks MIME type of stream URL for streamlink plugin selection\
 ✅ **Streaming Radio Support with Song Information** — Play streaming radio to your TV with song information displayed on your screen for ICY and HLS stream types\
 ✅ **Automated Stream Variant Detection** — Detects streams with no video or no audio and muxes in the missing components for compatibility with most players\
-✅ **Packed audio support for HLS streams** — Automatically extracts timestamp data from Apple ID3 metadata in muxed HLS streams to ensure correct playback\
 ✅ **Support for SSAI/DAI** — Supports streams using SCTE-35 type discontinuities for Server-Side or Dynamic Ad Injection
 
 ---
