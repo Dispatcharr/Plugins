@@ -1,0 +1,11 @@
+{
+  "name": "Profilarr",
+  "version": "1.0.0",
+  "description": "Hybrid cvlc + ffmpeg stream profile: cvlc pulls from the provider, ffmpeg remuxes and regenerates timestamps to clear up freezes on discontinuities",
+  "author": "Tw1zT3d2four7",
+  "maintainers": ["Tw1zT3d2four7"],
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v{version}/Profilarr.zip",
+  "repo_url": "https://github.com/Tw1zT3d2four7/Profilarr"
+}
