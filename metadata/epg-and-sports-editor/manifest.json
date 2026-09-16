@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T14:37:48Z",
+  "generated_at": "2026-09-16T05:15:39Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/jstevenscl/epg-and-sports-editor",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-13T10:37:17-04:00",
+    "last_updated": "2026-09-16T05:15:11Z",
     "latest": {
-      "version": "0.4.00",
-      "commit_sha": "583f10bfe4f765f674735ff7dfcea93d70737d62",
-      "commit_sha_short": "583f10b",
-      "build_timestamp": "2026-09-13T14:37:31Z",
-      "last_updated": "2026-09-13T10:37:17-04:00",
-      "checksum_md5": "ce452934aef37a44ca1317098401a8bc",
-      "checksum_sha256": "5723fcb4171029e59ac7d86d8bf020c49cf23eb61c7a24d89bc04d8d174eb90c",
-      "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.4.00/epg-and-sports-editor-v0.4.00.zip",
-      "latest_url": "epg-and-sports-editor-0.4.00/epg-and-sports-editor-0.4.00.zip",
-      "url": "epg-and-sports-editor-0.4.00/epg-and-sports-editor-0.4.00.zip",
+      "version": "0.4.01",
+      "commit_sha": "366a31a15132234619af1e5a287f3ac3c4c2ed15",
+      "commit_sha_short": "366a31a",
+      "build_timestamp": "2026-09-16T05:15:28Z",
+      "last_updated": "2026-09-16T05:15:11Z",
+      "checksum_md5": "e9443371f7c9bd8953a44c43ec82c9a6",
+      "checksum_sha256": "cfa790cbcd8cde351e10884ce7a80638c9c17e644101a722610f77a08be484b4",
+      "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.4.01/epg-and-sports-editor-v0.4.01.zip",
+      "latest_url": "epg-and-sports-editor-0.4.01/epg-and-sports-editor-0.4.01.zip",
+      "url": "epg-and-sports-editor-0.4.01/epg-and-sports-editor-0.4.01.zip",
       "size": 145
     },
     "versions": [
+      {
+        "version": "0.4.01",
+        "commit_sha": "366a31a15132234619af1e5a287f3ac3c4c2ed15",
+        "commit_sha_short": "366a31a",
+        "build_timestamp": "2026-09-16T05:15:28Z",
+        "last_updated": "2026-09-16T05:15:11Z",
+        "checksum_md5": "e9443371f7c9bd8953a44c43ec82c9a6",
+        "checksum_sha256": "cfa790cbcd8cde351e10884ce7a80638c9c17e644101a722610f77a08be484b4",
+        "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.4.01/epg-and-sports-editor-v0.4.01.zip",
+        "url": "epg-and-sports-editor-0.4.01/epg-and-sports-editor-0.4.01.zip",
+        "size": 145
+      },
       {
         "version": "0.4.00",
         "commit_sha": "583f10bfe4f765f674735ff7dfcea93d70737d62",
@@ -40,5 +52,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqa1PQAKCRB+wDprTCI0\nzl7pAP9SBOhuVMYAk75A30TNgsrG4zC9KeLv2aaJQ86vxgseaAD/Q7IIUfp9V46N\nh0GKLoPizqt3RYXYXLIluAjKTqljNA4=\n=I7jV\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqol/QAKCRB+wDprTCI0\nzkxqAQCC45zVJhpfbxER9t8qIq9kivjVzGOx13hwFrW7uZp/ZgD9EhdLxuAc9Uy2\n6M+2ZjycHWtAUBasZBWkX5VQhaiPRwQ=\n=bPzE\n-----END PGP SIGNATURE-----"
 }
