@@ -2,7 +2,7 @@
 
 # YouTubearr
 
-**Version:** `1.40.0` | **Author:** jeff-gooch | **Last Updated:** Aug 30 2026, 20:48 UTC
+**Version:** `1.40.1` | **Author:** jeff-gooch | **Last Updated:** Sep 16 2026, 12:55 UTC
 
 Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering
 
@@ -14,20 +14,21 @@ Zero-dependency YouTube livestream plugin with automatic monitoring and configur
 
 ### Latest Release
 
-- **Download:** [`youtubearr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/youtubearr-1.40.0/youtubearr-1.40.0.zip)
-- **Built:** Aug 30 2026, 20:48 UTC
-- **Source Commit:** [`e072e4d`](https://github.com/Dispatcharr/Plugins/commit/e072e4d9c92cb6b1f8e69550ee2661c76fa30dec)
+- **Download:** [`youtubearr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/youtubearr-1.40.1/youtubearr-1.40.1.zip)
+- **Built:** Sep 16 2026, 12:56 UTC
+- **Source Commit:** [`e14ea92`](https://github.com/Dispatcharr/Plugins/commit/e14ea92d80763c52784047f843aa76069b45c7c1)
 
 **Checksums:**
 ```
-MD5:    5fcf8e39242719fbfdf543154bec71bd
-SHA256: f727da48396a8db7b693ed2b62fff37c1a29501159ecbd0f18eeb47568bebe7d
+MD5:    b55e865bef8184938cad616281e1895c
+SHA256: 599662f81b0a4df8f85dfc5beccd84e991c0d789d2f602b4f8ef6eb0c92dddee
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.40.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/youtubearr-1.40.1/youtubearr-1.40.1.zip) | Sep 16 2026, 12:56 UTC | [`e14ea92`](https://github.com/Dispatcharr/Plugins/commit/e14ea92d80763c52784047f843aa76069b45c7c1) | b55e865bef8184938cad616281e1895c | 599662f81b0a4df8f85dfc5beccd84e991c0d789d2f602b4f8ef6eb0c92dddee |
 | `1.40.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/youtubearr-1.40.0/youtubearr-1.40.0.zip) | Aug 30 2026, 20:48 UTC | [`e072e4d`](https://github.com/Dispatcharr/Plugins/commit/e072e4d9c92cb6b1f8e69550ee2661c76fa30dec) | 5fcf8e39242719fbfdf543154bec71bd | f727da48396a8db7b693ed2b62fff37c1a29501159ecbd0f18eeb47568bebe7d |
 | `1.30.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/youtubearr-1.30.1/youtubearr-1.30.1.zip) | Jul 31 2026, 23:08 UTC | [`1e79c55`](https://github.com/Dispatcharr/Plugins/commit/1e79c55fd33ce921c6c938990945e0ab23a7ef07) | f8b8235a327688034c30348c5752182f | 406d9039876f1bc8e466181c536076f45c4502df122b0b3ebd0c521894174876 |
 | `1.30.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/youtubearr-1.30.0/youtubearr-1.30.0.zip) | Jun 28 2026, 00:18 UTC | [`5f3a8d5`](https://github.com/Dispatcharr/Plugins/commit/5f3a8d5c3febd0f564298152b52a42fbf6ea3df5) | f3cbf196554e659b560f13bd73da4724 | 9b4008bd911f2d1adcb59a7247593c12d153b39af98dd8cd8739dbb57032b910 |
