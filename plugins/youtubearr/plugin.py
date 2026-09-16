@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+import errno
 import fcntl
 import tempfile
 import threading
@@ -24,12 +25,31 @@ from core.models import StreamProfile
 from core.scheduling import delete_periodic_task
 
 
+PROBE_STATUS_IS_LIVE = "is_live"
+PROBE_STATUS_WAS_LIVE = "was_live"
+PROBE_STATUS_POST_LIVE = "post_live"
+PROBE_STATUS_NOT_LIVE = "not_live"
+PROBE_STATUS_TIMEOUT = "timeout"
+PROBE_STATUS_EXTRACTION_ERROR = "extraction error"
+PROBE_STATUS_EMPTY_UNKNOWN = "empty/unknown status"
+PROBE_STATUS_BOT_AUTH = "bot/auth failure"
+
+
 class Plugin:
     name = "YouTubearr"
-    version = "1.40.0"
+    version = "1.40.1"
     description = "Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering"
     author = "Jeff Gooch"
     help_url = "https://github.com/jeff-gooch/youtubearr"
+
+    PROBE_STATUS_IS_LIVE = PROBE_STATUS_IS_LIVE
+    PROBE_STATUS_WAS_LIVE = PROBE_STATUS_WAS_LIVE
+    PROBE_STATUS_POST_LIVE = PROBE_STATUS_POST_LIVE
+    PROBE_STATUS_NOT_LIVE = PROBE_STATUS_NOT_LIVE
+    PROBE_STATUS_TIMEOUT = PROBE_STATUS_TIMEOUT
+    PROBE_STATUS_EXTRACTION_ERROR = PROBE_STATUS_EXTRACTION_ERROR
+    PROBE_STATUS_EMPTY_UNKNOWN = PROBE_STATUS_EMPTY_UNKNOWN
+    PROBE_STATUS_BOT_AUTH = PROBE_STATUS_BOT_AUTH
 
     fields = [
         {
@@ -647,7 +667,18 @@ class Plugin:
 
         # Try to acquire the exclusive file lock (non-blocking).
         # If another worker process holds it, a monitor is already running there.
-        if not self._acquire_monitor_lock():
+        # A real OSError (permission denied, disk full, ...) is not contention —
+        # let it surface as a genuine error instead of a false "already active".
+        try:
+            acquired = self._acquire_monitor_lock()
+        except OSError as exc:
+            self._log_error(f"Failed to acquire monitor lock: {exc}")
+            return {
+                "status": "error",
+                "message": f"Could not start monitoring: lock file error ({exc}).",
+            }
+
+        if not acquired:
             self._log("Monitor lock held by another worker — monitoring already active")
             return {"status": "running", "message": "Monitoring already active"}
 
@@ -663,6 +694,20 @@ class Plugin:
             name="YouTubearr-Monitor"
         )
         self._monitor_thread.start()
+
+        # Give the thread a brief window to fail fast (e.g. an exception
+        # raised before it reaches the monitoring loop's own try block)
+        # before claiming success. A healthy loop runs for a full poll
+        # cycle, so this short join never delays the normal happy path.
+        self._monitor_thread.join(timeout=0.2)
+        if not self._monitor_thread.is_alive():
+            self._monitoring_active = False
+            self._release_monitor_lock()
+            self._log_error("Monitor thread exited immediately after start")
+            return {
+                "status": "error",
+                "message": "Monitoring failed to start (thread exited immediately). Check logs.",
+            }
 
         self._log("Monitoring started")
         self._cleanup_legacy_celery_task()
@@ -1009,8 +1054,12 @@ class Plugin:
             else:
                 issues.append("warning:monitoring active but no heartbeat found")
 
-        # Stale-poll warning — active but last_poll is beyond the expected cycle window
-        if monitoring_active_db and not self._is_last_poll_recent(runtime):
+        # Stale-poll warning — active but last_poll is beyond the expected cycle window.
+        # last_poll_time lives in runtime_state, but poll_interval_minutes is operator
+        # config from settings — runtime_state never has it, so it must be merged in
+        # here rather than defaulting to 15 min regardless of the real configured value.
+        _poll_check_state = {**runtime, "poll_interval_minutes": settings.get("poll_interval_minutes", 15)}
+        if monitoring_active_db and not self._is_last_poll_recent(_poll_check_state):
             _poll_age_str = f"{int(_lpa)}s" if _lpa is not None else "never"
             issues.append(f"warning:monitoring active but last poll is stale (age={_poll_age_str})")
 
@@ -1347,7 +1396,8 @@ class Plugin:
         return None
 
     def _cookies_sidecar_path(self) -> Path:
-        return self._base_dir / "cookies.txt"
+        base_dir = getattr(self, "_base_dir", None) or Path(__file__).resolve().parent
+        return base_dir / "cookies.txt"
 
     def _cookies_are_configured(self, settings: Optional[Dict[str, Any]]) -> bool:
         cookies_content = (settings or {}).get("cookies_content", "")
@@ -1695,12 +1745,15 @@ class Plugin:
     def _get_format_string(self, preference: str) -> str:
         """Get yt-dlp format string for quality preference"""
         formats = {
-            "best": "best",
+            # Bare "best" only matches pre-muxed formats; many live streams only
+            # expose separate video/audio, so allow yt-dlp to merge them with the
+            # same bestvideo+bestaudio/best fallback used by the explicit tiers below.
+            "best": "bestvideo+bestaudio/best",
             "1080p": "bestvideo[height<=1080]+bestaudio/best",
             "720p": "bestvideo[height<=720]+bestaudio/best",
             "480p": "bestvideo[height<=480]+bestaudio/best",
         }
-        return formats.get(preference, "best")
+        return formats.get(preference, "bestvideo+bestaudio/best")
 
     # --- Dispatcharr Integration ---
 
@@ -2620,7 +2673,7 @@ class Plugin:
                             # authoritative and avoids false deletions.
                             title = stream_data.get("title", video_id)
                             self._log(f"Stream not in scan results, verifying directly: {title}")
-                            if self._verify_video_is_live(video_id):
+                            if self._verify_video_is_live(video_id, settings=settings):
                                 self._log(f"Direct check: still live (scan false negative): {title}")
                             else:
                                 stream_data["is_live"] = False
@@ -2636,36 +2689,226 @@ class Plugin:
 
         return added_count, ended_count
 
-    def _verify_video_is_live(self, video_id: str) -> bool:
+    def _redact_id(self, identifier: Optional[str]) -> str:
+        """Redact video/channel ID or token for safe diagnostic logging."""
+        if not identifier:
+            return "[REDACTED_ID]"
+        s = str(identifier).strip()
+        if len(s) <= 4:
+            return "[REDACTED_ID]"
+        return f"{s[:3]}...{s[-2:]}"
+
+    def _extract_actionable_stderr(self, stderr: str, video_id: str) -> str:
+        """Extract a categorized, actionable message from stderr with redacted IDs and secrets."""
+        if not stderr:
+            return "no stderr output"
+        lines = [line.strip() for line in stderr.splitlines() if line.strip()]
+        error_line = ""
+        for line in lines:
+            if "ERROR:" in line or "error:" in line:
+                error_line = line
+                break
+        if not error_line and lines:
+            error_line = lines[-1]
+        if not error_line:
+            error_line = "unknown error"
+        if video_id:
+            error_line = error_line.replace(video_id, self._redact_id(video_id))
+        error_line = re.sub(r'https?://\S+', '[URL]', error_line)
+        return error_line[:200]
+
+    def _classify_probe_result(self, returncode: int, stdout: str, stderr: str, video_id: str) -> Dict[str, Any]:
+        """Classify live-status probe results into distinct operational categories.
+
+        Distinguishes:
+        - is_live: actively streaming
+        - was_live: finished livestream
+        - post_live: processing post-livestream
+        - not_live: standard video / not a livestream
+        - timeout: yt-dlp execution timed out (handled in caller on TimeoutExpired)
+        - extraction error: yt-dlp returned non-zero returncode with non-auth error
+        - empty/unknown status: returncode 0 with empty or unrecognized status output
+        - bot/auth failure: YouTube bot detection, CAPTCHA, or authentication required
+        """
+        stdout_clean = (stdout or "").strip() if isinstance(stdout, str) else ""
+        stderr_clean = (stderr or "").strip() if isinstance(stderr, str) else ""
+        stderr_lower = stderr_clean.lower().replace("’", "'")
+
+        bot_auth_patterns = [
+            "sign in to confirm",
+            "not a bot",
+            "confirm you're not a bot",
+            "captcha",
+            "recaptcha",
+            "http error 429",
+            "too many requests",
+            "members-only",
+            "login required",
+            "this video is private",
+            "private video",
+        ]
+        is_bot_auth = any(pattern in stderr_lower for pattern in bot_auth_patterns)
+        if not is_bot_auth and "bot" in stderr_lower and any(w in stderr_lower for w in ["automated", "queries", "verify", "detection"]):
+            is_bot_auth = True
+        if not is_bot_auth and "members" in stderr_lower and "only" in stderr_lower:
+            is_bot_auth = True
+
+        if is_bot_auth:
+            actionable = self._extract_actionable_stderr(stderr_clean, video_id)
+            return {
+                "status": "bot/auth failure",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": f"bot/auth failure: {actionable}",
+            }
+
+        if returncode != 0:
+            actionable = self._extract_actionable_stderr(stderr_clean, video_id)
+            return {
+                "status": "extraction error",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": f"extraction error (exit code {returncode}): {actionable}",
+            }
+
+        if stdout_clean == "is_live":
+            return {
+                "status": "is_live",
+                "is_live": True,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": "stream confirmed live",
+            }
+        elif stdout_clean == "was_live":
+            return {
+                "status": "was_live",
+                "is_live": False,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": "stream was live and has ended",
+            }
+        elif stdout_clean == "post_live":
+            return {
+                "status": "post_live",
+                "is_live": False,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": "stream ended (post-live processing)",
+            }
+        elif stdout_clean == "not_live":
+            return {
+                "status": "not_live",
+                "is_live": False,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": "not a live stream",
+            }
+        else:
+            return {
+                "status": "empty/unknown status",
+                "is_live": False,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": f"empty/unknown live_status: {stdout_clean!r}",
+            }
+
+    def _build_live_status_cmd(self, video_id: str, settings: Optional[Dict[str, Any]] = None) -> List[str]:
+        """Build the yt-dlp command for live-status probing with QuickJS and cookies."""
+        cmd = [
+            self._ytdlp_path,
+            "--skip-download",
+            "--print", "live_status",
+            "--no-warnings",
+        ]
+        if self._qjs_path:
+            cmd += ["--js-runtimes", f"quickjs:{self._qjs_path}"]
+
+        cookie_file = None
+        if settings is not None and self._cookies_are_configured(settings):
+            if self._sync_cookies_sidecar(settings):
+                cookie_file = str(self._cookies_sidecar_path())
+        elif self._cookies_sidecar_path().exists() and self._cookies_sidecar_path().is_file():
+            cookie_file = str(self._cookies_sidecar_path())
+
+        if cookie_file:
+            cmd += ["--cookies", cookie_file]
+
+        watch_url = video_id if video_id.startswith("http") else f"https://www.youtube.com/watch?v={video_id}"
+        cmd.append(watch_url)
+        return cmd
+
+    def _probe_live_status(self, video_id: str, settings: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Probe the live status of a video using yt-dlp."""
+        if not self._ytdlp_path:
+            return {
+                "status": "extraction error",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": "",
+                "returncode": None,
+                "message": "yt-dlp binary not found",
+            }
+
+        cmd = self._build_live_status_cmd(video_id, settings=settings)
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            stdout = result.stdout if isinstance(getattr(result, "stdout", None), str) else ""
+            stderr = result.stderr if isinstance(getattr(result, "stderr", None), str) else ""
+            returncode = getattr(result, "returncode", 0)
+            if not isinstance(returncode, int):
+                returncode = 0
+            return self._classify_probe_result(returncode, stdout, stderr, video_id)
+        except subprocess.TimeoutExpired:
+            redacted = self._redact_id(video_id)
+            return {
+                "status": "timeout",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": "",
+                "returncode": None,
+                "message": f"live check timed out for {redacted}",
+            }
+        except Exception as exc:
+            redacted = self._redact_id(video_id)
+            return {
+                "status": "extraction error",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": "",
+                "returncode": None,
+                "message": f"live check failed for {redacted}: {exc}",
+            }
+
+    def _verify_video_is_live(self, video_id: str, settings: Optional[Dict[str, Any]] = None) -> bool:
         """Directly verify whether a specific video is currently live.
 
         Used when a tracked stream disappears from the flat-playlist scan.
         Much more reliable than the channel /streams tab for ongoing streams.
         Fails safe — returns True (assume live) on any error or timeout.
         """
-        try:
-            if not self._ytdlp_path:
-                return True
-            cmd = [
-                self._ytdlp_path,
-                "--skip-download",
-                "--print", "live_status",
-                "--no-warnings",
-                "--quiet",
-            ]
-            if self._qjs_path:
-                cmd += ["--js-runtimes", f"quickjs:{self._qjs_path}"]
-            cmd.append(f"https://www.youtube.com/watch?v={video_id}")
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-            status = result.stdout.strip()
-            self._log(f"Direct live check for {video_id}: {status!r}")
-            return status == "is_live"
-        except subprocess.TimeoutExpired:
-            self._log_error(f"Direct live check timed out for {video_id}, assuming live")
+        if not self._ytdlp_path:
             return True
-        except Exception as exc:
-            self._log_error(f"Direct live check failed for {video_id}: {exc}, assuming live")
+        probe = self._probe_live_status(video_id, settings=settings)
+        status = probe["status"]
+        raw = probe.get("raw_status") or status
+        self._log(f"Direct live check for {self._redact_id(video_id)}: {raw!r}")
+        if status == "is_live":
             return True
+        if status in ("was_live", "post_live", "not_live"):
+            return False
+        # Fail safe on timeout, bot/auth failure, extraction error, or unknown status
+        redacted = self._redact_id(video_id)
+        self._log_error(f"Direct live check {status} for {redacted}, assuming live: {probe['message']}")
+        return True
 
     def _get_live_streams_via_ytdlp(self, channel_handle: str, settings: Dict[str, Any], title_filter: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
         """Get currently live streams for a YouTube channel using two-phase detection.
@@ -2756,29 +2999,23 @@ class Plugin:
         live_streams = []
         for candidate in candidates:
             video_id = candidate["video_id"]
-            try:
-                check_cmd = [
-                    self._ytdlp_path,
-                    "--skip-download",
-                    "--print", "live_status",
-                    "--no-warnings",
-                    "--quiet",
-                ]
-                if self._qjs_path:
-                    check_cmd += ["--js-runtimes", f"quickjs:{self._qjs_path}"]
-                check_cmd.append(f"https://www.youtube.com/watch?v={video_id}")
+            probe = self._probe_live_status(video_id, settings=settings)
+            status = probe["status"]
+            redacted_id = self._redact_id(video_id)
 
-                check = subprocess.run(check_cmd, capture_output=True, text=True, timeout=30)
-                status = check.stdout.strip()
-                if status == "is_live":
-                    live_streams.append(candidate)
-                    self._log(f"Live confirmed: {candidate['title']} ({video_id})")
-                else:
-                    self._log(f"Not live ({status or 'no status'}): {candidate['title']}")
-            except subprocess.TimeoutExpired:
-                self._log_error(f"Live check timed out for {video_id}, skipping")
-            except Exception as exc:
-                self._log_error(f"Live check failed for {video_id}: {exc}, skipping")
+            if status == "is_live":
+                live_streams.append(candidate)
+                self._log(f"Live confirmed: {candidate['title']} ({video_id})")
+            elif status in ("was_live", "post_live", "not_live"):
+                self._log(f"Not live ({status}): {candidate['title']}")
+            elif status == "timeout":
+                self._log_error(f"Live check timed out for {redacted_id}, skipping: {probe['message']}")
+            elif status == "bot/auth failure":
+                self._log_error(f"Live check bot/auth failure for {redacted_id}, skipping: {probe['message']}")
+            elif status == "extraction error":
+                self._log_error(f"Live check extraction error for {redacted_id}, skipping: {probe['message']}")
+            else:  # empty/unknown status
+                self._log(f"Live check empty/unknown status for {redacted_id} ({probe.get('raw_status') or 'no status'}): {candidate['title']}")
 
         self._log(f"Found {len(live_streams)} live stream(s) for {channel_handle}")
         return live_streams
@@ -3360,21 +3597,21 @@ class Plugin:
 
         Uses fcntl.flock so the OS releases the lock automatically if this
         process dies, preventing a permanently stuck state. Returns True if
-        the lock was acquired and stored in self._lock_fd.
+        the lock was acquired and stored in self._lock_fd, False if another
+        process already holds it (EACCES/EAGAIN). Any other OSError (e.g.
+        permission denied, disk full) is a real failure, not contention —
+        it is re-raised so callers don't mistake it for "already active".
         """
+        fd = open(str(self._lock_path), 'w')
         try:
-            fd = open(str(self._lock_path), 'w')
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            self._lock_fd = fd
-            return True
-        except (IOError, OSError):
-            try:
-                fd.close()
-            except Exception:
-                pass
-            return False
-        except Exception:
-            return False
+        except OSError as exc:
+            fd.close()
+            if exc.errno in (errno.EACCES, errno.EAGAIN, errno.EWOULDBLOCK):
+                return False
+            raise
+        self._lock_fd = fd
+        return True
 
     def _release_monitor_lock(self) -> None:
         """Release the exclusive monitor file lock if held."""
@@ -3404,8 +3641,12 @@ class Plugin:
             fcntl.flock(probe_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             fcntl.flock(probe_fd, fcntl.LOCK_UN)
             return False
-        except (IOError, OSError):
-            return True
+        except OSError as exc:
+            if exc.errno in (errno.EACCES, errno.EAGAIN, errno.EWOULDBLOCK):
+                return True
+            # A real error probing the lock is not evidence another worker
+            # holds it — don't falsely report monitoring as active elsewhere.
+            return False
         finally:
             probe_fd.close()
 
@@ -3862,8 +4103,16 @@ class Plugin:
         if not channels or not self._ytdlp_path:
             return False
 
-        # Try to acquire the lock — if another process holds it, it's already running
-        if not self._acquire_monitor_lock():
+        # Try to acquire the lock — if another process holds it, it's already running.
+        # A real OSError here (not contention) means we can't safely tell — skip the
+        # restart rather than risk a duplicate monitor or a crash of this call.
+        try:
+            acquired = self._acquire_monitor_lock()
+        except OSError as exc:
+            self._log_error(f"Auto-restart skipped: monitor lock error ({exc})")
+            return False
+
+        if not acquired:
             self._log("Auto-restart skipped: monitor lock held by another process")
             return False
 
