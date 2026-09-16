@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-09-16T09:17:56Z",
+  "manifest": {
+    "slug": "profilarr",
+    "name": "Profilarr",
+    "description": "Hybrid cvlc + ffmpeg stream profile: cvlc pulls from the provider, ffmpeg remuxes and regenerates timestamps to clear up freezes on discontinuities",
+    "author": "Tw1zT3d2four7",
+    "maintainers": [
+      "Tw1zT3d2four7"
+    ],
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v{version}/Profilarr.zip",
+    "repo_url": "https://github.com/Tw1zT3d2four7/Profilarr",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-09-16T05:17:22-04:00",
+    "latest": {
+      "version": "1.0.1",
+      "commit_sha": "52669d8a2afb5e536025c6db7cb0a77ab2585b2c",
+      "commit_sha_short": "52669d8",
+      "build_timestamp": "2026-09-16T09:17:47Z",
+      "last_updated": "2026-09-16T05:17:22-04:00",
+      "checksum_md5": "735a8911c2fe4ac1cc3b554ab2b96b21",
+      "checksum_sha256": "a279a0c86aa4353ef7f919dceace40e8ac42d0bbdd77acf337adf3ff1476ec35",
+      "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.1/Profilarr.zip",
+      "latest_url": "profilarr-1.0.1/profilarr-1.0.1.zip",
+      "url": "profilarr-1.0.1/profilarr-1.0.1.zip",
+      "size": 23
+    },
+    "versions": [
+      {
+        "version": "1.0.1",
+        "commit_sha": "52669d8a2afb5e536025c6db7cb0a77ab2585b2c",
+        "commit_sha_short": "52669d8",
+        "build_timestamp": "2026-09-16T09:17:47Z",
+        "last_updated": "2026-09-16T05:17:22-04:00",
+        "checksum_md5": "735a8911c2fe4ac1cc3b554ab2b96b21",
+        "checksum_sha256": "a279a0c86aa4353ef7f919dceace40e8ac42d0bbdd77acf337adf3ff1476ec35",
+        "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.1/Profilarr.zip",
+        "url": "profilarr-1.0.1/profilarr-1.0.1.zip",
+        "size": 23
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqpexwAKCRB+wDprTCI0\nzhhmAQCYjpSLCJsN8Hn++MgLliaSZwPDRdEYfyK8F4E9WGB35QEApN80qjXmq2cf\ngh2B2ygDBy/TPHhmaHUDqOUhWFSVBQg=\n=r7Dx\n-----END PGP SIGNATURE-----"
+}

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T05:15:39Z",
+  "generated_at": "2026-09-16T09:17:56Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -255,6 +255,20 @@
         "latest_size": 35852
       },
       {
+        "slug": "profilarr",
+        "name": "Profilarr",
+        "description": "Hybrid cvlc + ffmpeg stream profile: cvlc pulls from the provider, ffmpeg remuxes and regenerates timestamps to clear up freezes on discontinuities",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/profilarr/manifest.json",
+        "author": "Tw1zT3d2four7",
+        "license": "MIT",
+        "last_updated": "2026-09-16T05:17:22-04:00",
+        "latest_version": "1.0.1",
+        "latest_md5": "735a8911c2fe4ac1cc3b554ab2b96b21",
+        "latest_sha256": "a279a0c86aa4353ef7f919dceace40e8ac42d0bbdd77acf337adf3ff1476ec35",
+        "latest_url": "profilarr-1.0.1/profilarr-1.0.1.zip",
+        "latest_size": 23
+      },
+      {
         "slug": "reservoarr",
         "name": "reservoarr",
         "description": "Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying",
@@ -404,5 +418,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqomAQAKCRB+wDprTCI0\nznrkAP9ZjBygPQQdlzrTKS9eTMXwQuR2XBt+RUagDhlRH+vI0wD/Z+Oc3oqChKMP\nTBj39aaGi5CFqHM6rl3Wb9jfbGf0wAc=\n=SJyB\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqpeyQAKCRB+wDprTCI0\nzi35APwK5T4uMzA7mUjc3WoqEYSDOB1+CRKNLCAqrfdnaiq5qgD+MMsSxxOd/+mu\nj5eAKLVzZiGYD24EPKTnX9FSo+EjDQE=\n=VLMY\n-----END PGP SIGNATURE-----"
 }
