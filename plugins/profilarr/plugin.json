@@ -1,7 +1,7 @@
 {
   "name": "Profilarr",
   "version": "1.0.2",
-  "description": "Hybrid cvlc + ffmpeg stream profile: cvlc pulls from the provider, ffmpeg remuxes and regenerates timestamps to clear up freezes on discontinuities",
+  "description": "Hybrid ffmpeg + cvlc stream profile: ffmpeg fetches from the provider and regenerates timestamps, cvlc buffers and delivers the already-clean stream to clear up freezes on discontinuities",
   "author": "Tw1zT3d2four7",
   "maintainers": ["Tw1zT3d2four7"],
   "license": "MIT",
