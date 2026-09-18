@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-18T07:26:43Z",
+  "generated_at": "2026-09-18T18:04:52Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -276,12 +276,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/profilarr/manifest.json",
         "author": "Tw1zT3d2four7",
         "license": "MIT",
-        "last_updated": "2026-09-18T07:26:17Z",
-        "latest_version": "1.0.5",
-        "latest_md5": "6ca150e502084512f09a63208f035187",
-        "latest_sha256": "ade08037667b0da5f1b636bee576999bc028ae5a491b5fb7fc8e5d9d9af2adc0",
-        "latest_url": "profilarr-1.0.5/profilarr-1.0.5.zip",
-        "latest_size": 29
+        "last_updated": "2026-09-18T18:04:26Z",
+        "latest_version": "1.0.6",
+        "latest_md5": "ffa42a54a3f82b53ed162ca8563a09f0",
+        "latest_sha256": "ac07dc3703d34a41348019da96fde800bc98cd4d83a6a592309c0de57505ede2",
+        "latest_url": "profilarr-1.0.6/profilarr-1.0.6.zip",
+        "latest_size": 11
       },
       {
         "slug": "reservoarr",
@@ -433,5 +433,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqznuQAKCRB+wDprTCI0\nzkOXAQD7Y5JLf92jCUM+vWTgOmCxhgPkUipTSelefcY6y5+QQgEAwnTPZCwb4l3q\nmLZrG5HMjQmHankgAAOR2iRjSKMkRAg=\n=FPw4\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaq19SgAKCRB+wDprTCI0\nzoXDAPkB4BRdXgtE3u7cbluaqQaL6bPeGIAXFTNqmruOaNeLcgEA5QA/jrehB6rK\nLjGdpXbhafdpi349gHqHfhBB48XHvgo=\n=w9Tn\n-----END PGP SIGNATURE-----"
 }
