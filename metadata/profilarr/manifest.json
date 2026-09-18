@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-09-17T19:29:20Z",
+  "generated_at": "2026-09-18T01:21:49Z",
   "manifest": {
     "slug": "profilarr",
     "name": "Profilarr",
-    "description": "Hybrid ffmpeg + cvlc stream profile: ffmpeg fetches from the provider and regenerates timestamps, cvlc buffers and delivers the already-clean stream to clear up freezes on discontinuities",
+    "description": "Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity.",
     "author": "Tw1zT3d2four7",
     "maintainers": [
       "Tw1zT3d2four7"
@@ -14,21 +14,33 @@
     "repo_url": "https://github.com/Tw1zT3d2four7/Profilarr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-17T19:28:50Z",
+    "last_updated": "2026-09-18T01:21:26Z",
     "latest": {
-      "version": "1.0.3",
-      "commit_sha": "cf00c95ed204b3819961bbd8f2bd867f020dc2ce",
-      "commit_sha_short": "cf00c95",
-      "build_timestamp": "2026-09-17T19:29:13Z",
-      "last_updated": "2026-09-17T19:28:50Z",
-      "checksum_md5": "868a7ff9757771e38261bc5aa9a13ab6",
-      "checksum_sha256": "c643e324a44e193589b922d8e9f081424571a101d403d4be66001de3dcceeff9",
-      "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.3/Profilarr.zip",
-      "latest_url": "profilarr-1.0.3/profilarr-1.0.3.zip",
-      "url": "profilarr-1.0.3/profilarr-1.0.3.zip",
-      "size": 23
+      "version": "1.0.4",
+      "commit_sha": "0f617dfa7516a311a24533b7dc961e27f2f46493",
+      "commit_sha_short": "0f617df",
+      "build_timestamp": "2026-09-18T01:21:44Z",
+      "last_updated": "2026-09-18T01:21:26Z",
+      "checksum_md5": "c7be50d6f48321bdb2a8a83f0d5988e2",
+      "checksum_sha256": "763d129b378e944bbc07f012d327ad3277dcef71b22ae27ec978c3eaa119fa45",
+      "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.4/Profilarr.zip",
+      "latest_url": "profilarr-1.0.4/profilarr-1.0.4.zip",
+      "url": "profilarr-1.0.4/profilarr-1.0.4.zip",
+      "size": 29
     },
     "versions": [
+      {
+        "version": "1.0.4",
+        "commit_sha": "0f617dfa7516a311a24533b7dc961e27f2f46493",
+        "commit_sha_short": "0f617df",
+        "build_timestamp": "2026-09-18T01:21:44Z",
+        "last_updated": "2026-09-18T01:21:26Z",
+        "checksum_md5": "c7be50d6f48321bdb2a8a83f0d5988e2",
+        "checksum_sha256": "763d129b378e944bbc07f012d327ad3277dcef71b22ae27ec978c3eaa119fa45",
+        "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.4/Profilarr.zip",
+        "url": "profilarr-1.0.4/profilarr-1.0.4.zip",
+        "size": 29
+      },
       {
         "version": "1.0.3",
         "commit_sha": "cf00c95ed204b3819961bbd8f2bd867f020dc2ce",
@@ -67,5 +79,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqw/lAAKCRB+wDprTCI0\nzvSlAQCSprY/QcX6WCwj9TahfI3CHQqEuqxUAymx5UE1+UUpnQD/Toy70ac3neRN\n0K3UMODDKyCdE0zJ6+KJ5vTCFK5ZPAc=\n=c6zK\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqySMQAKCRB+wDprTCI0\nzte/AP0Vi8Hbz0aFd7IazjCkmFB+7FqY21C+bhlrKHIF6MXGjQEA5juoCgc8n3Ps\nqW4fJSHxLQ9nLln7adKZj/CQVJcv0As=\n=ukGG\n-----END PGP SIGNATURE-----"
 }
