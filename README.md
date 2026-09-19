@@ -23,7 +23,7 @@ This branch contains all published plugin releases.
 | [`EPG Janitor`](#epg-janitor) | `1.26.2481223` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.2621024` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`Gluetun Rotate`](#gluetun-rotate) | `0.2.1` | PilaScat | MIT | Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address. |
-| [`IPTV Checker`](#iptv-checker) | `1.26.2481600` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
+| [`IPTV Checker`](#iptv-checker) | `1.26.2561754` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.2561550` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
 | [`Multiview`](#multiview) | `0.4.3` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
@@ -253,7 +253,7 @@ Moves Gluetun to another VPN server when the IPTV provider refuses the current e
 
 ### [IPTV Checker](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/iptv-checker/README.md)
 
-**Version:** `1.26.2481600` | **Author:** PiratesIRC | **Last Updated:** Sep 05 2026, 16:21 UTC
+**Version:** `1.26.2561754` | **Author:** PiratesIRC | **Last Updated:** Sep 19 2026, 14:41 UTC
 
 Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead.
 
@@ -262,10 +262,10 @@ Check IPTV stream status and quality with ffprobe, then rename, move, restore or
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.2481600`)](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2481600/iptv-checker-1.26.2481600.zip)
+- [Latest Release (`1.26.2561754`)](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2561754/iptv-checker-1.26.2561754.zip)
 - [All Versions (10 available)](./metadata/iptv-checker)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/iptv-checker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/iptv-checker/README.md) | **Last Change:** [`1d17008`](https://github.com/Dispatcharr/Plugins/commit/1d17008721288ae94b2dad5309a91a76a5a20d8a)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/iptv-checker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/iptv-checker/README.md) | **Last Change:** [`507db2c`](https://github.com/Dispatcharr/Plugins/commit/507db2c9b9b094551de71ea534566b08864d3c0d)
 
 ---
 
@@ -560,4 +560,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 19 2026, 14:07 UTC*
+*Last updated: Sep 19 2026, 14:42 UTC*
