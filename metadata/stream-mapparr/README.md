@@ -2,7 +2,7 @@
 
 # Stream-Mapparr
 
-**Version:** `1.26.2491549` | **Author:** PiratesIRC | **Last Updated:** Sep 06 2026, 19:42 UTC
+**Version:** `1.26.2621504` | **Author:** PiratesIRC | **Last Updated:** Sep 19 2026, 15:12 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -14,20 +14,21 @@ Automatically add matching streams to channels based on name similarity and qual
 
 ### Latest Release
 
-- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2491549/stream-mapparr-1.26.2491549.zip)
-- **Built:** Sep 06 2026, 19:43 UTC
-- **Source Commit:** [`23d5498`](https://github.com/Dispatcharr/Plugins/commit/23d54985d7c6e71008dc376e87e3c816e5b43687)
+- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2621504/stream-mapparr-1.26.2621504.zip)
+- **Built:** Sep 19 2026, 15:12 UTC
+- **Source Commit:** [`e6ad647`](https://github.com/Dispatcharr/Plugins/commit/e6ad647f9b4302fb6bb06194220235272cf30ebe)
 
 **Checksums:**
 ```
-MD5:    792b2cee73492e1bfdb331a1eb52be09
-SHA256: 8e8c14cd668e94b49a29bfe6d2a64bd3f037acc13c2347bae7424df8cc194e0c
+MD5:    4b5a2ec083afc29c429acb1aeb6043ff
+SHA256: 167aa29c484d9b068994c3c9ac4f56c45ce5cabbdee85a2fe6449b86e52461ea
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2621504` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2621504/stream-mapparr-1.26.2621504.zip) | Sep 19 2026, 15:12 UTC | [`e6ad647`](https://github.com/Dispatcharr/Plugins/commit/e6ad647f9b4302fb6bb06194220235272cf30ebe) | 4b5a2ec083afc29c429acb1aeb6043ff | 167aa29c484d9b068994c3c9ac4f56c45ce5cabbdee85a2fe6449b86e52461ea |
 | `1.26.2491549` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2491549/stream-mapparr-1.26.2491549.zip) | Sep 06 2026, 19:43 UTC | [`23d5498`](https://github.com/Dispatcharr/Plugins/commit/23d54985d7c6e71008dc376e87e3c816e5b43687) | 792b2cee73492e1bfdb331a1eb52be09 | 8e8c14cd668e94b49a29bfe6d2a64bd3f037acc13c2347bae7424df8cc194e0c |
 | `1.26.2481756` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2481756/stream-mapparr-1.26.2481756.zip) | Sep 05 2026, 19:44 UTC | [`08a6559`](https://github.com/Dispatcharr/Plugins/commit/08a655912071b387a48110953f799f55f19a705a) | 7542bb69d07fa94231db52fde80bd08f | 3a646dddca0d221ea6e2765d0b33dce0e317b1b9aee0dfe61d7ba325f0ae8f23 |
 | `1.26.2241602` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2241602/stream-mapparr-1.26.2241602.zip) | Aug 12 2026, 17:14 UTC | [`dc86bdd`](https://github.com/Dispatcharr/Plugins/commit/dc86bdd35a3992c6a744465854e1c402a9bcc15c) | abd5c4f4cfba1fa9fa38a9c561c0a978 | 06c8ccf427d144ee55be1b47213ea60512903e3ffd1d9956aea9351f3585ba0f |
@@ -37,7 +38,6 @@ SHA256: 8e8c14cd668e94b49a29bfe6d2a64bd3f037acc13c2347bae7424df8cc194e0c
 | `1.26.1972151` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1972151/stream-mapparr-1.26.1972151.zip) | Jul 17 2026, 00:31 UTC | [`563e1fe`](https://github.com/Dispatcharr/Plugins/commit/563e1fefe48407e1cf045ee6a112de4eb11649b3) | be3e2c1cf8cf439e4077e90a433b32d0 | c64a232ba86481dfb11c8087c2f0c7c8f0c50ae5104823da655ace2683826018 |
 | `1.26.1960020` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1960020/stream-mapparr-1.26.1960020.zip) | Jul 15 2026, 01:12 UTC | [`5d5d4d9`](https://github.com/Dispatcharr/Plugins/commit/5d5d4d97b7b00263e20ba5e8e1e5966a0bb1ef2e) | da87e44616c1738be63bd74ced95891a | 498673d561a9e7cbe34ccf50772a779668eb4fb47fdb91d10354c8c7a298ca2a |
 | `1.26.1931038` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1931038/stream-mapparr-1.26.1931038.zip) | Jul 13 2026, 02:54 UTC | [`62a7907`](https://github.com/Dispatcharr/Plugins/commit/62a790775f91eaeb5ee4e7d3576e03b32752d346) | e1046e55fe2a29092833c2f1f2d56b73 | 109e73985c11d0f880b4262decf5c01aa9be4825be82b57743118772c117e230 |
-| `1.26.1820605` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1820605/stream-mapparr-1.26.1820605.zip) | Jul 03 2026, 10:43 UTC | [`a4e29d2`](https://github.com/Dispatcharr/Plugins/commit/a4e29d2c3f8fbf9d9f99dd8ae831ed74d9872654) | 31aaa9b3f6fe2a58af26f00bdb4315ae | dd4825c1b584a826140273a4574ef973981a08514ae3347ef4427c3e077ef42d |
 
 ---
 
@@ -177,6 +177,9 @@ database. This plugin modifies channel and stream assignments.
   slot rather than once per worker
 - **Auto-match after M3U refresh** (opt-in, Dispatcharr v0.27+): run Match and
   Assign as soon as a refresh completes. Requires a Channel Profile
+- **Run after an IPTV Checker scan** (opt-in): run the scheduled steps the
+  moment the IPTV Checker plugin finishes a scheduled scan, so sorting sees the
+  fresh results instead of waiting for the next fixed time
 - **Rate limiting**: None, Low, Medium or High
 - **Operation lock**: prevents concurrent tasks, auto-expiring after 10 minutes
 - **Dry run mode**: preview results with a CSV export and no changes
@@ -223,6 +226,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Custom Ignore Tags** | string | (none) | Tags to strip before matching, for example `[Dead], (Backup)` |
 | **Wait for IPTV Checker Completion** | boolean | False | Hold a scheduled run until IPTV Checker has finished, so matching sees fresh stats |
 | **IPTV Checker Max Wait (hours)** | number | 2 | How long to wait before running anyway |
+| **Run After IPTV Checker Scan** | boolean | False | When IPTV Checker finishes a scheduled scan, run the scheduled steps (Sort Alternate Streams and Match and Assign, whichever are ticked). IPTV Checker needs its own `Trigger Stream-Mapparr` setting on |
 | **Enable CSV Export** | boolean | True | Write a CSV on a scheduled Match and Assign run. A dry run always writes one |
 | **Delete CSV Exports Older Than (Days)** | number | 0 | Remove this plugin's older reports after each new one is written. 0, the default, keeps everything. Only files this plugin wrote are ever considered, because that directory is shared with other plugins. The newest report and the one just written always survive |
 | **Tag Handling** | select | Strip All | Strip All, Keep Regional, or Keep All |
@@ -296,6 +300,15 @@ well as fixed times. Because Dispatcharr fires that event once per M3U account,
 runs are coalesced under a lock and a follow-up pass catches any account that
 finishes mid-match. A multi-account refresh therefore produces one effective
 match rather than one per account.
+
+**After an IPTV Checker scan**: **Run After IPTV Checker Scan** runs the same
+steps the fixed times run (Sort Alternate Streams and Match and Assign,
+whichever are ticked) when the IPTV Checker plugin finishes a scheduled scan
+that reached the end of its channel list. IPTV Checker calls this plugin
+directly, so its own **Trigger Stream-Mapparr After Scheduled Check** setting
+must be on as well. A run already in progress is left alone and the next scan
+tries again. The CSV header for such a run reads `Scheduled (after IPTV
+Checker scan)`.
 
 ## CSV Reports
 
