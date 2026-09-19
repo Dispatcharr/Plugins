@@ -29,7 +29,7 @@ This branch contains all published plugin releases.
 | [`Multiview`](#multiview) | `0.4.3` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2481646` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.3.2` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel. |
-| [`Profilarr`](#profilarr) | `2.0.4` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
+| [`Profilarr`](#profilarr) | `2.0.7` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
 | [`reservoarr`](#reservoarr) | `6.3.7` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.2621504` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
@@ -357,17 +357,17 @@ TV-style weather channels powered by the Pirate Weather API. Runs up to three st
 
 ### [Profilarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/profilarr/README.md)
 
-**Version:** `2.0.4` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 19 2026, 16:08 UTC
+**Version:** `2.0.7` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 19 2026, 20:31 UTC
 
 Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Tw1zT3d2four7/Profilarr)
 
 **Downloads:**
-- [Latest Release (`2.0.4`)](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.0.4/profilarr-2.0.4.zip)
-- [All Versions (9 available)](./metadata/profilarr)
+- [Latest Release (`2.0.7`)](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.0.7/profilarr-2.0.7.zip)
+- [All Versions (10 available)](./metadata/profilarr)
 
-**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/profilarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/profilarr/README.md) | **Last Change:** [`bacf325`](https://github.com/Dispatcharr/Plugins/commit/bacf3254903855e47ebd410e4928e58790172495)
+**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/profilarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/profilarr/README.md) | **Last Change:** [`0fbd3f6`](https://github.com/Dispatcharr/Plugins/commit/0fbd3f69f9a29bae0ececfb30d1ddb7d28d23686)
 
 ---
 
@@ -560,4 +560,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 19 2026, 17:50 UTC*
+*Last updated: Sep 19 2026, 20:31 UTC*
