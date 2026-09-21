@@ -39,6 +39,7 @@ changes nothing. Read the journal under Check status, then turn it off.
 | Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
 | Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm for, the source is switched. 0 turns it off |
+| Refused source held back | A source the provider answers 403 to goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
 | Dispatcharr URL | Reached from inside the container |
@@ -103,6 +104,31 @@ It refuses to act when any of these is true:
 
 Everything it does, and everything it declines to do, goes to a journal with the numbers
 that justified it.
+
+## A source the provider refuses
+
+The other two failures are about a source that is delivering badly. This one is about a source
+that is not delivering at all: the provider answers `HTTP 403` and reservoarr retries, backs off
+and gives up, and the channel walks on to the next entry. That much Dispatcharr already does.
+
+What it does not do is remember. `tried_stream_ids` dies with the session, so the next tune-in
+starts again from the top of the chain — on the same refused source, paying the same wait. Over
+five days of one installation's logs: 192 episodes of refusal, 154 of them ending in a give-up,
+and 32 sources out of 53 refused in more than one episode; one of them eighteen times.
+
+So a refusal moves the source **last in its channel's chain**, ahead of the fallback card, which
+stays where it is. The chain is what the next tune-in reads, so the next viewer starts on a
+source that was not refusing a minute ago. After the configured minutes the source climbs back
+to the position it held, and the journal records both moves.
+
+One refusal is enough: an episode lasts 6 seconds at the median but 140 at the ninth decile, and
+a viewer who opens the channel in the meantime pays all of it. The wait before it climbs back is
+thirty minutes by default: of 135 returns on the same source, 43 came within ten minutes and 60
+within half an hour — while 49 came more than three hours later, and those are caught by the next
+refusal anyway.
+
+A channel whose chain has one source only, or whose refused source is already last, is left
+alone: there is nowhere lower to go.
 
 ## What this does not fix
 
