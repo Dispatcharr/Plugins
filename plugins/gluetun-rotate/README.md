@@ -73,11 +73,17 @@ starts, which is what makes this work. A filter narrowed to one server leaves no
 
 It holds back when:
 
+- **someone is watching a channel from the provider.** A rotation drops every connection
+  through the tunnel, so it waits for the last viewer and goes on the first round after they
+  leave. What counts is `/proxy/ts/status`: a channel with viewers whose source is not local.
+  The fallback card, served from `127.0.0.1`, does not count — nothing is flowing from the
+  provider there. There is no time limit, and a status that cannot be read does not hold the
+  tunnel.
 - the last rotation was less than ten minutes ago
 - three rotations have already happened in the last hour
 
-A rotation that fails still counts toward both, so a control server that keeps refusing is
-not asked again every two minutes. Both hold across a restart of the watcher.
+A rotation that fails still counts toward both time limits, so a control server that keeps
+refusing is not asked again every two minutes. Both hold across a restart of the watcher.
 
 A tunnel that comes back on the same address is recorded as a failed rotation. A rotation
 that fails part way can leave the tunnel stopped: the next round finds it stopped and starts
@@ -98,8 +104,9 @@ rotation would help is for those numbers to show. Check status says how many rou
 them and the counts of the last one; the first journal entry says whether the log was found.
 
 A rotation drops every connection through the tunnel for a few seconds, including the
-streams of an account that still answers. With one provider behind the tunnel nothing is
-flowing anyway when its address is refused; with more, the others pay for the one refused.
+streams of an account that still answers. Since 0.3.0 the watcher waits for the last viewer
+on a provider source before it rotates, so nobody watching is cut off; with more than one
+provider behind the tunnel, viewers of the others hold the rotation back as well.
 
 ## Development
 
