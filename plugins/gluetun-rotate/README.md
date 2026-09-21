@@ -78,7 +78,7 @@ It holds back when:
   leave. What counts is `/proxy/ts/status`: a channel with viewers whose source is not local.
   The fallback card, served from `127.0.0.1`, does not count — nothing is flowing from the
   provider there. There is no time limit, and a status that cannot be read does not hold the
-  tunnel
+  tunnel.
 - the last rotation was less than ten minutes ago
 - three rotations have already happened in the last hour
 
