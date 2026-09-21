@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-09-15T11:41:37Z",
+  "generated_at": "2026-09-21T21:09:12Z",
   "manifest": {
     "slug": "underfed",
     "name": "Underfed",
-    "description": "Moves a channel to its next source when the provider keeps delivering the stream, but at a fraction of the bitrate the content needs.",
+    "description": "Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the back of the chain when the provider answers 403.",
     "author": "PilaScat",
     "license": "MIT",
     "source_type": "external",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/PilaScat/underfed",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-15T11:41:06Z",
+    "last_updated": "2026-09-21T21:08:43Z",
     "latest": {
-      "version": "0.4.0",
-      "commit_sha": "c800f7e99fea3c625a96061f2ba8a52fe596d4c3",
-      "commit_sha_short": "c800f7e",
-      "build_timestamp": "2026-09-15T11:41:31Z",
-      "last_updated": "2026-09-15T11:41:06Z",
-      "checksum_md5": "f2fd14dbcdc951499290bd391f0d8d43",
-      "checksum_sha256": "191c82987939f14ee6c477e069037e0d02609c09793718b2e60bff8fd2e94967",
-      "source_url": "https://github.com/PilaScat/underfed/releases/download/v0.4.0/underfed-0.4.0.zip",
-      "latest_url": "underfed-0.4.0/underfed-0.4.0.zip",
-      "url": "underfed-0.4.0/underfed-0.4.0.zip",
-      "size": 47
+      "version": "0.5.0",
+      "commit_sha": "89900f9516a27a1946af159412d2210b7e97cb65",
+      "commit_sha_short": "89900f9",
+      "build_timestamp": "2026-09-21T21:09:07Z",
+      "last_updated": "2026-09-21T21:08:43Z",
+      "checksum_md5": "a23dc15479b0c662c80f8c155f4a11d9",
+      "checksum_sha256": "7ecaecd27548ecb156baac8d1e1b2bd1b5e67cb1d99904387f286fa6e729fd3a",
+      "source_url": "https://github.com/PilaScat/underfed/releases/download/v0.5.0/underfed-0.5.0.zip",
+      "latest_url": "underfed-0.5.0/underfed-0.5.0.zip",
+      "url": "underfed-0.5.0/underfed-0.5.0.zip",
+      "size": 49
     },
     "versions": [
+      {
+        "version": "0.5.0",
+        "commit_sha": "89900f9516a27a1946af159412d2210b7e97cb65",
+        "commit_sha_short": "89900f9",
+        "build_timestamp": "2026-09-21T21:09:07Z",
+        "last_updated": "2026-09-21T21:08:43Z",
+        "checksum_md5": "a23dc15479b0c662c80f8c155f4a11d9",
+        "checksum_sha256": "7ecaecd27548ecb156baac8d1e1b2bd1b5e67cb1d99904387f286fa6e729fd3a",
+        "source_url": "https://github.com/PilaScat/underfed/releases/download/v0.5.0/underfed-0.5.0.zip",
+        "url": "underfed-0.5.0/underfed-0.5.0.zip",
+        "size": 49
+      },
       {
         "version": "0.4.0",
         "commit_sha": "c800f7e99fea3c625a96061f2ba8a52fe596d4c3",
@@ -52,5 +64,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqku9AAKCRB+wDprTCI0\nzsirAP48sTR8x6yl6Qhb6VB+2BqR1Id1YSJOCJPD7LpmsJcv1AD/T3d1YLK1wprd\ndUjM+oCK/BbetNASAxTG+rR8zuJWnQ0=\n=YrMz\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarGc/QAKCRB+wDprTCI0\nztq3APsEy2/vGEJeLOk81CWLJYNgdVZ3PNcgePcYqPGuTC3P3wEAgYDIB3pDgL0R\nn0ucvG2WLWpc4HglwXQ/yTjn+xq3Iw4=\n=MsQ+\n-----END PGP SIGNATURE-----"
 }

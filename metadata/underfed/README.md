@@ -2,9 +2,9 @@
 
 # Underfed
 
-**Version:** `0.4.0` | **Author:** PilaScat | **Last Updated:** Sep 15 2026, 11:41 UTC
+**Version:** `0.5.0` | **Author:** PilaScat | **Last Updated:** Sep 21 2026, 21:08 UTC
 
-Moves a channel to its next source when the provider keeps delivering the stream, but at a fraction of the bitrate the content needs.
+Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the back of the chain when the provider answers 403.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/underfed)
 
@@ -12,20 +12,21 @@ Moves a channel to its next source when the provider keeps delivering the stream
 
 ### Latest Release
 
-- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.4.0/underfed-0.4.0.zip)
-- **Built:** Sep 15 2026, 11:41 UTC
-- **Source Commit:** [`c800f7e`](https://github.com/Dispatcharr/Plugins/commit/c800f7e99fea3c625a96061f2ba8a52fe596d4c3)
+- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.5.0/underfed-0.5.0.zip)
+- **Built:** Sep 21 2026, 21:09 UTC
+- **Source Commit:** [`89900f9`](https://github.com/Dispatcharr/Plugins/commit/89900f9516a27a1946af159412d2210b7e97cb65)
 
 **Checksums:**
 ```
-MD5:    f2fd14dbcdc951499290bd391f0d8d43
-SHA256: 191c82987939f14ee6c477e069037e0d02609c09793718b2e60bff8fd2e94967
+MD5:    a23dc15479b0c662c80f8c155f4a11d9
+SHA256: 7ecaecd27548ecb156baac8d1e1b2bd1b5e67cb1d99904387f286fa6e729fd3a
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.5.0/underfed-0.5.0.zip) | Sep 21 2026, 21:09 UTC | [`89900f9`](https://github.com/Dispatcharr/Plugins/commit/89900f9516a27a1946af159412d2210b7e97cb65) | a23dc15479b0c662c80f8c155f4a11d9 | 7ecaecd27548ecb156baac8d1e1b2bd1b5e67cb1d99904387f286fa6e729fd3a |
 | `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.4.0/underfed-0.4.0.zip) | Sep 15 2026, 11:41 UTC | [`c800f7e`](https://github.com/Dispatcharr/Plugins/commit/c800f7e99fea3c625a96061f2ba8a52fe596d4c3) | f2fd14dbcdc951499290bd391f0d8d43 | 191c82987939f14ee6c477e069037e0d02609c09793718b2e60bff8fd2e94967 |
 | `0.3.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.3.2/underfed-0.3.2.zip) | Sep 14 2026, 20:13 UTC | [`68f1181`](https://github.com/Dispatcharr/Plugins/commit/68f11812be1864f33d9fc130497071908dbdca97) | 597f324791f1f7c5ea471e262b062e7e | a6451dcc46d5be26958cc8cd3a318797499509de713f8f0f04c9bf0dd424dd19 |
 
@@ -80,6 +81,7 @@ changes nothing. Read the journal under Check status, then turn it off.
 | Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
 | Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm for, the source is switched. 0 turns it off |
+| Refused source held back | A source the provider answers 403 to goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
 | Dispatcharr URL | Reached from inside the container |
@@ -144,6 +146,31 @@ It refuses to act when any of these is true:
 
 Everything it does, and everything it declines to do, goes to a journal with the numbers
 that justified it.
+
+## A source the provider refuses
+
+The other two failures are about a source that is delivering badly. This one is about a source
+that is not delivering at all: the provider answers `HTTP 403` and reservoarr retries, backs off
+and gives up, and the channel walks on to the next entry. That much Dispatcharr already does.
+
+What it does not do is remember. `tried_stream_ids` dies with the session, so the next tune-in
+starts again from the top of the chain — on the same refused source, paying the same wait. Over
+five days of one installation's logs: 192 episodes of refusal, 154 of them ending in a give-up,
+and 32 sources out of 53 refused in more than one episode; one of them eighteen times.
+
+So a refusal moves the source **last in its channel's chain**, ahead of the fallback card, which
+stays where it is. The chain is what the next tune-in reads, so the next viewer starts on a
+source that was not refusing a minute ago. After the configured minutes the source climbs back
+to the position it held, and the journal records both moves.
+
+One refusal is enough: an episode lasts 6 seconds at the median but 140 at the ninth decile, and
+a viewer who opens the channel in the meantime pays all of it. The wait before it climbs back is
+thirty minutes by default: of 135 returns on the same source, 43 came within ten minutes and 60
+within half an hour — while 49 came more than three hours later, and those are caught by the next
+refusal anyway.
+
+A channel whose chain has one source only, or whose refused source is already last, is left
+alone: there is nowhere lower to go.
 
 ## What this does not fix
 
