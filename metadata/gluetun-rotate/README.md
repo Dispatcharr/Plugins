@@ -2,7 +2,7 @@
 
 # Gluetun Rotate
 
-**Version:** `0.2.1` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 20:12 UTC
+**Version:** `0.3.0` | **Author:** PilaScat | **Last Updated:** Sep 21 2026, 03:51 UTC
 
 Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.
 
@@ -12,20 +12,21 @@ Moves Gluetun to another VPN server when the IPTV provider refuses the current e
 
 ### Latest Release
 
-- **Download:** [`gluetun-rotate-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.2.1/gluetun-rotate-0.2.1.zip)
-- **Built:** Sep 14 2026, 20:13 UTC
-- **Source Commit:** [`4d30179`](https://github.com/Dispatcharr/Plugins/commit/4d3017960cd2e203ca01cf0c6d210b0fc54a982b)
+- **Download:** [`gluetun-rotate-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.3.0/gluetun-rotate-0.3.0.zip)
+- **Built:** Sep 21 2026, 03:52 UTC
+- **Source Commit:** [`f8bf9f3`](https://github.com/Dispatcharr/Plugins/commit/f8bf9f3352c6144f68d1955b4b3f4b24e6a01fc6)
 
 **Checksums:**
 ```
-MD5:    681861c916a6c62f919c78dccd78175a
-SHA256: ccd2a67bdc47db1c461d4cc96a31bd54a36a0e321b2fc667245da022adc7f5db
+MD5:    96f2cf2a44a22388174227c206d505b4
+SHA256: 74f213ab9fa9822c681e86a0158e9ccfa329ee1d1cbb5cc57c97f40ddd1c880b
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.3.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.3.0/gluetun-rotate-0.3.0.zip) | Sep 21 2026, 03:52 UTC | [`f8bf9f3`](https://github.com/Dispatcharr/Plugins/commit/f8bf9f3352c6144f68d1955b4b3f4b24e6a01fc6) | 96f2cf2a44a22388174227c206d505b4 | 74f213ab9fa9822c681e86a0158e9ccfa329ee1d1cbb5cc57c97f40ddd1c880b |
 | `0.2.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.2.1/gluetun-rotate-0.2.1.zip) | Sep 14 2026, 20:13 UTC | [`4d30179`](https://github.com/Dispatcharr/Plugins/commit/4d3017960cd2e203ca01cf0c6d210b0fc54a982b) | 681861c916a6c62f919c78dccd78175a | ccd2a67bdc47db1c461d4cc96a31bd54a36a0e321b2fc667245da022adc7f5db |
 
 ---
@@ -113,11 +114,17 @@ starts, which is what makes this work. A filter narrowed to one server leaves no
 
 It holds back when:
 
+- **someone is watching a channel from the provider.** A rotation drops every connection
+  through the tunnel, so it waits for the last viewer and goes on the first round after they
+  leave. What counts is `/proxy/ts/status`: a channel with viewers whose source is not local.
+  The fallback card, served from `127.0.0.1`, does not count — nothing is flowing from the
+  provider there. There is no time limit, and a status that cannot be read does not hold the
+  tunnel.
 - the last rotation was less than ten minutes ago
 - three rotations have already happened in the last hour
 
-A rotation that fails still counts toward both, so a control server that keeps refusing is
-not asked again every two minutes. Both hold across a restart of the watcher.
+A rotation that fails still counts toward both time limits, so a control server that keeps
+refusing is not asked again every two minutes. Both hold across a restart of the watcher.
 
 A tunnel that comes back on the same address is recorded as a failed rotation. A rotation
 that fails part way can leave the tunnel stopped: the next round finds it stopped and starts
@@ -138,8 +145,9 @@ rotation would help is for those numbers to show. Check status says how many rou
 them and the counts of the last one; the first journal entry says whether the log was found.
 
 A rotation drops every connection through the tunnel for a few seconds, including the
-streams of an account that still answers. With one provider behind the tunnel nothing is
-flowing anyway when its address is refused; with more, the others pay for the one refused.
+streams of an account that still answers. Since 0.3.0 the watcher waits for the last viewer
+on a provider source before it rotates, so nobody watching is cut off; with more than one
+provider behind the tunnel, viewers of the others hold the rotation back as well.
 
 ## Development
 
