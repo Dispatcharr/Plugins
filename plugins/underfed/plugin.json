@@ -1,6 +1,6 @@
 {
   "name": "Underfed",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Moves a channel to its next source when the provider keeps delivering the stream, but at a fraction of the bitrate the content needs.",
   "author": "PilaScat",
   "license": "MIT",
