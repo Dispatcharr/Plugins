@@ -3,6 +3,9 @@
   "version": "0.4.7",
   "description": "Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes.",
   "author": "Tw1zT3d2four7",
+  "maintainers": [
+    "Tw1zT3d2four7"
+  ],
   "license": "MIT",
   "source_type": "external",
   "source_url": "https://github.com/Tw1zT3d2four7/Decypharr_vod/releases/download/v{version}/decypharr_vod.zip",
