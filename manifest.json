@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T21:09:12Z",
+  "generated_at": "2026-09-22T14:14:43Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -63,6 +63,20 @@
         "latest_sha256": "f96552647275488771c74526dfb0780f1ce82e5065a0494dbfb694636bf97d29",
         "latest_url": "could-not-dispatch-0.4.0/could-not-dispatch-0.4.0.zip",
         "latest_size": 63
+      },
+      {
+        "slug": "decypharr-vod",
+        "name": "Decypharr VOD",
+        "description": "Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/decypharr-vod/manifest.json",
+        "author": "Tw1zT3d2four7",
+        "license": "MIT",
+        "last_updated": "2026-09-22T10:14:00-04:00",
+        "latest_version": "0.4.7",
+        "latest_md5": "974dcef62c70a5b6cde324d14508ef60",
+        "latest_sha256": "465ae5889afbc3d2879bca05711161a8083ca47830080b55ec581e5b79e4e511",
+        "latest_url": "decypharr-vod-0.4.7/decypharr-vod-0.4.7.zip",
+        "latest_size": 1436
       },
       {
         "slug": "dispatcharr-exporter",
@@ -433,5 +447,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarGc/gAKCRB+wDprTCI0\nzkEfAP4o5hiaQq0YBydEAYfOaRy792j1det62/4WuLVsUlCmGAD+J70az3OQzwXF\nZOvyCf68feRyqnZYwW+jL1bzH+xEbg8=\n=zDuj\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarKNWQAKCRB+wDprTCI0\nzmhVAQCTSStifM31frtd8l4plDJ5xNtcT0Z3fMAN9/hlEtJKzwEAz05fcBNu1f/d\n2R0Jvp+DnI+uM3w7aWRkSn34+lhdEg8=\n=PUVH\n-----END PGP SIGNATURE-----"
 }
