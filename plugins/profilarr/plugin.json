@@ -1,14 +1,11 @@
 {
   "name": "Profilarr",
   "version": "2.1.5",
-  "description": "Hardware-aware FFmpeg + CVLC stream profiles for Dispatcharr.",
+  "description": "Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity.",
   "author": "Tw1zT3d2four7",
-  "help_url": "https://github.com/Tw1zT3d2four7/Profilarr",
-  "fields": [
-    {"id":"video_profile","label":"Hardware / Video Profile","type":"select","default":"passthrough","options":[
-      {"value":"passthrough","label":"Passthrough (base video copy)"},{"value":"nvidia_source","label":"[NVIDIA] NVENC (Source FPS)"},{"value":"nvidia_30","label":"[NVIDIA] NVENC (Force 30 FPS)"},{"value":"nvidia_60","label":"[NVIDIA] NVENC (Force 60 FPS)"},{"value":"intel_source","label":"[INTEL] QSV (Source FPS)"},{"value":"intel_30","label":"[INTEL] QSV (Force 30 FPS)"},{"value":"intel_60","label":"[INTEL] QSV (Force 60 FPS)"},{"value":"amd_source","label":"[AMD] AMF (Source FPS)"},{"value":"amd_30","label":"[AMD] AMF (Force 30 FPS)"},{"value":"amd_60","label":"[AMD] AMF (Force 60 FPS)"},{"value":"cpu_source","label":"[CPU] Software (Source FPS)"},{"value":"cpu_30","label":"[CPU] Software (Force 30 FPS)"},{"value":"cpu_60","label":"[CPU] Software (Force 60 FPS)"}]},
-    {"id":"audio_override","label":"Audio Transcoding Override","type":"select","default":"aac","options":[{"value":"aac","label":"AAC"},{"value":"ac3","label":"AC3"},{"value":"eac3","label":"E-AC3"},{"value":"opus","label":"Opus"},{"value":"mp3","label":"MP3"},{"value":"copy","label":"Copy"}]},
-    {"id":"network_caching","label":"CVLC Network Cache (ms)","type":"select","default":"6000","options":[{"value":"3000","label":"3000"},{"value":"6000","label":"6000 (Default)"},{"value":"9000","label":"9000"},{"value":"12000","label":"12000"},{"value":"15000","label":"15000"}]}
-  ],
-  "actions": [{"id":"generate_profile","label":"Apply & Synchronize","button_label":"Apply & Synchronize","button_color":"green","description":"Create or update the selected Profilarr Stream Profile."}]
+  "maintainers": ["Tw1zT3d2four7"],
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v{version}/Profilarr.zip",
+  "repo_url": "https://github.com/Tw1zT3d2four7/Profilarr"
 }
