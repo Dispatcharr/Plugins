@@ -2,7 +2,7 @@
 
 # Profilarr
 
-**Version:** `2.0.7` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 19 2026, 20:31 UTC
+**Version:** `2.1.4` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 23 2026, 22:57 UTC
 
 Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity.
 
@@ -12,20 +12,21 @@ Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directl
 
 ### Latest Release
 
-- **Download:** [`profilarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.0.7/profilarr-2.0.7.zip)
-- **Built:** Sep 19 2026, 20:31 UTC
-- **Source Commit:** [`0fbd3f6`](https://github.com/Dispatcharr/Plugins/commit/0fbd3f69f9a29bae0ececfb30d1ddb7d28d23686)
+- **Download:** [`profilarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.1.4/profilarr-2.1.4.zip)
+- **Built:** Sep 23 2026, 22:58 UTC
+- **Source Commit:** [`b29c04d`](https://github.com/Dispatcharr/Plugins/commit/b29c04d58b63488ee1fde980406c5b1963936bb9)
 
 **Checksums:**
 ```
-MD5:    b2151d8e5a9133dff124b5bd9aed62de
-SHA256: fe804476610bef25a3f46bfcc826ee8ed7853398b6a440c38f459a3b7a58d5b7
+MD5:    49d09a161e6b96f5ec94d9f73f67affd
+SHA256: f60ad2f12e17d56a0a611127d64c22eae798f7c655be4cd12c403b94746674d9
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `2.1.4` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.1.4/profilarr-2.1.4.zip) | Sep 23 2026, 22:58 UTC | [`b29c04d`](https://github.com/Dispatcharr/Plugins/commit/b29c04d58b63488ee1fde980406c5b1963936bb9) | 49d09a161e6b96f5ec94d9f73f67affd | f60ad2f12e17d56a0a611127d64c22eae798f7c655be4cd12c403b94746674d9 |
 | `2.0.7` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.0.7/profilarr-2.0.7.zip) | Sep 19 2026, 20:31 UTC | [`0fbd3f6`](https://github.com/Dispatcharr/Plugins/commit/0fbd3f69f9a29bae0ececfb30d1ddb7d28d23686) | b2151d8e5a9133dff124b5bd9aed62de | fe804476610bef25a3f46bfcc826ee8ed7853398b6a440c38f459a3b7a58d5b7 |
 | `2.0.4` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.0.4/profilarr-2.0.4.zip) | Sep 19 2026, 16:08 UTC | [`bacf325`](https://github.com/Dispatcharr/Plugins/commit/bacf3254903855e47ebd410e4928e58790172495) | c676915eed54c998e03b2da7776d5d56 | 813c52b14666d325063486307b9bd5ad0bb1f2eb65f990cc1cdf61bebe1bbdac |
 | `1.0.9` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-1.0.9/profilarr-1.0.9.zip) | Sep 19 2026, 02:23 UTC | [`9fb219b`](https://github.com/Dispatcharr/Plugins/commit/9fb219b368448b715525daef5cd52ff9294a475d) | b07e338e82c5ad9df3d27d9b79857ee3 | 249eadbbe2d5c043cffa3e9789b69680d64ece29c9ab8e6f0325b165220cb808 |
@@ -35,7 +36,6 @@ SHA256: fe804476610bef25a3f46bfcc826ee8ed7853398b6a440c38f459a3b7a58d5b7
 | `1.0.4` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-1.0.4/profilarr-1.0.4.zip) | Sep 18 2026, 01:21 UTC | [`0f617df`](https://github.com/Dispatcharr/Plugins/commit/0f617dfa7516a311a24533b7dc961e27f2f46493) | c7be50d6f48321bdb2a8a83f0d5988e2 | 763d129b378e944bbc07f012d327ad3277dcef71b22ae27ec978c3eaa119fa45 |
 | `1.0.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-1.0.3/profilarr-1.0.3.zip) | Sep 17 2026, 19:29 UTC | [`cf00c95`](https://github.com/Dispatcharr/Plugins/commit/cf00c95ed204b3819961bbd8f2bd867f020dc2ce) | 868a7ff9757771e38261bc5aa9a13ab6 | c643e324a44e193589b922d8e9f081424571a101d403d4be66001de3dcceeff9 |
 | `1.0.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-1.0.2/profilarr-1.0.2.zip) | Sep 16 2026, 22:09 UTC | [`641d3f4`](https://github.com/Dispatcharr/Plugins/commit/641d3f4107f8968daf0b6bc8a24dca92a9d064ab) | 9392534385fcaa826192805d0c582a7b | 73529c7f85b3d9e6447690721060064ab36b692527f12602414d9d5d4ec99d5e |
-| `1.0.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-1.0.1/profilarr-1.0.1.zip) | Sep 16 2026, 09:17 UTC | [`52669d8`](https://github.com/Dispatcharr/Plugins/commit/52669d8a2afb5e536025c6db7cb0a77ab2585b2c) | 735a8911c2fe4ac1cc3b554ab2b96b21 | a279a0c86aa4353ef7f919dceace40e8ac42d0bbdd77acf337adf3ff1476ec35 |
 
 ---
 

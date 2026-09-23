@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T20:31:42Z",
+  "generated_at": "2026-09-23T22:58:24Z",
   "manifest": {
     "slug": "profilarr",
     "name": "Profilarr",
@@ -14,21 +14,33 @@
     "repo_url": "https://github.com/Tw1zT3d2four7/Profilarr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-19T20:31:16Z",
+    "last_updated": "2026-09-23T22:57:52Z",
     "latest": {
-      "version": "2.0.7",
-      "commit_sha": "0fbd3f69f9a29bae0ececfb30d1ddb7d28d23686",
-      "commit_sha_short": "0fbd3f6",
-      "build_timestamp": "2026-09-19T20:31:36Z",
-      "last_updated": "2026-09-19T20:31:16Z",
-      "checksum_md5": "b2151d8e5a9133dff124b5bd9aed62de",
-      "checksum_sha256": "fe804476610bef25a3f46bfcc826ee8ed7853398b6a440c38f459a3b7a58d5b7",
-      "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.0.7/Profilarr.zip",
-      "latest_url": "profilarr-2.0.7/profilarr-2.0.7.zip",
-      "url": "profilarr-2.0.7/profilarr-2.0.7.zip",
-      "size": 476
+      "version": "2.1.4",
+      "commit_sha": "b29c04d58b63488ee1fde980406c5b1963936bb9",
+      "commit_sha_short": "b29c04d",
+      "build_timestamp": "2026-09-23T22:58:15Z",
+      "last_updated": "2026-09-23T22:57:52Z",
+      "checksum_md5": "49d09a161e6b96f5ec94d9f73f67affd",
+      "checksum_sha256": "f60ad2f12e17d56a0a611127d64c22eae798f7c655be4cd12c403b94746674d9",
+      "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.1.4/Profilarr.zip",
+      "latest_url": "profilarr-2.1.4/profilarr-2.1.4.zip",
+      "url": "profilarr-2.1.4/profilarr-2.1.4.zip",
+      "size": 471
     },
     "versions": [
+      {
+        "version": "2.1.4",
+        "commit_sha": "b29c04d58b63488ee1fde980406c5b1963936bb9",
+        "commit_sha_short": "b29c04d",
+        "build_timestamp": "2026-09-23T22:58:15Z",
+        "last_updated": "2026-09-23T22:57:52Z",
+        "checksum_md5": "49d09a161e6b96f5ec94d9f73f67affd",
+        "checksum_sha256": "f60ad2f12e17d56a0a611127d64c22eae798f7c655be4cd12c403b94746674d9",
+        "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.1.4/Profilarr.zip",
+        "url": "profilarr-2.1.4/profilarr-2.1.4.zip",
+        "size": 471
+      },
       {
         "version": "2.0.7",
         "commit_sha": "0fbd3f69f9a29bae0ececfb30d1ddb7d28d23686",
@@ -136,20 +148,8 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.2/Profilarr.zip",
         "url": "profilarr-1.0.2/profilarr-1.0.2.zip",
         "size": 23
-      },
-      {
-        "version": "1.0.1",
-        "commit_sha": "52669d8a2afb5e536025c6db7cb0a77ab2585b2c",
-        "commit_sha_short": "52669d8",
-        "build_timestamp": "2026-09-16T09:17:47Z",
-        "last_updated": "2026-09-16T05:17:22-04:00",
-        "checksum_md5": "735a8911c2fe4ac1cc3b554ab2b96b21",
-        "checksum_sha256": "a279a0c86aa4353ef7f919dceace40e8ac42d0bbdd77acf337adf3ff1476ec35",
-        "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.1/Profilarr.zip",
-        "url": "profilarr-1.0.1/profilarr-1.0.1.zip",
-        "size": 23
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaq7xMgAKCRB+wDprTCI0\nzj2lAP9gq5A6kRLxZ8RpZajO9QsyyA761jDPHF7b1vC2wfAQ/QEAkf0dRLU4qnUC\nE/xx0/prnk76r0UlhrblXlpFM058gQI=\n=gWAs\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarRZkwAKCRB+wDprTCI0\nzijIAQCA9bm50bVIYQOEMU9h2YLPxo5jBog1Jm16r10EyBZFPQD/UVUOpsABB2rQ\n5h1x5CDwjcCmBKgW/DJggDUwEbjjbQQ=\n=1Bjc\n-----END PGP SIGNATURE-----"
 }
