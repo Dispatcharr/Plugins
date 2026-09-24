@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T04:24:36Z",
+  "generated_at": "2026-09-24T04:31:35Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -71,12 +71,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/decypharr-vod/manifest.json",
         "author": "Tw1zT3d2four7",
         "license": "MIT",
-        "last_updated": "2026-09-22T10:14:00-04:00",
-        "latest_version": "0.4.7",
-        "latest_md5": "974dcef62c70a5b6cde324d14508ef60",
-        "latest_sha256": "465ae5889afbc3d2879bca05711161a8083ca47830080b55ec581e5b79e4e511",
-        "latest_url": "decypharr-vod-0.4.7/decypharr-vod-0.4.7.zip",
-        "latest_size": 1436
+        "last_updated": "2026-09-24T04:31:02Z",
+        "latest_version": "0.4.8",
+        "latest_md5": "aa0eae5a6d69a70626e020460bcdf7bb",
+        "latest_sha256": "bddfa12aa0169c94f5b45a2bb51bd394984fbca532f337ea8a66f9ba2a686618",
+        "latest_url": "decypharr-vod-0.4.8/decypharr-vod-0.4.8.zip",
+        "latest_size": 1438
       },
       {
         "slug": "dispatcharr-exporter",
@@ -290,11 +290,11 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/profilarr/manifest.json",
         "author": "Tw1zT3d2four7",
         "license": "MIT",
-        "last_updated": "2026-09-23T23:38:53Z",
-        "latest_version": "2.1.5",
-        "latest_md5": "079df134c2489d523326c6e616f1bb48",
-        "latest_sha256": "d2c2eb89004b16398c28c2c01fda6d15c102e36d8882c100675d753bd1f43deb",
-        "latest_url": "profilarr-2.1.5/profilarr-2.1.5.zip",
+        "last_updated": "2026-09-24T04:31:02Z",
+        "latest_version": "2.1.6",
+        "latest_md5": "49c815b332dd130a87d1cde2736f108b",
+        "latest_sha256": "2b66a3375c45b76c6e13120940709f06d323ece6fba89cbd2ea2c9fcc0fc7407",
+        "latest_url": "profilarr-2.1.6/profilarr-2.1.6.zip",
         "latest_size": 471
       },
       {
@@ -447,5 +447,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarSmCgAKCRB+wDprTCI0\nzmRpAQCaus9F4UJ2HDI7fQvJbuTujOvjq5W1ckwK9Xh0yW6dqwEAvPzQnU7iNm9d\np1WMcIrpBlvmDPWsAj9E/OK4M6vDRgw=\n=110M\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarSnrQAKCRB+wDprTCI0\nzsMUAQD/yZaxyWBk//ACCQYOTUD6RWGCc61WA1487DF1wJp6EgEAtPbCCvEZMYRw\n8DYV1/5Jl/NZH4Qk+hePnGbYF/SeMg8=\n=/57b\n-----END PGP SIGNATURE-----"
 }

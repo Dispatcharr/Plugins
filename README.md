@@ -15,7 +15,7 @@ This branch contains all published plugin releases.
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2481147` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.4.0` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream. |
-| [`Decypharr VOD`](#decypharr-vod) | `0.4.7` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
+| [`Decypharr VOD`](#decypharr-vod) | `0.4.8` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.1.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.28.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.8` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
@@ -30,7 +30,7 @@ This branch contains all published plugin releases.
 | [`Multiview`](#multiview) | `0.4.3` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2481646` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.3.2` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel. |
-| [`Profilarr`](#profilarr) | `2.1.5` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
+| [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
 | [`reservoarr`](#reservoarr) | `6.3.7` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.2621504` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
@@ -116,17 +116,17 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### [Decypharr VOD](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/decypharr-vod/README.md)
 
-**Version:** `0.4.7` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 22 2026, 14:14 UTC
+**Version:** `0.4.8` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 24 2026, 04:31 UTC
 
 Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Tw1zT3d2four7/Decypharr_vod)
 
 **Downloads:**
-- [Latest Release (`0.4.7`)](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-0.4.7/decypharr-vod-0.4.7.zip)
-- [All Versions (1 available)](./metadata/decypharr-vod)
+- [Latest Release (`0.4.8`)](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-0.4.8/decypharr-vod-0.4.8.zip)
+- [All Versions (2 available)](./metadata/decypharr-vod)
 
-**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/decypharr-vod) | **Last Change:** [`fa99c4d`](https://github.com/Dispatcharr/Plugins/commit/fa99c4df3014933bde445f1746d3f43d240ef092)
+**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/decypharr-vod) | **Last Change:** [`f5a6a0b`](https://github.com/Dispatcharr/Plugins/commit/f5a6a0bd3da24796156d458289cd813bf713e9d6)
 
 ---
 
@@ -374,17 +374,17 @@ TV-style weather channels powered by the Pirate Weather API. Runs up to three st
 
 ### [Profilarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/profilarr/README.md)
 
-**Version:** `2.1.5` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 23 2026, 23:38 UTC
+**Version:** `2.1.6` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 24 2026, 04:31 UTC
 
 Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Tw1zT3d2four7/Profilarr)
 
 **Downloads:**
-- [Latest Release (`2.1.5`)](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.1.5/profilarr-2.1.5.zip)
+- [Latest Release (`2.1.6`)](https://github.com/Dispatcharr/Plugins/releases/download/profilarr-2.1.6/profilarr-2.1.6.zip)
 - [All Versions (10 available)](./metadata/profilarr)
 
-**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/profilarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/profilarr/README.md) | **Last Change:** [`650d0da`](https://github.com/Dispatcharr/Plugins/commit/650d0dac0462d8c3bd389f72e03d7cd6fb0dc5b2)
+**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/profilarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/profilarr/README.md) | **Last Change:** [`f5a6a0b`](https://github.com/Dispatcharr/Plugins/commit/f5a6a0bd3da24796156d458289cd813bf713e9d6)
 
 ---
 
@@ -577,4 +577,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 24 2026, 04:24 UTC*
+*Last updated: Sep 24 2026, 04:31 UTC*
