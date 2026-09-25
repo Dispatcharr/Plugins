@@ -168,13 +168,13 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Channel Groups Mode** | select | Only the groups listed | Whether the list names the groups to process or the groups to skip. Choosing to skip means a group you create later is processed automatically. Empty list means all groups either way |
 | **Stream Groups** | string | (all) | Stream groups to draw candidate streams from, comma-separated |
 | **Stream Groups Mode** | select | Only the groups listed | The same choice for stream groups, resolved separately from the channel-group list |
-| **M3U Sources** | string | (all) | M3U sources to use, comma-separated. Order sets priority |
+| **M3U Sources** | string | (all) | M3U sources to use, comma-separated. Order sets priority. Only listed sources are used unless the list contains `*`, which stands for every other source: `Free Provider, *` puts Free Provider first and keeps all the rest |
 | **Custom Aliases** | string | (none) | JSON object of extra `"channel": ["alias", ...]` mappings. Channel names and aliases are both matched case-insensitively, and whitespace around a channel name is ignored |
 | **Stream Name Regex Rules** | string | (none) | JSON list of `[find, replace]` pairs applied to stream names before matching. See [Regex pre-processing](https://github.com/PiratesIRC/Stream-Mapparr/blob/main/docs/regex-preprocessing.md) |
 | **Prioritize Quality** | boolean | False | Sort by quality first, then by M3U source priority |
 | **Custom Ignore Tags** | string | (none) | Tags to strip before matching, for example `[Dead], (Backup)` |
 | **Wait for IPTV Checker Completion** | boolean | False | Hold a scheduled run until IPTV Checker has finished, so matching sees fresh stats |
-| **IPTV Checker Max Wait (hours)** | number | 2 | How long to wait before running anyway |
+| **IPTV Checker Max Wait (hours)** | number | 6 | How long to wait before running anyway |
 | **Run After IPTV Checker Scan** | boolean | False | When IPTV Checker finishes a scheduled scan, run the scheduled steps (Sort Alternate Streams and Match and Assign, whichever are ticked). IPTV Checker needs its own `Trigger Stream-Mapparr` setting on |
 | **Enable CSV Export** | boolean | True | Write a CSV on a scheduled Match and Assign run. A dry run always writes one |
 | **Delete CSV Exports Older Than (Days)** | number | 0 | Remove this plugin's older reports after each new one is written. 0, the default, keeps everything. Only files this plugin wrote are ever considered, because that directory is shared with other plugins. The newest report and the one just written always survive |
