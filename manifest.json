@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-25T21:29:16Z",
+  "generated_at": "2026-09-26T05:48:06Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -144,12 +144,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epg-and-sports-editor/manifest.json",
         "author": "jstevenscl",
         "license": "MIT",
-        "last_updated": "2026-09-25T21:28:43Z",
-        "latest_version": "0.4.06",
-        "latest_md5": "829f58f4c32d4c3a50d36ae101b52cbf",
-        "latest_sha256": "0079deacc8b4aa27fe2836cfaefaa35ccfb89efddd146ce8850d1678b8bdc504",
-        "latest_url": "epg-and-sports-editor-0.4.06/epg-and-sports-editor-0.4.06.zip",
-        "latest_size": 147
+        "last_updated": "2026-09-26T05:47:39Z",
+        "latest_version": "0.4.07",
+        "latest_md5": "6ad1c3c5f77d88dca8baf26dca5e838c",
+        "latest_sha256": "1d901c17a1881b6b592cd908156bb5eae63639c6167e9da926ab39168dafe2e8",
+        "latest_url": "epg-and-sports-editor-0.4.07/epg-and-sports-editor-0.4.07.zip",
+        "latest_size": 152
       },
       {
         "slug": "epg-janitor",
@@ -447,5 +447,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarbnsQAKCRB+wDprTCI0\nzkBXAQDhNX/YcHz0cmhBkH6gDYIp2stj37lkiHnbzIZEfD1wegEAuDohNPX0QfYS\noPJFyl64v+ldBZjN+m6pBeVlLjGIBwI=\n=A/bk\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCardcmwAKCRB+wDprTCI0\nzhTYAP9LqT/y2VsClKAJKprWQLnqEU/1KlEuk6zuZlPGyVkKMAEAvZc3wW8KhUg+\nZHoaC6obiBz4OCgD6osLW42Wg+yemgY=\n=VbY1\n-----END PGP SIGNATURE-----"
 }
