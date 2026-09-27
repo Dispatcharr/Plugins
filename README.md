@@ -29,6 +29,7 @@ This branch contains all published plugin releases.
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
 | [`Multiview`](#multiview) | `0.4.3` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2481646` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
+| [`Packet Slapper`](#packet-slapper) | `1.0.0` | write-erase | MIT | Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.3.2` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
 | [`reservoarr`](#reservoarr) | `6.3.7` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
@@ -356,6 +357,22 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 
 ---
 
+### [Packet Slapper](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/packet-slapper/README.md)
+
+**Version:** `1.0.0` | **Author:** write-erase | **Last Updated:** Sep 27 2026, 19:21 UTC
+
+Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/write-erase/packet-slapper)
+
+**Downloads:**
+- [Latest Release (`1.0.0`)](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-1.0.0/packet-slapper-1.0.0.zip)
+- [All Versions (1 available)](./metadata/packet-slapper)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/packet-slapper) | **Last Change:** [`3cfc312`](https://github.com/Dispatcharr/Plugins/commit/3cfc312abf5b0b52533e0b41165189beae2d072e)
+
+---
+
 ### [PWS - Pirate Weatharr Station](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/pirate-weatharr-station/README.md)
 
 **Version:** `1.3.2` | **Author:** dexdeadly | **Last Updated:** Aug 18 2026, 04:53 UTC
@@ -577,4 +594,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 27 2026, 18:56 UTC*
+*Last updated: Sep 27 2026, 19:22 UTC*
