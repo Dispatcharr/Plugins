@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-27T18:55:53Z",
+  "generated_at": "2026-09-27T22:40:37Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/jstevenscl/epg-and-sports-editor",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-27T18:55:15Z",
+    "last_updated": "2026-09-27T22:40:11Z",
     "latest": {
-      "version": "0.5.01",
-      "commit_sha": "23fc76b57c517889a6899193e273eecdb2f94260",
-      "commit_sha_short": "23fc76b",
-      "build_timestamp": "2026-09-27T18:55:36Z",
-      "last_updated": "2026-09-27T18:55:15Z",
-      "checksum_md5": "cf29437c057294ea7ca80d3fa7caf6d1",
-      "checksum_sha256": "733d43f6422c3b9bec298ebaef5aeea5d2f940e820215cda627f19b8d0643752",
-      "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.01/epg-and-sports-editor-v0.5.01.zip",
-      "latest_url": "epg-and-sports-editor-0.5.01/epg-and-sports-editor-0.5.01.zip",
-      "url": "epg-and-sports-editor-0.5.01/epg-and-sports-editor-0.5.01.zip",
-      "size": 163
+      "version": "0.5.02",
+      "commit_sha": "1cb707c3d3c5d5824f8ffda75c2f211cd35e19d7",
+      "commit_sha_short": "1cb707c",
+      "build_timestamp": "2026-09-27T22:40:27Z",
+      "last_updated": "2026-09-27T22:40:11Z",
+      "checksum_md5": "bfaa32bf25f202b56026a943bd54ba89",
+      "checksum_sha256": "1e050c95ccb2bf0f7e845f908e9ba55c296d207ccc97e54db8b32550df2e4de3",
+      "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.02/epg-and-sports-editor-v0.5.02.zip",
+      "latest_url": "epg-and-sports-editor-0.5.02/epg-and-sports-editor-0.5.02.zip",
+      "url": "epg-and-sports-editor-0.5.02/epg-and-sports-editor-0.5.02.zip",
+      "size": 165
     },
     "versions": [
+      {
+        "version": "0.5.02",
+        "commit_sha": "1cb707c3d3c5d5824f8ffda75c2f211cd35e19d7",
+        "commit_sha_short": "1cb707c",
+        "build_timestamp": "2026-09-27T22:40:27Z",
+        "last_updated": "2026-09-27T22:40:11Z",
+        "checksum_md5": "bfaa32bf25f202b56026a943bd54ba89",
+        "checksum_sha256": "1e050c95ccb2bf0f7e845f908e9ba55c296d207ccc97e54db8b32550df2e4de3",
+        "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.02/epg-and-sports-editor-v0.5.02.zip",
+        "url": "epg-and-sports-editor-0.5.02/epg-and-sports-editor-0.5.02.zip",
+        "size": 165
+      },
       {
         "version": "0.5.01",
         "commit_sha": "23fc76b57c517889a6899193e273eecdb2f94260",
@@ -133,20 +145,8 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.4.02/epg-and-sports-editor-v0.4.02.zip",
         "url": "epg-and-sports-editor-0.4.02/epg-and-sports-editor-0.4.02.zip",
         "size": 145
-      },
-      {
-        "version": "0.4.01",
-        "commit_sha": "366a31a15132234619af1e5a287f3ac3c4c2ed15",
-        "commit_sha_short": "366a31a",
-        "build_timestamp": "2026-09-16T05:15:28Z",
-        "last_updated": "2026-09-16T05:15:11Z",
-        "checksum_md5": "e9443371f7c9bd8953a44c43ec82c9a6",
-        "checksum_sha256": "cfa790cbcd8cde351e10884ce7a80638c9c17e644101a722610f77a08be484b4",
-        "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.4.01/epg-and-sports-editor-v0.4.01.zip",
-        "url": "epg-and-sports-editor-0.4.01/epg-and-sports-editor-0.4.01.zip",
-        "size": 145
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarlmuwAKCRB+wDprTCI0\nzjGOAP48Qp3jb9BxZyY3lJdVmDEbB+a6Nlo+qVaQqO0mWoCbfQD+KEnEESu1xaSc\nD3QSvxUpuL4rAuS81wdtqVRSoXqR8Q4=\n=xn32\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarmbaAAKCRB+wDprTCI0\nzrbEAP9ZHEO0kZ/PC7XMM800AGtXJfdDfaVOw6tIikyWnFpq9QEAssDkp8sfgnw2\ny96hvJ9ejla1wys+fCO1axSGzNPfsQM=\n=9AwI\n-----END PGP SIGNATURE-----"
 }
