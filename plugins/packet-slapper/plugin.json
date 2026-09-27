@@ -1,0 +1,10 @@
+{
+  "name": "Packet Slapper",
+  "version": "1.0.0",
+  "description": "Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency.",
+  "author": "write-erase",
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v{version}/packet-slapper.zip",
+  "repo_url": "https://github.com/write-erase/packet-slapper"
+}
