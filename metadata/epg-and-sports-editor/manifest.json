@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T00:59:48Z",
+  "generated_at": "2026-09-28T04:29:16Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/jstevenscl/epg-and-sports-editor",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-28T00:59:01Z",
+    "last_updated": "2026-09-28T04:28:41Z",
     "latest": {
-      "version": "0.5.03",
-      "commit_sha": "200521fc072c7751fa43cbc51daaad5956032936",
-      "commit_sha_short": "200521f",
-      "build_timestamp": "2026-09-28T00:59:37Z",
-      "last_updated": "2026-09-28T00:59:01Z",
-      "checksum_md5": "55926b5b61aaca0edae3bf1f5f74cafb",
-      "checksum_sha256": "3e21d5a09a0541924039b8d74a04fcc66a366f8c542ed7b02049d582ce414c73",
-      "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.03/epg-and-sports-editor-v0.5.03.zip",
-      "latest_url": "epg-and-sports-editor-0.5.03/epg-and-sports-editor-0.5.03.zip",
-      "url": "epg-and-sports-editor-0.5.03/epg-and-sports-editor-0.5.03.zip",
+      "version": "0.5.04",
+      "commit_sha": "c59d8e218bb5a1681493c536d0dd463e51e52aa3",
+      "commit_sha_short": "c59d8e2",
+      "build_timestamp": "2026-09-28T04:29:02Z",
+      "last_updated": "2026-09-28T04:28:41Z",
+      "checksum_md5": "b2712e8d6046d3e49eb9d91ef0aa28f0",
+      "checksum_sha256": "94e2ec5a976089172daa3e5267a30d4a0e7e672286e9bdea8adf046dd6507056",
+      "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.04/epg-and-sports-editor-v0.5.04.zip",
+      "latest_url": "epg-and-sports-editor-0.5.04/epg-and-sports-editor-0.5.04.zip",
+      "url": "epg-and-sports-editor-0.5.04/epg-and-sports-editor-0.5.04.zip",
       "size": 166
     },
     "versions": [
+      {
+        "version": "0.5.04",
+        "commit_sha": "c59d8e218bb5a1681493c536d0dd463e51e52aa3",
+        "commit_sha_short": "c59d8e2",
+        "build_timestamp": "2026-09-28T04:29:02Z",
+        "last_updated": "2026-09-28T04:28:41Z",
+        "checksum_md5": "b2712e8d6046d3e49eb9d91ef0aa28f0",
+        "checksum_sha256": "94e2ec5a976089172daa3e5267a30d4a0e7e672286e9bdea8adf046dd6507056",
+        "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.04/epg-and-sports-editor-v0.5.04.zip",
+        "url": "epg-and-sports-editor-0.5.04/epg-and-sports-editor-0.5.04.zip",
+        "size": 166
+      },
       {
         "version": "0.5.03",
         "commit_sha": "200521fc072c7751fa43cbc51daaad5956032936",
@@ -133,20 +145,8 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.4.04/epg-and-sports-editor-v0.4.04.zip",
         "url": "epg-and-sports-editor-0.4.04/epg-and-sports-editor-0.4.04.zip",
         "size": 146
-      },
-      {
-        "version": "0.4.03",
-        "commit_sha": "891219a2e61d96063b94f22e985e895217bfed2a",
-        "commit_sha_short": "891219a",
-        "build_timestamp": "2026-09-23T04:03:41Z",
-        "last_updated": "2026-09-23T04:03:22Z",
-        "checksum_md5": "2423dc905fb63a0dff02b92a0c6e93a3",
-        "checksum_sha256": "cf579e61a7dd507d2911bea0772e10a1ad015317f4abb62501165c13542fc241",
-        "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.4.03/epg-and-sports-editor-v0.4.03.zip",
-        "url": "epg-and-sports-editor-0.4.03/epg-and-sports-editor-0.4.03.zip",
-        "size": 146
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarm8BgAKCRB+wDprTCI0\nzs6EAQDbtrct6GcMynA9XFbQTSbfoozpgSXjbMd9zyqL4poxRQD+MCT2lyv8FfQ0\n1LF9hcomlTdCdxy+pvqKmrfMm1g4TwA=\n=GSXt\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCarntHgAKCRB+wDprTCI0\nzn36AQDPBmO3oHNYpNvHOjP9syapmt8CM6jpiXFM+IFmF2W4nAD6Aw9LT7Sss9m8\nliQdwn9dVw50kVy7z0a9j8WVRmcxgA8=\n=w/hb\n-----END PGP SIGNATURE-----"
 }
