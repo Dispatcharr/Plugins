@@ -15,7 +15,7 @@ This branch contains all published plugin releases.
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2481147` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.4.0` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream. |
-| [`Decypharr VOD`](#decypharr-vod) | `0.4.8` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
+| [`Decypharr VOD`](#decypharr-vod) | `0.4.9` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.1.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.31.0` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.8` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
@@ -117,17 +117,17 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### [Decypharr VOD](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/decypharr-vod/README.md)
 
-**Version:** `0.4.8` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 24 2026, 04:31 UTC
+**Version:** `0.4.9` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 28 2026, 22:11 UTC
 
 Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Tw1zT3d2four7/Decypharr_vod)
 
 **Downloads:**
-- [Latest Release (`0.4.8`)](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-0.4.8/decypharr-vod-0.4.8.zip)
-- [All Versions (2 available)](./metadata/decypharr-vod)
+- [Latest Release (`0.4.9`)](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-0.4.9/decypharr-vod-0.4.9.zip)
+- [All Versions (3 available)](./metadata/decypharr-vod)
 
-**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/decypharr-vod) | **Last Change:** [`f5a6a0b`](https://github.com/Dispatcharr/Plugins/commit/f5a6a0bd3da24796156d458289cd813bf713e9d6)
+**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/decypharr-vod) | **Last Change:** [`9b04f8b`](https://github.com/Dispatcharr/Plugins/commit/9b04f8bc5bae02b30f72609549eca6a7421c1c51)
 
 ---
 
@@ -594,4 +594,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Sep 28 2026, 04:29 UTC*
+*Last updated: Sep 28 2026, 22:12 UTC*
