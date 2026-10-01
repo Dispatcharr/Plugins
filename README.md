@@ -30,7 +30,7 @@ This branch contains all published plugin releases.
 | [`Multiview`](#multiview) | `0.4.3` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2481646` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
 | [`Packet Slapper`](#packet-slapper) | `1.0.0` | write-erase | MIT | Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency. |
-| [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.3.2` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel. |
+| [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.4.2` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
 | [`reservoarr`](#reservoarr) | `6.3.7` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
@@ -375,17 +375,17 @@ Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure spee
 
 ### [PWS - Pirate Weatharr Station](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/pirate-weatharr-station/README.md)
 
-**Version:** `1.3.2` | **Author:** dexdeadly | **Last Updated:** Aug 18 2026, 04:53 UTC
+**Version:** `1.4.2` | **Author:** dexdeadly | **Last Updated:** Oct 01 2026, 19:45 UTC
 
-TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel.
+TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/dexdeadly/pirate-weatharr-station/)
 
 **Downloads:**
-- [Latest Release (`1.3.2`)](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip)
-- [All Versions (2 available)](./metadata/pirate-weatharr-station)
+- [Latest Release (`1.4.2`)](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.4.2/pirate-weatharr-station-1.4.2.zip)
+- [All Versions (3 available)](./metadata/pirate-weatharr-station)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/pirate-weatharr-station) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/pirate-weatharr-station/README.md) | **Last Change:** [`878b01c`](https://github.com/Dispatcharr/Plugins/commit/878b01c6f9a5f53c8c9c9e1e78994b5d7fc69d07)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/pirate-weatharr-station) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/pirate-weatharr-station/README.md) | **Last Change:** [`3c4dd61`](https://github.com/Dispatcharr/Plugins/commit/3c4dd6126c9c7c2bdc12f8e9c33fd8295b3f1c18)
 
 ---
 
@@ -594,4 +594,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 01 2026, 06:24 UTC*
+*Last updated: Oct 01 2026, 19:46 UTC*

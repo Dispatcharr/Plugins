@@ -2,9 +2,9 @@
 
 # PWS - Pirate Weatharr Station
 
-**Version:** `1.3.2` | **Author:** dexdeadly | **Last Updated:** Aug 18 2026, 04:53 UTC
+**Version:** `1.4.2` | **Author:** dexdeadly | **Last Updated:** Oct 01 2026, 19:45 UTC
 
-TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel.
+TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/dexdeadly/pirate-weatharr-station/)
 
@@ -12,20 +12,21 @@ TV-style weather channels powered by the Pirate Weather API. Runs up to three st
 
 ### Latest Release
 
-- **Download:** [`pirate-weatharr-station-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip)
-- **Built:** Aug 18 2026, 04:54 UTC
-- **Source Commit:** [`878b01c`](https://github.com/Dispatcharr/Plugins/commit/878b01c6f9a5f53c8c9c9e1e78994b5d7fc69d07)
+- **Download:** [`pirate-weatharr-station-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.4.2/pirate-weatharr-station-1.4.2.zip)
+- **Built:** Oct 01 2026, 19:46 UTC
+- **Source Commit:** [`3c4dd61`](https://github.com/Dispatcharr/Plugins/commit/3c4dd6126c9c7c2bdc12f8e9c33fd8295b3f1c18)
 
 **Checksums:**
 ```
-MD5:    0a2369bfb13318e04ccc14e00e8a605f
-SHA256: 40bc77a571270d47205d4ec5cb74b172352c2465845dfa59e574e1ca26a3165b
+MD5:    1998819e6011a1f35904d41776643097
+SHA256: 380c998bc0463b317f49f8756579ea41ab1233fbb86e8c15effe1827c60963e0
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.4.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.4.2/pirate-weatharr-station-1.4.2.zip) | Oct 01 2026, 19:46 UTC | [`3c4dd61`](https://github.com/Dispatcharr/Plugins/commit/3c4dd6126c9c7c2bdc12f8e9c33fd8295b3f1c18) | 1998819e6011a1f35904d41776643097 | 380c998bc0463b317f49f8756579ea41ab1233fbb86e8c15effe1827c60963e0 |
 | `1.3.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip) | Aug 18 2026, 04:54 UTC | [`878b01c`](https://github.com/Dispatcharr/Plugins/commit/878b01c6f9a5f53c8c9c9e1e78994b5d7fc69d07) | 0a2369bfb13318e04ccc14e00e8a605f | 40bc77a571270d47205d4ec5cb74b172352c2465845dfa59e574e1ca26a3165b |
 | `1.0.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.0.0/pirate-weatharr-station-1.0.0.zip) | Jul 31 2026, 12:47 UTC | [`6411b97`](https://github.com/Dispatcharr/Plugins/commit/6411b9759caf40f17bcc38e88e358fc669c71488) | e190adfe0b8739be04fa80291c4dffcc | a44cef5f3470854f1b05faaf64c76fecb67df23050ad5439e900f35e07499263 |
 
@@ -47,7 +48,7 @@ A self-hosted, TV-style weather channel for Dispatcharr. PWS pulls forecast data
 
 ## Pages
 
-The channel cycles through eight pages, about 14 seconds each:
+The channel cycles through eight pages (nine with a surf spot set), about 14 seconds each:
 
 | Page | Contents |
 |---|---|
@@ -58,7 +59,9 @@ The channel cycles through eight pages, about 14 seconds each:
 | Regional Conditions | Current temperatures at nearby cities, plotted on a map |
 | Forecast Highs | Tomorrow's highs at those same cities |
 | Extended Forecast | Narrative panels for today and tomorrow with an eight-value stat grid, feels-like, accumulation, visibility and moon phase |
-| Almanac | Sunrise/sunset, dawn/dusk, moon phase, UV, ozone, accumulations, fire index |
+| Surf Report | Only when a surf spot is set. Estimated surf height and rating, primary/secondary swell, wind, water temperature, next tides and a 5-day wave outlook. See [Surf report](#surf-report) |
+| Almanac | Sunrise/sunset, dawn/dusk, a phase-accurate moon icon, UV, ozone, accumulations, fire index |
+
 
 ## Requirements
 

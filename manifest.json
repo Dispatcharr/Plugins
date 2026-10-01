@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-01T06:24:18Z",
+  "generated_at": "2026-10-01T19:46:24Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -286,16 +286,16 @@
       {
         "slug": "pirate-weatharr-station",
         "name": "PWS - Pirate Weatharr Station",
-        "description": "TV-style weather channels powered by the Pirate Weather API. Runs up to three stations, each with its own location and Dispatcharr channel.",
+        "description": "TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel.",
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/pirate-weatharr-station/manifest.json",
         "author": "dexdeadly",
         "license": "MIT",
-        "last_updated": "2026-08-18T04:53:57Z",
-        "latest_version": "1.3.2",
-        "latest_md5": "0a2369bfb13318e04ccc14e00e8a605f",
-        "latest_sha256": "40bc77a571270d47205d4ec5cb74b172352c2465845dfa59e574e1ca26a3165b",
-        "latest_url": "pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip",
-        "latest_size": 35852
+        "last_updated": "2026-10-01T19:45:40Z",
+        "latest_version": "1.4.2",
+        "latest_md5": "1998819e6011a1f35904d41776643097",
+        "latest_sha256": "380c998bc0463b317f49f8756579ea41ab1233fbb86e8c15effe1827c60963e0",
+        "latest_url": "pirate-weatharr-station-1.4.2/pirate-weatharr-station-1.4.2.zip",
+        "latest_size": 35887
       },
       {
         "slug": "profilarr",
@@ -461,5 +461,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCar38mQAKCRB+wDprTCI0\nznk9AQDlxkoT8ncZxgXdj69E9fkv6wM1bdi02nytyZXdERjv/gEAmPAFpbJzezcX\njDFteljDeXNSzLyz1meMCYAn7J3ICAI=\n=PO2t\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCar64lwAKCRB+wDprTCI0\nzs1xAQDn9f05PJKF3dLAYTAejOXPr3bYlb+UdMxtxTKbCRIZjwD/a78IGeEL7p8Z\nwc8YvW+CtgEn0e3kIc0vb9/mMSvPkwk=\n=++SE\n-----END PGP SIGNATURE-----"
 }
