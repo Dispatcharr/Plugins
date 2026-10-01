@@ -1,7 +1,8 @@
 # Could Not Dispatch
 
 A Dispatcharr plugin that plays a looping image or video when every real stream on a
-channel has failed, so viewers see a message instead of a black screen.
+channel has failed, so viewers see a message instead of a black screen. With an API key,
+it later sends the channel back to its first stream.
 
 When all of a channel's streams are down, Dispatcharr runs out of alternatives and drops
 the client with a 503. From the sofa that looks the same as a broken router. This plugin
@@ -28,21 +29,22 @@ and pressing refresh on the Plugins page. Enable the plugin, fill in the setting
 | Image or video | A path inside the data volume, such as `/data/offline.png`, or an `http(s)` link that is downloaded and cached |
 | Local port | Where the fallback listens inside the container. Change it only on a conflict |
 | Width, Height | Leave both at 0 to match the picture, up to 1920x1080. Set both to force a size; the picture is fitted inside and padded to keep its shape |
-| Frames per second | 5 is plenty for a still card |
+| Frames per second | 25 by default. Jellyfin keeps the frame rate a session starts with, so a viewer who starts on the card at a lower rate keeps it after the channel is back. Upgrading from 0.3.3 or earlier keeps the value you saved, 5 unless you changed it: set 25 and press **Apply** |
 | Stream bitrate | kbit/s, default 2000. Lower it only if bandwidth matters more than the picture |
 | Excluded groups | One channel group name per line |
 | Excluded channels | One channel number or channel name per line |
 | Cover new channels automatically | Attaches the fallback to channels added by an M3U refresh |
+| API key | A Dispatcharr API key. With it, channels left on the fallback are sent back to their first stream, see below. Empty keeps them on the card |
 
 ## Actions
 
 | Action | What it does |
 |---|---|
-| Apply settings | Starts the fallback and attaches it, last in order, to every channel that is not excluded. Saving a setting changes nothing until Apply runs, and a viewer already watching the card keeps the old encode until they reopen the channel |
+| Apply settings | Starts the fallback and attaches it, last in order, to every channel that is not excluded, and removes it from channels excluded since. Saving a setting changes nothing until Apply runs, and a viewer already watching the card keeps the old encode until they reopen the channel |
 | Check status | Reports whether the fallback is running and how many channels carry it |
-| Cover new channels | Attaches it to channels that do not carry it yet. Also runs by itself after an M3U refresh |
+| Cover new channels | Attaches it to channels that do not carry it yet, removes it from excluded ones, and moves it back to the end where a stream was added after it. Also runs by itself after an M3U refresh |
 | Restart fallback | Starts it again if it is down. Also runs by itself when a channel starts, at most once a minute |
-| Remove fallback | Detaches it everywhere, stops it, deletes its stream |
+| Remove fallback | Detaches it everywhere, stops it, deletes its streams |
 
 ## How it works
 
@@ -52,10 +54,17 @@ alive, looping your file into MPEG-TS, and serves it over HTTP at
 The encoder starts when the first viewer arrives and stops fifteen seconds after the last
 one leaves, so an idle server costs nothing.
 
-That URL is registered as a Dispatcharr custom stream and attached to each channel with
-the highest order number, which puts it last in the failover list. Dispatcharr's own
-failover does the rest: it walks the channel's streams in order, and the fallback is the
-only one that cannot fail.
+Each channel gets a Dispatcharr custom stream of its own with that URL, attached with the
+highest order number, which puts it last in the failover list. Dispatcharr's own failover
+does the rest: it walks the channel's streams in order, and the fallback is the only one
+that cannot fail. A stream added to a channel later lands after the fallback, where the
+failover would never reach it; Apply and Cover new channels move the fallback back to the
+end.
+
+The stream is one per channel, not one for all, because Dispatcharr records which M3U
+profile a session holds under the stream. Channels sharing one stream share that record,
+and a channel sent back from the card could then take a provider connection without
+counting it, or free one another channel still held.
 
 A custom stream belongs to the built-in `custom` M3U account, which has no connection
 limit, so the fallback never competes for a slot with your provider.
@@ -114,9 +123,21 @@ megabyte, so nothing is given up.
 stream, so Dispatcharr considers the channel up. To spot real outages, watch the
 `channel_failover` system events rather than channel state.
 
-**Playback does not return to the provider on its own.** Once a viewer is on the card
-they stay there until they change channel. This is deliberate: cutting away mid-message
-would be worse than leaving it up.
+**Playback returns to the provider only with an API key.** Dispatcharr never leaves the
+fallback by itself: a channel stays on the card for as long as a client holds it, even
+after the provider is back. Without a key that stays true. With one, the fallback asks
+Dispatcharr every ten seconds which channels are playing it and how many connections each
+M3U profile is using, and switches a channel still on it after two minutes to its first
+stream. If that stream is still down, the failover walks the chain and lands on the card
+again, and the next try waits longer: 4, 8, then 15 minutes. The wait starts over once the
+channel has stayed off the card for 15 minutes.
+
+A channel that reaches the card while the provider of its first stream is full, or was full
+in the 20 seconds before, is there for lack of a connection, not because its streams failed:
+a viewer switching channels with every connection in use lands on it. That channel goes back
+as soon as a connection frees up, checked every two seconds, and a refusal for capacity is
+not counted as a try. If it lands on the card again within two minutes of that return, its
+streams are failing after all, and it waits like any other.
 
 **One edge case in failover order.** Dispatcharr rotates the alternate list starting from
 the current stream and wraps around. If the first stream of a channel was unavailable
@@ -124,16 +145,34 @@ when the viewer connected, the rotation can reach the fallback before retrying t
 streams that sit *before* the current one. It only happens when M3U profiles are at
 capacity, and it costs one retry.
 
-**The HDHomeRun tuner count grows by one.** Dispatcharr adds custom streams to the number
-of tuners it advertises.
+**The HDHomeRun tuner count grows by one per covered channel.** Dispatcharr adds custom
+streams to the number of tuners it advertises. The connection limit of your provider is
+unchanged.
 
 **Restarting Dispatcharr leaves the fallback down until it is needed.** The next channel
 start brings it back by itself; **Restart fallback** does it immediately.
 
 **The plugin keeps a small state file** at `.runtime/state.json` inside its own folder,
-holding the process it started and the stream it created. It cannot live in the plugin
-settings: saving those replaces the whole object, which would erase it.
+holding the process it started. It cannot live in the plugin settings: saving those
+replaces the whole object, which would erase it.
 
-## Source and licence
+## Development
 
-[github.com/PilaScat/could-not-dispatch](https://github.com/PilaScat/could-not-dispatch) — MIT.
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -e '.[dev]'
+.venv/bin/python -m pytest
+.venv/bin/python -m mypy could_not_dispatch plugin.py
+.venv/bin/python -m ruff check .
+.venv/bin/python scripts/build_zip.py
+```
+
+The same four checks run in CI on every push. Decisions, traps and the release routine are in
+[docs/MEMORY.md](https://github.com/PilaScat/could-not-dispatch/blob/master/docs/MEMORY.md).
+
+`build_zip.py` writes `dist/could-not-dispatch-<version>.zip`, laid out the way
+Dispatcharr expects an imported plugin.
+
+## Licence
+
+MIT. See [LICENSE](https://github.com/PilaScat/could-not-dispatch/blob/master/LICENSE).

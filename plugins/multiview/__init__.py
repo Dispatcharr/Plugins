@@ -251,7 +251,7 @@ class Plugin:
                 },
             )
             verb = "created" if created else "updated"
-            self._refresh_epg_then_m3u(account.id, source_id)
+            self._refresh_m3u_then_epg(account.id, source_id)
             return {
                 "status": "success",
                 "message": f"M3U written to {m3u_path} | M3U account {verb} in Dispatcharr",
@@ -263,25 +263,25 @@ class Plugin:
                 "message": f"M3U written to {m3u_path} (could not create M3U account: {e})",
             }
 
-    def _refresh_epg_then_m3u(self, account_id, source_id) -> None:
-        """Refresh EPG first, then M3U, once EPG finishes (success OR error).
+    def _refresh_m3u_then_epg(self, account_id, source_id) -> None:
+        """Refresh M3U first, then parse EPG after its channel mappings exist.
 
         Firing both at once collides on Dispatcharr's shared celery DB connection
-        ("the last operation didn't produce records (command status: INSERT 0 N)"),
-        so M3U must wait for EPG to finish. A plain celery chain achieves that but
-        aborts the M3U task if EPG raises -- which silently skipped the M3U refresh
-        (and all its Dispatcharr-side websocket progress) whenever EPG refresh
-        failed. link_error() also fires the M3U task on EPG's failure path, so it
-        always runs once EPG is done, regardless of outcome.
+        ("the last operation didn't produce records (command status: INSERT 0 N)").
+        The EPG parser only reads programmes for EPG rows mapped to channels, and
+        M3U refresh creates those mappings, so the tasks must be serialized in
+        this order. If M3U refresh fails, skip EPG parsing rather than parse stale
+        channel mappings.
         """
         try:
             from celery import chain
             from apps.m3u.tasks import refresh_single_m3u_account
             if source_id is not None:
                 from apps.epg.tasks import refresh_epg_data
-                epg_sig = refresh_epg_data.si(source_id)
-                epg_sig.link_error(refresh_single_m3u_account.si(account_id))
-                chain(epg_sig, refresh_single_m3u_account.si(account_id)).delay()
+                chain(
+                    refresh_single_m3u_account.si(account_id),
+                    refresh_epg_data.si(source_id),
+                ).delay()
             else:
                 refresh_single_m3u_account.delay(account_id)
         except Exception as e:  # noqa: BLE001

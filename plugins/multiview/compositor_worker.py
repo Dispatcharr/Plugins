@@ -31,6 +31,7 @@ from parameters import fps_fraction, build_encoder_cmd, validate_encoder  # noqa
 
 DRIFT_THRESHOLD = 0.25  # seconds of audio-behind-video before we skip the
                          # FIFO forward to re-sync (see audio_feeder())
+AUDIO_LEAD_SECS = 0.10  # retain this much audio around the video PTS clock
 
 
 # ---------------------------------------------------------------- compositing helpers
@@ -85,6 +86,7 @@ def audio_feeder(track, fd, stop):
             if was_valid:
                 # Clock just went None -- reconnect in progress; reset snap state
                 # so we re-anchor when the new stream establishes its first frame.
+                log(f"channel {track.name}: audio clock reset")
                 snapped = False
                 start = None
                 written = 0
@@ -96,7 +98,8 @@ def audio_feeder(track, fd, stop):
         if not snapped:
             # New clock available (startup or post-reconnect): snap audio buffer
             # to current video PTS and reset wall-clock counters.
-            track._align_to_pts(pts_now - 0.10)
+            track._align_to_pts(pts_now - AUDIO_LEAD_SECS)
+            log(f"channel {track.name}: audio clock anchor video_pts={pts_now:.3f}")
             start = time.monotonic()
             written = 0
             snapped = True
@@ -108,9 +111,13 @@ def audio_feeder(track, fd, stop):
         # self-limiting (FIFO capped by _trim(), audio never paced faster
         # than real time) and left uncorrected, matching the pre-existing
         # one-shot snap behavior which is also catch-up-only.
-        last_pts = track.last_taken_pts
+        last_pts, _, _ = track.audio_status()
         if last_pts is not None and (pts_now - last_pts) > DRIFT_THRESHOLD:
-            track._align_to_pts(pts_now - 0.10)
+            delta = pts_now - last_pts
+            track._align_to_pts(pts_now - AUDIO_LEAD_SECS)
+            with track.alock:
+                track.audio_resyncs += 1
+            log(f"channel {track.name}: audio catch-up delta={delta:.3f}s")
 
         target = int((time.monotonic() - start) * AUDIO_RATE)
         need = target - written
@@ -230,11 +237,13 @@ def main():
     log_at = start + 30.0
     prev_t = start
     prev_counts = [0] * len(channels)
+    prev_audio_resyncs = [0] * len(audio_chs)
     log(f"started: {len(channels)} tiles, {len(audio_chs)} audio, {out_w}x{out_h}@{cfg['fps']}")
     try:
         while not stop.is_set():
+            frame_time = start + n / fps_f
             for t in channels:
-                Yt, Ut, Vt, ox, oy, tw, th = t.current()
+                Yt, Ut, Vt, ox, oy, tw, th = t.current_at(frame_time)
                 x, y, w, h = t.x, t.y, t.w, t.h
                 Yc[y:y + h, x:x + w] = bg_Y[y:y + h, x:x + w]
                 Uc[y // 2:(y + h) // 2, x // 2:(x + w) // 2] = bg_U[y // 2:(y + h) // 2, x // 2:(x + w) // 2]
@@ -249,12 +258,22 @@ def main():
             now = time.monotonic()
             if now >= log_at:   # heartbeat: per-channel decode fps (CPU health)
                 dt = now - prev_t
-                rates = " ".join(f"{c.name[:7]}={(c.vcount - prev_counts[i]) / dt:.0f}fps"
+                rates = " ".join(f"{c.name[:7]}={(c.vcount - prev_counts[i]) / dt:.0f}fps/q{c.video_queue_depth()}"
                                  for i, c in enumerate(channels))
+                audio = []
+                for i, c in enumerate(audio_chs):
+                    last_pts, buffered, resyncs = c.audio_status()
+                    video_pts = c.audio_pts_now()
+                    delta = video_pts - last_pts if video_pts is not None and last_pts is not None else None
+                    delta_text = f"{delta:+.3f}s" if delta is not None else "n/a"
+                    audio.append(f"{c.name[:7]}=d{delta_text}/q{buffered / AUDIO_RATE:.2f}s/"
+                                 f"r{resyncs - prev_audio_resyncs[i]}")
                 import resource as _res
                 rss_mb = _res.getrusage(_res.RUSAGE_SELF).ru_maxrss // 1024
-                log(f"out {n / (now - start):.1f}fps; decode {rates}; rss={rss_mb}MB")
+                log(f"out {n / (now - start):.1f}fps; decode {rates}; "
+                    f"audio {' '.join(audio) or 'none'}; rss={rss_mb}MB")
                 prev_counts = [c.vcount for c in channels]
+                prev_audio_resyncs = [c.audio_status()[2] for c in audio_chs]
                 prev_t = now
                 log_at = now + 30.0
             delay = (start + n / fps_f) - now

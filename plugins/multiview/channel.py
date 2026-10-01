@@ -5,6 +5,7 @@ the PyAV/numpy dependency and the YUV compositing utilities are co-located with
 the class that uses them, separate from the encoder and orchestration code.
 """
 
+import collections
 import os
 import platform
 import sys
@@ -37,6 +38,7 @@ RECONNECT_MAX     = 60.0  # cap on per-retry delay
 RECONNECT_RETRIES = 12    # consecutive failures before giving up (~8 min total)
 AUDIO_RATE = 48000
 AUDIO_LAYOUT = "stereo"
+VIDEO_QUEUE_FRAMES = 120
 
 # Tolerate flaky IPTV (skip corrupt packets, ignore decode errors, generous
 # probe) and bound I/O so a dead child errors and retries instead of hanging.
@@ -148,6 +150,11 @@ class Channel:
             threading.Thread(target=self._load_logo, args=(logo,), daemon=True).start()
         self.running = True
         self.vcount = 0          # decoded video frames (for rate diagnostics)
+        # The compositor selects frames by source PTS. Keeping a short queue
+        # decouples that deterministic choice from decoder-thread wake timing.
+        self.vlock = threading.Lock()
+        self.vframes = collections.deque(maxlen=VIDEO_QUEUE_FRAMES)
+        self.display = self.fallback
         # audio buffer (only used when provides_audio)
         self.alock = threading.Lock()
         self.aframes = []        # list of (pts_s: float|None, ndarray(n,2) int16)
@@ -160,6 +167,7 @@ class Channel:
         # periodically re-sync via _align_to_pts(), without waiting for a full
         # clk_pts reset. Protected by self.alock (same as aframes/abuffered).
         self.last_taken_pts: "float | None" = None
+        self.audio_resyncs = 0
         self._reconnect_requested = False
 
     def _make_fallback(self, logo):
@@ -223,6 +231,9 @@ class Channel:
                 self.last_taken_pts = None
             self.clk_pts = None
             self.clk_wall = None
+            with self.vlock:
+                self.vframes.clear()
+                self.display = self.fallback
             vcount_before = self.vcount
             try:
                 cont = av.open(self.url, options=DECODE_OPTS)
@@ -231,13 +242,10 @@ class Channel:
                 # rate (single-threaded PyAV decode runs ~22-27fps -> slow motion).
                 vs.thread_type = "AUTO"
                 vs.codec_context.thread_count = 3
-                # Sources are 1080p60 but we output 30fps; skip non-reference
-                # (B) frames at decode to cut decode CPU on the box, which
-                # otherwise saturates (3x 1080p60 decode + encode).
-                try:
-                    vs.codec_context.skip_frame = "NONREF"
-                except Exception:
-                    pass
+                log(f"channel {self.name}: video codec={getattr(vs.codec_context, 'name', None)} "
+                    f"size={vs.width}x{vs.height} avg_rate={getattr(vs, 'average_rate', None)} "
+                    f"base_rate={getattr(vs, 'base_rate', None)} "
+                    f"field_order={getattr(vs.codec_context, 'field_order', None)}")
                 # Lower-effort decode for non-featured tiles: skip the deblocking
                 # loop filter. Big decode-CPU saving; the minor blockiness is
                 # hidden by downscaling small tiles. The featured tile keeps full
@@ -273,8 +281,15 @@ class Channel:
                                             time.sleep(gap)
                                         elif gap <= -2.0:
                                             self.clk_pts, self.clk_wall = pts_s, time.monotonic()
-                                self.latest = fit_into_tile(frame, self.w, self.h, self.valign, self.halign)
-                                self.fresh_until = time.monotonic() + TILE_STALE_SECS
+                                            with self.vlock:
+                                                self.vframes.clear()
+                                                self.display = self.fallback
+                                tile = fit_into_tile(frame, self.w, self.h, self.valign, self.halign)
+                                with self.vlock:
+                                    self.latest = tile
+                                    self.fresh_until = time.monotonic() + TILE_STALE_SECS
+                                    if frame.pts is not None:
+                                        self.vframes.append((pts_s, tile))
                                 self.vcount += 1
                         elif res is not None and packet.stream.type == "audio":
                             for frame in packet.decode():
@@ -310,10 +325,21 @@ class Channel:
                 log(f"channel {self.name}: retry {failures}/{RECONNECT_RETRIES} in {delay:.0f}s")
                 time.sleep(delay)
 
-    def current(self):
-        if time.monotonic() < self.fresh_until:
-            return self.latest
-        return self.fallback
+    def current_at(self, wall_time):
+        """Return the newest decoded frame due at *wall_time* by source PTS."""
+        with self.vlock:
+            if time.monotonic() >= self.fresh_until:
+                return self.fallback
+            if self.clk_pts is None or self.clk_wall is None:
+                return self.latest
+            target_pts = self.clk_pts + wall_time - self.clk_wall
+            while self.vframes and self.vframes[0][0] <= target_pts:
+                _, self.display = self.vframes.popleft()
+            return self.display
+
+    def video_queue_depth(self):
+        with self.vlock:
+            return len(self.vframes)
 
     def _trim(self):
         cap = AUDIO_RATE * 2  # ~2s
@@ -340,6 +366,11 @@ class Channel:
                 else:
                     break
 
+    def audio_status(self):
+        """Return a consistent snapshot for compositor A/V diagnostics."""
+        with self.alock:
+            return self.last_taken_pts, self.abuffered, self.audio_resyncs
+
     def take(self, nsamples: int) -> np.ndarray:
         """Return exactly nsamples of int16 (nsamples, 2), silence-padded."""
         out = np.zeros((nsamples, 2), np.int16)
@@ -357,7 +388,11 @@ class Channel:
                         self.last_taken_pts = pts_s + chunk.shape[0] / AUDIO_RATE
                 else:
                     out[filled:] = chunk[:need]
-                    self.aframes[0] = (pts_s, chunk[need:])
+                    # A buffered chunk's PTS always identifies its first retained
+                    # sample. Without this adjustment, each partial read makes
+                    # drift detection measure from the chunk's original start.
+                    next_pts = pts_s + need / AUDIO_RATE if pts_s is not None else None
+                    self.aframes[0] = (next_pts, chunk[need:])
                     self.abuffered -= need
                     filled = nsamples
                     if pts_s is not None:

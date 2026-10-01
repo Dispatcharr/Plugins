@@ -3,7 +3,9 @@ import os
 import re
 import subprocess
 import sys
+import errno
 import fcntl
+import tempfile
 import threading
 import time
 import urllib.request
@@ -23,12 +25,31 @@ from core.models import StreamProfile
 from core.scheduling import delete_periodic_task
 
 
+PROBE_STATUS_IS_LIVE = "is_live"
+PROBE_STATUS_WAS_LIVE = "was_live"
+PROBE_STATUS_POST_LIVE = "post_live"
+PROBE_STATUS_NOT_LIVE = "not_live"
+PROBE_STATUS_TIMEOUT = "timeout"
+PROBE_STATUS_EXTRACTION_ERROR = "extraction error"
+PROBE_STATUS_EMPTY_UNKNOWN = "empty/unknown status"
+PROBE_STATUS_BOT_AUTH = "bot/auth failure"
+
+
 class Plugin:
     name = "YouTubearr"
-    version = "1.30.1"
+    version = "1.40.1"
     description = "Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering"
     author = "Jeff Gooch"
     help_url = "https://github.com/jeff-gooch/youtubearr"
+
+    PROBE_STATUS_IS_LIVE = PROBE_STATUS_IS_LIVE
+    PROBE_STATUS_WAS_LIVE = PROBE_STATUS_WAS_LIVE
+    PROBE_STATUS_POST_LIVE = PROBE_STATUS_POST_LIVE
+    PROBE_STATUS_NOT_LIVE = PROBE_STATUS_NOT_LIVE
+    PROBE_STATUS_TIMEOUT = PROBE_STATUS_TIMEOUT
+    PROBE_STATUS_EXTRACTION_ERROR = PROBE_STATUS_EXTRACTION_ERROR
+    PROBE_STATUS_EMPTY_UNKNOWN = PROBE_STATUS_EMPTY_UNKNOWN
+    PROBE_STATUS_BOT_AUTH = PROBE_STATUS_BOT_AUTH
 
     fields = [
         {
@@ -213,7 +234,7 @@ class Plugin:
             "label": "YouTube Cookies",
             "type": "text",
             "default": "",
-            "help_text": "Paste YouTube cookies in Netscape format (cookies.txt content). Only used as fallback when streams fail to load without cookies. Get cookies using a browser extension like 'Get cookies.txt LOCALLY'.",
+            "help_text": "Paste YouTube cookies in Netscape/Mozilla format (cookies.txt content). Validated server-side before activating /data/plugins/youtubearr/cookies.txt for yt-dlp and external Streamlink profiles. Only used as fallback when streams fail to load without cookies. Get cookies using a browser extension like 'Get cookies.txt LOCALLY'.",
         },
     ]
 
@@ -276,6 +297,18 @@ class Plugin:
             "button_color": "red",
         },
         {
+            "id": "clear_cookies",
+            "label": "Clear Cookies",
+            "description": "Remove the configured cookies and delete the plugin-owned cookies.txt sidecar",
+            "confirm": {
+                "required": True,
+                "title": "Clear YouTube Cookies?",
+                "message": "This clears the YouTube Cookies field and deletes /data/plugins/youtubearr/cookies.txt until you paste a new cookies.txt export.",
+            },
+            "button_label": "Clear Cookies",
+            "button_color": "yellow",
+        },
+        {
             "id": "diagnostics",
             "label": "Diagnostics",
             "description": "Run a non-destructive YouTubearr health check",
@@ -311,8 +344,8 @@ class Plugin:
         self._monitoring_active = False  # In-memory flag (authoritative within this process)
         self._manual_refresh_lock = threading.Lock()
 
-        # Stream profile cache
-        self._stream_profile_id: Optional[int] = None
+        # Stream profile cache (holds the selected StreamProfile object)
+        self._stream_profile: Optional[Any] = None
 
         # Track assigned channel numbers during poll cycle to avoid duplicates
         self._assigned_channel_numbers: set = set()
@@ -341,6 +374,11 @@ class Plugin:
             settings.update(params)
         context["settings"] = settings
 
+        # Keep the plugin-owned cookies.txt sidecar aligned with current settings
+        # on the normal plugin run/save/status path, not only when a stream is created
+        # or refreshed.
+        self._sync_cookies_sidecar(settings)
+
         if action in {"", "status"}:
             response = self._handle_status(context)
         elif action == "add_manual":
@@ -355,6 +393,8 @@ class Plugin:
             response = self._handle_cleanup(context)
         elif action == "reset_all":
             response = self._handle_reset_all(context)
+        elif action == "clear_cookies":
+            response = self._handle_clear_cookies(context)
         elif action == "diagnostics":
             response = self._handle_diagnostics(context)
         else:
@@ -369,6 +409,7 @@ class Plugin:
         DB state is preserved so _ensure_monitoring_thread can revive monitoring after reload.
         Explicit user-initiated stops go through _handle_stop_monitoring() instead.
         """
+        self._sync_cookies_sidecar((context or {}).get("settings", {}))
         self._stop_thread_local()
         return {"status": "stopped", "message": "Plugin lifecycle stop (monitoring state preserved)"}
 
@@ -386,6 +427,21 @@ class Plugin:
         self._log("Local monitor thread stopped (lifecycle, DB state preserved)")
 
     # --- Action Handlers ---
+
+    def _handle_clear_cookies(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Clear the configured cookies and delete the plugin-owned cookies.txt sidecar."""
+        self._persist_settings({"cookies_content": ""})
+        settings = context.get("settings")
+        if isinstance(settings, dict):
+            settings["cookies_content"] = ""
+
+        self._remove_cookies_file(log_missing=False)
+        self._log("Cleared cookies configuration")
+
+        return {
+            "status": "success",
+            "message": "Cookies cleared. Paste a new cookies.txt export to re-enable authenticated playback.",
+        }
 
     def _handle_status(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Return current status"""
@@ -453,7 +509,6 @@ class Plugin:
 
         tracked_streams = settings.get("tracked_streams", {})
         quality = settings.get("stream_quality", "best")
-        cookies_content = settings.get("cookies_content", "")
 
         for url in urls:
             try:
@@ -523,7 +578,7 @@ class Plugin:
                         is_tracked = False
 
                 # Extract stream metadata
-                metadata = self._extract_stream_metadata(video_id, quality, cookies_content)
+                metadata = self._extract_stream_metadata(video_id, quality, settings)
 
                 if not metadata:
                     errors.append(f"Failed to extract info for video {video_id}")
@@ -612,7 +667,18 @@ class Plugin:
 
         # Try to acquire the exclusive file lock (non-blocking).
         # If another worker process holds it, a monitor is already running there.
-        if not self._acquire_monitor_lock():
+        # A real OSError (permission denied, disk full, ...) is not contention —
+        # let it surface as a genuine error instead of a false "already active".
+        try:
+            acquired = self._acquire_monitor_lock()
+        except OSError as exc:
+            self._log_error(f"Failed to acquire monitor lock: {exc}")
+            return {
+                "status": "error",
+                "message": f"Could not start monitoring: lock file error ({exc}).",
+            }
+
+        if not acquired:
             self._log("Monitor lock held by another worker — monitoring already active")
             return {"status": "running", "message": "Monitoring already active"}
 
@@ -628,6 +694,20 @@ class Plugin:
             name="YouTubearr-Monitor"
         )
         self._monitor_thread.start()
+
+        # Give the thread a brief window to fail fast (e.g. an exception
+        # raised before it reaches the monitoring loop's own try block)
+        # before claiming success. A healthy loop runs for a full poll
+        # cycle, so this short join never delays the normal happy path.
+        self._monitor_thread.join(timeout=0.2)
+        if not self._monitor_thread.is_alive():
+            self._monitoring_active = False
+            self._release_monitor_lock()
+            self._log_error("Monitor thread exited immediately after start")
+            return {
+                "status": "error",
+                "message": "Monitoring failed to start (thread exited immediately). Check logs.",
+            }
 
         self._log("Monitoring started")
         self._cleanup_legacy_celery_task()
@@ -974,8 +1054,12 @@ class Plugin:
             else:
                 issues.append("warning:monitoring active but no heartbeat found")
 
-        # Stale-poll warning — active but last_poll is beyond the expected cycle window
-        if monitoring_active_db and not self._is_last_poll_recent(runtime):
+        # Stale-poll warning — active but last_poll is beyond the expected cycle window.
+        # last_poll_time lives in runtime_state, but poll_interval_minutes is operator
+        # config from settings — runtime_state never has it, so it must be merged in
+        # here rather than defaulting to 15 min regardless of the real configured value.
+        _poll_check_state = {**runtime, "poll_interval_minutes": settings.get("poll_interval_minutes", 15)}
+        if monitoring_active_db and not self._is_last_poll_recent(_poll_check_state):
             _poll_age_str = f"{int(_lpa)}s" if _lpa is not None else "never"
             issues.append(f"warning:monitoring active but last poll is stale (age={_poll_age_str})")
 
@@ -1020,10 +1104,15 @@ class Plugin:
         details["qjs_path"] = self._qjs_path or "not found"
         details["qjs_version"] = self._get_qjs_version()
 
-        # Cookies (configured/present, never expose content)
-        cookies_raw = settings.get("cookies_content", "")
-        details["cookies_configured"] = bool(cookies_raw and cookies_raw.strip())
-        details["cookies_file_present"] = (self._base_dir / "cookies.txt").exists()
+        # Cookies metadata (never expose contents or upload paths)
+        cookies_meta = self._get_cookies_metadata(settings)
+        details["cookies_configured"] = cookies_meta["configured"]
+        details["cookies_valid"] = cookies_meta["valid"]
+        details["cookies_last_modified"] = cookies_meta["mtime"]
+        details["cookies_age_seconds"] = cookies_meta["age_seconds"]
+        details["cookies_count"] = cookies_meta["count"]
+        if cookies_meta.get("error"):
+            issues.append(f"warning:{cookies_meta['error']}")
 
         # Webhooks
         media_cfg = self._get_media_refresh_webhook_config(settings)
@@ -1306,25 +1395,207 @@ class Plugin:
 
         return None
 
-    def _get_cookies_file(self, cookies_content: str) -> Optional[str]:
-        """Write cookies content to a temp file and return the path.
+    def _cookies_sidecar_path(self) -> Path:
+        base_dir = getattr(self, "_base_dir", None) or Path(__file__).resolve().parent
+        return base_dir / "cookies.txt"
 
-        Returns None if cookies_content is empty or invalid.
-        """
-        if not cookies_content or not cookies_content.strip():
-            return None
+    def _cookies_are_configured(self, settings: Optional[Dict[str, Any]]) -> bool:
+        cookies_content = (settings or {}).get("cookies_content", "")
+        return bool((cookies_content or "").strip())
 
-        # Write to a file in the plugin's data directory
-        cookies_file = self._base_dir / "cookies.txt"
+    def _validate_cookies_text(self, cookies_text: str) -> Dict[str, Any]:
+        normalized = (cookies_text or "").replace("\r\n", "\n").replace("\r", "\n")
+        normalized = normalized.strip("\n")
+        if not normalized.strip():
+            return {"valid": False, "error": "cookies file is empty", "count": None, "normalized_text": ""}
+
+        saw_header = False
+        cookie_count = 0
+        for line_number, raw_line in enumerate(normalized.split("\n"), start=1):
+            if not raw_line.strip():
+                continue
+
+            line = raw_line.strip()
+            if line.startswith("#") and not line.startswith("#HttpOnly_"):
+                lower = line.lower()
+                if lower.startswith("# netscape http cookie file") or lower.startswith("# http cookie file"):
+                    saw_header = True
+                continue
+
+            parts = raw_line.split("\t")
+            if len(parts) != 7:
+                return {
+                    "valid": False,
+                    "error": f"cookies file line {line_number} is not valid Netscape/Mozilla format",
+                    "count": None,
+                    "normalized_text": "",
+                }
+            domain, include_subdomains, path, secure, expires, name, _value = parts
+            if not domain or not path or not name:
+                return {
+                    "valid": False,
+                    "error": f"cookies file line {line_number} is missing required fields",
+                    "count": None,
+                    "normalized_text": "",
+                }
+            if include_subdomains.upper() not in {"TRUE", "FALSE"}:
+                return {
+                    "valid": False,
+                    "error": f"cookies file line {line_number} has invalid include-subdomains flag",
+                    "count": None,
+                    "normalized_text": "",
+                }
+            if secure.upper() not in {"TRUE", "FALSE"}:
+                return {
+                    "valid": False,
+                    "error": f"cookies file line {line_number} has invalid secure flag",
+                    "count": None,
+                    "normalized_text": "",
+                }
+            if expires and not re.fullmatch(r"-?\d+", expires):
+                return {
+                    "valid": False,
+                    "error": f"cookies file line {line_number} has invalid expiry value",
+                    "count": None,
+                    "normalized_text": "",
+                }
+            cookie_count += 1
+
+        if not saw_header:
+            return {
+                "valid": False,
+                "error": "cookies file is missing the Netscape/Mozilla header",
+                "count": None,
+                "normalized_text": "",
+            }
+        if cookie_count == 0:
+            return {
+                "valid": False,
+                "error": "cookies file contains no cookie entries",
+                "count": None,
+                "normalized_text": "",
+            }
+        return {
+            "valid": True,
+            "error": None,
+            "count": cookie_count,
+            "normalized_text": normalized.strip() + "\n",
+        }
+
+    def _write_cookies_sidecar_text(self, normalized_text: str) -> Optional[str]:
+        cookies_file = self._cookies_sidecar_path()
+        tmp_path = None
+        backup_path = None
         try:
-            cookies_file.write_text(cookies_content.strip() + "\n")
+            fd, tmp_name = tempfile.mkstemp(dir=str(self._base_dir), prefix=".cookies.", suffix=".tmp")
+            tmp_path = Path(tmp_name)
+            os.fchmod(fd, 0o600)
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                handle.write(normalized_text)
+                handle.flush()
+                os.fsync(handle.fileno())
+
+            if cookies_file.exists():
+                backup_path = self._base_dir / ".cookies.txt.bak"
+                if backup_path.exists():
+                    backup_path.unlink()
+                os.replace(str(cookies_file), str(backup_path))
+            os.replace(str(tmp_path), str(cookies_file))
+            if backup_path and backup_path.exists():
+                backup_path.unlink()
             self._log(f"Wrote cookies to {cookies_file}")
             return str(cookies_file)
         except Exception as exc:
-            self._log_error(f"Failed to write cookies file: {exc}")
+            self._log_error(f"Failed to update cookies file: {type(exc).__name__}: {exc}")
+            for leftover in (tmp_path, backup_path, cookies_file):
+                if leftover is None:
+                    continue
+                try:
+                    Path(leftover).unlink(missing_ok=True)
+                except Exception:
+                    pass
             return None
 
-    def _extract_stream_metadata(self, video_id: str, quality_preference: str = "best", cookies_content: str = "") -> Optional[Dict[str, Any]]:
+    def _get_cookies_file(self, cookies_content: str) -> Optional[str]:
+        """Validate raw Netscape/Mozilla cookies text and write the sidecar.
+
+        Blank content removes any previously persisted cookie file so stale
+        credentials are not left behind for Streamlink/yt-dlp to reuse.
+        """
+        if not (cookies_content or "").strip():
+            self._remove_cookies_file()
+            return None
+        parsed = self._validate_cookies_text(cookies_content)
+        if not parsed["valid"]:
+            self._log_error(f"Cookies not activated: {parsed['error']}")
+            self._remove_cookies_file(log_missing=False)
+            return None
+        return self._write_cookies_sidecar_text(parsed["normalized_text"])
+
+    def _get_cookies_metadata(self, settings: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+        cookies_content = (settings or {}).get("cookies_content", "")
+        configured = bool((cookies_content or "").strip())
+        cookies_file = self._cookies_sidecar_path()
+        metadata = {
+            "configured": configured,
+            "valid": False,
+            "mtime": None,
+            "age_seconds": None,
+            "count": None,
+            "error": None,
+        }
+        if not configured:
+            return metadata
+        parsed = self._validate_cookies_text(cookies_content)
+        metadata["valid"] = bool(parsed.get("valid"))
+        metadata["count"] = parsed.get("count")
+        metadata["error"] = parsed.get("error")
+        if cookies_file.exists():
+            try:
+                stat = cookies_file.stat()
+                mtime = datetime.fromtimestamp(stat.st_mtime, tz=dt_timezone.utc)
+                metadata["mtime"] = mtime.isoformat()
+                metadata["age_seconds"] = max(0, int((datetime.now(tz=dt_timezone.utc) - mtime).total_seconds()))
+            except Exception:
+                metadata["mtime"] = None
+                metadata["age_seconds"] = None
+        return metadata
+
+    def _remove_cookies_file(self, log_missing: bool = False) -> None:
+        """Delete the plugin-owned cookies.txt if present."""
+        cookies_file = self._cookies_sidecar_path()
+        try:
+            if cookies_file.exists():
+                cookies_file.unlink()
+                self._log(f"Removed cookies file {cookies_file}")
+            elif log_missing:
+                self._log(f"Cookies file already absent: {cookies_file}")
+        except Exception as exc:
+            self._log_error(f"Failed to remove cookies file: {exc}")
+
+    def _sync_cookies_sidecar(self, settings: Optional[Dict[str, Any]]) -> bool:
+        """Align plugin-owned cookies.txt with settings on normal lifecycle/save paths.
+
+        Returns True when the sidecar is in the desired state, or False when
+        non-blank cookie content was configured but failed validation or
+        could not be persisted. Invalid content fails closed: it is not
+        activated, but an already-active sidecar written from previously
+        valid content is left alone — a bad new paste shouldn't take working
+        playback down. Only blank content (e.g. via Clear Cookies) removes
+        the sidecar.
+        """
+        cookies_content = (settings or {}).get("cookies_content", "")
+        if not (cookies_content or "").strip():
+            self._remove_cookies_file()
+            return True
+        parsed = self._validate_cookies_text(cookies_content)
+        if not parsed["valid"]:
+            self._log_error(f"Cookies not activated: {parsed['error']}")
+            return False
+        cookies_file = self._write_cookies_sidecar_text(parsed["normalized_text"])
+        return bool(cookies_file)
+
+    def _extract_stream_metadata(self, video_id: str, quality_preference: str = "best", cookie_settings: Any = "") -> Optional[Dict[str, Any]]:
         """Extract stream metadata and URL using yt-dlp command-line tool.
 
         Uses a fallback strategy:
@@ -1354,9 +1625,11 @@ class Plugin:
         cmd = base_cmd + [url]
         result = self._run_ytdlp_extract(video_id, cmd)
 
+        source_settings = cookie_settings if isinstance(cookie_settings, dict) else {"cookies_content": cookie_settings}
+
         # If first attempt failed and cookies are available, retry with cookies
-        if result is None and cookies_content:
-            cookies_file = self._get_cookies_file(cookies_content)
+        if result is None and self._cookies_are_configured(source_settings):
+            cookies_file = self._sync_cookies_sidecar(source_settings) and str(self._cookies_sidecar_path())
             if cookies_file:
                 self._log(f"First attempt failed for {video_id}, retrying with cookies...")
                 cmd = base_cmd + ["--cookies", cookies_file, url]
@@ -1472,12 +1745,15 @@ class Plugin:
     def _get_format_string(self, preference: str) -> str:
         """Get yt-dlp format string for quality preference"""
         formats = {
-            "best": "best",
+            # Bare "best" only matches pre-muxed formats; many live streams only
+            # expose separate video/audio, so allow yt-dlp to merge them with the
+            # same bestvideo+bestaudio/best fallback used by the explicit tiers below.
+            "best": "bestvideo+bestaudio/best",
             "1080p": "bestvideo[height<=1080]+bestaudio/best",
             "720p": "bestvideo[height<=720]+bestaudio/best",
             "480p": "bestvideo[height<=480]+bestaudio/best",
         }
-        return formats.get(preference, "best")
+        return formats.get(preference, "bestvideo+bestaudio/best")
 
     # --- Dispatcharr Integration ---
 
@@ -1501,19 +1777,24 @@ class Plugin:
 
         video_title = metadata.get("title", "YouTube Live")
         video_id = metadata.get("video_id", "")
-        stream_url = metadata.get("stream_url", "")
         thumbnail = metadata.get("thumbnail", "")
         channel_thumbnail = metadata.get("channel_thumbnail", "")
         youtube_channel_name = metadata.get("youtube_channel_name", "YouTube")
         youtube_channel_id = metadata.get("youtube_channel_id", "")
 
+        # Selected once and reused for both the Stream and Channel below, and to
+        # decide whether the Stream needs the canonical watch URL (Streamlink) or
+        # the raw extracted URL (Proxy/other profiles).
+        stream_profile = self._select_stream_profile(settings)
+        playback_url = self._get_playback_url(metadata, stream_profile, settings)
+
         # Create Stream (use video thumbnail for stream logo)
         stream = Stream.objects.create(
             name=video_title,
-            url=stream_url,
+            url=playback_url,
             logo_url=thumbnail if thumbnail else None,
             tvg_id=None,
-            stream_profile_id=self._get_stream_profile_id(settings),
+            stream_profile_id=stream_profile.id,
         )
 
         # Apply YouTubearr ownership tags to stream custom_properties
@@ -1598,7 +1879,7 @@ class Plugin:
             channel_number=channel_number,
             channel_group=group,
             logo=logo,
-            stream_profile_id=self._get_stream_profile_id(settings),
+            stream_profile_id=stream_profile.id,
         )
 
         # Track this channel number to avoid duplicates in same poll cycle
@@ -2044,8 +2325,16 @@ class Plugin:
         """
         return float(self._get_next_unmapped_base_number(settings)) + 0.1
 
-    def _get_stream_profile_id(self, settings: Optional[Dict[str, Any]] = None) -> int:
-        """Get or find a suitable stream profile ID.
+    def _select_stream_profile(self, settings: Optional[Dict[str, Any]] = None):
+        """Select the StreamProfile to use for a newly created/updated stream.
+
+        Priority:
+          1. Explicit `stream_profile_name` setting (user override).
+          2. A profile named "streamlink" — Streamlink resolves YouTube's HLS
+             manifest itself from the canonical watch URL, avoiding the 403s
+             that Dispatcharr's Proxy gets once yt-dlp's googlevideo URL expires.
+          3. A profile named/containing "proxy" (legacy default).
+          4. The first available profile.
 
         Args:
             settings: Plugin settings dict. If stream_profile_name is set, use that profile.
@@ -2057,19 +2346,27 @@ class Plugin:
                 profile = StreamProfile.objects.filter(name__iexact=profile_name).first()
                 if profile:
                     self._log(f"Using configured stream profile: {profile.name}")
-                    return profile.id
+                    return profile
                 else:
                     self._log(f"Warning: Stream profile '{profile_name}' not found, falling back to auto-detect")
 
-        # Use cached profile ID if available
-        if self._stream_profile_id is not None:
-            return self._stream_profile_id
+        # Use cached profile if available
+        if self._stream_profile is not None:
+            return self._stream_profile
 
-        # Try to find "proxy" profile (common default)
-        profile = (
-            StreamProfile.objects.filter(name__iexact="proxy").first()
-            or StreamProfile.objects.filter(name__icontains="proxy").first()
-        )
+        # Prefer a "streamlink" profile — required for YouTube playback to work
+        # past URL expiry, since Streamlink re-resolves the stream itself.
+        profile = StreamProfile.objects.filter(name__iexact="streamlink").first()
+
+        if not profile:
+            self._log_error(
+                "Warning: No 'streamlink' stream profile found. Falling back to Proxy — "
+                "YouTube segment requests may return 403 once the extracted URL expires."
+            )
+            profile = (
+                StreamProfile.objects.filter(name__iexact="proxy").first()
+                or StreamProfile.objects.filter(name__icontains="proxy").first()
+            )
 
         if not profile:
             profile = StreamProfile.objects.first()
@@ -2077,8 +2374,50 @@ class Plugin:
         if not profile:
             raise RuntimeError("No stream profiles found. Create a stream profile in Dispatcharr.")
 
-        self._stream_profile_id = profile.id
-        return self._stream_profile_id
+        self._stream_profile = profile
+        return profile
+
+    def _get_stream_profile_id(self, settings: Optional[Dict[str, Any]] = None) -> int:
+        """Get or find a suitable stream profile ID. See _select_stream_profile for priority."""
+        return self._select_stream_profile(settings).id
+
+    def _profile_name_is_streamlink(self, name: Any) -> bool:
+        """Return True if a StreamProfile name identifies it as a Streamlink profile."""
+        return "streamlink" in str(name or "").lower()
+
+    def _is_streamlink_profile_id(self, profile_id: Optional[int]) -> bool:
+        """Look up a StreamProfile by id and report whether it's a Streamlink profile."""
+        if not profile_id:
+            return False
+        try:
+            profile = StreamProfile.objects.filter(id=profile_id).first()
+            return bool(profile) and self._profile_name_is_streamlink(getattr(profile, "name", ""))
+        except Exception:
+            return False
+
+    def _get_playback_url(self, metadata: Dict[str, Any], profile: Any, settings: Optional[Dict[str, Any]] = None) -> str:
+        """Return the URL to store on the Stream for the given metadata and StreamProfile.
+
+        Streamlink resolves YouTube playback itself, so it must be given the stable
+        watch URL rather than yt-dlp's extracted googlevideo URL — that URL expires
+        within minutes and produces 403s on segment requests when handed to Proxy-style
+        profiles that just forward it as-is.
+
+        When a Streamlink profile is selected, also sync the plugin-owned cookies.txt
+        sidecar so the existing Dispatcharr StreamProfile parameters can opt into
+        `--http-cookies-file` without exposing raw cookie content on the command line.
+        """
+        is_streamlink = self._profile_name_is_streamlink(getattr(profile, "name", ""))
+        cookies_required = self._cookies_are_configured(settings)
+        if is_streamlink and cookies_required and not self._sync_cookies_sidecar(settings):
+            raise RuntimeError("Configured cookies could not be synced to cookies.txt; refusing Streamlink playback update")
+        if is_streamlink and not cookies_required:
+            self._sync_cookies_sidecar(settings)
+
+        video_id = metadata.get("video_id", "")
+        if video_id and is_streamlink:
+            return f"https://www.youtube.com/watch?v={video_id}"
+        return metadata.get("stream_url", "")
 
     # --- YouTube Data API Integration ---
 
@@ -2257,8 +2596,7 @@ class Plugin:
                         # New livestream detected
                         self._log(f"New stream detected: {video_id}, extracting metadata...")
                         quality = settings.get("stream_quality", "best")
-                        cookies_content = settings.get("cookies_content", "")
-                        metadata = self._extract_stream_metadata(video_id, quality, cookies_content)
+                        metadata = self._extract_stream_metadata(video_id, quality, settings)
 
                         if not metadata:
                             self._log_error(f"Failed to extract metadata for {video_id} - yt-dlp returned None")
@@ -2335,7 +2673,7 @@ class Plugin:
                             # authoritative and avoids false deletions.
                             title = stream_data.get("title", video_id)
                             self._log(f"Stream not in scan results, verifying directly: {title}")
-                            if self._verify_video_is_live(video_id):
+                            if self._verify_video_is_live(video_id, settings=settings):
                                 self._log(f"Direct check: still live (scan false negative): {title}")
                             else:
                                 stream_data["is_live"] = False
@@ -2351,36 +2689,226 @@ class Plugin:
 
         return added_count, ended_count
 
-    def _verify_video_is_live(self, video_id: str) -> bool:
+    def _redact_id(self, identifier: Optional[str]) -> str:
+        """Redact video/channel ID or token for safe diagnostic logging."""
+        if not identifier:
+            return "[REDACTED_ID]"
+        s = str(identifier).strip()
+        if len(s) <= 4:
+            return "[REDACTED_ID]"
+        return f"{s[:3]}...{s[-2:]}"
+
+    def _extract_actionable_stderr(self, stderr: str, video_id: str) -> str:
+        """Extract a categorized, actionable message from stderr with redacted IDs and secrets."""
+        if not stderr:
+            return "no stderr output"
+        lines = [line.strip() for line in stderr.splitlines() if line.strip()]
+        error_line = ""
+        for line in lines:
+            if "ERROR:" in line or "error:" in line:
+                error_line = line
+                break
+        if not error_line and lines:
+            error_line = lines[-1]
+        if not error_line:
+            error_line = "unknown error"
+        if video_id:
+            error_line = error_line.replace(video_id, self._redact_id(video_id))
+        error_line = re.sub(r'https?://\S+', '[URL]', error_line)
+        return error_line[:200]
+
+    def _classify_probe_result(self, returncode: int, stdout: str, stderr: str, video_id: str) -> Dict[str, Any]:
+        """Classify live-status probe results into distinct operational categories.
+
+        Distinguishes:
+        - is_live: actively streaming
+        - was_live: finished livestream
+        - post_live: processing post-livestream
+        - not_live: standard video / not a livestream
+        - timeout: yt-dlp execution timed out (handled in caller on TimeoutExpired)
+        - extraction error: yt-dlp returned non-zero returncode with non-auth error
+        - empty/unknown status: returncode 0 with empty or unrecognized status output
+        - bot/auth failure: YouTube bot detection, CAPTCHA, or authentication required
+        """
+        stdout_clean = (stdout or "").strip() if isinstance(stdout, str) else ""
+        stderr_clean = (stderr or "").strip() if isinstance(stderr, str) else ""
+        stderr_lower = stderr_clean.lower().replace("’", "'")
+
+        bot_auth_patterns = [
+            "sign in to confirm",
+            "not a bot",
+            "confirm you're not a bot",
+            "captcha",
+            "recaptcha",
+            "http error 429",
+            "too many requests",
+            "members-only",
+            "login required",
+            "this video is private",
+            "private video",
+        ]
+        is_bot_auth = any(pattern in stderr_lower for pattern in bot_auth_patterns)
+        if not is_bot_auth and "bot" in stderr_lower and any(w in stderr_lower for w in ["automated", "queries", "verify", "detection"]):
+            is_bot_auth = True
+        if not is_bot_auth and "members" in stderr_lower and "only" in stderr_lower:
+            is_bot_auth = True
+
+        if is_bot_auth:
+            actionable = self._extract_actionable_stderr(stderr_clean, video_id)
+            return {
+                "status": "bot/auth failure",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": f"bot/auth failure: {actionable}",
+            }
+
+        if returncode != 0:
+            actionable = self._extract_actionable_stderr(stderr_clean, video_id)
+            return {
+                "status": "extraction error",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": f"extraction error (exit code {returncode}): {actionable}",
+            }
+
+        if stdout_clean == "is_live":
+            return {
+                "status": "is_live",
+                "is_live": True,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": "stream confirmed live",
+            }
+        elif stdout_clean == "was_live":
+            return {
+                "status": "was_live",
+                "is_live": False,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": "stream was live and has ended",
+            }
+        elif stdout_clean == "post_live":
+            return {
+                "status": "post_live",
+                "is_live": False,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": "stream ended (post-live processing)",
+            }
+        elif stdout_clean == "not_live":
+            return {
+                "status": "not_live",
+                "is_live": False,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": "not a live stream",
+            }
+        else:
+            return {
+                "status": "empty/unknown status",
+                "is_live": False,
+                "is_error": False,
+                "raw_status": stdout_clean,
+                "returncode": returncode,
+                "message": f"empty/unknown live_status: {stdout_clean!r}",
+            }
+
+    def _build_live_status_cmd(self, video_id: str, settings: Optional[Dict[str, Any]] = None) -> List[str]:
+        """Build the yt-dlp command for live-status probing with QuickJS and cookies."""
+        cmd = [
+            self._ytdlp_path,
+            "--skip-download",
+            "--print", "live_status",
+            "--no-warnings",
+        ]
+        if self._qjs_path:
+            cmd += ["--js-runtimes", f"quickjs:{self._qjs_path}"]
+
+        cookie_file = None
+        if settings is not None and self._cookies_are_configured(settings):
+            if self._sync_cookies_sidecar(settings):
+                cookie_file = str(self._cookies_sidecar_path())
+        elif self._cookies_sidecar_path().exists() and self._cookies_sidecar_path().is_file():
+            cookie_file = str(self._cookies_sidecar_path())
+
+        if cookie_file:
+            cmd += ["--cookies", cookie_file]
+
+        watch_url = video_id if video_id.startswith("http") else f"https://www.youtube.com/watch?v={video_id}"
+        cmd.append(watch_url)
+        return cmd
+
+    def _probe_live_status(self, video_id: str, settings: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Probe the live status of a video using yt-dlp."""
+        if not self._ytdlp_path:
+            return {
+                "status": "extraction error",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": "",
+                "returncode": None,
+                "message": "yt-dlp binary not found",
+            }
+
+        cmd = self._build_live_status_cmd(video_id, settings=settings)
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            stdout = result.stdout if isinstance(getattr(result, "stdout", None), str) else ""
+            stderr = result.stderr if isinstance(getattr(result, "stderr", None), str) else ""
+            returncode = getattr(result, "returncode", 0)
+            if not isinstance(returncode, int):
+                returncode = 0
+            return self._classify_probe_result(returncode, stdout, stderr, video_id)
+        except subprocess.TimeoutExpired:
+            redacted = self._redact_id(video_id)
+            return {
+                "status": "timeout",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": "",
+                "returncode": None,
+                "message": f"live check timed out for {redacted}",
+            }
+        except Exception as exc:
+            redacted = self._redact_id(video_id)
+            return {
+                "status": "extraction error",
+                "is_live": False,
+                "is_error": True,
+                "raw_status": "",
+                "returncode": None,
+                "message": f"live check failed for {redacted}: {exc}",
+            }
+
+    def _verify_video_is_live(self, video_id: str, settings: Optional[Dict[str, Any]] = None) -> bool:
         """Directly verify whether a specific video is currently live.
 
         Used when a tracked stream disappears from the flat-playlist scan.
         Much more reliable than the channel /streams tab for ongoing streams.
         Fails safe — returns True (assume live) on any error or timeout.
         """
-        try:
-            if not self._ytdlp_path:
-                return True
-            cmd = [
-                self._ytdlp_path,
-                "--skip-download",
-                "--print", "live_status",
-                "--no-warnings",
-                "--quiet",
-            ]
-            if self._qjs_path:
-                cmd += ["--js-runtimes", f"quickjs:{self._qjs_path}"]
-            cmd.append(f"https://www.youtube.com/watch?v={video_id}")
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-            status = result.stdout.strip()
-            self._log(f"Direct live check for {video_id}: {status!r}")
-            return status == "is_live"
-        except subprocess.TimeoutExpired:
-            self._log_error(f"Direct live check timed out for {video_id}, assuming live")
+        if not self._ytdlp_path:
             return True
-        except Exception as exc:
-            self._log_error(f"Direct live check failed for {video_id}: {exc}, assuming live")
+        probe = self._probe_live_status(video_id, settings=settings)
+        status = probe["status"]
+        raw = probe.get("raw_status") or status
+        self._log(f"Direct live check for {self._redact_id(video_id)}: {raw!r}")
+        if status == "is_live":
             return True
+        if status in ("was_live", "post_live", "not_live"):
+            return False
+        # Fail safe on timeout, bot/auth failure, extraction error, or unknown status
+        redacted = self._redact_id(video_id)
+        self._log_error(f"Direct live check {status} for {redacted}, assuming live: {probe['message']}")
+        return True
 
     def _get_live_streams_via_ytdlp(self, channel_handle: str, settings: Dict[str, Any], title_filter: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
         """Get currently live streams for a YouTube channel using two-phase detection.
@@ -2471,29 +2999,23 @@ class Plugin:
         live_streams = []
         for candidate in candidates:
             video_id = candidate["video_id"]
-            try:
-                check_cmd = [
-                    self._ytdlp_path,
-                    "--skip-download",
-                    "--print", "live_status",
-                    "--no-warnings",
-                    "--quiet",
-                ]
-                if self._qjs_path:
-                    check_cmd += ["--js-runtimes", f"quickjs:{self._qjs_path}"]
-                check_cmd.append(f"https://www.youtube.com/watch?v={video_id}")
+            probe = self._probe_live_status(video_id, settings=settings)
+            status = probe["status"]
+            redacted_id = self._redact_id(video_id)
 
-                check = subprocess.run(check_cmd, capture_output=True, text=True, timeout=30)
-                status = check.stdout.strip()
-                if status == "is_live":
-                    live_streams.append(candidate)
-                    self._log(f"Live confirmed: {candidate['title']} ({video_id})")
-                else:
-                    self._log(f"Not live ({status or 'no status'}): {candidate['title']}")
-            except subprocess.TimeoutExpired:
-                self._log_error(f"Live check timed out for {video_id}, skipping")
-            except Exception as exc:
-                self._log_error(f"Live check failed for {video_id}: {exc}, skipping")
+            if status == "is_live":
+                live_streams.append(candidate)
+                self._log(f"Live confirmed: {candidate['title']} ({video_id})")
+            elif status in ("was_live", "post_live", "not_live"):
+                self._log(f"Not live ({status}): {candidate['title']}")
+            elif status == "timeout":
+                self._log_error(f"Live check timed out for {redacted_id}, skipping: {probe['message']}")
+            elif status == "bot/auth failure":
+                self._log_error(f"Live check bot/auth failure for {redacted_id}, skipping: {probe['message']}")
+            elif status == "extraction error":
+                self._log_error(f"Live check extraction error for {redacted_id}, skipping: {probe['message']}")
+            else:  # empty/unknown status
+                self._log(f"Live check empty/unknown status for {redacted_id} ({probe.get('raw_status') or 'no status'}): {candidate['title']}")
 
         self._log(f"Found {len(live_streams)} live stream(s) for {channel_handle}")
         return live_streams
@@ -2709,18 +3231,32 @@ class Plugin:
                 if age_seconds > refresh_interval:
                     # Refresh needed
                     quality = settings.get("stream_quality", "best")
-                    cookies_content = settings.get("cookies_content", "")
-                    metadata = self._extract_stream_metadata(video_id, quality, cookies_content)
+                    metadata = self._extract_stream_metadata(video_id, quality, settings)
 
                     if metadata and metadata.get("stream_url"):
                         # Update Stream object
                         try:
                             stream = Stream.objects.get(id=stream_data["stream_id"])
-                            stream.url = metadata["stream_url"]
+                            # Streams on a Streamlink profile keep the canonical watch
+                            # URL — Streamlink re-resolves it itself, so overwriting
+                            # with yt-dlp's short-lived googlevideo URL would break it.
+                            if self._is_streamlink_profile_id(getattr(stream, "stream_profile_id", None)):
+                                cookies_required = self._cookies_are_configured(settings)
+                                if cookies_required and not self._sync_cookies_sidecar(settings):
+                                    self._log_error(
+                                        f"Skipping Streamlink URL refresh for {video_id}: configured cookies could not be synced"
+                                    )
+                                    continue
+                                if not cookies_required:
+                                    self._sync_cookies_sidecar(settings)
+                                new_url = f"https://www.youtube.com/watch?v={video_id}"
+                            else:
+                                new_url = metadata["stream_url"]
+                            stream.url = new_url
                             stream.save(update_fields=["url"])
 
                             # Update tracked metadata
-                            stream_data["stream_url"] = metadata["stream_url"]
+                            stream_data["stream_url"] = new_url
                             stream_data["last_url_refresh"] = now.isoformat()
                             # Only update is_live if explicitly present in metadata
                             # Don't default to False as that causes premature cleanup
@@ -3061,21 +3597,21 @@ class Plugin:
 
         Uses fcntl.flock so the OS releases the lock automatically if this
         process dies, preventing a permanently stuck state. Returns True if
-        the lock was acquired and stored in self._lock_fd.
+        the lock was acquired and stored in self._lock_fd, False if another
+        process already holds it (EACCES/EAGAIN). Any other OSError (e.g.
+        permission denied, disk full) is a real failure, not contention —
+        it is re-raised so callers don't mistake it for "already active".
         """
+        fd = open(str(self._lock_path), 'w')
         try:
-            fd = open(str(self._lock_path), 'w')
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            self._lock_fd = fd
-            return True
-        except (IOError, OSError):
-            try:
-                fd.close()
-            except Exception:
-                pass
-            return False
-        except Exception:
-            return False
+        except OSError as exc:
+            fd.close()
+            if exc.errno in (errno.EACCES, errno.EAGAIN, errno.EWOULDBLOCK):
+                return False
+            raise
+        self._lock_fd = fd
+        return True
 
     def _release_monitor_lock(self) -> None:
         """Release the exclusive monitor file lock if held."""
@@ -3105,8 +3641,12 @@ class Plugin:
             fcntl.flock(probe_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             fcntl.flock(probe_fd, fcntl.LOCK_UN)
             return False
-        except (IOError, OSError):
-            return True
+        except OSError as exc:
+            if exc.errno in (errno.EACCES, errno.EAGAIN, errno.EWOULDBLOCK):
+                return True
+            # A real error probing the lock is not evidence another worker
+            # holds it — don't falsely report monitoring as active elsewhere.
+            return False
         finally:
             probe_fd.close()
 
@@ -3563,8 +4103,16 @@ class Plugin:
         if not channels or not self._ytdlp_path:
             return False
 
-        # Try to acquire the lock — if another process holds it, it's already running
-        if not self._acquire_monitor_lock():
+        # Try to acquire the lock — if another process holds it, it's already running.
+        # A real OSError here (not contention) means we can't safely tell — skip the
+        # restart rather than risk a duplicate monitor or a crash of this call.
+        try:
+            acquired = self._acquire_monitor_lock()
+        except OSError as exc:
+            self._log_error(f"Auto-restart skipped: monitor lock error ({exc})")
+            return False
+
+        if not acquired:
             self._log("Auto-restart skipped: monitor lock held by another process")
             return False
 

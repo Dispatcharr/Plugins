@@ -1,8 +1,13 @@
-# Tickarr
+# Ticker
 
 Dynamic text overlays for IPTV channels managed by Dispatcharr.
 
-📖 **[Read the full User Guide](https://github.com/jstevenscl/tickarr/blob/master/docs/USERGUIDE.md)** — setup steps, settings reference, and troubleshooting for every feature below.
+> Renamed from **Tickarr** → **Ticker** as of v0.5.00. This is the same plugin, same
+> author, same feature set — just a new name. Existing Tickarr installs are not
+> automatically migrated: remove the old `tickarr` plugin folder and install this one
+> fresh, then reconfigure your channel mappings.
+
+📖 **[Read the full User Guide](https://github.com/jstevenscl/ticker/blob/master/docs/USERGUIDE.md)** — setup steps, settings reference, and troubleshooting for every feature below.
 
 ## Features
 
@@ -17,8 +22,8 @@ Dynamic text overlays for IPTV channels managed by Dispatcharr.
 
 ## Documentation
 
-Full setup instructions, settings reference, and troubleshooting: https://github.com/jstevenscl/tickarr/blob/master/docs/USERGUIDE.md
+Full setup instructions, settings reference, and troubleshooting: https://github.com/jstevenscl/ticker/blob/master/docs/USERGUIDE.md
 
 ## Source
 
-https://github.com/jstevenscl/tickarr
+https://github.com/jstevenscl/ticker
