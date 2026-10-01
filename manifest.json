@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T22:49:27Z",
+  "generated_at": "2026-10-01T06:24:18Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -71,12 +71,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/decypharr-vod/manifest.json",
         "author": "Tw1zT3d2four7",
         "license": "MIT",
-        "last_updated": "2026-09-30T22:48:52Z",
-        "latest_version": "1.0.0",
-        "latest_md5": "8a9319acdfe1e2836924f8d6947cd40e",
-        "latest_sha256": "ce0e8296a5147dba2251d7afca9a6400c13fdbda81bfcd2fcdc91bab42c8c635",
-        "latest_url": "decypharr-vod-1.0.0/decypharr-vod-1.0.0.zip",
-        "latest_size": 1461
+        "last_updated": "2026-10-01T06:23:47Z",
+        "latest_version": "1.0.1",
+        "latest_md5": "b9ebea425df64dfa8e9fff5fb828be63",
+        "latest_sha256": "dcce77ddfec26bdf35efe192e4bd6e473ada2a6c3e7e73aa6e5567389c698002",
+        "latest_url": "decypharr-vod-1.0.1/decypharr-vod-1.0.1.zip",
+        "latest_size": 1462
       },
       {
         "slug": "dispatcharr-exporter",
@@ -461,5 +461,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCar2R/gAKCRB+wDprTCI0\nzuEFAQCgXJI9J/mH9dbu5Pb8VpP4i3mF2NJkVtVDHWGHv7w+gQEA/Fe/7BP3a54l\nTSNcuiX/pq52zfm6+FnSBmJIm98gbgQ=\n=n62f\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCar38mQAKCRB+wDprTCI0\nznk9AQDlxkoT8ncZxgXdj69E9fkv6wM1bdi02nytyZXdERjv/gEAmPAFpbJzezcX\njDFteljDeXNSzLyz1meMCYAn7J3ICAI=\n=PO2t\n-----END PGP SIGNATURE-----"
 }
