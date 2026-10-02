@@ -1,6 +1,6 @@
 {
   "name": "VOD Manager",
-  "version": "2.6.1",
+  "version": "2.6.3",
   "description": "Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default.",
   "author": "oxios0x00",
   "license": "MIT",
