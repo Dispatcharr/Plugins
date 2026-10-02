@@ -6,7 +6,7 @@ A self-hosted, TV-style weather channel for Dispatcharr. PWS pulls forecast data
 
 ## Pages
 
-The channel cycles through eight pages, about 14 seconds each:
+The channel cycles through eight pages (nine with a surf spot set), about 14 seconds each:
 
 | Page | Contents |
 |---|---|
@@ -17,7 +17,9 @@ The channel cycles through eight pages, about 14 seconds each:
 | Regional Conditions | Current temperatures at nearby cities, plotted on a map |
 | Forecast Highs | Tomorrow's highs at those same cities |
 | Extended Forecast | Narrative panels for today and tomorrow with an eight-value stat grid, feels-like, accumulation, visibility and moon phase |
-| Almanac | Sunrise/sunset, dawn/dusk, moon phase, UV, ozone, accumulations, fire index |
+| Surf Report | Only when a surf spot is set. Estimated surf height and rating, primary/secondary swell, wind, water temperature, next tides and a 5-day wave outlook. See [Surf report](#surf-report) |
+| Almanac | Sunrise/sunset, dawn/dusk, a phase-accurate moon icon, UV, ozone, accumulations, fire index |
+
 
 ## Requirements
 
