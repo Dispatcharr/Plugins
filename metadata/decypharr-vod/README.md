@@ -2,7 +2,7 @@
 
 # Decypharr VOD
 
-**Version:** `1.0.1` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 01 2026, 06:23 UTC
+**Version:** `1.0.7` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 02 2026, 18:22 UTC
 
 Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes.
 
@@ -12,20 +12,21 @@ Native Dispatcharr VOD integration for Decypharr media, providing automatic scan
 
 ### Latest Release
 
-- **Download:** [`decypharr-vod-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-1.0.1/decypharr-vod-1.0.1.zip)
-- **Built:** Oct 01 2026, 06:24 UTC
-- **Source Commit:** [`c6b55ae`](https://github.com/Dispatcharr/Plugins/commit/c6b55aea9cebbf1c65658851439579234e063309)
+- **Download:** [`decypharr-vod-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-1.0.7/decypharr-vod-1.0.7.zip)
+- **Built:** Oct 02 2026, 18:22 UTC
+- **Source Commit:** [`2055cc8`](https://github.com/Dispatcharr/Plugins/commit/2055cc80f96ee26d0ebf3d5adfa2dd73c6bdf0d7)
 
 **Checksums:**
 ```
-MD5:    b9ebea425df64dfa8e9fff5fb828be63
-SHA256: dcce77ddfec26bdf35efe192e4bd6e473ada2a6c3e7e73aa6e5567389c698002
+MD5:    50271e6c0f437f8f0c1d3202e261bb79
+SHA256: 047c512f22ed42af08c7950cf91fc4c2a8143afeb58664f4fb2c68c6bdfc7d56
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.0.7` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-1.0.7/decypharr-vod-1.0.7.zip) | Oct 02 2026, 18:22 UTC | [`2055cc8`](https://github.com/Dispatcharr/Plugins/commit/2055cc80f96ee26d0ebf3d5adfa2dd73c6bdf0d7) | 50271e6c0f437f8f0c1d3202e261bb79 | 047c512f22ed42af08c7950cf91fc4c2a8143afeb58664f4fb2c68c6bdfc7d56 |
 | `1.0.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-1.0.1/decypharr-vod-1.0.1.zip) | Oct 01 2026, 06:24 UTC | [`c6b55ae`](https://github.com/Dispatcharr/Plugins/commit/c6b55aea9cebbf1c65658851439579234e063309) | b9ebea425df64dfa8e9fff5fb828be63 | dcce77ddfec26bdf35efe192e4bd6e473ada2a6c3e7e73aa6e5567389c698002 |
 | `1.0.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-1.0.0/decypharr-vod-1.0.0.zip) | Sep 30 2026, 22:49 UTC | [`24c72db`](https://github.com/Dispatcharr/Plugins/commit/24c72db534aae2b1c9fc622ef8db42284ac60002) | 8a9319acdfe1e2836924f8d6947cd40e | ce0e8296a5147dba2251d7afca9a6400c13fdbda81bfcd2fcdc91bab42c8c635 |
 | `0.5.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/decypharr-vod-0.5.2/decypharr-vod-0.5.2.zip) | Sep 30 2026, 04:11 UTC | [`dafb65c`](https://github.com/Dispatcharr/Plugins/commit/dafb65c4d952b3b972ca3076282de5105d6879a1) | 1c66ec627873138176a6798c4a950fae | 74f48fccc3fb8fd35bc5002e4214b91ff9ccaf7370d6e95a0ff0f007fd271e51 |
