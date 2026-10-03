@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T18:22:50Z",
+  "generated_at": "2026-10-03T14:31:22Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -414,6 +414,20 @@
         "latest_size": 49
       },
       {
+        "slug": "vod-probe",
+        "name": "VOD Probe",
+        "description": "Probes the real quality of each VOD relation (movies and every episode of every series version) with ffprobe in a background task and writes it into the relation's custom_properties, so every tool ...",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/vod-probe/manifest.json",
+        "author": "oxios0x00",
+        "license": "MIT",
+        "last_updated": "2026-10-03T10:30:56-04:00",
+        "latest_version": "1.3.2",
+        "latest_md5": "2d70ad62b80c25aab64ec259fb008670",
+        "latest_sha256": "538c07074d737f63557b342360ba5496a16fd43b1cac0ad28693b86b7a80702f",
+        "latest_url": "vod-probe-1.3.2/vod-probe-1.3.2.zip",
+        "latest_size": 589
+      },
+      {
         "slug": "vod2mlib",
         "name": "VOD to Media Library",
         "description": "Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that p...",
@@ -461,5 +475,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCar/2gAAKCRB+wDprTCI0\nzrpAAP0dxkq+tLYyHBDIIocGa5PpTVRPcieMDiMaY39UKKUX3AEAsl/rZhia2k2i\nY33vtJ6ziYVx47FQvJb80wvB35qgTww=\n=z1kC\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasERwAAKCRB+wDprTCI0\nzpXLAQCogbuphsJnDhGg9TN8l2i66rjhC3RGEAjcAsTPAqOxlQEA2jAm5+9b0zlI\n3LsOORUk0jODE1XDBeb+w9+urCg4bgI=\n=uraw\n-----END PGP SIGNATURE-----"
 }
