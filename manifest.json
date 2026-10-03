@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-03T14:31:22Z",
+  "generated_at": "2026-10-03T14:32:21Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -414,6 +414,20 @@
         "latest_size": 49
       },
       {
+        "slug": "vod-manager",
+        "name": "VOD Manager",
+        "description": "Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs...",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/vod-manager/manifest.json",
+        "author": "oxios0x00",
+        "license": "MIT",
+        "last_updated": "2026-10-03T10:31:46-04:00",
+        "latest_version": "2.6.3",
+        "latest_md5": "cad428ce3036bcd4571bc475fcddec41",
+        "latest_sha256": "46fedae6768ea94cf650eb980a28af4d720734dc5875024fc0a56afc81ab970c",
+        "latest_url": "vod-manager-2.6.3/vod-manager-2.6.3.zip",
+        "latest_size": 569
+      },
+      {
         "slug": "vod-probe",
         "name": "VOD Probe",
         "description": "Probes the real quality of each VOD relation (movies and every episode of every series version) with ffprobe in a background task and writes it into the relation's custom_properties, so every tool ...",
@@ -475,5 +489,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasERwAAKCRB+wDprTCI0\nzpXLAQCogbuphsJnDhGg9TN8l2i66rjhC3RGEAjcAsTPAqOxlQEA2jAm5+9b0zlI\n3LsOORUk0jODE1XDBeb+w9+urCg4bgI=\n=uraw\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasER/AAKCRB+wDprTCI0\nzs2JAQDMCu+qAPgTAupfV++iahRZnxovc7pv1zC/gLW1EFBq4QEA/chK94twq5N9\nG7/h7X1KL9ouFHYtxCxujjqDI4UlVAY=\n=9fST\n-----END PGP SIGNATURE-----"
 }
