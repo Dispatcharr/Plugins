@@ -6,9 +6,9 @@ A self-hosted, TV-style weather channel for Dispatcharr. PWS pulls forecast data
 
 ## Upgrading from 1.4.x or earlier
 
-Versions up to 1.4.2 installed under a folder the plugin browser couldn't match, so **Update** failed with "Plugin 'pws' already exists". From 1.5.0 updates work in place. The one-time move to 1.5.0:
+Versions up to 1.4.2 installed under a folder the plugin browser couldn't match, so **Update** failed with "Plugin 'pws' already exists". From 1.5 on, updates work in place. The one-time move to 1.5:
 
-1. Install/update PWS from the plugin browser — 1.5.0 installs next to the old entry.
+1. Install/update PWS from the plugin browser — it installs next to the old entry.
 2. **Enable** the new entry. Within ~20 seconds it adopts the old one: API key, station settings and existing Weather channels carry over (no duplicates), the old stations stop and the old entry is disabled.
 3. Delete the old, now-disabled **PWS** entry.
 
@@ -30,7 +30,7 @@ Up to nine pages, 14 seconds each by default; choose which appear, their order a
 
 Every page carries a colour-coded alert bar (no alerts / watch-advisory / warning) fed by NWS alerts polled every minute for US locations.
 
-## What's new in 1.5.0
+## What's new in 1.5
 
 - Plugin-browser updates work in place (see above)
 - Restart action; changed settings apply on Start; stations auto-start after Dispatcharr restarts
