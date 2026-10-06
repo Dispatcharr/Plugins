@@ -2,7 +2,7 @@
 
 # PWS - Pirate Weatharr Station
 
-**Version:** `1.5.1` | **Author:** dexdeadly | **Last Updated:** Oct 05 2026, 17:40 UTC
+**Version:** `1.6.0` | **Author:** dexdeadly | **Last Updated:** Oct 06 2026, 08:09 UTC
 
 TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel.
 
@@ -12,20 +12,21 @@ TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to t
 
 ### Latest Release
 
-- **Download:** [`pirate-weatharr-station-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.5.1/pirate-weatharr-station-1.5.1.zip)
-- **Built:** Oct 05 2026, 17:41 UTC
-- **Source Commit:** [`d70208b`](https://github.com/Dispatcharr/Plugins/commit/d70208b451f884ee294e6e5f03bac70db7dc2add)
+- **Download:** [`pirate-weatharr-station-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.6.0/pirate-weatharr-station-1.6.0.zip)
+- **Built:** Oct 06 2026, 08:10 UTC
+- **Source Commit:** [`c2e3d69`](https://github.com/Dispatcharr/Plugins/commit/c2e3d69ab46b4bfc91ed80ae219cb234a7c7c60c)
 
 **Checksums:**
 ```
-MD5:    1c9caa76ce3024ace09dc188ac8db0a6
-SHA256: 11bd6bacf405cbbf1f42afdbe9df6ce3113c1ba1530942d08082bbeac99dd307
+MD5:    9b47a3a8242e744b93a2a8a424bebe22
+SHA256: 5b22d97a3526bc1e74f9f7b6b9cd449d65e485a6a0989f497c13427517cee64b
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.6.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.6.0/pirate-weatharr-station-1.6.0.zip) | Oct 06 2026, 08:10 UTC | [`c2e3d69`](https://github.com/Dispatcharr/Plugins/commit/c2e3d69ab46b4bfc91ed80ae219cb234a7c7c60c) | 9b47a3a8242e744b93a2a8a424bebe22 | 5b22d97a3526bc1e74f9f7b6b9cd449d65e485a6a0989f497c13427517cee64b |
 | `1.5.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.5.1/pirate-weatharr-station-1.5.1.zip) | Oct 05 2026, 17:41 UTC | [`d70208b`](https://github.com/Dispatcharr/Plugins/commit/d70208b451f884ee294e6e5f03bac70db7dc2add) | 1c9caa76ce3024ace09dc188ac8db0a6 | 11bd6bacf405cbbf1f42afdbe9df6ce3113c1ba1530942d08082bbeac99dd307 |
 | `1.4.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.4.2/pirate-weatharr-station-1.4.2.zip) | Oct 01 2026, 19:46 UTC | [`3c4dd61`](https://github.com/Dispatcharr/Plugins/commit/3c4dd6126c9c7c2bdc12f8e9c33fd8295b3f1c18) | 1998819e6011a1f35904d41776643097 | 380c998bc0463b317f49f8756579ea41ab1233fbb86e8c15effe1827c60963e0 |
 | `1.3.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip) | Aug 18 2026, 04:54 UTC | [`878b01c`](https://github.com/Dispatcharr/Plugins/commit/878b01c6f9a5f53c8c9c9e1e78994b5d7fc69d07) | 0a2369bfb13318e04ccc14e00e8a605f | 40bc77a571270d47205d4ec5cb74b172352c2465845dfa59e574e1ca26a3165b |
@@ -43,7 +44,7 @@ SHA256: 11bd6bacf405cbbf1f42afdbe9df6ce3113c1ba1530942d08082bbeac99dd307
 
 # Pirate Weatharr Station
 
-A self-hosted, TV-style weather channel for Dispatcharr. PWS pulls forecast data from the Pirate Weather API, renders it as a looping broadcast, and publishes the result as a channel — up to three stations, each with its own location and channel.
+A self-hosted, TV-style weather channel for Dispatcharr. PWS pulls forecast data from the Pirate Weather API, renders it as a looping broadcast, and publishes the result as a channel — up to three locations, each on its own channel or sharing one.
 
 📖 **[Read the full User Guide](https://github.com/dexdeadly/pirate-weatharr-station/blob/main/README.md)** — setup steps, settings reference, and troubleshooting for every feature below.
 
@@ -72,6 +73,10 @@ Up to nine pages, 14 seconds each by default; choose which appear, their order a
 | Almanac | Sunrise/sunset, dawn/dusk, moon phase, UV, ozone, accumulations, fire index |
 
 Every page carries a colour-coded alert bar (no alerts / watch-advisory / warning) fed by NWS alerts polled every minute for US locations.
+
+## What's new in 1.6
+
+- **Shared channels:** each station has a Channel setting (A, B or C). Stations on the same channel share it and take turns — e.g. all three on one channel, or two together and one separate. Default is one channel per station.
 
 ## What's new in 1.5
 
