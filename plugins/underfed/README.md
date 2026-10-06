@@ -34,11 +34,12 @@ changes nothing. Read the journal under Check status, then turn it off.
 | API key | A Dispatcharr API key, from Settings → Users. The watcher needs it to read channel status and to change source |
 | Observe only | Records what it would have done without doing it |
 | Trigger below | Share of the content rate under which a source counts as underfed. 70 is a sensible floor: a healthy source sits at 100 |
-| Confirm for | How long a shortfall, or the timestamp discontinuities, must last before acting. Short dips recover on their own |
+| Confirm for | How long a shortfall must last before acting. Short dips recover on their own |
 | Switches per hour | Per channel, over the last hour, restarts of the watcher included. Stops it bouncing between two sources that are both weak |
 | Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
-| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm for, the source is switched. 0 turns it off |
+| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm discontinuities for, the source is switched. 0 turns it off |
+| Confirm discontinuities for | How long the discontinuities must last before acting, 15 s by default. A storm is unmistakable and the sound drifts further every second, so this is shorter than Confirm for |
 | Refused source held back | A source the provider answers 403 to goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
@@ -90,8 +91,8 @@ again. reservoarr's ffmpeg logs it in `delaybuf.log`, in pairs:
 ```
 
 A healthy source logs a handful of these a minute; that one logged up to 1,836. When a source
-stays at Timestamp discontinuities or above for the confirmation window, counted over the last
-minute, the watcher moves the channel on the same way.
+stays at Timestamp discontinuities or above for Confirm discontinuities for, counted over the
+last minute, the watcher moves the channel on the same way.
 
 It refuses to act when any of these is true:
 
