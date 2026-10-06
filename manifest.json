@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T08:10:21Z",
+  "generated_at": "2026-10-06T21:37:58Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -276,12 +276,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/packet-slapper/manifest.json",
         "author": "write-erase",
         "license": "MIT",
-        "last_updated": "2026-10-06T01:52:49Z",
-        "latest_version": "1.0.1",
-        "latest_md5": "7049184debf26bc2715ac5d9ee4d381f",
-        "latest_sha256": "a6483705d1271626c0a306ff4ee3885a3f1dc32a5b34caef864c86bf3c62affd",
-        "latest_url": "packet-slapper-1.0.1/packet-slapper-1.0.1.zip",
-        "latest_size": 48
+        "last_updated": "2026-10-06T21:36:49Z",
+        "latest_version": "1.0.2",
+        "latest_md5": "f3cfc6a72f30892c1a3a8456fe5759fe",
+        "latest_sha256": "2c5eb3b15eb02f454ed9a83cc44a62e433fde30b3cb42b0d6f8af9aa7a4fd43a",
+        "latest_url": "packet-slapper-1.0.2/packet-slapper-1.0.2.zip",
+        "latest_size": 39
       },
       {
         "slug": "pirate-weatharr-station",
@@ -489,5 +489,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasSs8gAKCRB+wDprTCI0\nznNbAP0fDCJfnU1sX1MWy1V5WbcVvADOgZm45yiqDH/zXyk1BAEAr/G2q96iW8D9\n1pw1O/bWJ7laUQDBWqyWR5dUKkRRoQE=\n=/G3i\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasVqPAAKCRB+wDprTCI0\nzudJAQC6f/vv5mQpojQyQWSnhEd+xua/nIiceJ904EnZibY4ogD/XH8S3HF65ROk\neQtfBJLpha4T5qwnCcO47Oaf2aUpnQU=\n=wHHQ\n-----END PGP SIGNATURE-----"
 }
