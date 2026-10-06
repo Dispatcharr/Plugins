@@ -2,7 +2,7 @@
 
 # Could Not Dispatch
 
-**Version:** `0.4.0` | **Author:** PilaScat | **Last Updated:** Sep 14 2026, 14:46 UTC
+**Version:** `0.5.0` | **Author:** PilaScat | **Last Updated:** Oct 06 2026, 23:20 UTC
 
 Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.4.0/could-not-dispatch-0.4.0.zip)
-- **Built:** Sep 14 2026, 14:46 UTC
-- **Source Commit:** [`3ee82eb`](https://github.com/Dispatcharr/Plugins/commit/3ee82eb1a2a2abf598e570d617b944149cc019ad)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip)
+- **Built:** Oct 06 2026, 23:20 UTC
+- **Source Commit:** [`8e2b381`](https://github.com/Dispatcharr/Plugins/commit/8e2b381c3088d1899c334452f36bcb201678c319)
 
 **Checksums:**
 ```
-MD5:    534e882eaa7b4ac919695c672eac80d5
-SHA256: f96552647275488771c74526dfb0780f1ce82e5065a0494dbfb694636bf97d29
+MD5:    82e6b5ae22f415dbf37b5a2204950451
+SHA256: 59995d4a526216d2000b2dbe36a8dbb64aa0fb8b702685ad4c1844388e1b0ec4
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip) | Oct 06 2026, 23:20 UTC | [`8e2b381`](https://github.com/Dispatcharr/Plugins/commit/8e2b381c3088d1899c334452f36bcb201678c319) | 82e6b5ae22f415dbf37b5a2204950451 | 59995d4a526216d2000b2dbe36a8dbb64aa0fb8b702685ad4c1844388e1b0ec4 |
 | `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.4.0/could-not-dispatch-0.4.0.zip) | Sep 14 2026, 14:46 UTC | [`3ee82eb`](https://github.com/Dispatcharr/Plugins/commit/3ee82eb1a2a2abf598e570d617b944149cc019ad) | 534e882eaa7b4ac919695c672eac80d5 | f96552647275488771c74526dfb0780f1ce82e5065a0494dbfb694636bf97d29 |
 | `0.3.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip) | Sep 14 2026, 08:03 UTC | [`37ccdd6`](https://github.com/Dispatcharr/Plugins/commit/37ccdd6b23115c565056cee99dc6496056e01afa) | be434828ca3eb55b7c7f52a9cc47aa81 | 37fa4ac3d14775486deb328933c5258dc4fae6846cada3852e4de2752adf3640 |
 | `0.3.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip) | Sep 14 2026, 00:20 UTC | [`ec416fc`](https://github.com/Dispatcharr/Plugins/commit/ec416fca9faab05bc7e357937bf6bbdb995b3703) | d2a9229422eff74452c1a556a564fdba | f4cd9d0d302f0eb040039a16af03cb5e6996298d6466d3e7d7b9b4590c30be82 |
@@ -62,8 +63,8 @@ The message lives in the picture you supply. The plugin does not draw text.
 
 ## Install
 
-From the Plugin Hub, or by unzipping the release into `/data/plugins/could-not-dispatch`
-and pressing refresh on the Plugins page. Enable the plugin, fill in the settings, press
+From the Plugin Hub, or by unzipping the release into `/data/plugins`, which creates the
+`could-not-dispatch` folder, and pressing refresh on the Plugins page. Enable the plugin, fill in the settings, press
 **Apply**.
 
 ## Settings
@@ -171,16 +172,16 @@ stream, so Dispatcharr considers the channel up. To spot real outages, watch the
 fallback by itself: a channel stays on the card for as long as a client holds it, even
 after the provider is back. Without a key that stays true. With one, the fallback asks
 Dispatcharr every ten seconds which channels are playing it and how many connections each
-M3U profile is using, and switches a channel still on it after two minutes to its first
+M3U profile is using, and switches a channel still on it after 30 seconds to its first
 stream. If that stream is still down, the failover walks the chain and lands on the card
-again, and the next try waits longer: 4, 8, then 15 minutes. The wait starts over once the
-channel has stayed off the card for 15 minutes.
+again, and the next try waits longer: 1, 2, then 5 minutes, and every 5 minutes after that.
+The wait starts over once the channel has stayed off the card for 15 minutes.
 
 A channel that reaches the card while the provider of its first stream is full, or was full
 in the 20 seconds before, is there for lack of a connection, not because its streams failed:
 a viewer switching channels with every connection in use lands on it. That channel goes back
 as soon as a connection frees up, checked every two seconds, and a refusal for capacity is
-not counted as a try. If it lands on the card again within two minutes of that return, its
+not counted as a try. If it lands on the card again within 30 seconds of that return, its
 streams are failing after all, and it waits like any other.
 
 **One edge case in failover order.** Dispatcharr rotates the alternate list starting from
