@@ -1,6 +1,6 @@
 # Pirate Weatharr Station
 
-A self-hosted, TV-style weather channel for Dispatcharr. PWS pulls forecast data from the Pirate Weather API, renders it as a looping broadcast, and publishes the result as a channel — up to three stations, each with its own location and channel.
+A self-hosted, TV-style weather channel for Dispatcharr. PWS pulls forecast data from the Pirate Weather API, renders it as a looping broadcast, and publishes the result as a channel — up to three locations, each on its own channel or sharing one.
 
 📖 **[Read the full User Guide](https://github.com/dexdeadly/pirate-weatharr-station/blob/main/README.md)** — setup steps, settings reference, and troubleshooting for every feature below.
 
@@ -29,6 +29,10 @@ Up to nine pages, 14 seconds each by default; choose which appear, their order a
 | Almanac | Sunrise/sunset, dawn/dusk, moon phase, UV, ozone, accumulations, fire index |
 
 Every page carries a colour-coded alert bar (no alerts / watch-advisory / warning) fed by NWS alerts polled every minute for US locations.
+
+## What's new in 1.6
+
+- **Shared channels:** each station has a Channel setting (A, B or C). Stations on the same channel share it and take turns — e.g. all three on one channel, or two together and one separate. Default is one channel per station.
 
 ## What's new in 1.5
 
