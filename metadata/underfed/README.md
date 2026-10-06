@@ -2,7 +2,7 @@
 
 # Underfed
 
-**Version:** `0.5.0` | **Author:** PilaScat | **Last Updated:** Sep 21 2026, 21:08 UTC
+**Version:** `0.6.0` | **Author:** PilaScat | **Last Updated:** Oct 06 2026, 23:30 UTC
 
 Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the back of the chain when the provider answers 403.
 
@@ -12,20 +12,21 @@ Moves a channel off a source that is starving it, drifting its sound or refusing
 
 ### Latest Release
 
-- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.5.0/underfed-0.5.0.zip)
-- **Built:** Sep 21 2026, 21:09 UTC
-- **Source Commit:** [`89900f9`](https://github.com/Dispatcharr/Plugins/commit/89900f9516a27a1946af159412d2210b7e97cb65)
+- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.6.0/underfed-0.6.0.zip)
+- **Built:** Oct 06 2026, 23:31 UTC
+- **Source Commit:** [`8e1ce6d`](https://github.com/Dispatcharr/Plugins/commit/8e1ce6dae65c33aa4bd0539e1ebe2587c76fccbe)
 
 **Checksums:**
 ```
-MD5:    a23dc15479b0c662c80f8c155f4a11d9
-SHA256: 7ecaecd27548ecb156baac8d1e1b2bd1b5e67cb1d99904387f286fa6e729fd3a
+MD5:    faaffb023d37daab1ff5c932062ed8b7
+SHA256: 87017dbeba521321b5cb0030e5ab56873ce7109f4ea914227aebd94b9d82d55e
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.6.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.6.0/underfed-0.6.0.zip) | Oct 06 2026, 23:31 UTC | [`8e1ce6d`](https://github.com/Dispatcharr/Plugins/commit/8e1ce6dae65c33aa4bd0539e1ebe2587c76fccbe) | faaffb023d37daab1ff5c932062ed8b7 | 87017dbeba521321b5cb0030e5ab56873ce7109f4ea914227aebd94b9d82d55e |
 | `0.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.5.0/underfed-0.5.0.zip) | Sep 21 2026, 21:09 UTC | [`89900f9`](https://github.com/Dispatcharr/Plugins/commit/89900f9516a27a1946af159412d2210b7e97cb65) | a23dc15479b0c662c80f8c155f4a11d9 | 7ecaecd27548ecb156baac8d1e1b2bd1b5e67cb1d99904387f286fa6e729fd3a |
 | `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.4.0/underfed-0.4.0.zip) | Sep 15 2026, 11:41 UTC | [`c800f7e`](https://github.com/Dispatcharr/Plugins/commit/c800f7e99fea3c625a96061f2ba8a52fe596d4c3) | f2fd14dbcdc951499290bd391f0d8d43 | 191c82987939f14ee6c477e069037e0d02609c09793718b2e60bff8fd2e94967 |
 | `0.3.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.3.2/underfed-0.3.2.zip) | Sep 14 2026, 20:13 UTC | [`68f1181`](https://github.com/Dispatcharr/Plugins/commit/68f11812be1864f33d9fc130497071908dbdca97) | 597f324791f1f7c5ea471e262b062e7e | a6451dcc46d5be26958cc8cd3a318797499509de713f8f0f04c9bf0dd424dd19 |
@@ -76,11 +77,12 @@ changes nothing. Read the journal under Check status, then turn it off.
 | API key | A Dispatcharr API key, from Settings → Users. The watcher needs it to read channel status and to change source |
 | Observe only | Records what it would have done without doing it |
 | Trigger below | Share of the content rate under which a source counts as underfed. 70 is a sensible floor: a healthy source sits at 100 |
-| Confirm for | How long a shortfall, or the timestamp discontinuities, must last before acting. Short dips recover on their own |
+| Confirm for | How long a shortfall must last before acting. Short dips recover on their own |
 | Switches per hour | Per channel, over the last hour, restarts of the watcher included. Stops it bouncing between two sources that are both weak |
 | Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
-| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm for, the source is switched. 0 turns it off |
+| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm discontinuities for, the source is switched. 0 turns it off |
+| Confirm discontinuities for | How long the discontinuities must last before acting, 15 s by default. A storm is unmistakable and the sound drifts further every second, so this is shorter than Confirm for |
 | Refused source held back | A source the provider answers 403 to goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
@@ -132,8 +134,8 @@ again. reservoarr's ffmpeg logs it in `delaybuf.log`, in pairs:
 ```
 
 A healthy source logs a handful of these a minute; that one logged up to 1,836. When a source
-stays at Timestamp discontinuities or above for the confirmation window, counted over the last
-minute, the watcher moves the channel on the same way.
+stays at Timestamp discontinuities or above for Confirm discontinuities for, counted over the
+last minute, the watcher moves the channel on the same way.
 
 It refuses to act when any of these is true:
 

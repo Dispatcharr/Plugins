@@ -38,7 +38,7 @@ This branch contains all published plugin releases.
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
 | [`Ticker`](#ticker) | `0.5.03` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
 | [`Twitcharr`](#twitcharr) | `1.3.2` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
-| [`Underfed`](#underfed) | `0.5.0` | PilaScat | MIT | Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the back of the chain when the provider answers 403. |
+| [`Underfed`](#underfed) | `0.6.0` | PilaScat | MIT | Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the back of the chain when the provider answers 403. |
 | [`VOD Manager`](#vod-manager) | `2.6.3` | oxios0x00 | MIT | Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default. |
 | [`VOD Probe`](#vod-probe) | `1.3.2` | oxios0x00 | MIT | Probes the real quality of each VOD relation (movies and every episode of every series version) with ffprobe in a background task and writes it into the relation's custom_properties, so every tool reading Dispatcharr's API can use it. Can also backfill missing tmdb_id/imdb_id from the provider's per-title detail endpoint, merging safely into an existing catalogue entry when one already has the id. Dry run by default. |
 | [`VOD to Media Library`](#vod-to-media-library) | `1.18.1` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
@@ -513,17 +513,17 @@ Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV gu
 
 ### [Underfed](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/underfed/README.md)
 
-**Version:** `0.5.0` | **Author:** PilaScat | **Last Updated:** Sep 21 2026, 21:08 UTC
+**Version:** `0.6.0` | **Author:** PilaScat | **Last Updated:** Oct 06 2026, 23:30 UTC
 
 Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the back of the chain when the provider answers 403.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/underfed)
 
 **Downloads:**
-- [Latest Release (`0.5.0`)](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.5.0/underfed-0.5.0.zip)
-- [All Versions (3 available)](./metadata/underfed)
+- [Latest Release (`0.6.0`)](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.6.0/underfed-0.6.0.zip)
+- [All Versions (4 available)](./metadata/underfed)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/underfed) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/underfed/README.md) | **Last Change:** [`89900f9`](https://github.com/Dispatcharr/Plugins/commit/89900f9516a27a1946af159412d2210b7e97cb65)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/underfed) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/underfed/README.md) | **Last Change:** [`8e1ce6d`](https://github.com/Dispatcharr/Plugins/commit/8e1ce6dae65c33aa4bd0539e1ebe2587c76fccbe)
 
 ---
 
@@ -628,4 +628,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 06 2026, 23:21 UTC*
+*Last updated: Oct 06 2026, 23:31 UTC*
