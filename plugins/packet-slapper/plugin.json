@@ -1,6 +1,6 @@
 {
   "name": "Packet Slapper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency.",
   "author": "write-erase",
   "license": "MIT",
