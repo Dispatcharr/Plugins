@@ -2,7 +2,7 @@
 
 # Gluetun Rotate
 
-**Version:** `0.3.0` | **Author:** PilaScat | **Last Updated:** Sep 21 2026, 03:51 UTC
+**Version:** `0.4.0` | **Author:** PilaScat | **Last Updated:** Oct 07 2026, 00:03 UTC
 
 Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.
 
@@ -12,20 +12,21 @@ Moves Gluetun to another VPN server when the IPTV provider refuses the current e
 
 ### Latest Release
 
-- **Download:** [`gluetun-rotate-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.3.0/gluetun-rotate-0.3.0.zip)
-- **Built:** Sep 21 2026, 03:52 UTC
-- **Source Commit:** [`f8bf9f3`](https://github.com/Dispatcharr/Plugins/commit/f8bf9f3352c6144f68d1955b4b3f4b24e6a01fc6)
+- **Download:** [`gluetun-rotate-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.4.0/gluetun-rotate-0.4.0.zip)
+- **Built:** Oct 07 2026, 00:03 UTC
+- **Source Commit:** [`4b4e9db`](https://github.com/Dispatcharr/Plugins/commit/4b4e9db4f79245acaabfe246307e04da5de5dd57)
 
 **Checksums:**
 ```
-MD5:    96f2cf2a44a22388174227c206d505b4
-SHA256: 74f213ab9fa9822c681e86a0158e9ccfa329ee1d1cbb5cc57c97f40ddd1c880b
+MD5:    83695e9fe933b7db232b53ccf02afdef
+SHA256: cf566a498f1be72ce5fff1e5a92871c9946e9b9895d97b4d43e94576444bf322
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.4.0/gluetun-rotate-0.4.0.zip) | Oct 07 2026, 00:03 UTC | [`4b4e9db`](https://github.com/Dispatcharr/Plugins/commit/4b4e9db4f79245acaabfe246307e04da5de5dd57) | 83695e9fe933b7db232b53ccf02afdef | cf566a498f1be72ce5fff1e5a92871c9946e9b9895d97b4d43e94576444bf322 |
 | `0.3.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.3.0/gluetun-rotate-0.3.0.zip) | Sep 21 2026, 03:52 UTC | [`f8bf9f3`](https://github.com/Dispatcharr/Plugins/commit/f8bf9f3352c6144f68d1955b4b3f4b24e6a01fc6) | 96f2cf2a44a22388174227c206d505b4 | 74f213ab9fa9822c681e86a0158e9ccfa329ee1d1cbb5cc57c97f40ddd1c880b |
 | `0.2.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.2.1/gluetun-rotate-0.2.1.zip) | Sep 14 2026, 20:13 UTC | [`4d30179`](https://github.com/Dispatcharr/Plugins/commit/4d3017960cd2e203ca01cf0c6d210b0fc54a982b) | 681861c916a6c62f919c78dccd78175a | ccd2a67bdc47db1c461d4cc96a31bd54a36a0e321b2fc667245da022adc7f5db |
 
@@ -109,6 +110,17 @@ the tunnel through `PUT /v1/vpn/status`, starts it again, waits up to ninety sec
 different public address, and asks the provider once more. The journal records the old
 address, the new one and the answer.
 
+**A source behind Cloudflare's block page rotates in one round** (0.4.0). The provider sends
+each exit address to an edge of its choosing, and an edge can block the address with
+Cloudflare's "Website Access Blocked" page while every other edge and `player_api.php` still
+answer. When the Dispatcharr log shows a 403, the watcher finds the URL the channel was trying
+in the `Connection attempt` line before it and asks for it once, reading at most 16 KB and
+closing the connection at once if the stream opens. A 403 carrying the block page is a refused
+address: the journal records `blocked` with the feed and the edge, and the tunnel rotates
+without waiting for a second round. The source is asked again every round, at most three
+sources a round, until it opens (`unblocked`); if it is still blocked after a rotation, the
+next round rotates again within the limits below. Any other 403 is only recorded.
+
 Gluetun picks a server at random among those its filters allow each time the tunnel
 starts, which is what makes this work. A filter narrowed to one server leaves nowhere to go.
 
@@ -120,7 +132,7 @@ It holds back when:
   The fallback card, served from `127.0.0.1`, does not count — nothing is flowing from the
   provider there. There is no time limit, and a status that cannot be read does not hold the
   tunnel.
-- the last rotation was less than ten minutes ago
+- the last rotation was less than two minutes ago
 - three rotations have already happened in the last hour
 
 A rotation that fails still counts toward both time limits, so a control server that keeps
@@ -137,16 +149,18 @@ and saying no, to everyone; a new address would not change that, so those answer
 trigger a rotation. Neither does a timeout: a tunnel that is down is Gluetun's own
 healthcheck to restart.
 
-Some edges answer 403 to a few streams right after the exit address changes, while
-`player_api.php` still answers 200, so the probe cannot see it. From Dispatcharr 0.31.0, which
-writes its log to `/data/logs/dispatcharr.log`, the watcher counts the `HTTP 403` lines there
-every round and records them in the journal per channel. It only records them: whether a
-rotation would help is for those numbers to show. Check status says how many rounds had
-them and the counts of the last one; the first journal entry says whether the log was found.
+A 403 from an edge that is not Cloudflare's block page. From Dispatcharr 0.31.0, which writes
+its log to `/data/logs/dispatcharr.log`, the watcher counts the `HTTP 403` lines there every
+round and records them in the journal per channel; only the block page rotates. Check status
+says how many rounds had them and the counts of the last one; the first journal entry says
+whether the log was found.
 
-A rotation drops every connection through the tunnel for a few seconds, including the
-streams of an account that still answers. Since 0.3.0 the watcher waits for the last viewer
-on a provider source before it rotates, so nobody watching is cut off; with more than one
+A rotation drops every connection through the tunnel, including the streams of an account
+that still answers, and the viewer does not get it back seamlessly: measured on 7 October
+2026, a stream through reservoarr stalled 11.6 s for the viewer, because the old connection
+is never reset and reservoarr only reconnects after 25 s without data, and the new address
+can itself be refused, which sends every channel to its fallback. So the watcher waits for
+the last viewer on a provider source before it rotates, whatever the cause; with more than one
 provider behind the tunnel, viewers of the others hold the rotation back as well.
 
 ## Development

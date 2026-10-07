@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T23:31:32Z",
+  "generated_at": "2026-10-07T00:03:43Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -188,12 +188,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/gluetun-rotate/manifest.json",
         "author": "PilaScat",
         "license": "MIT",
-        "last_updated": "2026-09-21T03:51:43Z",
-        "latest_version": "0.3.0",
-        "latest_md5": "96f2cf2a44a22388174227c206d505b4",
-        "latest_sha256": "74f213ab9fa9822c681e86a0158e9ccfa329ee1d1cbb5cc57c97f40ddd1c880b",
-        "latest_url": "gluetun-rotate-0.3.0/gluetun-rotate-0.3.0.zip",
-        "latest_size": 55
+        "last_updated": "2026-10-07T00:03:10Z",
+        "latest_version": "0.4.0",
+        "latest_md5": "83695e9fe933b7db232b53ccf02afdef",
+        "latest_sha256": "cf566a498f1be72ce5fff1e5a92871c9946e9b9895d97b4d43e94576444bf322",
+        "latest_url": "gluetun-rotate-0.4.0/gluetun-rotate-0.4.0.zip",
+        "latest_size": 56
       },
       {
         "slug": "iptv-checker",
@@ -489,5 +489,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasWE2gAKCRB+wDprTCI0\nztRiAP9233b0iibHuiQwBxVi/wBVARm2Tj3A5cAfD7NRoX5g8wEAls2KNK2nh9lG\nNvWcYvIz0tIqppkIlGJTEhsZFeHO4gI=\n=jAzH\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasWMZgAKCRB+wDprTCI0\nzmvxAP0Xq0yisuKPUnXfoky3EFSQCV0q7AwYwcPKZDQXiBbM7wEAo+lj+wlqeChM\nSupXUMWJK09/emTpQGb1Cc/PO3Fs/wY=\n=ktT3\n-----END PGP SIGNATURE-----"
 }
