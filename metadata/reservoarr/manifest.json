@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T17:50:19Z",
+  "generated_at": "2026-10-07T12:55:27Z",
   "manifest": {
     "slug": "reservoarr",
     "name": "reservoarr",
@@ -14,22 +14,35 @@
     "repo_url": "https://github.com/brko7/reservoarr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-19T17:49:48Z",
+    "last_updated": "2026-10-07T12:54:47Z",
     "latest": {
-      "version": "6.3.7",
-      "commit_sha": "82ca657802d13a6b0d4007b242d791fd961407df",
-      "commit_sha_short": "82ca657",
-      "build_timestamp": "2026-09-19T17:50:12Z",
-      "last_updated": "2026-09-19T17:49:48Z",
-      "checksum_md5": "4a778761a475fdb140afa11391682683",
-      "checksum_sha256": "bfb53548e63158cf59babf023059372dfc29f428f27bf7fa5c988e82759e019b",
+      "version": "6.3.8",
+      "commit_sha": "b3756ca44380c1fd3e33a6c2ada26e6705725144",
+      "commit_sha_short": "b3756ca",
+      "build_timestamp": "2026-10-07T12:55:14Z",
+      "last_updated": "2026-10-07T12:54:47Z",
+      "checksum_md5": "c984b43f8b6b80d27bfd0a9eecb8eb20",
+      "checksum_sha256": "bc2e5222cea3da65b114dee414befef854e989db6cb4f51e42f06327866a1442",
       "min_dispatcharr_version": "v0.25.0",
-      "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.7/reservoarr-6.3.7.zip",
-      "latest_url": "reservoarr-6.3.7/reservoarr-6.3.7.zip",
-      "url": "reservoarr-6.3.7/reservoarr-6.3.7.zip",
-      "size": 39
+      "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.8/reservoarr-6.3.8.zip",
+      "latest_url": "reservoarr-6.3.8/reservoarr-6.3.8.zip",
+      "url": "reservoarr-6.3.8/reservoarr-6.3.8.zip",
+      "size": 40
     },
     "versions": [
+      {
+        "version": "6.3.8",
+        "commit_sha": "b3756ca44380c1fd3e33a6c2ada26e6705725144",
+        "commit_sha_short": "b3756ca",
+        "build_timestamp": "2026-10-07T12:55:14Z",
+        "last_updated": "2026-10-07T12:54:47Z",
+        "checksum_md5": "c984b43f8b6b80d27bfd0a9eecb8eb20",
+        "checksum_sha256": "bc2e5222cea3da65b114dee414befef854e989db6cb4f51e42f06327866a1442",
+        "min_dispatcharr_version": "v0.25.0",
+        "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.8/reservoarr-6.3.8.zip",
+        "url": "reservoarr-6.3.8/reservoarr-6.3.8.zip",
+        "size": 40
+      },
       {
         "version": "6.3.7",
         "commit_sha": "82ca657802d13a6b0d4007b242d791fd961407df",
@@ -146,21 +159,8 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.2.3/reservoarr-6.2.3.zip",
         "url": "reservoarr-6.2.3/reservoarr-6.2.3.zip",
         "size": 35
-      },
-      {
-        "version": "6.2.2",
-        "commit_sha": "0b6a47541c02b2684893a76e4e0275e0ce1e1733",
-        "commit_sha_short": "0b6a475",
-        "build_timestamp": "2026-06-21T10:55:12Z",
-        "last_updated": "2026-06-21T06:54:52-04:00",
-        "checksum_md5": "2a628f3eee4486514134e02c65ea19f6",
-        "checksum_sha256": "178380a7608d34c660c77a1488f8ea9faa67ee3f57842433dd6951b876a6a331",
-        "min_dispatcharr_version": "v0.25.0",
-        "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.2.2/reservoarr-6.2.2.zip",
-        "url": "reservoarr-6.2.2/reservoarr-6.2.2.zip",
-        "size": 17
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaq7LXwAKCRB+wDprTCI0\nzmIbAQD6CvL/L18QOBrBjFlPicD3oSkWzVqqf2ZCFNcjR7ySwwD9G/R1zOtOoDJH\n2vCTXij/LLt3lsqjnz5on1OCvycmnQM=\n=6+aX\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasZBRAAKCRB+wDprTCI0\nzh2lAP9he2NGS/+AziSM6NbDXBG/SYVq7X1fjLH+A3xIa+zmmgD9EEE5UXjGwQja\nH68UEC/BXC9oJM9nJK65Rh3ZAxQYNgY=\n=ECUw\n-----END PGP SIGNATURE-----"
 }
