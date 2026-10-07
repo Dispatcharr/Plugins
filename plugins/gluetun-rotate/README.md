@@ -68,6 +68,17 @@ the tunnel through `PUT /v1/vpn/status`, starts it again, waits up to ninety sec
 different public address, and asks the provider once more. The journal records the old
 address, the new one and the answer.
 
+**A source behind Cloudflare's block page rotates in one round** (0.4.0). The provider sends
+each exit address to an edge of its choosing, and an edge can block the address with
+Cloudflare's "Website Access Blocked" page while every other edge and `player_api.php` still
+answer. When the Dispatcharr log shows a 403, the watcher finds the URL the channel was trying
+in the `Connection attempt` line before it and asks for it once, reading at most 16 KB and
+closing the connection at once if the stream opens. A 403 carrying the block page is a refused
+address: the journal records `blocked` with the feed and the edge, and the tunnel rotates
+without waiting for a second round. The source is asked again every round, at most three
+sources a round, until it opens (`unblocked`); if it is still blocked after a rotation, the
+next round rotates again within the limits below. Any other 403 is only recorded.
+
 Gluetun picks a server at random among those its filters allow each time the tunnel
 starts, which is what makes this work. A filter narrowed to one server leaves nowhere to go.
 
@@ -79,7 +90,7 @@ It holds back when:
   The fallback card, served from `127.0.0.1`, does not count — nothing is flowing from the
   provider there. There is no time limit, and a status that cannot be read does not hold the
   tunnel.
-- the last rotation was less than ten minutes ago
+- the last rotation was less than two minutes ago
 - three rotations have already happened in the last hour
 
 A rotation that fails still counts toward both time limits, so a control server that keeps
@@ -96,16 +107,18 @@ and saying no, to everyone; a new address would not change that, so those answer
 trigger a rotation. Neither does a timeout: a tunnel that is down is Gluetun's own
 healthcheck to restart.
 
-Some edges answer 403 to a few streams right after the exit address changes, while
-`player_api.php` still answers 200, so the probe cannot see it. From Dispatcharr 0.31.0, which
-writes its log to `/data/logs/dispatcharr.log`, the watcher counts the `HTTP 403` lines there
-every round and records them in the journal per channel. It only records them: whether a
-rotation would help is for those numbers to show. Check status says how many rounds had
-them and the counts of the last one; the first journal entry says whether the log was found.
+A 403 from an edge that is not Cloudflare's block page. From Dispatcharr 0.31.0, which writes
+its log to `/data/logs/dispatcharr.log`, the watcher counts the `HTTP 403` lines there every
+round and records them in the journal per channel; only the block page rotates. Check status
+says how many rounds had them and the counts of the last one; the first journal entry says
+whether the log was found.
 
-A rotation drops every connection through the tunnel for a few seconds, including the
-streams of an account that still answers. Since 0.3.0 the watcher waits for the last viewer
-on a provider source before it rotates, so nobody watching is cut off; with more than one
+A rotation drops every connection through the tunnel, including the streams of an account
+that still answers, and the viewer does not get it back seamlessly: measured on 7 October
+2026, a stream through reservoarr stalled 11.6 s for the viewer, because the old connection
+is never reset and reservoarr only reconnects after 25 s without data, and the new address
+can itself be refused, which sends every channel to its fallback. So the watcher waits for
+the last viewer on a provider source before it rotates, whatever the cause; with more than one
 provider behind the tunnel, viewers of the others hold the rotation back as well.
 
 ## Development
