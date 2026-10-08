@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T12:55:27Z",
+  "generated_at": "2026-10-08T21:21:23Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -327,6 +327,20 @@
         "min_dispatcharr_version": "v0.25.0"
       },
       {
+        "slug": "segmentarr",
+        "name": "Segmentarr",
+        "description": "HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/segmentarr/manifest.json",
+        "author": "Tw1zT3d2four7",
+        "license": "MIT",
+        "last_updated": "2026-10-08T17:20:50-04:00",
+        "latest_version": "1.5.3",
+        "latest_md5": "acfe8159dc85f145505815f3b994fde4",
+        "latest_sha256": "17f56e46804366451b60859a5460ac3306b87aefe297348f05b2a90202b72bfb",
+        "latest_url": "segmentarr-1.5.3/segmentarr-1.5.3.zip",
+        "latest_size": 271
+      },
+      {
         "slug": "stream-dripper",
         "name": "Stream Dripper",
         "description": "Automatically drops all active streams once per day at a configured time, with a manual drop-now button.",
@@ -489,5 +503,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasZBRgAKCRB+wDprTCI0\nzn/CAQD+6EtGSqi+OlbngixTriY66ACxGBxv4BFLLG5OsgUlPQEAl5bRSkjgJ3ND\nRpfOVmPNvXBQOvPiWLEBP5mKwZTJfw0=\n=dX7K\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasgJWgAKCRB+wDprTCI0\nzvXVAPsEF+4p8aL0ZOaF5F0VgF7rg63Vm8Fh2/DP2/B9BqmMhQD+PtejJe7C5vCs\nwmTl3din9Ih4kBl+lsQT+xVLGGcrEQA=\n=ihzx\n-----END PGP SIGNATURE-----"
 }
