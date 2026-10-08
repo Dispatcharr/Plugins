@@ -1,6 +1,6 @@
 {
   "name": "Segmentarr",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile.",
   "author": "Tw1zT3d2four7",
   "maintainers": ["Tw1zT3d2four7"],
