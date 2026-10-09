@@ -28,7 +28,7 @@ This branch contains all published plugin releases.
 | [`Lineuparr`](#lineuparr) | `1.26.2821835` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
 | [`Multiview`](#multiview) | `0.4.3` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
-| [`Newsflasharr`](#newsflasharr) | `1.26.2481646` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
+| [`Newsflasharr`](#newsflasharr) | `1.26.2821932` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
 | [`Packet Slapper`](#packet-slapper) | `1.0.3` | write-erase | MIT | Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.6.0` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
@@ -344,7 +344,7 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
 ### [Newsflasharr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/newsflasharr/README.md)
 
-**Version:** `1.26.2481646` | **Author:** PiratesIRC | **Last Updated:** Sep 05 2026, 17:22 UTC
+**Version:** `1.26.2821932` | **Author:** PiratesIRC | **Last Updated:** Oct 09 2026, 19:57 UTC
 
 Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.
 
@@ -353,10 +353,10 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.2481646`)](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2481646/newsflasharr-1.26.2481646.zip)
-- [All Versions (5 available)](./metadata/newsflasharr)
+- [Latest Release (`1.26.2821932`)](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2821932/newsflasharr-1.26.2821932.zip)
+- [All Versions (6 available)](./metadata/newsflasharr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/newsflasharr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/newsflasharr/README.md) | **Last Change:** [`c6b7006`](https://github.com/Dispatcharr/Plugins/commit/c6b7006471cbd1d5f99533347a07b6f05342a084)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/newsflasharr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/newsflasharr/README.md) | **Last Change:** [`a495c83`](https://github.com/Dispatcharr/Plugins/commit/a495c83cccc3b7157f91c882097d8066ccd636f7)
 
 ---
 
@@ -645,4 +645,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 09 2026, 19:31 UTC*
+*Last updated: Oct 09 2026, 19:58 UTC*
