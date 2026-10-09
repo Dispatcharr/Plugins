@@ -88,7 +88,7 @@ Remove the old plugin from the **Plugins** page, restart Dispatcharr (`docker re
 
 | Page | What is in it |
 |---|---|
-| **[User guide](https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin/blob/main/docs/USER-GUIDE.md)** | Every setting, every action, match sensitivity, country matching, custom aliases, reports and emailing, file locations, troubleshooting, and how the matching pipeline works. |
+| **[User guide](https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin/blob/main/docs/USER-GUIDE.md)** | Every setting, every action, match sensitivity, country matching, custom aliases, adding a second provider, keeping channels up to date, requesting a new lineup, reports and emailing, file locations, troubleshooting, and how the matching pipeline works. |
 | **[Lineup file format](https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin/blob/main/docs/LINEUP-FORMAT.md)** | Writing your own lineup: the JSON shape, the filename rule, per-channel aliases, and marking foreign channels. |
 
 ## Contributing
