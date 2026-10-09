@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T13:42:17Z",
+  "generated_at": "2026-10-09T14:26:03Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -333,11 +333,11 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/segmentarr/manifest.json",
         "author": "Tw1zT3d2four7",
         "license": "MIT",
-        "last_updated": "2026-10-09T13:19:43Z",
-        "latest_version": "1.5.6",
-        "latest_md5": "030ac155c0b3067dcbc1c776e1158d03",
-        "latest_sha256": "aee5feff4b265ea7634e2818c0939ce3972e447224b025d896e52df016cdef7c",
-        "latest_url": "segmentarr-1.5.6/segmentarr-1.5.6.zip",
+        "last_updated": "2026-10-09T14:25:33Z",
+        "latest_version": "1.5.7",
+        "latest_md5": "b80879859cbc0098a1e6088e75a98574",
+        "latest_sha256": "183da7034a01073b45ad30da5ea7b523ab0b41fbbcc9b469801a40494027ce13",
+        "latest_url": "segmentarr-1.5.7/segmentarr-1.5.7.zip",
         "latest_size": 272
       },
       {
@@ -503,5 +503,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasjvPwAKCRB+wDprTCI0\nzsb4AP4vgdhNacLqE+u0rabQ1naGyDQtzepgJXgWIQHbQPSx+AD/X72Kiv59r7eD\nMSVs0crSbJ6J4UoVutcn38m1Dae29Qg=\n=ZU3d\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasj5ggAKCRB+wDprTCI0\nztF5AQCdi4YbuvOTB5jPgjIhz/1qRbJ0yaoIVZockGvv17R7EwEA7KUv7uwIBNK3\nY97mn4FSJsG0E5A1CvNmW/Xt8s6yYgc=\n=ye8I\n-----END PGP SIGNATURE-----"
 }
