@@ -18,8 +18,8 @@ The message lives in the picture you supply. The plugin does not draw text.
 
 ## Install
 
-From the Plugin Hub, or by unzipping the release into `/data/plugins/could-not-dispatch`
-and pressing refresh on the Plugins page. Enable the plugin, fill in the settings, press
+From the Plugin Hub, or by unzipping the release into `/data/plugins`, which creates the
+`could-not-dispatch` folder, and pressing refresh on the Plugins page. Enable the plugin, fill in the settings, press
 **Apply**.
 
 ## Settings
@@ -127,16 +127,16 @@ stream, so Dispatcharr considers the channel up. To spot real outages, watch the
 fallback by itself: a channel stays on the card for as long as a client holds it, even
 after the provider is back. Without a key that stays true. With one, the fallback asks
 Dispatcharr every ten seconds which channels are playing it and how many connections each
-M3U profile is using, and switches a channel still on it after two minutes to its first
+M3U profile is using, and switches a channel still on it after 30 seconds to its first
 stream. If that stream is still down, the failover walks the chain and lands on the card
-again, and the next try waits longer: 4, 8, then 15 minutes. The wait starts over once the
-channel has stayed off the card for 15 minutes.
+again, and the next try waits longer: 1, 2, then 5 minutes, and every 5 minutes after that.
+The wait starts over once the channel has stayed off the card for 15 minutes.
 
 A channel that reaches the card while the provider of its first stream is full, or was full
 in the 20 seconds before, is there for lack of a connection, not because its streams failed:
 a viewer switching channels with every connection in use lands on it. That channel goes back
 as soon as a connection frees up, checked every two seconds, and a refusal for capacity is
-not counted as a try. If it lands on the card again within two minutes of that return, its
+not counted as a try. If it lands on the card again within 30 seconds of that return, its
 streams are failing after all, and it waits like any other.
 
 **One edge case in failover order.** Dispatcharr rotates the alternate list starting from
