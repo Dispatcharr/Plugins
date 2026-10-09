@@ -33,7 +33,7 @@ This branch contains all published plugin releases.
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.6.0` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
 | [`reservoarr`](#reservoarr) | `6.3.8` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
-| [`Segmentarr`](#segmentarr) | `1.5.3` | Tw1zT3d2four7 | MIT | HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile. |
+| [`Segmentarr`](#segmentarr) | `1.5.6` | Tw1zT3d2four7 | MIT | HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile. |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.2681209` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
@@ -428,17 +428,17 @@ Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dyi
 
 ### [Segmentarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/segmentarr/README.md)
 
-**Version:** `1.5.3` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 08 2026, 21:20 UTC
+**Version:** `1.5.6` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 09 2026, 13:19 UTC
 
 HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Tw1zT3d2four7/Segmentarr)
 
 **Downloads:**
-- [Latest Release (`1.5.3`)](https://github.com/Dispatcharr/Plugins/releases/download/segmentarr-1.5.3/segmentarr-1.5.3.zip)
-- [All Versions (1 available)](./metadata/segmentarr)
+- [Latest Release (`1.5.6`)](https://github.com/Dispatcharr/Plugins/releases/download/segmentarr-1.5.6/segmentarr-1.5.6.zip)
+- [All Versions (2 available)](./metadata/segmentarr)
 
-**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/segmentarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/segmentarr/README.md) | **Last Change:** [`86885f5`](https://github.com/Dispatcharr/Plugins/commit/86885f5a2be0fabda4774ace025470a447f751c3)
+**Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/segmentarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/segmentarr/README.md) | **Last Change:** [`1d958a6`](https://github.com/Dispatcharr/Plugins/commit/1d958a655b8c38443e6398ce0c1ef510620d2c7f)
 
 ---
 
@@ -645,4 +645,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 08 2026, 21:21 UTC*
+*Last updated: Oct 09 2026, 13:20 UTC*

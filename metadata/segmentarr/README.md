@@ -2,7 +2,7 @@
 
 # Segmentarr
 
-**Version:** `1.5.3` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 08 2026, 21:20 UTC
+**Version:** `1.5.6` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 09 2026, 13:19 UTC
 
 HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile.
 
@@ -12,20 +12,21 @@ HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams in
 
 ### Latest Release
 
-- **Download:** [`segmentarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/segmentarr-1.5.3/segmentarr-1.5.3.zip)
-- **Built:** Oct 08 2026, 21:21 UTC
-- **Source Commit:** [`86885f5`](https://github.com/Dispatcharr/Plugins/commit/86885f5a2be0fabda4774ace025470a447f751c3)
+- **Download:** [`segmentarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/segmentarr-1.5.6/segmentarr-1.5.6.zip)
+- **Built:** Oct 09 2026, 13:20 UTC
+- **Source Commit:** [`1d958a6`](https://github.com/Dispatcharr/Plugins/commit/1d958a655b8c38443e6398ce0c1ef510620d2c7f)
 
 **Checksums:**
 ```
-MD5:    acfe8159dc85f145505815f3b994fde4
-SHA256: 17f56e46804366451b60859a5460ac3306b87aefe297348f05b2a90202b72bfb
+MD5:    030ac155c0b3067dcbc1c776e1158d03
+SHA256: aee5feff4b265ea7634e2818c0939ce3972e447224b025d896e52df016cdef7c
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.5.6` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/segmentarr-1.5.6/segmentarr-1.5.6.zip) | Oct 09 2026, 13:20 UTC | [`1d958a6`](https://github.com/Dispatcharr/Plugins/commit/1d958a655b8c38443e6398ce0c1ef510620d2c7f) | 030ac155c0b3067dcbc1c776e1158d03 | aee5feff4b265ea7634e2818c0939ce3972e447224b025d896e52df016cdef7c |
 | `1.5.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/segmentarr-1.5.3/segmentarr-1.5.3.zip) | Oct 08 2026, 21:21 UTC | [`86885f5`](https://github.com/Dispatcharr/Plugins/commit/86885f5a2be0fabda4774ace025470a447f751c3) | acfe8159dc85f145505815f3b994fde4 | 17f56e46804366451b60859a5460ac3306b87aefe297348f05b2a90202b72bfb |
 
 ---

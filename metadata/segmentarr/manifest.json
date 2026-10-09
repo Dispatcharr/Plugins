@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T21:21:23Z",
+  "generated_at": "2026-10-09T13:20:14Z",
   "manifest": {
     "slug": "segmentarr",
     "name": "Segmentarr",
@@ -14,21 +14,33 @@
     "repo_url": "https://github.com/Tw1zT3d2four7/Segmentarr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-08T17:20:50-04:00",
+    "last_updated": "2026-10-09T13:19:43Z",
     "latest": {
-      "version": "1.5.3",
-      "commit_sha": "86885f5a2be0fabda4774ace025470a447f751c3",
-      "commit_sha_short": "86885f5",
-      "build_timestamp": "2026-10-08T21:21:15Z",
-      "last_updated": "2026-10-08T17:20:50-04:00",
-      "checksum_md5": "acfe8159dc85f145505815f3b994fde4",
-      "checksum_sha256": "17f56e46804366451b60859a5460ac3306b87aefe297348f05b2a90202b72bfb",
-      "source_url": "https://github.com/Tw1zT3d2four7/Segmentarr/releases/download/v1.5.3/segmentarr.zip",
-      "latest_url": "segmentarr-1.5.3/segmentarr-1.5.3.zip",
-      "url": "segmentarr-1.5.3/segmentarr-1.5.3.zip",
-      "size": 271
+      "version": "1.5.6",
+      "commit_sha": "1d958a655b8c38443e6398ce0c1ef510620d2c7f",
+      "commit_sha_short": "1d958a6",
+      "build_timestamp": "2026-10-09T13:20:05Z",
+      "last_updated": "2026-10-09T13:19:43Z",
+      "checksum_md5": "030ac155c0b3067dcbc1c776e1158d03",
+      "checksum_sha256": "aee5feff4b265ea7634e2818c0939ce3972e447224b025d896e52df016cdef7c",
+      "source_url": "https://github.com/Tw1zT3d2four7/Segmentarr/releases/download/v1.5.6/segmentarr.zip",
+      "latest_url": "segmentarr-1.5.6/segmentarr-1.5.6.zip",
+      "url": "segmentarr-1.5.6/segmentarr-1.5.6.zip",
+      "size": 272
     },
     "versions": [
+      {
+        "version": "1.5.6",
+        "commit_sha": "1d958a655b8c38443e6398ce0c1ef510620d2c7f",
+        "commit_sha_short": "1d958a6",
+        "build_timestamp": "2026-10-09T13:20:05Z",
+        "last_updated": "2026-10-09T13:19:43Z",
+        "checksum_md5": "030ac155c0b3067dcbc1c776e1158d03",
+        "checksum_sha256": "aee5feff4b265ea7634e2818c0939ce3972e447224b025d896e52df016cdef7c",
+        "source_url": "https://github.com/Tw1zT3d2four7/Segmentarr/releases/download/v1.5.6/segmentarr.zip",
+        "url": "segmentarr-1.5.6/segmentarr-1.5.6.zip",
+        "size": 272
+      },
       {
         "version": "1.5.3",
         "commit_sha": "86885f5a2be0fabda4774ace025470a447f751c3",
@@ -43,5 +55,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasgJWAAKCRB+wDprTCI0\nzv96AQCNnGOT5A6l6jJBfyULeiPJAvGcJHeATIYWEhEjxvqbnAD/S3Z6Msj7k3re\niFnQgFJ+CcZe/Mb3WQFtW6bjDfIBgwc=\n=Pf2l\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasjqEgAKCRB+wDprTCI0\nztkUAQDolKYCaoerG3VPwoV32ZofNRNcRUJehgp7tElbROPvGgEA6L58tdlriDF5\nXt+Z1UOeOuFAmWK4BUC2HGey/CSt0Aw=\n=T3J/\n-----END PGP SIGNATURE-----"
 }

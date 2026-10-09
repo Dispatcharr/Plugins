@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T21:21:23Z",
+  "generated_at": "2026-10-09T13:20:14Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -333,12 +333,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/segmentarr/manifest.json",
         "author": "Tw1zT3d2four7",
         "license": "MIT",
-        "last_updated": "2026-10-08T17:20:50-04:00",
-        "latest_version": "1.5.3",
-        "latest_md5": "acfe8159dc85f145505815f3b994fde4",
-        "latest_sha256": "17f56e46804366451b60859a5460ac3306b87aefe297348f05b2a90202b72bfb",
-        "latest_url": "segmentarr-1.5.3/segmentarr-1.5.3.zip",
-        "latest_size": 271
+        "last_updated": "2026-10-09T13:19:43Z",
+        "latest_version": "1.5.6",
+        "latest_md5": "030ac155c0b3067dcbc1c776e1158d03",
+        "latest_sha256": "aee5feff4b265ea7634e2818c0939ce3972e447224b025d896e52df016cdef7c",
+        "latest_url": "segmentarr-1.5.6/segmentarr-1.5.6.zip",
+        "latest_size": 272
       },
       {
         "slug": "stream-dripper",
@@ -503,5 +503,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasgJWgAKCRB+wDprTCI0\nzvXVAPsEF+4p8aL0ZOaF5F0VgF7rg63Vm8Fh2/DP2/B9BqmMhQD+PtejJe7C5vCs\nwmTl3din9Ih4kBl+lsQT+xVLGGcrEQA=\n=ihzx\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasjqFAAKCRB+wDprTCI0\nzs6ZAQCIKmuS4MX/dQonQkVtsPscthHIlA4WuG9SXuF3v3s7hgD/SRClePb+Mqt6\nmbfNoKcBd+zxvpRg7FcTdOKvvUZ/FgA=\n=T1Kg\n-----END PGP SIGNATURE-----"
 }
