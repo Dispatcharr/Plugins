@@ -2,7 +2,7 @@
 
 # Stream-Mapparr
 
-**Version:** `1.26.2681209` | **Author:** PiratesIRC | **Last Updated:** Sep 25 2026, 12:17 UTC
+**Version:** `1.26.2821334` | **Author:** PiratesIRC | **Last Updated:** Oct 09 2026, 13:41 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -14,20 +14,21 @@ Automatically add matching streams to channels based on name similarity and qual
 
 ### Latest Release
 
-- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2681209/stream-mapparr-1.26.2681209.zip)
-- **Built:** Sep 25 2026, 12:17 UTC
-- **Source Commit:** [`d75dbde`](https://github.com/Dispatcharr/Plugins/commit/d75dbde6de2d76eb9d036eaea6742b8889bb9a06)
+- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2821334/stream-mapparr-1.26.2821334.zip)
+- **Built:** Oct 09 2026, 13:42 UTC
+- **Source Commit:** [`e32340a`](https://github.com/Dispatcharr/Plugins/commit/e32340a26d7bdec3ee74590b01e40251f4287c47)
 
 **Checksums:**
 ```
-MD5:    9d2ab683f719c1794cdbaea5104eb3e2
-SHA256: 9e4e884e82e7ea5f1f8de37085825834c46087e7ed898a124922b70955aede45
+MD5:    8b48e8b71db4e80ed093642ae45d8bca
+SHA256: c53b82949d4190ae5812138fcd9c6463ab61cca30f1ee848169856111879af21
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2821334` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2821334/stream-mapparr-1.26.2821334.zip) | Oct 09 2026, 13:42 UTC | [`e32340a`](https://github.com/Dispatcharr/Plugins/commit/e32340a26d7bdec3ee74590b01e40251f4287c47) | 8b48e8b71db4e80ed093642ae45d8bca | c53b82949d4190ae5812138fcd9c6463ab61cca30f1ee848169856111879af21 |
 | `1.26.2681209` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2681209/stream-mapparr-1.26.2681209.zip) | Sep 25 2026, 12:17 UTC | [`d75dbde`](https://github.com/Dispatcharr/Plugins/commit/d75dbde6de2d76eb9d036eaea6742b8889bb9a06) | 9d2ab683f719c1794cdbaea5104eb3e2 | 9e4e884e82e7ea5f1f8de37085825834c46087e7ed898a124922b70955aede45 |
 | `1.26.2621504` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2621504/stream-mapparr-1.26.2621504.zip) | Sep 19 2026, 15:12 UTC | [`e6ad647`](https://github.com/Dispatcharr/Plugins/commit/e6ad647f9b4302fb6bb06194220235272cf30ebe) | 4b5a2ec083afc29c429acb1aeb6043ff | 167aa29c484d9b068994c3c9ac4f56c45ce5cabbdee85a2fe6449b86e52461ea |
 | `1.26.2491549` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2491549/stream-mapparr-1.26.2491549.zip) | Sep 06 2026, 19:43 UTC | [`23d5498`](https://github.com/Dispatcharr/Plugins/commit/23d54985d7c6e71008dc376e87e3c816e5b43687) | 792b2cee73492e1bfdb331a1eb52be09 | 8e8c14cd668e94b49a29bfe6d2a64bd3f037acc13c2347bae7424df8cc194e0c |
@@ -37,7 +38,6 @@ SHA256: 9e4e884e82e7ea5f1f8de37085825834c46087e7ed898a124922b70955aede45
 | `1.26.2072208` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2072208/stream-mapparr-1.26.2072208.zip) | Jul 26 2026, 23:05 UTC | [`f956fe0`](https://github.com/Dispatcharr/Plugins/commit/f956fe0035800f311a778fe3f67f71978f11b219) | 82e5db2b6d5ac8b854bb3a3178d8de60 | 2e4789cd0eae70fd945abe69ee51d55569785cafbb46027e1eac861b47b9cfda |
 | `1.26.1992013` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1992013/stream-mapparr-1.26.1992013.zip) | Jul 18 2026, 20:24 UTC | [`6c60baf`](https://github.com/Dispatcharr/Plugins/commit/6c60baff03b2eae96218cbfd06e0c9442a40fb14) | 287b5b17e34bd430e08af0889d166af8 | 7ae476f9dcafb5e1d14897f57fc9eae5993f05b3c06130f02617754662b7aa34 |
 | `1.26.1972151` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1972151/stream-mapparr-1.26.1972151.zip) | Jul 17 2026, 00:31 UTC | [`563e1fe`](https://github.com/Dispatcharr/Plugins/commit/563e1fefe48407e1cf045ee6a112de4eb11649b3) | be3e2c1cf8cf439e4077e90a433b32d0 | c64a232ba86481dfb11c8087c2f0c7c8f0c50ae5104823da655ace2683826018 |
-| `1.26.1960020` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1960020/stream-mapparr-1.26.1960020.zip) | Jul 15 2026, 01:12 UTC | [`5d5d4d9`](https://github.com/Dispatcharr/Plugins/commit/5d5d4d97b7b00263e20ba5e8e1e5966a0bb1ef2e) | da87e44616c1738be63bd74ced95891a | 498673d561a9e7cbe34ccf50772a779668eb4fb47fdb91d10354c8c7a298ca2a |
 
 ---
 
@@ -176,7 +176,7 @@ database. This plugin modifies channel and stream assignments.
   global timezone. Safe across multiple worker processes, so a job runs once per
   slot rather than once per worker
 - **Auto-match after M3U refresh** (opt-in, Dispatcharr v0.27+): run Match and
-  Assign as soon as a refresh completes. Requires a Channel Profile
+  Assign as soon as a refresh completes successfully. Requires a Channel Profile
 - **Run after an IPTV Checker scan** (opt-in): run the scheduled steps the
   moment the IPTV Checker plugin finishes a scheduled scan, so sorting sees the
   fresh results instead of waiting for the next fixed time
@@ -247,7 +247,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Email A Report After** | select | Scheduled runs only | Which runs email a report: never, scheduled only, or every run |
 | **Email Report Format** | select | Both | Which file is emailed. One report sends ONE email carrying one attachment, because a notification can carry only one. Both writes both files and emails the HTML page; the email names the file it did not attach |
 | **Scheduled Run Times** | string | (none) | Times in HHMM, comma-separated, for example `0400,1600` |
-| **Auto-match after M3U refresh** | boolean | False | Run Match and Assign after each M3U refresh. Requires a Channel Profile. Dispatcharr v0.27+ |
+| **Auto-match after M3U refresh** | boolean | False | Run Match and Assign after each successful M3U refresh. A refresh that ends in an error does not trigger it. Requires a Channel Profile. Dispatcharr v0.27+ |
 | **Dry Run Mode** | boolean | False | Preview without making database changes |
 | **Enable Throughput-Based Sorting** | boolean | True | Add a measured-throughput tier to alternate-stream sorting, falling back to resolution when no probe data exists |
 | **Probe Duration (seconds)** | number | 8 | Length of each throughput probe |
@@ -295,7 +295,7 @@ restarts. Across multiple worker processes, a shared on-disk claim makes sure
 the job runs once per slot rather than once per worker.
 
 **Event-driven alternative** (Dispatcharr v0.27+): **Auto-match after M3U
-refresh** runs Match and Assign the moment a refresh finishes, instead of or as
+refresh** runs Match and Assign the moment a refresh finishes successfully, instead of or as
 well as fixed times. Because Dispatcharr fires that event once per M3U account,
 runs are coalesced under a lock and a follow-up pass catches any account that
 finishes mid-match. A multi-account refresh therefore produces one effective
