@@ -2,7 +2,7 @@
 
 # Event Channel Managarr
 
-**Version:** `1.26.2831317` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 13:24 UTC
+**Version:** `1.26.2832019` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 20:25 UTC
 
 Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG.
 
@@ -14,20 +14,21 @@ Automates channel visibility by hiding channels without events and showing those
 
 ### Latest Release
 
-- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2831317/event-channel-managarr-1.26.2831317.zip)
-- **Built:** Oct 10 2026, 13:24 UTC
-- **Source Commit:** [`74eac27`](https://github.com/Dispatcharr/Plugins/commit/74eac27236fedab043328aa9ee03221e52cc23e7)
+- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2832019/event-channel-managarr-1.26.2832019.zip)
+- **Built:** Oct 10 2026, 20:26 UTC
+- **Source Commit:** [`39cf0ba`](https://github.com/Dispatcharr/Plugins/commit/39cf0ba01aa2120e0ad1d42bfe5ac11813a8d4ad)
 
 **Checksums:**
 ```
-MD5:    0cebe7942aa53349955e196d1eb4d300
-SHA256: 9bbe10164c745f4205e773f82860e587b2af88ce24c74dd0cb122b165132ed0a
+MD5:    b4db356095d5cf3a106502dc029bf478
+SHA256: caa3a24791a4c5d59fac89094d4d7880759f3142c646344e5abdfafc0eb1a16f
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2832019` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2832019/event-channel-managarr-1.26.2832019.zip) | Oct 10 2026, 20:26 UTC | [`39cf0ba`](https://github.com/Dispatcharr/Plugins/commit/39cf0ba01aa2120e0ad1d42bfe5ac11813a8d4ad) | b4db356095d5cf3a106502dc029bf478 | caa3a24791a4c5d59fac89094d4d7880759f3142c646344e5abdfafc0eb1a16f |
 | `1.26.2831317` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2831317/event-channel-managarr-1.26.2831317.zip) | Oct 10 2026, 13:24 UTC | [`74eac27`](https://github.com/Dispatcharr/Plugins/commit/74eac27236fedab043328aa9ee03221e52cc23e7) | 0cebe7942aa53349955e196d1eb4d300 | 9bbe10164c745f4205e773f82860e587b2af88ce24c74dd0cb122b165132ed0a |
 | `1.26.2821924` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821924/event-channel-managarr-1.26.2821924.zip) | Oct 09 2026, 19:31 UTC | [`6f08f74`](https://github.com/Dispatcharr/Plugins/commit/6f08f7435940cd25a47242311ebe36a5b401e285) | 157e498b348e35facf0f5d5e621ca02f | 4aed1cf1d7fc0eee849ff1942febf7b0280d717312d8595826e8fa114bb48cc6 |
 | `1.26.2821849` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821849/event-channel-managarr-1.26.2821849.zip) | Oct 09 2026, 18:55 UTC | [`d9bf8e5`](https://github.com/Dispatcharr/Plugins/commit/d9bf8e5bc2cab4ce2890b6486628a3be81302160) | da5135568d72864f89dcc2c90632e7d9 | 3b202d63877c3f4b48dc9baf17f44f28c726a835d8cb20c5a5c5f9cd9e8adfb2 |
@@ -37,7 +38,6 @@ SHA256: 9bbe10164c745f4205e773f82860e587b2af88ce24c74dd0cb122b165132ed0a
 | `1.26.2561545` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2561545/event-channel-managarr-1.26.2561545.zip) | Sep 13 2026, 15:50 UTC | [`dbd5ce4`](https://github.com/Dispatcharr/Plugins/commit/dbd5ce4e72538e478415e3a02721f5e0d7ae8fa2) | 8e5327a26b2176a6bbe45160cdbadeb2 | ff50dfca782d1480a0eb6a1ba0517d48b89a908abcea975f0e2079b699287151 |
 | `1.26.2561458` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2561458/event-channel-managarr-1.26.2561458.zip) | Sep 13 2026, 15:07 UTC | [`c7f2db2`](https://github.com/Dispatcharr/Plugins/commit/c7f2db205c19eae7538adfc6eea460cf1a39eca9) | 8c46b0e67db215d8d8afd8668127a751 | d3dd739831cea45eb0fb47f2d587f91630538464c4b879cd879237bbfc9454d2 |
 | `1.26.2490035` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2490035/event-channel-managarr-1.26.2490035.zip) | Sep 06 2026, 01:00 UTC | [`cefbc81`](https://github.com/Dispatcharr/Plugins/commit/cefbc813301c6d62ccf430ba5c5f15e06e2f69be) | e387645ae1b91cba2ec237e3f49e2a88 | fc5963545ab5d70d0cd2eb606ddc62de2a1562908a690849b752477a7cbba283 |
-| `1.26.2451734` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2451734/event-channel-managarr-1.26.2451734.zip) | Sep 02 2026, 17:44 UTC | [`ae887e3`](https://github.com/Dispatcharr/Plugins/commit/ae887e334d94d164f7edc6acb3e54f9b83f96271) | 083d0bb5255f6a32584428146b45e301 | 82c731a4872cad0f222f4b075859af66cb880c75e647b8a5fafcade9f0a8c549 |
 
 ---
 
@@ -55,7 +55,7 @@ A Dispatcharr plugin that automatically manages channel visibility based on EPG 
 > **New to Dispatcharr plugins?** Start with the **[Dispatcharr Plugin Workflow guide](https://piratesirc.github.io/Dispatcharr-Plugin-Workflow/)**.
 > It explains what each plugin and tool does, where they overlap, and what order to use them in.
 
-<sub>The **visibility changes** badge is the number of channels this plugin has actually switched on or off on the maintainer's own installation, counted from its run ledger and refreshed twice a day. It counts channels that changed, not channels looked at: a channel that stays in the same state across many scheduled runs is not counted again, and channels merely scanned, along with dry runs, are excluded. Both directions are included, because on that installation most of the work is re-hiding channels an M3U refresh had re-enabled. The ledger starts when it was first deployed rather than at the plugin's first release, so this is a total since then, not a lifetime one. It is one installation's total, not a project metric.</sub>
+<sub>The badges count installations that send anonymous usage counts. See <a href="#anonymous-usage-counts">Anonymous usage counts</a>.</sub>
 
 ## Features
 
@@ -109,8 +109,9 @@ silent.
 **Previews safely.** Dry Run reports what would change and writes the CSV without
 touching a single channel or creating any EPG binding.
 
-**Makes no outbound network request.** The plugin talks to Dispatcharr's database
-and nothing else.
+**Makes one outbound request, an anonymous usage count.** The plugin talks to Dispatcharr's database
+and to one HTTPS endpoint, plugin-stats.dpas.workers.dev, which receives the anonymous usage
+count. You can switch that off in settings. See [Anonymous usage counts](#anonymous-usage-counts).
 
 ## Requirements
 
@@ -136,6 +137,44 @@ are the ones worth getting right before the first applied run.
 | **[Development notes](https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/blob/main/docs/DEVELOPMENT.md)** | The runtime model, code map, deploying, testing, adding a setting or action, the release procedure, and how to contribute |
 | **[Documentation index](https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/blob/main/docs/README.md)** | The above, described by who is reading |
 
+## Anonymous usage counts
+
+The Visibility Changes and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and runs at
+least one action or scheduled scan. Visibility Changes counts the channels this
+plugin switched on or off in applied runs, the same transition count the run
+ledger records (see the user guide's Run Ledger section). Dry runs and runs that
+change no channel are not counted. An M3U refresh sends nothing unless Auto-rescan after M3U refresh is on.
+
+When an action or a scheduled scan finishes, the plugin sends this plugin's
+Visibility Changes total and a random id for this plugin on this install to the
+plugin author's counter at plugin-stats.dpas.workers.dev. It sends at most once an hour, or ten minutes after the last successful send when a run has just changed channel visibility. A run that finishes inside that gap is not sent later: the total goes out with the first later action or scheduled scan that is an hour past the last successful send, or with a later run that changes visibility once ten minutes have passed.
+
+The server stores that id with the total and the date of the last report, and
+keeps them until this install unticks the setting and the delete succeeds, or
+until the plugin author removes them by hand. An install that stops reporting
+still counts toward Visibility Changes. The connection shows the server your
+public IP address; the server uses it only to limit abuse and does not store it
+in its database, though when an install first registers it keeps a salted
+one-way hash of it (of its /64 block for IPv6) for up to three days. Cloudflare,
+which hosts the server, keeps its own request logs. No names, channels, streams,
+URLs, providers or settings are sent. The figures are self-reported by installs
+and capped by the server, not verified.
+
+What counts as an active install: an install that sent at least one report in
+the last 30 UTC days. A badge changes after the server's hourly recount, which
+runs at the start of each UTC hour, and Shields may cache the badge for up to an
+hour more, so a new report can take up to about two hours to show.
+
+The setting is the last one in the settings form, in its own section. Unticking
+it takes effect when the next action or scheduled scan finishes; the plugin then
+asks the server to delete this install's figures. Once the server confirms the
+delete, the plugin forgets its id, and ticking the setting again later starts a
+new one; if the delete could not reach the server, the plugin keeps the id and
+retries. The plugin keeps that id and the timing of its reports in
+/data/plugin_stats/event-channel-managarr/ (install_id, sent, backoff, disabled,
+delete_backoff, lock). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked leaves the old figures on the server, and the new id then sends the full total again, so the badge counts it twice.
+
 ## Disclaimer
 
 **Event Channel Managarr provides no television content of any kind.** It supplies no channels, no
@@ -146,11 +185,11 @@ already exists in **your** Dispatcharr installation.
 What it reads is channel *names* and the programme data already stored against your channels. It
 parses event titles, dates and times out of those names to decide which channels currently
 have an event. **It never opens, reads, decodes, records, restreams or redistributes a stream**, and
-it never reads a stream URL. **It makes no outbound network request at all.** The update checker that
+it never reads a stream URL. **Its only outbound network request is the anonymous usage count** to plugin-stats.dpas.workers.dev, which you can switch off in settings (see [Anonymous usage counts](#anonymous-usage-counts)). The update checker that
 once called the GitHub releases API was removed in `1.26.2251616`, along with the code behind it.
 
 What it writes is confined to your own Dispatcharr database and its data directory: channel
-visibility in the profiles you select, bindings to a dummy EPG source it manages, and CSV exports.
+visibility in the profiles you select, bindings to a dummy EPG source it manages, and CSV exports, plus one small folder for the anonymous usage count, /data/plugin_stats/event-channel-managarr/ (see [Anonymous usage counts](#anonymous-usage-counts)).
 The main scan has a **Dry Run** that writes nothing and exports what it *would* do to CSV. Run that
 first. The other actions that change data (**Run Now**, **Remove EPG from Hidden Channels**, **Clear
 CSV Exports**, **Cleanup Orphaned Tasks**) each ask for confirmation before they act.
