@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T19:38:20Z",
+  "generated_at": "2026-10-10T20:25:12Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -129,12 +129,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/dustarr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-10-09T13:24:36Z",
-        "latest_version": "1.26.2821314",
-        "latest_md5": "1e7222a2b3f01a0d56cfb6f5efc24b33",
-        "latest_sha256": "d2b2861c2fc1981adc2ccf0456f983c0d1dee54130a9784c0f25ce4ebcf88d3b",
-        "latest_url": "dustarr-1.26.2821314/dustarr-1.26.2821314.zip",
-        "latest_size": 125,
+        "last_updated": "2026-10-10T20:24:37Z",
+        "latest_version": "1.26.2832018",
+        "latest_md5": "1f947cd7fd07a12805b031f4f57649f5",
+        "latest_sha256": "a03ea8c72e507e8022e3ac7d2f0c44ffdbc2a5c8cbb9be9b238695b7bd80cddc",
+        "latest_url": "dustarr-1.26.2832018/dustarr-1.26.2832018.zip",
+        "latest_size": 132,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -158,12 +158,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epg-janitor/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-09-05T19:57:25Z",
-        "latest_version": "1.26.2481223",
-        "latest_md5": "de24b7ac4404039dec564a5bd315d4f8",
-        "latest_sha256": "2cc9ba6b40733bf40a059376deb72da9639cec40df4dcdcfa0cd77abffb7f60a",
-        "latest_url": "epg-janitor-1.26.2481223/epg-janitor-1.26.2481223.zip",
-        "latest_size": 469,
+        "last_updated": "2026-10-10T20:24:34Z",
+        "latest_version": "1.26.2832018",
+        "latest_md5": "efd2962982e1cd37032600a84e2702a8",
+        "latest_sha256": "e120b41abeb582f1cc80b736501cb92f38fbf57eb8223b88f73a21bdfbdfeccc",
+        "latest_url": "epg-janitor-1.26.2832018/epg-janitor-1.26.2832018.zip",
+        "latest_size": 476,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -503,5 +503,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasqUMgAKCRB+wDprTCI0\nzm8MAQD0VcxmowOLRN4KPdOXOyKV/2cFpBzCTtQ9osedwkiyOwEAl4wYCrPxZ3YM\n8+Z+iiGDqB7kLa/5dpZqpnK/zyK+zQ8=\n=5Whq\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasqfMAAKCRB+wDprTCI0\nzovhAPwNcyKZLz9i5v155rVXbWR4nRKYtBhPDpWVWwbhvxV6xgD/TZwLt4X0iZ3p\nEr/q44kfwjDpkXG1ZCe0dlbI6snwJgg=\n=04dB\n-----END PGP SIGNATURE-----"
 }
