@@ -129,6 +129,25 @@ All product names, channel names, trademarks and registered trademarks mentioned
 
 The software is provided as-is, without warranty of any kind, as set out in the licence. This section describes the design of the software and the author's intent. It is not legal advice. If you need to know whether your own use is lawful, ask someone qualified in your jurisdiction.
 
+## Anonymous usage counts
+
+The Channels Created and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and runs at
+least one action or sync. When an action or sync finishes, at most once an hour,
+or ten minutes after the last report when a sync has just created channels, the
+plugin sends this plugin's Channels Created total and a random id for this
+plugin on this install to the plugin author's counter at
+plugin-stats.dpas.workers.dev. The server stores that id with the total and the
+date of the last report. The connection shows the server your public IP address;
+the server uses it only to limit abuse and does not store it in its database,
+though when an install first registers it keeps a salted one-way hash of it (of
+its /64 block for IPv6) for up to three days. Cloudflare, which hosts the
+server, keeps its own request logs. No names, channels, streams, providers or
+settings are sent. The figures are self-reported by installs and capped by the
+server, not verified. Untick the setting to stop sending; this install's figures
+are deleted from the server the next time an action or sync finishes after you
+untick.
+
 ## License
 
 MIT. See [`LICENSE`](https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin/blob/main/LICENSE).
