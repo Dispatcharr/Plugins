@@ -2,7 +2,7 @@
 
 # Stream-Mapparr
 
-**Version:** `1.26.2821334` | **Author:** PiratesIRC | **Last Updated:** Oct 09 2026, 13:41 UTC
+**Version:** `1.26.2831654` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 17:01 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -14,20 +14,21 @@ Automatically add matching streams to channels based on name similarity and qual
 
 ### Latest Release
 
-- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2821334/stream-mapparr-1.26.2821334.zip)
-- **Built:** Oct 09 2026, 13:42 UTC
-- **Source Commit:** [`e32340a`](https://github.com/Dispatcharr/Plugins/commit/e32340a26d7bdec3ee74590b01e40251f4287c47)
+- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2831654/stream-mapparr-1.26.2831654.zip)
+- **Built:** Oct 10 2026, 17:01 UTC
+- **Source Commit:** [`4c32a52`](https://github.com/Dispatcharr/Plugins/commit/4c32a52ab8d00517faf0439f6d84a834c15c99c5)
 
 **Checksums:**
 ```
-MD5:    8b48e8b71db4e80ed093642ae45d8bca
-SHA256: c53b82949d4190ae5812138fcd9c6463ab61cca30f1ee848169856111879af21
+MD5:    bfb74df315f2d88d06616f2290415b70
+SHA256: 67498919c93ec2fe676ebb5d2496d1ec83438190a496621ad1fe76c9958ec2de
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2831654` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2831654/stream-mapparr-1.26.2831654.zip) | Oct 10 2026, 17:01 UTC | [`4c32a52`](https://github.com/Dispatcharr/Plugins/commit/4c32a52ab8d00517faf0439f6d84a834c15c99c5) | bfb74df315f2d88d06616f2290415b70 | 67498919c93ec2fe676ebb5d2496d1ec83438190a496621ad1fe76c9958ec2de |
 | `1.26.2821334` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2821334/stream-mapparr-1.26.2821334.zip) | Oct 09 2026, 13:42 UTC | [`e32340a`](https://github.com/Dispatcharr/Plugins/commit/e32340a26d7bdec3ee74590b01e40251f4287c47) | 8b48e8b71db4e80ed093642ae45d8bca | c53b82949d4190ae5812138fcd9c6463ab61cca30f1ee848169856111879af21 |
 | `1.26.2681209` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2681209/stream-mapparr-1.26.2681209.zip) | Sep 25 2026, 12:17 UTC | [`d75dbde`](https://github.com/Dispatcharr/Plugins/commit/d75dbde6de2d76eb9d036eaea6742b8889bb9a06) | 9d2ab683f719c1794cdbaea5104eb3e2 | 9e4e884e82e7ea5f1f8de37085825834c46087e7ed898a124922b70955aede45 |
 | `1.26.2621504` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2621504/stream-mapparr-1.26.2621504.zip) | Sep 19 2026, 15:12 UTC | [`e6ad647`](https://github.com/Dispatcharr/Plugins/commit/e6ad647f9b4302fb6bb06194220235272cf30ebe) | 4b5a2ec083afc29c429acb1aeb6043ff | 167aa29c484d9b068994c3c9ac4f56c45ce5cabbdee85a2fe6449b86e52461ea |
@@ -37,7 +38,6 @@ SHA256: c53b82949d4190ae5812138fcd9c6463ab61cca30f1ee848169856111879af21
 | `1.26.2141957` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2141957/stream-mapparr-1.26.2141957.zip) | Aug 02 2026, 20:47 UTC | [`8f17d38`](https://github.com/Dispatcharr/Plugins/commit/8f17d382613bd3c93784eed05fa1bd500bbdf60f) | f6f6e3cdf3df10b0e4311c7ee87c89d7 | 6a8b1a5f7d4b5882a20d7bd377a67dd19368ba96127ca098bef7e728933e8b2d |
 | `1.26.2072208` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2072208/stream-mapparr-1.26.2072208.zip) | Jul 26 2026, 23:05 UTC | [`f956fe0`](https://github.com/Dispatcharr/Plugins/commit/f956fe0035800f311a778fe3f67f71978f11b219) | 82e5db2b6d5ac8b854bb3a3178d8de60 | 2e4789cd0eae70fd945abe69ee51d55569785cafbb46027e1eac861b47b9cfda |
 | `1.26.1992013` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1992013/stream-mapparr-1.26.1992013.zip) | Jul 18 2026, 20:24 UTC | [`6c60baf`](https://github.com/Dispatcharr/Plugins/commit/6c60baff03b2eae96218cbfd06e0c9442a40fb14) | 287b5b17e34bd430e08af0889d166af8 | 7ae476f9dcafb5e1d14897f57fc9eae5993f05b3c06130f02617754662b7aa34 |
-| `1.26.1972151` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1972151/stream-mapparr-1.26.1972151.zip) | Jul 17 2026, 00:31 UTC | [`563e1fe`](https://github.com/Dispatcharr/Plugins/commit/563e1fefe48407e1cf045ee6a112de4eb11649b3) | be3e2c1cf8cf439e4077e90a433b32d0 | c64a232ba86481dfb11c8087c2f0c7c8f0c50ae5104823da655ace2683826018 |
 
 ---
 
