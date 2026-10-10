@@ -2,7 +2,7 @@
 
 # Newsflasharr
 
-**Version:** `1.26.2821932` | **Author:** PiratesIRC | **Last Updated:** Oct 09 2026, 19:57 UTC
+**Version:** `1.26.2832058` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 21:19 UTC
 
 Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry.
 
@@ -14,20 +14,21 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 
 ### Latest Release
 
-- **Download:** [`newsflasharr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2821932/newsflasharr-1.26.2821932.zip)
-- **Built:** Oct 09 2026, 19:58 UTC
-- **Source Commit:** [`a495c83`](https://github.com/Dispatcharr/Plugins/commit/a495c83cccc3b7157f91c882097d8066ccd636f7)
+- **Download:** [`newsflasharr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2832058/newsflasharr-1.26.2832058.zip)
+- **Built:** Oct 10 2026, 21:19 UTC
+- **Source Commit:** [`1382282`](https://github.com/Dispatcharr/Plugins/commit/13822829cdf4fed14bf51148eceb56804a0c57b8)
 
 **Checksums:**
 ```
-MD5:    1079635341f319eeb4fa61bea2a5a3a1
-SHA256: 057f7b59bdb5e429ee7e74446f2ba18fd3bd255246aa2b7e4a195ae46828778d
+MD5:    a1c76e77e51c92b684114d2fb6049be9
+SHA256: e96cf9c084f9f8c1c8d09dcbaaa59e9b46ff11253a118673acbc345317d1aa57
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2832058` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2832058/newsflasharr-1.26.2832058.zip) | Oct 10 2026, 21:19 UTC | [`1382282`](https://github.com/Dispatcharr/Plugins/commit/13822829cdf4fed14bf51148eceb56804a0c57b8) | a1c76e77e51c92b684114d2fb6049be9 | e96cf9c084f9f8c1c8d09dcbaaa59e9b46ff11253a118673acbc345317d1aa57 |
 | `1.26.2821932` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2821932/newsflasharr-1.26.2821932.zip) | Oct 09 2026, 19:58 UTC | [`a495c83`](https://github.com/Dispatcharr/Plugins/commit/a495c83cccc3b7157f91c882097d8066ccd636f7) | 1079635341f319eeb4fa61bea2a5a3a1 | 057f7b59bdb5e429ee7e74446f2ba18fd3bd255246aa2b7e4a195ae46828778d |
 | `1.26.2481646` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2481646/newsflasharr-1.26.2481646.zip) | Sep 05 2026, 17:22 UTC | [`c6b7006`](https://github.com/Dispatcharr/Plugins/commit/c6b7006471cbd1d5f99533347a07b6f05342a084) | a71e154142d18e3b1612521562af1066 | 1dec53fd867101fef01e44cc4dfe1bfdd2e822987712f2d34c5911b1d55757c4 |
 | `1.26.2241159` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/newsflasharr-1.26.2241159/newsflasharr-1.26.2241159.zip) | Aug 12 2026, 12:06 UTC | [`5c239be`](https://github.com/Dispatcharr/Plugins/commit/5c239be35a9e5d5db0cfbf45f36c9217d097631e) | 35077cbb21fe71e46e3e0c7bc8a5ac1c | aedcc20dc974739bd7cdc92586f565cd847fb2da03edcda448cf6c94996dc2f6 |
@@ -58,7 +59,7 @@ SHA256: 057f7b59bdb5e429ee7e74446f2ba18fd3bd255246aa2b7e4a195ae46828778d
 > **New to Dispatcharr plugins?** Start with the **[Dispatcharr Plugin Workflow guide](https://piratesirc.github.io/Dispatcharr-Plugin-Workflow/)**.
 > It explains what each plugin and tool does, where they overlap, and what order to use them in.
 
-<sub>The **newsflashes** badge is the number of notifications Newsflasharr has delivered on the maintainer's own installation, counted from its delivery ledger and refreshed twice a day. One notification that went to several channels at once counts once, whether it left over Apprise, email, a Discord or generic webhook, a Dispatcharr Connect Integration, ntfy, or the on-screen ticker. Duplicates collapsed into a digest, banners the ticker declined, events no rule routed anywhere, and anything that failed are all excluded, so the number is deliveries rather than activity. It is one installation's total, not a project metric.</sub>
+<sub>The Newsflashes Sent and Active Installs badges count every install that keeps the Share anonymous usage counts setting ticked. See [Anonymous usage counts](#anonymous-usage-counts).</sub>
 
 Central notification service for Dispatcharr plugins. One plugin
 owns all delivery: other plugins (Sentinelarr, Dustarr, Stream-Mapparr, ...)
@@ -87,9 +88,7 @@ own plugin lives in the **[caller API](https://github.com/PiratesIRC/Dispatcharr
   here rather than separately in every plugin.
 - **Your provider hostnames are removed from outgoing messages**, using the
   EPG sources and accounts Dispatcharr already holds.
-- **It is read-only on Dispatcharr.** It writes nothing outside its own
-  `/data/newsflasharr/` directory, and it never creates or edits an Output
-  Profile, a channel or a stream.
+- **It writes nothing outside its own data:** `/data/newsflasharr/`, the readout file for each action (in `/config/newsflasharr/` where Dispatcharr's `/config` is writable, otherwise `/data/newsflasharr/readouts/`), and a small usage-counter record in `/data/plugin_stats/newsflasharr/` (see [Anonymous usage counts](#anonymous-usage-counts)). It never creates or edits an Output Profile, a channel or a stream.
 - **Delivery is at-least-once per channel.** A duplicate is possible after a
   crash. That is a deliberate tradeoff, described in the
   [caller API](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/blob/main/docs/API.md).
@@ -139,6 +138,61 @@ archive, and what to check when a notification does not arrive.
 | **[Developer guide](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/blob/main/docs/DEVELOPER-GUIDE.md)** | How the plugin is put together, how to run the tests, and how to contribute. |
 | **[Changelog](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/blob/main/docs/CHANGELOG.md)** | What changed between versions. |
 
+## Anonymous usage counts
+
+The Newsflashes Sent and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and has
+delivered at least one notification or had one of its actions run in the last
+30 days.
+
+Newsflashes Sent counts each notification Newsflasharr delivered, whichever channels it reached:
+Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect
+Integration or the on-screen ticker. A notification sent to three channels counts
+once, and a digest counts once. A notification that is dropped, expires or fails does not
+count. A notification held by quiet hours or the hourly cap counts when it is finally
+delivered, whether the hold ends on its own or you press Flush held. A notification merged
+into a digest does not count by itself; the digest counts once. A test sent from Send test
+notification with the channel box left blank is a normal notification and counts once when delivered. A test
+sent to one named channel does not count, and neither does a test banner from the Test
+on-screen ticker button, because neither is written to the delivery ledger. The count is read from the delivery ledger, which keeps the current file and one previous file of about 10 MB each; deliveries older than that are not counted, and the badge does not go down.
+
+When a notification is delivered, or an action finishes, the plugin sends this
+install's Newsflashes Sent total and a random id for this plugin on this install
+to the plugin author's counter at plugin-stats.dpas.workers.dev. It sends at most
+once an hour after a successful send, or ten minutes after the last successful
+send when a notification has just been delivered. There is no timer: a notification that
+falls inside the gap sends nothing, and the next delivery or action that finds the
+gap passed sends the total. On a quiet install the badge can therefore trail the
+real count until the next notification or action.
+
+The server stores that id with the total and the date of the last report, and
+keeps them until this install unticks the setting and the delete succeeds, or
+until the plugin author removes them by hand. An install that stops reporting
+still counts toward Newsflashes Sent. The connection shows the server your public
+IP address; the server uses it only to limit abuse and does not store it in its
+database, though when an install first registers it keeps a salted one-way hash
+of it (of its /64 block for IPv6) for up to three days. Cloudflare, which hosts
+the server, keeps its own request logs. No names, channels, providers, messages
+or settings are sent. The figures are self-reported by installs and capped by the
+server, not verified.
+
+What counts as an active install: an install that sent at least one report in
+the last 30 UTC days. A badge changes after the server's hourly recount, which
+runs at the start of each UTC hour, and Shields may cache the badge for up to an
+hour more, so a new report can take up to about two hours to show.
+
+The setting is the last one in the settings form, in its own section. Unticking
+it takes effect when the next delivery or action finishes; the plugin then asks
+the server to delete this install's figures. Once the server confirms the delete,
+the plugin forgets its id, and ticking the setting again later starts a new one;
+if the delete could not reach the server, the plugin keeps the id and retries.
+The plugin keeps that id and the timing of its reports in
+/data/plugin_stats/newsflasharr/ (install_id, sent, backoff, disabled,
+delete_backoff, lock). To start a new id, untick the setting and let the next delivery or
+action finish so the delete succeeds; deleting that folder while the setting is
+ticked leaves the old figures on the server, and the new id then sends the full
+total again, so the badge counts those notifications twice.
+
 ## Disclaimer
 
 **Newsflasharr provides no television content of any kind.** It supplies no
@@ -149,8 +203,8 @@ holds about the sources **you** configured, and it sends short messages about
 that status to destinations **you** configured.
 
 The plugin never contacts a media provider. It never opens, fetches, decodes,
-records, restreams or redistributes any stream. The only outbound connections
-it makes are to the notification destinations you enter yourself, such as a
+records, restreams or redistributes any stream. Apart from one short usage-counter request (see [Anonymous usage counts](#anonymous-usage-counts)),
+its outbound connections are to the notification destinations you enter yourself, such as a
 Discord webhook, a Dispatcharr Connect Integration, an ntfy topic, an Apprise
 gateway or your own mail server.
 

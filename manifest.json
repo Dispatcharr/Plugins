@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T20:26:56Z",
+  "generated_at": "2026-10-10T21:19:26Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -261,12 +261,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/newsflasharr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-10-09T19:57:58Z",
-        "latest_version": "1.26.2821932",
-        "latest_md5": "1079635341f319eeb4fa61bea2a5a3a1",
-        "latest_sha256": "057f7b59bdb5e429ee7e74446f2ba18fd3bd255246aa2b7e4a195ae46828778d",
-        "latest_url": "newsflasharr-1.26.2821932/newsflasharr-1.26.2821932.zip",
-        "latest_size": 208,
+        "last_updated": "2026-10-10T21:19:00Z",
+        "latest_version": "1.26.2832058",
+        "latest_md5": "a1c76e77e51c92b684114d2fb6049be9",
+        "latest_sha256": "e96cf9c084f9f8c1c8d09dcbaaa59e9b46ff11253a118673acbc345317d1aa57",
+        "latest_url": "newsflasharr-1.26.2832058/newsflasharr-1.26.2832058.zip",
+        "latest_size": 215,
         "min_dispatcharr_version": "v0.20.0"
       },
       {
@@ -503,5 +503,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasqflgAKCRB+wDprTCI0\nzhlmAQC6dt577gETcokJj6kgszWAgT/W6jBLkcAO6qLI8FQzegEA2IqqP3Ph3GPC\nAaaff9d0RqmLz88wDRwUJg4gSwEtjAg=\n=hmcz\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasqr5AAKCRB+wDprTCI0\nziozAQDknbm4gkqa6uttVOQXeyGuQuWQ7Thpp30WpyGffr4zUwD+Lm43T5XZsIsk\nW+xlc25pW3CH8n1+Q2grJY7Pyk4RCAU=\n=PLzQ\n-----END PGP SIGNATURE-----"
 }
