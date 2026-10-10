@@ -40,7 +40,7 @@ This branch contains all published plugin releases.
 | [`Ticker`](#ticker) | `0.5.03` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
 | [`Twitcharr`](#twitcharr) | `1.3.2` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
 | [`Underfed`](#underfed) | `0.6.0` | PilaScat | MIT | Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the back of the chain when the provider answers 403. |
-| [`VOD Manager`](#vod-manager) | `2.6.3` | oxios0x00 | MIT | Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default. |
+| [`VOD Manager`](#vod-manager) | `2.6.4` | oxios0x00 | MIT | Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default. |
 | [`VOD Probe`](#vod-probe) | `1.3.2` | oxios0x00 | MIT | Probes the real quality of each VOD relation (movies and every episode of every series version) with ffprobe in a background task and writes it into the relation's custom_properties, so every tool reading Dispatcharr's API can use it. Can also backfill missing tmdb_id/imdb_id from the provider's per-title detail endpoint, merging safely into an existing catalogue entry when one already has the id. Dry run by default. |
 | [`VOD to Media Library`](#vod-to-media-library) | `1.18.1` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
 | [`Waybill`](#waybill) | `1.3.0` | Matthew-Beckett | MIT | Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control. |
@@ -546,17 +546,17 @@ Moves a channel off a source that is starving it, drifting its sound or refusing
 
 ### [VOD Manager](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/vod-manager/README.md)
 
-**Version:** `2.6.3` | **Author:** oxios0x00 | **Last Updated:** Oct 03 2026, 14:31 UTC
+**Version:** `2.6.4` | **Author:** oxios0x00 | **Last Updated:** Oct 10 2026, 10:00 UTC
 
 Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/oxios0x00/dispatcharr-vod-manager)
 
 **Downloads:**
-- [Latest Release (`2.6.3`)](https://github.com/Dispatcharr/Plugins/releases/download/vod-manager-2.6.3/vod-manager-2.6.3.zip)
-- [All Versions (1 available)](./metadata/vod-manager)
+- [Latest Release (`2.6.4`)](https://github.com/Dispatcharr/Plugins/releases/download/vod-manager-2.6.4/vod-manager-2.6.4.zip)
+- [All Versions (2 available)](./metadata/vod-manager)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/vod-manager) | **Last Change:** [`771a848`](https://github.com/Dispatcharr/Plugins/commit/771a848e019bf6d21cf5086902ebbdf0afde0def)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/vod-manager) | **Last Change:** [`767c134`](https://github.com/Dispatcharr/Plugins/commit/767c1346ef1c84136d45f08db69349b480fa8163)
 
 ---
 
@@ -645,4 +645,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 09 2026, 19:58 UTC*
+*Last updated: Oct 10 2026, 10:01 UTC*

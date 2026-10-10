@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T19:58:33Z",
+  "generated_at": "2026-10-10T10:00:50Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -434,12 +434,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/vod-manager/manifest.json",
         "author": "oxios0x00",
         "license": "MIT",
-        "last_updated": "2026-10-03T10:31:46-04:00",
-        "latest_version": "2.6.3",
-        "latest_md5": "cad428ce3036bcd4571bc475fcddec41",
-        "latest_sha256": "46fedae6768ea94cf650eb980a28af4d720734dc5875024fc0a56afc81ab970c",
-        "latest_url": "vod-manager-2.6.3/vod-manager-2.6.3.zip",
-        "latest_size": 569
+        "last_updated": "2026-10-10T10:00:22Z",
+        "latest_version": "2.6.4",
+        "latest_md5": "e7799ab16be8b6f197f1503f207da991",
+        "latest_sha256": "1390087e8a6d382f542670395c2b6297f6f72d0c3b65c744bbfcac76cf5395ce",
+        "latest_url": "vod-manager-2.6.4/vod-manager-2.6.4.zip",
+        "latest_size": 570
       },
       {
         "slug": "vod-probe",
@@ -503,5 +503,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaslHcQAKCRB+wDprTCI0\nzhCaAQD3ShDRKFLVSuq8GmqOzZ1wK9jzRwBWlwOQbULjinHxrgEA4x48dBnBVN/y\nuzbuSRksLDYEpy+RtgqJ0Qm5CQmQygY=\n=vTFU\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasoM2QAKCRB+wDprTCI0\nzkEzAP9W8HxnUTOpybEglaZ+/FbN5NSXeF8RvSAGR2rZVVRn+wEA2bf6gVbRGe4a\n8sj0Ikgj0W6Y15OPdGvIn87brp+2YQI=\n=glM/\n-----END PGP SIGNATURE-----"
 }

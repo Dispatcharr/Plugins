@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-03T14:32:21Z",
+  "generated_at": "2026-10-10T10:00:50Z",
   "manifest": {
     "slug": "vod-manager",
     "name": "VOD Manager",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/oxios0x00/dispatcharr-vod-manager",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-03T10:31:46-04:00",
+    "last_updated": "2026-10-10T10:00:22Z",
     "latest": {
-      "version": "2.6.3",
-      "commit_sha": "771a848e019bf6d21cf5086902ebbdf0afde0def",
-      "commit_sha_short": "771a848",
-      "build_timestamp": "2026-10-03T14:32:14Z",
-      "last_updated": "2026-10-03T10:31:46-04:00",
-      "checksum_md5": "cad428ce3036bcd4571bc475fcddec41",
-      "checksum_sha256": "46fedae6768ea94cf650eb980a28af4d720734dc5875024fc0a56afc81ab970c",
-      "source_url": "https://github.com/oxios0x00/dispatcharr-vod-manager/releases/download/v2.6.3/vod_manager.zip",
-      "latest_url": "vod-manager-2.6.3/vod-manager-2.6.3.zip",
-      "url": "vod-manager-2.6.3/vod-manager-2.6.3.zip",
-      "size": 569
+      "version": "2.6.4",
+      "commit_sha": "767c1346ef1c84136d45f08db69349b480fa8163",
+      "commit_sha_short": "767c134",
+      "build_timestamp": "2026-10-10T10:00:44Z",
+      "last_updated": "2026-10-10T10:00:22Z",
+      "checksum_md5": "e7799ab16be8b6f197f1503f207da991",
+      "checksum_sha256": "1390087e8a6d382f542670395c2b6297f6f72d0c3b65c744bbfcac76cf5395ce",
+      "source_url": "https://github.com/oxios0x00/dispatcharr-vod-manager/releases/download/v2.6.4/vod_manager.zip",
+      "latest_url": "vod-manager-2.6.4/vod-manager-2.6.4.zip",
+      "url": "vod-manager-2.6.4/vod-manager-2.6.4.zip",
+      "size": 570
     },
     "versions": [
+      {
+        "version": "2.6.4",
+        "commit_sha": "767c1346ef1c84136d45f08db69349b480fa8163",
+        "commit_sha_short": "767c134",
+        "build_timestamp": "2026-10-10T10:00:44Z",
+        "last_updated": "2026-10-10T10:00:22Z",
+        "checksum_md5": "e7799ab16be8b6f197f1503f207da991",
+        "checksum_sha256": "1390087e8a6d382f542670395c2b6297f6f72d0c3b65c744bbfcac76cf5395ce",
+        "source_url": "https://github.com/oxios0x00/dispatcharr-vod-manager/releases/download/v2.6.4/vod_manager.zip",
+        "url": "vod-manager-2.6.4/vod-manager-2.6.4.zip",
+        "size": 570
+      },
       {
         "version": "2.6.3",
         "commit_sha": "771a848e019bf6d21cf5086902ebbdf0afde0def",
@@ -40,5 +52,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasER+gAKCRB+wDprTCI0\nzpRvAQCadUqfyt4OwtLRsdU77T56WE4CLgeckaz7L4bxl9gNYAEAoKxJgKNxcjqX\nbWdqFq6pKPqm3q62WnJwEJ+C9spl4Aw=\n=Hgl4\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasoM2AAKCRB+wDprTCI0\nzgv/AQCG69LHOioXr3HEkOGpqMzxkz+/IAbv3nN2Pp6vInQiGwD+PLwstavAuVhW\nkBThoqNU8JMdODBtrTImcFy+n4p8FwA=\n=fQdn\n-----END PGP SIGNATURE-----"
 }
