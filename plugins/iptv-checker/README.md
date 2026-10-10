@@ -101,6 +101,25 @@ This plugin makes bulk changes to your channel database, including permanent del
 enable it. Test on a small group first, keep a database backup, and read what an action says it will
 do before confirming it.
 
+## Anonymous usage counts
+
+The Streams Checked and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and runs at
+least one action or check. When an action or check finishes, at most once an
+hour, or ten minutes after the last report when a check has just checked
+streams, the plugin sends this plugin's Streams Checked total and a random id
+for this plugin on this install to the plugin author's counter at
+plugin-stats.dpas.workers.dev. The server stores that id with the total and the
+date of the last report. The connection shows the server your public IP
+address; the server uses it only to limit abuse and does not store it in its
+database, though when an install first registers it keeps a salted one-way hash
+of it (of its /64 block for IPv6) for up to three days. Cloudflare, which hosts
+the server, keeps its own request logs. No names, channels, streams, URLs,
+providers or settings are sent. The figures are self-reported by installs and
+capped by the server, not verified. Untick the setting to stop sending; this
+install's figures are deleted from the server the next time an action or check
+finishes after you untick. Details: [User Guide](https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/blob/main/docs/USER-GUIDE.md#anonymous-usage-counts).
+
 ## License
 
 MIT. See [LICENSE](https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/blob/main/LICENSE).
