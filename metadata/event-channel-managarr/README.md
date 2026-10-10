@@ -2,7 +2,7 @@
 
 # Event Channel Managarr
 
-**Version:** `1.26.2821924` | **Author:** PiratesIRC | **Last Updated:** Oct 09 2026, 19:30 UTC
+**Version:** `1.26.2831317` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 13:24 UTC
 
 Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG.
 
@@ -14,20 +14,21 @@ Automates channel visibility by hiding channels without events and showing those
 
 ### Latest Release
 
-- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821924/event-channel-managarr-1.26.2821924.zip)
-- **Built:** Oct 09 2026, 19:31 UTC
-- **Source Commit:** [`6f08f74`](https://github.com/Dispatcharr/Plugins/commit/6f08f7435940cd25a47242311ebe36a5b401e285)
+- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2831317/event-channel-managarr-1.26.2831317.zip)
+- **Built:** Oct 10 2026, 13:24 UTC
+- **Source Commit:** [`74eac27`](https://github.com/Dispatcharr/Plugins/commit/74eac27236fedab043328aa9ee03221e52cc23e7)
 
 **Checksums:**
 ```
-MD5:    157e498b348e35facf0f5d5e621ca02f
-SHA256: 4aed1cf1d7fc0eee849ff1942febf7b0280d717312d8595826e8fa114bb48cc6
+MD5:    0cebe7942aa53349955e196d1eb4d300
+SHA256: 9bbe10164c745f4205e773f82860e587b2af88ce24c74dd0cb122b165132ed0a
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2831317` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2831317/event-channel-managarr-1.26.2831317.zip) | Oct 10 2026, 13:24 UTC | [`74eac27`](https://github.com/Dispatcharr/Plugins/commit/74eac27236fedab043328aa9ee03221e52cc23e7) | 0cebe7942aa53349955e196d1eb4d300 | 9bbe10164c745f4205e773f82860e587b2af88ce24c74dd0cb122b165132ed0a |
 | `1.26.2821924` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821924/event-channel-managarr-1.26.2821924.zip) | Oct 09 2026, 19:31 UTC | [`6f08f74`](https://github.com/Dispatcharr/Plugins/commit/6f08f7435940cd25a47242311ebe36a5b401e285) | 157e498b348e35facf0f5d5e621ca02f | 4aed1cf1d7fc0eee849ff1942febf7b0280d717312d8595826e8fa114bb48cc6 |
 | `1.26.2821849` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821849/event-channel-managarr-1.26.2821849.zip) | Oct 09 2026, 18:55 UTC | [`d9bf8e5`](https://github.com/Dispatcharr/Plugins/commit/d9bf8e5bc2cab4ce2890b6486628a3be81302160) | da5135568d72864f89dcc2c90632e7d9 | 3b202d63877c3f4b48dc9baf17f44f28c726a835d8cb20c5a5c5f9cd9e8adfb2 |
 | `1.26.2821323` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821323/event-channel-managarr-1.26.2821323.zip) | Oct 09 2026, 13:29 UTC | [`033d920`](https://github.com/Dispatcharr/Plugins/commit/033d920f1ce7acda8dc524d653a90e724c6ae8d6) | 3583102f4743b7acea5b0e858d779794 | c8f1cfae749a5c26760d2437f0987537b0b9c391eaccbbf9c2a47a81902dce69 |
@@ -37,7 +38,6 @@ SHA256: 4aed1cf1d7fc0eee849ff1942febf7b0280d717312d8595826e8fa114bb48cc6
 | `1.26.2561458` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2561458/event-channel-managarr-1.26.2561458.zip) | Sep 13 2026, 15:07 UTC | [`c7f2db2`](https://github.com/Dispatcharr/Plugins/commit/c7f2db205c19eae7538adfc6eea460cf1a39eca9) | 8c46b0e67db215d8d8afd8668127a751 | d3dd739831cea45eb0fb47f2d587f91630538464c4b879cd879237bbfc9454d2 |
 | `1.26.2490035` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2490035/event-channel-managarr-1.26.2490035.zip) | Sep 06 2026, 01:00 UTC | [`cefbc81`](https://github.com/Dispatcharr/Plugins/commit/cefbc813301c6d62ccf430ba5c5f15e06e2f69be) | e387645ae1b91cba2ec237e3f49e2a88 | fc5963545ab5d70d0cd2eb606ddc62de2a1562908a690849b752477a7cbba283 |
 | `1.26.2451734` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2451734/event-channel-managarr-1.26.2451734.zip) | Sep 02 2026, 17:44 UTC | [`ae887e3`](https://github.com/Dispatcharr/Plugins/commit/ae887e334d94d164f7edc6acb3e54f9b83f96271) | 083d0bb5255f6a32584428146b45e301 | 82c731a4872cad0f222f4b075859af66cb880c75e647b8a5fafcade9f0a8c549 |
-| `1.26.2450117` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2450117/event-channel-managarr-1.26.2450117.zip) | Sep 02 2026, 11:21 UTC | [`48014a4`](https://github.com/Dispatcharr/Plugins/commit/48014a4de3d27d043704318257fc4644db0a3be6) | d911841d59779e38f53299cdeb7507ff | f1ed710f69456104b2925071944ed6f25c9c743a20b3af611ec5a899495e779a |
 
 ---
 
@@ -69,15 +69,18 @@ period you set, has passed.
 
 **Reads either the channel name or the stream name.** Providers that leave the
 channel name fixed and put the game in the stream name are handled by switching one
-setting.
+setting, or by listing just those channel groups in **Stream Name Groups** so other
+groups keep reading channel names. On Dispatcharr 0.32.0 or later such a group can
+also get its own guide source that reads the stream name.
 
 **Fills the guide for channels that have no EPG.** An optional plugin-managed dummy
 EPG source renders the event title during its window, `Upcoming at <time>: <title>`
 before it and `Ended at <time>: <title>` after, in the viewer's local time. Channels
 whose names claim a different timezone get their own source rather than being pulled
-back and forth. Two channel-name layouts are understood: the US form
+back and forth. Three channel-name layouts are understood: the US form
 (`PPV EVENT 12: Title (MM.DD HH:MM AM/PM TZ)`, and bare numbered slots such as
-`07 - 8/14 7pm Broncos at Falcons`) and the Swedish pipe-delimited form.
+`07 - 8/14 7pm Broncos at Falcons`), the Swedish pipe-delimited form, and the `AT`
+form with the date after an `@` (`NHL 01: Kraken @ Red Wings @ 9 Oct 07:00 PM ET`).
 
 **Gives a channel group its own guide source.** Groups whose events are labelled in
 different timezones, or that need different durations or title patterns, can each be
