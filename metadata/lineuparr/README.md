@@ -2,7 +2,7 @@
 
 # Lineuparr
 
-**Version:** `1.26.2821835` | **Author:** PiratesIRC | **Last Updated:** Oct 09 2026, 18:41 UTC
+**Version:** `1.26.2831530` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 15:34 UTC
 
 Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them.
 
@@ -14,20 +14,21 @@ Mirror real-world provider channel lineups by creating channel groups, channels,
 
 ### Latest Release
 
-- **Download:** [`lineuparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2821835/lineuparr-1.26.2821835.zip)
-- **Built:** Oct 09 2026, 18:41 UTC
-- **Source Commit:** [`e66282c`](https://github.com/Dispatcharr/Plugins/commit/e66282ca01274495b23c22a60b89b11cda36a767)
+- **Download:** [`lineuparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2831530/lineuparr-1.26.2831530.zip)
+- **Built:** Oct 10 2026, 15:35 UTC
+- **Source Commit:** [`f27d830`](https://github.com/Dispatcharr/Plugins/commit/f27d830c44766d513a3443abf50f7092762208e8)
 
 **Checksums:**
 ```
-MD5:    dece7f089b66f4cbbb1a64e3c1b2a294
-SHA256: 83eb0d6cd801a15b8e30cc90f3cf6fe59ac98e800c5a8f5f1c37807135ea227f
+MD5:    a9fe3029612716ab733bad530b0c1d84
+SHA256: b815f05d269679e95d31c6f9570a91bdc91503a6887d05365e2f33e272df4d04
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2831530` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2831530/lineuparr-1.26.2831530.zip) | Oct 10 2026, 15:35 UTC | [`f27d830`](https://github.com/Dispatcharr/Plugins/commit/f27d830c44766d513a3443abf50f7092762208e8) | a9fe3029612716ab733bad530b0c1d84 | b815f05d269679e95d31c6f9570a91bdc91503a6887d05365e2f33e272df4d04 |
 | `1.26.2821835` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2821835/lineuparr-1.26.2821835.zip) | Oct 09 2026, 18:41 UTC | [`e66282c`](https://github.com/Dispatcharr/Plugins/commit/e66282ca01274495b23c22a60b89b11cda36a767) | dece7f089b66f4cbbb1a64e3c1b2a294 | 83eb0d6cd801a15b8e30cc90f3cf6fe59ac98e800c5a8f5f1c37807135ea227f |
 | `1.26.2561550` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2561550/lineuparr-1.26.2561550.zip) | Sep 13 2026, 16:03 UTC | [`e56e990`](https://github.com/Dispatcharr/Plugins/commit/e56e9906c18e092bb424366e0ed361c4bcd07612) | 48b855f675156903fe8421e7d80ccbf6 | e46ceda0cd9e14154a912dd642dfaa5dc406a5a6bff8882238098785929c0f42 |
 | `1.26.2481702` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2481702/lineuparr-1.26.2481702.zip) | Sep 05 2026, 17:43 UTC | [`73d6175`](https://github.com/Dispatcharr/Plugins/commit/73d61757c1729d0d58cd34fe24f4d422dcaf3642) | 532b59b37f580ced08de2a65933fa649 | ac627e4897183392e56761aa4d26a2598382297e4df8873259a27cc0ffbe2fa8 |
@@ -37,7 +38,6 @@ SHA256: 83eb0d6cd801a15b8e30cc90f3cf6fe59ac98e800c5a8f5f1c37807135ea227f
 | `1.26.2241618` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2241618/lineuparr-1.26.2241618.zip) | Aug 12 2026, 17:50 UTC | [`5ba093d`](https://github.com/Dispatcharr/Plugins/commit/5ba093de507732b40c6334e995f987fbe540423b) | 00e307dbcc82f5a4a6ed4cdf81d81f2e | fc590ffa3e4351fddce850c4baa16d4876cfa9c218490304cceaa2cad9b47162 |
 | `1.26.2171315` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2171315/lineuparr-1.26.2171315.zip) | Aug 05 2026, 14:26 UTC | [`ec73378`](https://github.com/Dispatcharr/Plugins/commit/ec73378d08dfa6275c691e26d7f1264d0ac24255) | 561a6fead42d2cd84c58cd6b76034557 | ec70ac36837f389fe6d9f5b480bbe0d7bc88fb34a3d737f8edaf108a536843a7 |
 | `1.26.2142327` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2142327/lineuparr-1.26.2142327.zip) | Aug 03 2026, 00:35 UTC | [`3d801fb`](https://github.com/Dispatcharr/Plugins/commit/3d801fb4530196dc46c3c38d9843548ecb65d097) | ccacd026076d656c387fbcab93e4c299 | 0231a6abb943d406813df0ce72d73659653a0e7b936f1b365e74a7bb5badb977 |
-| `1.26.1791747` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.1791747/lineuparr-1.26.1791747.zip) | Jun 29 2026, 11:28 UTC | [`ed8ee86`](https://github.com/Dispatcharr/Plugins/commit/ed8ee868bb90d6f2db8c20e4e67ee0014fdf8fa7) | bb8596cf83acde35e81ec395e2411040 | df1866c6fe65b135157254209832cc7afd7285023375cb44f3f951c3ec24dee0 |
 
 ---
 
@@ -179,6 +179,25 @@ The plugin never contacts a media provider. It never opens, fetches, decodes, re
 All product names, channel names, trademarks and registered trademarks mentioned in this project or appearing in its lineup files are the property of their respective owners. This project is an independent, community-built plugin. It is not affiliated with, endorsed by, or sponsored by any television network, broadcaster, streaming service or IPTV provider, and it is not affiliated with the Dispatcharr project beyond being a plugin written for it.
 
 The software is provided as-is, without warranty of any kind, as set out in the licence. This section describes the design of the software and the author's intent. It is not legal advice. If you need to know whether your own use is lawful, ask someone qualified in your jurisdiction.
+
+## Anonymous usage counts
+
+The Channels Created and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and runs at
+least one action or sync. When an action or sync finishes, at most once an hour,
+or ten minutes after the last report when a sync has just created channels, the
+plugin sends this plugin's Channels Created total and a random id for this
+plugin on this install to the plugin author's counter at
+plugin-stats.dpas.workers.dev. The server stores that id with the total and the
+date of the last report. The connection shows the server your public IP address;
+the server uses it only to limit abuse and does not store it in its database,
+though when an install first registers it keeps a salted one-way hash of it (of
+its /64 block for IPv6) for up to three days. Cloudflare, which hosts the
+server, keeps its own request logs. No names, channels, streams, providers or
+settings are sent. The figures are self-reported by installs and capped by the
+server, not verified. Untick the setting to stop sending; this install's figures
+are deleted from the server the next time an action or sync finishes after you
+untick.
 
 ## License
 
