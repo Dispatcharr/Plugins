@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T17:02:00Z",
+  "generated_at": "2026-10-10T18:09:19Z",
   "manifest": {
     "slug": "stream-mapparr",
     "name": "Stream-Mapparr",
@@ -11,22 +11,35 @@
     "repo_url": "https://github.com/PiratesIRC/Stream-Mapparr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-10T17:01:32Z",
+    "last_updated": "2026-10-10T18:08:47Z",
     "latest": {
-      "version": "1.26.2831654",
-      "commit_sha": "4c32a52ab8d00517faf0439f6d84a834c15c99c5",
-      "commit_sha_short": "4c32a52",
-      "build_timestamp": "2026-10-10T17:01:52Z",
-      "last_updated": "2026-10-10T17:01:32Z",
-      "checksum_md5": "bfb74df315f2d88d06616f2290415b70",
-      "checksum_sha256": "67498919c93ec2fe676ebb5d2496d1ec83438190a496621ad1fe76c9958ec2de",
+      "version": "1.26.2831803",
+      "commit_sha": "3c5624e7243c5b5bd548b12022ef9fc499ea53c7",
+      "commit_sha_short": "3c5624e",
+      "build_timestamp": "2026-10-10T18:09:09Z",
+      "last_updated": "2026-10-10T18:08:47Z",
+      "checksum_md5": "d6ca7f148ea90ec881221b4a26ea29db",
+      "checksum_sha256": "1b2ec53ddd91cf96f2530669144e1910401bcc0b548f2600a761324ae7f28ee2",
       "min_dispatcharr_version": "v0.20.0",
-      "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.2831654/Stream-Mapparr.zip",
-      "latest_url": "stream-mapparr-1.26.2831654/stream-mapparr-1.26.2831654.zip",
-      "url": "stream-mapparr-1.26.2831654/stream-mapparr-1.26.2831654.zip",
-      "size": 588
+      "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.2831803/Stream-Mapparr.zip",
+      "latest_url": "stream-mapparr-1.26.2831803/stream-mapparr-1.26.2831803.zip",
+      "url": "stream-mapparr-1.26.2831803/stream-mapparr-1.26.2831803.zip",
+      "size": 595
     },
     "versions": [
+      {
+        "version": "1.26.2831803",
+        "commit_sha": "3c5624e7243c5b5bd548b12022ef9fc499ea53c7",
+        "commit_sha_short": "3c5624e",
+        "build_timestamp": "2026-10-10T18:09:09Z",
+        "last_updated": "2026-10-10T18:08:47Z",
+        "checksum_md5": "d6ca7f148ea90ec881221b4a26ea29db",
+        "checksum_sha256": "1b2ec53ddd91cf96f2530669144e1910401bcc0b548f2600a761324ae7f28ee2",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.2831803/Stream-Mapparr.zip",
+        "url": "stream-mapparr-1.26.2831803/stream-mapparr-1.26.2831803.zip",
+        "size": 595
+      },
       {
         "version": "1.26.2831654",
         "commit_sha": "4c32a52ab8d00517faf0439f6d84a834c15c99c5",
@@ -143,21 +156,8 @@
         "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.2072208/Stream-Mapparr.zip",
         "url": "stream-mapparr-1.26.2072208/stream-mapparr-1.26.2072208.zip",
         "size": 523
-      },
-      {
-        "version": "1.26.1992013",
-        "commit_sha": "6c60baff03b2eae96218cbfd06e0c9442a40fb14",
-        "commit_sha_short": "6c60baf",
-        "build_timestamp": "2026-07-18T20:24:02Z",
-        "last_updated": "2026-07-18T20:23:39Z",
-        "checksum_md5": "287b5b17e34bd430e08af0889d166af8",
-        "checksum_sha256": "7ae476f9dcafb5e1d14897f57fc9eae5993f05b3c06130f02617754662b7aa34",
-        "min_dispatcharr_version": "v0.20.0",
-        "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.1992013/Stream-Mapparr.zip",
-        "url": "stream-mapparr-1.26.1992013/stream-mapparr-1.26.1992013.zip",
-        "size": 502
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaspvjAAKCRB+wDprTCI0\nzvyxAQCPHZzzbQNtVmBbpHQDq/yFMy6iofqqV5BzsyUArIjcygEAxUWsFdSmAPl3\nGhqHhRkS153r3v3hWRMRnWYGQhSTUQs=\n=Qvxt\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasp/VAAKCRB+wDprTCI0\nzsiWAP4ud1RlTA91swKqUjc9KlshohN7ZISvBxtsDG8KzxOo1gEArm6mm+YECZLP\nV9nV5DH8kw7wIzFvETap1dQaAYKefww=\n=+puM\n-----END PGP SIGNATURE-----"
 }

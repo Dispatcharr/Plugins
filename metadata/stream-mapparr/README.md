@@ -2,7 +2,7 @@
 
 # Stream-Mapparr
 
-**Version:** `1.26.2831654` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 17:01 UTC
+**Version:** `1.26.2831803` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 18:08 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -14,20 +14,21 @@ Automatically add matching streams to channels based on name similarity and qual
 
 ### Latest Release
 
-- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2831654/stream-mapparr-1.26.2831654.zip)
-- **Built:** Oct 10 2026, 17:01 UTC
-- **Source Commit:** [`4c32a52`](https://github.com/Dispatcharr/Plugins/commit/4c32a52ab8d00517faf0439f6d84a834c15c99c5)
+- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2831803/stream-mapparr-1.26.2831803.zip)
+- **Built:** Oct 10 2026, 18:09 UTC
+- **Source Commit:** [`3c5624e`](https://github.com/Dispatcharr/Plugins/commit/3c5624e7243c5b5bd548b12022ef9fc499ea53c7)
 
 **Checksums:**
 ```
-MD5:    bfb74df315f2d88d06616f2290415b70
-SHA256: 67498919c93ec2fe676ebb5d2496d1ec83438190a496621ad1fe76c9958ec2de
+MD5:    d6ca7f148ea90ec881221b4a26ea29db
+SHA256: 1b2ec53ddd91cf96f2530669144e1910401bcc0b548f2600a761324ae7f28ee2
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2831803` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2831803/stream-mapparr-1.26.2831803.zip) | Oct 10 2026, 18:09 UTC | [`3c5624e`](https://github.com/Dispatcharr/Plugins/commit/3c5624e7243c5b5bd548b12022ef9fc499ea53c7) | d6ca7f148ea90ec881221b4a26ea29db | 1b2ec53ddd91cf96f2530669144e1910401bcc0b548f2600a761324ae7f28ee2 |
 | `1.26.2831654` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2831654/stream-mapparr-1.26.2831654.zip) | Oct 10 2026, 17:01 UTC | [`4c32a52`](https://github.com/Dispatcharr/Plugins/commit/4c32a52ab8d00517faf0439f6d84a834c15c99c5) | bfb74df315f2d88d06616f2290415b70 | 67498919c93ec2fe676ebb5d2496d1ec83438190a496621ad1fe76c9958ec2de |
 | `1.26.2821334` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2821334/stream-mapparr-1.26.2821334.zip) | Oct 09 2026, 13:42 UTC | [`e32340a`](https://github.com/Dispatcharr/Plugins/commit/e32340a26d7bdec3ee74590b01e40251f4287c47) | 8b48e8b71db4e80ed093642ae45d8bca | c53b82949d4190ae5812138fcd9c6463ab61cca30f1ee848169856111879af21 |
 | `1.26.2681209` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2681209/stream-mapparr-1.26.2681209.zip) | Sep 25 2026, 12:17 UTC | [`d75dbde`](https://github.com/Dispatcharr/Plugins/commit/d75dbde6de2d76eb9d036eaea6742b8889bb9a06) | 9d2ab683f719c1794cdbaea5104eb3e2 | 9e4e884e82e7ea5f1f8de37085825834c46087e7ed898a124922b70955aede45 |
@@ -37,7 +38,6 @@ SHA256: 67498919c93ec2fe676ebb5d2496d1ec83438190a496621ad1fe76c9958ec2de
 | `1.26.2241602` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2241602/stream-mapparr-1.26.2241602.zip) | Aug 12 2026, 17:14 UTC | [`dc86bdd`](https://github.com/Dispatcharr/Plugins/commit/dc86bdd35a3992c6a744465854e1c402a9bcc15c) | abd5c4f4cfba1fa9fa38a9c561c0a978 | 06c8ccf427d144ee55be1b47213ea60512903e3ffd1d9956aea9351f3585ba0f |
 | `1.26.2141957` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2141957/stream-mapparr-1.26.2141957.zip) | Aug 02 2026, 20:47 UTC | [`8f17d38`](https://github.com/Dispatcharr/Plugins/commit/8f17d382613bd3c93784eed05fa1bd500bbdf60f) | f6f6e3cdf3df10b0e4311c7ee87c89d7 | 6a8b1a5f7d4b5882a20d7bd377a67dd19368ba96127ca098bef7e728933e8b2d |
 | `1.26.2072208` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2072208/stream-mapparr-1.26.2072208.zip) | Jul 26 2026, 23:05 UTC | [`f956fe0`](https://github.com/Dispatcharr/Plugins/commit/f956fe0035800f311a778fe3f67f71978f11b219) | 82e5db2b6d5ac8b854bb3a3178d8de60 | 2e4789cd0eae70fd945abe69ee51d55569785cafbb46027e1eac861b47b9cfda |
-| `1.26.1992013` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.1992013/stream-mapparr-1.26.1992013.zip) | Jul 18 2026, 20:24 UTC | [`6c60baf`](https://github.com/Dispatcharr/Plugins/commit/6c60baff03b2eae96218cbfd06e0c9442a40fb14) | 287b5b17e34bd430e08af0889d166af8 | 7ae476f9dcafb5e1d14897f57fc9eae5993f05b3c06130f02617754662b7aa34 |
 
 ---
 
@@ -56,12 +56,9 @@ SHA256: 67498919c93ec2fe676ebb5d2496d1ec83438190a496621ad1fe76c9958ec2de
 A Dispatcharr plugin that automatically matches and assigns streams to channels
 using fuzzy matching, quality prioritization, and OTA callsign recognition.
 
-The "streams matched" badge counts stream-to-channel assignments this plugin has
-written on the maintainer's own installation, added up since the counter was
-added on 5 September 2026. It measures work done rather than distinct streams: a
-daily schedule matches the same library again and counts it again. Dry runs are
-not counted, and neither is sorting alternate streams, which reorders
-assignments that already exist.
+The Streams Matched and Active Installs badges add up figures sent by every install
+that keeps "Share anonymous usage counts" ticked; see
+[Anonymous usage counts](#anonymous-usage-counts).
 
 ## Backup Your Database
 
@@ -258,6 +255,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Placeholder Bitrate Floor (kbps)** | number | 300 | The floor for the setting above. Standard definition is never checked. Where two bitrate figures disagree the higher is used, so a disagreement keeps the stream |
 | **Audio Channels Priority** | string | "" | Audio layouts, most preferred first, for example `7.1, 5.1, stereo`. Ranked before codec. Blank disables it |
 | **Audio Codec Priority** | string | "" | Audio codecs, most preferred first, for example `eac3, ac3, aac`. Ranked after layout. Blank disables it |
+| **Share anonymous usage counts** | boolean | True | Sends this plugin's Streams Matched total and a random id to the plugin author's counter. See [Anonymous usage counts](#anonymous-usage-counts). |
 
 ## Actions
 
@@ -328,6 +326,54 @@ because the exports contain your M3U source names.
 This plugin uses calver, `1.MAJOR.DDDHHMM`, being the UTC day of year plus the
 UTC time. Run `python scripts/bump_version.py` to bump `plugin.json` and
 `plugin.py` together.
+
+## Anonymous usage counts
+
+The Streams Matched and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and runs at
+least one action or scheduled run. Streams Matched counts the stream-to-channel
+assignments that Match & Assign Streams and Match US OTA Only write. With
+Overwrite Existing Streams on, which is the default, a daily schedule that
+re-matches the same streams counts them again; with it off, a stream already on
+a channel is not written or counted again. Sort Alternate Streams is not
+counted.
+
+When an action or a scheduled run finishes, the plugin sends this plugin's
+Streams Matched total and a random id for this plugin on this install to the
+plugin author's counter at plugin-stats.dpas.workers.dev. It sends at most once
+an hour, or ten minutes after the last successful send when a run has just
+assigned streams. A run that finishes inside that gap is not sent
+later: the total goes out with the first later run that is an hour past the last
+successful send, or with a later run that assigns streams once ten minutes have
+passed.
+
+The server stores that id with the total and the date of the last report, and
+keeps them until this install unticks the setting and the delete succeeds, or
+until the plugin author removes them by hand. An install that stops reporting
+still counts toward Streams Matched. The connection shows the server your public
+IP address; the server uses it only to limit abuse and does not store it in its
+database, though when an install first registers it keeps a salted one-way hash
+of it (of its /64 block for IPv6) for up to three days. Cloudflare, which hosts
+the server, keeps its own request logs. No names, channels, streams, URLs,
+providers or settings are sent. The figures are self-reported by installs and
+capped by the server, not verified.
+
+What counts as an active install: an install that sent at least one report in
+the last 30 UTC days. A badge changes after the server's hourly recount, which
+runs at the start of each UTC hour, and Shields may cache the badge for up to an
+hour more, so a new report can take up to about two hours to show.
+
+The setting is the last one in the settings form, in its own section. Unticking
+it takes effect when the next action or scheduled run finishes; the plugin then
+asks the server to delete this install's figures. Once the server confirms the
+delete, the plugin forgets its id, and ticking the setting again later starts a
+new one; if the delete could not reach the server, the plugin keeps the id and
+retries. The plugin keeps that id and the timing of its reports in
+/data/plugin_stats/stream-mapparr/ (install_id, sent, backoff, disabled,
+delete_backoff, lock). To start a new id, untick the setting and let a run
+finish so the delete succeeds; deleting that folder while the setting is ticked
+leaves the old figures on the server, and the new id then sends the full total
+again, so the badge counts those matches twice.
 
 ## Changelog
 
