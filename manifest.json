@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T10:00:50Z",
+  "generated_at": "2026-10-10T10:04:33Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -448,12 +448,12 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/vod-probe/manifest.json",
         "author": "oxios0x00",
         "license": "MIT",
-        "last_updated": "2026-10-03T10:30:56-04:00",
-        "latest_version": "1.3.2",
-        "latest_md5": "2d70ad62b80c25aab64ec259fb008670",
-        "latest_sha256": "538c07074d737f63557b342360ba5496a16fd43b1cac0ad28693b86b7a80702f",
-        "latest_url": "vod-probe-1.3.2/vod-probe-1.3.2.zip",
-        "latest_size": 589
+        "last_updated": "2026-10-10T10:04:01Z",
+        "latest_version": "1.3.3",
+        "latest_md5": "dd346d3865eae81d45a2c325fbe9479b",
+        "latest_sha256": "e2a068cbb7b264e16d5a8925fc2ca7c50fcf18bfc46d61450458c09f14f6ebc5",
+        "latest_url": "vod-probe-1.3.3/vod-probe-1.3.3.zip",
+        "latest_size": 590
       },
       {
         "slug": "vod2mlib",
@@ -503,5 +503,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasoM2QAKCRB+wDprTCI0\nzkEzAP9W8HxnUTOpybEglaZ+/FbN5NSXeF8RvSAGR2rZVVRn+wEA2bf6gVbRGe4a\n8sj0Ikgj0W6Y15OPdGvIn87brp+2YQI=\n=glM/\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasoNtwAKCRB+wDprTCI0\nzvwVAP9vOio5VIeD/dD+t3wR7eRP1l4qy9rKbAk5a8R358FS9AEAoS94owBcHdwe\nreUi3WGCz/Cph3IH/YWXx1Q35f3wIgs=\n=SApD\n-----END PGP SIGNATURE-----"
 }
