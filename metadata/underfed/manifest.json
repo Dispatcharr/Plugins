@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T23:31:32Z",
+  "generated_at": "2026-10-11T01:14:07Z",
   "manifest": {
     "slug": "underfed",
     "name": "Underfed",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/PilaScat/underfed",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-06T23:30:59Z",
+    "last_updated": "2026-10-11T01:13:32Z",
     "latest": {
-      "version": "0.6.0",
-      "commit_sha": "8e1ce6dae65c33aa4bd0539e1ebe2587c76fccbe",
-      "commit_sha_short": "8e1ce6d",
-      "build_timestamp": "2026-10-06T23:31:26Z",
-      "last_updated": "2026-10-06T23:30:59Z",
-      "checksum_md5": "faaffb023d37daab1ff5c932062ed8b7",
-      "checksum_sha256": "87017dbeba521321b5cb0030e5ab56873ce7109f4ea914227aebd94b9d82d55e",
-      "source_url": "https://github.com/PilaScat/underfed/releases/download/v0.6.0/underfed-0.6.0.zip",
-      "latest_url": "underfed-0.6.0/underfed-0.6.0.zip",
-      "url": "underfed-0.6.0/underfed-0.6.0.zip",
-      "size": 50
+      "version": "0.7.0",
+      "commit_sha": "c8f48bf37641beb302532be7540cfc142d56eddf",
+      "commit_sha_short": "c8f48bf",
+      "build_timestamp": "2026-10-11T01:14:00Z",
+      "last_updated": "2026-10-11T01:13:32Z",
+      "checksum_md5": "ddf9e852473a85d8b3fc1c09a176f5dd",
+      "checksum_sha256": "c025430339e7f686290f6156b3d21ad272a8c16275666d38c258ef0305d4b5c4",
+      "source_url": "https://github.com/PilaScat/underfed/releases/download/v0.7.0/underfed-0.7.0.zip",
+      "latest_url": "underfed-0.7.0/underfed-0.7.0.zip",
+      "url": "underfed-0.7.0/underfed-0.7.0.zip",
+      "size": 51
     },
     "versions": [
+      {
+        "version": "0.7.0",
+        "commit_sha": "c8f48bf37641beb302532be7540cfc142d56eddf",
+        "commit_sha_short": "c8f48bf",
+        "build_timestamp": "2026-10-11T01:14:00Z",
+        "last_updated": "2026-10-11T01:13:32Z",
+        "checksum_md5": "ddf9e852473a85d8b3fc1c09a176f5dd",
+        "checksum_sha256": "c025430339e7f686290f6156b3d21ad272a8c16275666d38c258ef0305d4b5c4",
+        "source_url": "https://github.com/PilaScat/underfed/releases/download/v0.7.0/underfed-0.7.0.zip",
+        "url": "underfed-0.7.0/underfed-0.7.0.zip",
+        "size": 51
+      },
       {
         "version": "0.6.0",
         "commit_sha": "8e1ce6dae65c33aa4bd0539e1ebe2587c76fccbe",
@@ -76,5 +88,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasWE2QAKCRB+wDprTCI0\nztkWAP9c0AVeAWG0hxNxr7dhdfRG6EhZxz+vnWU7kRSukE3eKQD/SVPvvfggFi9S\nGlU4J7zcn12JhpqhagAICTmCCgODQAA=\n=xop1\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasri4wAKCRB+wDprTCI0\nzr5tAP9jgMlQRbzl6wvJUJeHtsbDnNPvSZgvBosvlQaLPOMdIwD/QIESUcpP3svE\nwEb2lrxxkTC7za9uTPZAWBrtvky87AY=\n=ADdA\n-----END PGP SIGNATURE-----"
 }
