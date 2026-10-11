@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-10T21:22:54Z",
+  "generated_at": "2026-10-11T00:45:41Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
-    "description": "Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries.",
+    "description": "Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.",
     "author": "PiratesIRC",
     "maintainers": [
       "PiratesIRC"
@@ -15,22 +15,35 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1422963882548265110",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-10T21:22:23Z",
+    "last_updated": "2026-10-11T00:45:10Z",
     "latest": {
-      "version": "1.26.2832116",
-      "commit_sha": "946dc0869e372b73492427ea23e726ce40a55d52",
-      "commit_sha_short": "946dc08",
-      "build_timestamp": "2026-10-10T21:22:36Z",
-      "last_updated": "2026-10-10T21:22:23Z",
-      "checksum_md5": "2a059d2d1e503648e56924fb96905f07",
-      "checksum_sha256": "02462e8be15eba5bce651b6befcdee17c3c39945618e18d8bb8eefde607d6f1f",
+      "version": "1.26.2840039",
+      "commit_sha": "f2c9af3a4ca59c83fbb38b5bd83e532dcdd1ca13",
+      "commit_sha_short": "f2c9af3",
+      "build_timestamp": "2026-10-11T00:45:23Z",
+      "last_updated": "2026-10-11T00:45:10Z",
+      "checksum_md5": "d48c1dafb1d5460221d7f6631e6e1347",
+      "checksum_sha256": "e2d45292add8312bccf6d95e5e08c66940fc9b5e2797507247c61d879c6d5474",
       "min_dispatcharr_version": "v0.20.0",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2832116/Channel-Maparr.zip",
-      "latest_url": "channel-mapparr-1.26.2832116/channel-mapparr-1.26.2832116.zip",
-      "url": "channel-mapparr-1.26.2832116/channel-mapparr-1.26.2832116.zip",
-      "size": 754
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2840039/Channel-Maparr.zip",
+      "latest_url": "channel-mapparr-1.26.2840039/channel-mapparr-1.26.2840039.zip",
+      "url": "channel-mapparr-1.26.2840039/channel-mapparr-1.26.2840039.zip",
+      "size": 759
     },
     "versions": [
+      {
+        "version": "1.26.2840039",
+        "commit_sha": "f2c9af3a4ca59c83fbb38b5bd83e532dcdd1ca13",
+        "commit_sha_short": "f2c9af3",
+        "build_timestamp": "2026-10-11T00:45:23Z",
+        "last_updated": "2026-10-11T00:45:10Z",
+        "checksum_md5": "d48c1dafb1d5460221d7f6631e6e1347",
+        "checksum_sha256": "e2d45292add8312bccf6d95e5e08c66940fc9b5e2797507247c61d879c6d5474",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2840039/Channel-Maparr.zip",
+        "url": "channel-mapparr-1.26.2840039/channel-mapparr-1.26.2840039.zip",
+        "size": 759
+      },
       {
         "version": "1.26.2832116",
         "commit_sha": "946dc0869e372b73492427ea23e726ce40a55d52",
@@ -144,20 +157,8 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "channel-mapparr-1.26.1791324/channel-mapparr-1.26.1791324.zip",
         "size": 588
-      },
-      {
-        "version": "1.26.1701952",
-        "commit_sha": "c6ecfb3757353fec70e7a15ca070cb46edf83d35",
-        "commit_sha_short": "c6ecfb3",
-        "build_timestamp": "2026-06-20T02:05:48Z",
-        "last_updated": "2026-06-19T22:05:32-04:00",
-        "checksum_md5": "0fbfea3acbff32f93c8d59940b48aac8",
-        "checksum_sha256": "e282f8fccd96de95d43412ccd684a98dc721dbb202198a9f1775e81e0d189c8b",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "channel-mapparr-1.26.1701952/channel-mapparr-1.26.1701952.zip",
-        "size": 576
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasqsrwAKCRB+wDprTCI0\nzj7IAQCt70/nvpp9gFSNVuDezl2ZIrLvNfXZigZbxHTKpFwf4gEA9L4MMC+iU9zQ\nTZxQbPl4SRXD5tSNpQ2YawYfclDNCwU=\n=0ZyY\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasrcNgAKCRB+wDprTCI0\nzvASAP4j1+Ck+FoNDF6bNklLdYtS3OmS7miNEixhA5vhttj5egEA+7FBF6Ca6En7\nRE29BCiNMl57R7frg4Dn5Sbya5MePgw=\n=ezpn\n-----END PGP SIGNATURE-----"
 }

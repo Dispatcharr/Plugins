@@ -12,7 +12,7 @@ This branch contains all published plugin releases.
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.3.5` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
-| [`Channel Mapparr`](#channel-mapparr) | `1.26.2832116` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries. |
+| [`Channel Mapparr`](#channel-mapparr) | `1.26.2840039` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.5.0` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream. |
 | [`Decypharr VOD`](#decypharr-vod) | `1.0.7` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
@@ -68,19 +68,19 @@ Speeds up channel startup for low-bitrate (usually audio only) streams by loweri
 
 ### [Channel Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-mapparr/README.md)
 
-**Version:** `1.26.2832116` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 21:22 UTC
+**Version:** `1.26.2840039` | **Author:** PiratesIRC | **Last Updated:** Oct 11 2026, 00:45 UTC
 
-Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across 42K+ channels in 11 countries.
+Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1340492560220684331/1422963882548265110) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin)
 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.2832116`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2832116/channel-mapparr-1.26.2832116.zip)
+- [Latest Release (`1.26.2840039`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2840039/channel-mapparr-1.26.2840039.zip)
 - [All Versions (10 available)](./metadata/channel-mapparr)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`946dc08`](https://github.com/Dispatcharr/Plugins/commit/946dc0869e372b73492427ea23e726ce40a55d52)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`f2c9af3`](https://github.com/Dispatcharr/Plugins/commit/f2c9af3a4ca59c83fbb38b5bd83e532dcdd1ca13)
 
 ---
 
@@ -645,4 +645,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 10 2026, 21:23 UTC*
+*Last updated: Oct 11 2026, 00:45 UTC*
