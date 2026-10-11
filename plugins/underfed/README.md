@@ -40,7 +40,7 @@ changes nothing. Read the journal under Check status, then turn it off.
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
 | Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm discontinuities for, the source is switched. 0 turns it off |
 | Confirm discontinuities for | How long the discontinuities must last before acting, 15 s by default. A storm is unmistakable and the sound drifts further every second, so this is shorter than Confirm for |
-| Refused source held back | A source the provider answers 403 to goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
+| Refused source held back | A source the provider answers 403 to, or that closes the connection without sending a byte, goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
 | Dispatcharr URL | Reached from inside the container |
@@ -130,6 +130,15 @@ refusal anyway.
 
 A channel whose chain has one source only, or whose refused source is already last, is left
 alone: there is nowhere lower to go.
+
+A source that **closes the connection without sending a byte** is treated the same way (0.7.0).
+Some edges accept the connection, hold it for about twenty seconds and then close it, and
+Dispatcharr retries the same source three times before it moves on: about 43 seconds, past the
+30 seconds after which some clients give up. On the evening of 10 October 2026 one such source
+cost six viewers in a row between 23 and 50 seconds each. The sign is reservoarr's `giving up`
+right after an `upstream EOF`. Other give-ups do not count: the provider's MP4 placeholder means
+the channel has nothing on air, so every source of the chain would answer with it, and a 407 or a
+520 is the provider or the VPN, not the source.
 
 ## What this does not fix
 
