@@ -150,10 +150,12 @@ def contract_result_requires_review(result: dict) -> bool:
     manifest = _runtime_manifest(_uri_plugin_name(result))
     if not capability_id or manifest is None:
         return False
+    if not capabilities.manifest_version_is_valid(manifest):
+        return True
     version = capabilities.parse_manifest_version(manifest)
     return (
         capabilities.manifest_version_enforces_sandbox(version)
-        and capability_id not in capabilities.declared_capabilities(manifest)
+        and capability_id not in capabilities.effective_capabilities(manifest)
     )
 
 

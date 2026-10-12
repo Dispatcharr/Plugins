@@ -1,0 +1,1 @@
+| bad.py:3:1:3:49 | ControlFlowNode for Attribute() | This direct filesystem API bypasses Dispatcharr's plugin-local open wrapper. |

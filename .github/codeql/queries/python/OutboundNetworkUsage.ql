@@ -9,16 +9,13 @@
  */
 
 import python
+import semmle.python.ApiGraphs
 
-from Call call, Attribute function, Name module
+from API::CallNode call
 where
-  call.getFunc() = function and
   (
-    function.getName() = "connect" or
-    (
-      function.getObject() = module and
-      module.getId() = "requests" and
-      function.getName() in ["get", "post", "put", "patch", "delete", "request"]
-    )
+    call = API::moduleImport("requests")
+      .getMember(["get", "post", "put", "patch", "delete", "request"]).getACall() or
+    call = API::moduleImport("urllib.request").getMember(["urlopen", "urlretrieve"]).getACall()
   )
 select call, "This outbound network operation requires the `outbound_network` capability in a runtime-enforcing plugin manifest."

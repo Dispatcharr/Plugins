@@ -1,4 +1,4 @@
-name: dispatcharr/plugin-sandbox-bypass-query-tests
+name: dispatcharr/plugin-capability-security-query-tests
 dependencies:
   dispatcharr/plugin-capability-security-queries: "*"
 extractor: python

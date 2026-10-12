@@ -1,3 +1,3 @@
-import subprocess
+import subprocess as host_process
 
-subprocess.run(["true"])
+host_process.run(["true"])

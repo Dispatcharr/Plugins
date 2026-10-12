@@ -194,6 +194,35 @@ def test_external_plugin_uses_the_release_manifest_sidecar(tmp_path, monkeypatch
     assert sarif.contract_result_requires_review(result)
 
 
+def test_capability_contract_accepts_background_tasks_implied_by_async_action(tmp_path, monkeypatch):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(json.dumps({
+        "manifest_version": 2,
+        "actions": [{"id": "refresh", "async": True}],
+    }), encoding="utf-8")
+    result = {
+        "ruleId": "plugin/capability-contract/background-tasks",
+        "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/plugin.py"},
+                                               "region": {"startLine": 1}}}],
+    }
+    monkeypatch.chdir(tmp_path)
+    assert not sarif.contract_result_requires_review(result)
+
+
+def test_capability_contract_reviews_explicit_malformed_versions(tmp_path, monkeypatch):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(json.dumps({"manifest_version": "two"}), encoding="utf-8")
+    result = {
+        "ruleId": "plugin/capability-contract/subprocess",
+        "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/plugin.py"},
+                                               "region": {"startLine": 1}}}],
+    }
+    monkeypatch.chdir(tmp_path)
+    assert sarif.contract_result_requires_review(result)
+
+
 def test_compute_status():
     assert sarif.compute_status(1, False, True, False) == "failure"
     assert sarif.compute_status(0, True, True, False) == "failure"

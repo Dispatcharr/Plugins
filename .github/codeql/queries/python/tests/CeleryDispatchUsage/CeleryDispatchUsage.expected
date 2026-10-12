@@ -1,0 +1,1 @@
+| bad.py:1:1:1:59 | Subscript() | This internal task dispatch requires the `celery_dispatch` capability in a runtime-enforcing plugin manifest. |

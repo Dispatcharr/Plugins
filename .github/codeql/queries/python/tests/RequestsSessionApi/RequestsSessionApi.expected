@@ -1,0 +1,1 @@
+| bad.py:3:1:3:18 | ControlFlowNode for Attribute() | Constructing a requests session bypasses Dispatcharr's guarded module-level HTTP helpers. |

@@ -1,0 +1,1 @@
+| bad.py:1:1:1:30 | Attribute() | This socket listener operation requires the `network_listener` capability in a runtime-enforcing plugin manifest. |

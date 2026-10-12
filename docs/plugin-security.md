@@ -16,6 +16,9 @@ scanned runtime manifest is enforcing and omits the matching capability:
 | `subprocess` | `subprocess` process-launch APIs without `subprocess` |
 | `network-listener` | Socket bind/listen calls without `network_listener` |
 | `outbound-network` | Selected HTTP or socket connection calls without `outbound_network` |
+| `background-tasks` | `context["dispatch_task"]` without `background_tasks` |
+| `celery-dispatch` | `context["dispatch_internal_task"]` without `celery_dispatch` |
+| `persistent-service` | `on_leader_acquired` without `persistent_service` |
 
 `pluginctl.capabilities` mirrors Dispatcharr's capability and manifest-version
 policy. Versions 0 and 1 do not produce contract findings. Future manifest
@@ -23,6 +26,14 @@ versions use the latest known policy, as Dispatcharr does. Unknown future
 capabilities remain valid declarations. For external plugins, the scan saves the
 release manifest separately from catalog metadata. A catalog `plugin.json`
 without a `manifest_version` is not treated as a runtime manifest.
+An explicitly malformed version is retained for manual review rather than being
+treated as a legacy manifest by the scanner.
+
+The runtime's `filesystem_write` decision also depends on whether the resolved
+path is inside the plugin's code or version-stable data directory. The scanner
+does not issue a declaration finding for `open` because it cannot determine that
+path boundary reliably from source alone. Direct `io.open` and `os.open` are
+instead reported as potential wrapper-bypass attempts for maintainer review.
 
 ## Sandbox Bypass Queries
 
@@ -34,6 +45,13 @@ plugin-local builtins and import wrappers:
 | `sys-modules-tamper` | Replacement of sensitive `sys.modules` entries |
 | `ctypes-usage` | Native-code access through `ctypes` |
 | `builtins-mutation` | Mutation of `__builtins__` |
+| `direct-builtins-access` | Calling the original `builtins.open` or `builtins.__import__` |
+| `importlib-wrapped-module` | Loading a wrapped module through `importlib.import_module` |
+| `socket-convenience-api` | `socket.create_connection` outside the guarded constructor proxy |
+| `requests-session-api` | `requests.Session` or `requests.session` outside guarded module helpers |
+| `os-process-api` | Direct `os` process-launch APIs outside guarded `subprocess` |
+| `asyncio-process-api` | Asyncio subprocess APIs outside guarded `subprocess` |
+| `filesystem-api` | Direct `io`, `os`, `shutil`, or `pathlib.Path` write APIs outside guarded `open` |
 
 The broad frame, introspection, and dynamic-evaluation heuristics from the
 earlier query pack were removed because they do not model Dispatcharr's current

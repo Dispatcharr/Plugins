@@ -121,10 +121,25 @@ KNOWN_CAPABILITIES: dict[str, dict[str, Any]] = {
     },
 }
 
-MANIFEST_SCHEMA_POLICIES: dict[int, dict[str, bool]] = {
-    0: {"parses_capabilities": False, "enforces_sandbox": False},
-    1: {"parses_capabilities": True, "enforces_sandbox": False},
-    2: {"parses_capabilities": True, "enforces_sandbox": True},
+MANIFEST_SCHEMA_POLICIES: dict[int, dict[str, Any]] = {
+    0: {
+        "min_app_version": None,
+        "max_app_version": None,
+        "parses_capabilities": False,
+        "enforces_sandbox": False,
+    },
+    1: {
+        "min_app_version": None,
+        "max_app_version": None,
+        "parses_capabilities": True,
+        "enforces_sandbox": False,
+    },
+    2: {
+        "min_app_version": None,
+        "max_app_version": None,
+        "parses_capabilities": True,
+        "enforces_sandbox": True,
+    },
 }
 
 
@@ -136,7 +151,20 @@ def parse_manifest_version(manifest: dict[str, Any]) -> int:
     return value if value >= 0 else 0
 
 
-def manifest_schema_policy(manifest_version: int) -> dict[str, bool]:
+def manifest_version_is_valid(manifest: dict[str, Any]) -> bool:
+    """Whether an explicitly supplied manifest version is a non-negative int.
+
+    Dispatcharr currently treats malformed values as legacy for compatibility.
+    The registry scanner is stricter: explicit malformed values must receive
+    manual review instead of suppressing a capability-contract signal.
+    """
+    if "manifest_version" not in manifest:
+        return True
+    value = manifest["manifest_version"]
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 0
+
+
+def manifest_schema_policy(manifest_version: int) -> dict[str, Any]:
     return MANIFEST_SCHEMA_POLICIES.get(
         manifest_version, MANIFEST_SCHEMA_POLICIES[max(MANIFEST_SCHEMA_POLICIES)]
     )
@@ -171,11 +199,20 @@ def capability_supported_by_manifest_version(capability_id: str, manifest_versio
 
 
 def declared_capabilities(manifest: dict[str, Any]) -> set[str]:
+    return effective_capabilities(manifest)
+
+
+def effective_capabilities(manifest: dict[str, Any]) -> set[str]:
+    """Mirror Dispatcharr's explicit and async-action capability inference."""
     version = parse_manifest_version(manifest)
     values = manifest.get("capabilities")
-    if not isinstance(values, list):
-        return set()
-    return {
+    declared = {
         value for value in values
         if isinstance(value, str) and capability_supported_by_manifest_version(value, version)
-    }
+    } if isinstance(values, list) else set()
+    actions = manifest.get("actions")
+    if isinstance(actions, list) and any(
+        isinstance(action, dict) and action.get("async") for action in actions
+    ) and capability_supported_by_manifest_version("background_tasks", version):
+        declared.add("background_tasks")
+    return declared

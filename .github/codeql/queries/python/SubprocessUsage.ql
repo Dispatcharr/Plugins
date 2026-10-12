@@ -9,11 +9,10 @@
  */
 
 import python
+import semmle.python.ApiGraphs
 
-from Call call, Attribute function, Name module
+from API::CallNode call
 where
-  call.getFunc() = function and
-  function.getObject() = module and
-  module.getId() = "subprocess" and
-  function.getName() in ["Popen", "run", "call", "check_call", "check_output"]
+  call = API::moduleImport("subprocess")
+    .getMember(["Popen", "run", "call", "check_call", "check_output"]).getACall()
 select call, "This subprocess call requires the `subprocess` capability in a runtime-enforcing plugin manifest."
