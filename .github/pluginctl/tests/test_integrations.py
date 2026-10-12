@@ -32,6 +32,59 @@ def test_automerge_ok():
     assert automerge.evaluate_labels(["Plugin Update"], "MERGEABLE").ok
 
 
+def test_automerge_blacklist_csv_is_optional_and_case_insensitive():
+    assert not automerge.csv_contains("Alice", "")
+    assert automerge.csv_contains("Alice", " bob, ALICE ,carol")
+    assert not automerge.csv_contains("Alice", "bob,carol")
+
+
+def test_automerge_rate_limits_defaults_overrides_and_invalid_values():
+    limits, error = automerge.rate_limits_from_env({})
+    assert not error
+    assert limits == automerge.RateLimits(4, 4, 24)
+
+    limits, error = automerge.rate_limits_from_env({
+        "AUTO_MERGE_AUTHOR_LIMIT": "2",
+        "AUTO_MERGE_PLUGIN_LIMIT": "0",
+        "AUTO_MERGE_RATE_WINDOW_HOURS": "12",
+    })
+    assert not error
+    assert limits == automerge.RateLimits(2, 0, 12)
+
+    limits, error = automerge.rate_limits_from_env({"AUTO_MERGE_AUTHOR_LIMIT": "many"})
+    assert limits is None
+    assert "integers" in error
+
+
+def test_automerge_rate_limit_checks_author_and_each_plugin():
+    limits = automerge.RateLimits(4, 4, 24)
+    history = [
+        {"number": 1, "author": {"login": "alice"}},
+        {"number": 2, "author": {"login": "alice"}},
+        {"number": 3, "author": {"login": "alice"}},
+        {"number": 4, "author": {"login": "alice"}},
+    ]
+    files = {str(n): ["plugins/other/plugin.json"] for n in range(1, 5)}
+    decision = automerge.rate_limit_decision("alice", ["demo"], history, files, limits)
+    assert not decision.ok and "Author" in decision.reason
+
+    plugin_history = [
+        {"number": n, "author": {"login": "other"}} for n in range(1, 5)
+    ]
+    plugin_files = {str(n): ["plugins/demo/plugin.json"] for n in range(1, 5)}
+    decision = automerge.rate_limit_decision("alice", ["demo", "other"], plugin_history,
+                                             plugin_files, limits)
+    assert not decision.ok and "Plugin 'demo'" in decision.reason
+
+
+def test_automerge_rate_limit_allows_unexhausted_author_and_plugins():
+    limits = automerge.RateLimits(4, 4, 24)
+    history = [{"number": 1, "author": {"login": "alice"}}]
+    decision = automerge.rate_limit_decision("alice", ["demo"], history,
+                                             {"1": ["plugins/demo/plugin.json"]}, limits)
+    assert decision.ok
+
+
 # ---- external readme transforms ----
 def test_extract_metadata():
     msg = ("Publish plugin updates from main\n\n"

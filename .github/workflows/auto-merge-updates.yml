@@ -3,7 +3,11 @@ name: Auto-merge Plugin Updates
 # Opt-in via the AUTO_MERGE_UPDATES repo variable. When enabled, squash-merges
 # a PR automatically once "Validate Plugin" succeeds, but ONLY for pure plugin
 # version-bump updates. Never for new plugins, repo/tooling changes, invalid
-# PRs, or PRs that mix a new plugin with an update.
+# PRs, or PRs that mix a new plugin with an update. AUTO_MERGE_BLACKLIST is an
+# optional comma-separated list of authors excluded only from automatic merges.
+# Rate limits default to four author and plugin merges per rolling 24 hours;
+# override with AUTO_MERGE_AUTHOR_LIMIT, AUTO_MERGE_PLUGIN_LIMIT, and
+# AUTO_MERGE_RATE_WINDOW_HOURS.
 #
 # Runs the merge with the GitHub App token specifically (never GITHUB_TOKEN):
 # pushes authored by the App's bot identity correctly cascade into
@@ -31,7 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     concurrency:
-      group: auto-merge-updates-${{ github.event.workflow_run.head_sha }}
+      # Serialize candidates so each rate-limit check sees earlier merges.
+      group: auto-merge-updates-${{ github.repository }}
       cancel-in-progress: false
     steps:
       - name: Checkout base branch (trusted)
@@ -62,4 +67,8 @@ jobs:
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           WEBHOOK_URL: ${{ vars.WEBHOOK_URL }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          AUTO_MERGE_BLACKLIST: ${{ vars.AUTO_MERGE_BLACKLIST || '' }}
+          AUTO_MERGE_AUTHOR_LIMIT: ${{ vars.AUTO_MERGE_AUTHOR_LIMIT || '' }}
+          AUTO_MERGE_PLUGIN_LIMIT: ${{ vars.AUTO_MERGE_PLUGIN_LIMIT || '' }}
+          AUTO_MERGE_RATE_WINDOW_HOURS: ${{ vars.AUTO_MERGE_RATE_WINDOW_HOURS || '' }}
         run: python -m pluginctl automerge --head-sha "$HEAD_SHA"

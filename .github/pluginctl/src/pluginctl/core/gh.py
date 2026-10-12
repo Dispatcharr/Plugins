@@ -79,14 +79,15 @@ def pr_comment_repo(pr_number: str, repo: str, body: str) -> int:
     return _run(["pr", "comment", str(pr_number), "--repo", repo, "--body", body]).returncode
 
 
-def pr_edit_label(pr_number: str, label: str, add: bool) -> None:
+def pr_edit_label(pr_number: str, label: str, add: bool) -> int:
     flag = "--add-label" if add else "--remove-label"
-    _run(["pr", "edit", str(pr_number), flag, label])
+    return _run(["pr", "edit", str(pr_number), flag, label]).returncode
 
 
-def label_create(name: str, color: str, description: str, repo: str) -> None:
-    _run(["label", "create", name, "--color", color,
-          "--description", description, "--repo", repo])
+def label_create(name: str, color: str, description: str, repo: str) -> int:
+    """Create or reconcile a label without affecting unrelated repository labels."""
+    return _run(["label", "create", name, "--color", color,
+                 "--description", description, "--force", "--repo", repo]).returncode
 
 
 def pr_view_json(pr_number: str, fields: str, jq: Optional[str] = None,
@@ -144,14 +145,26 @@ def release_delete(tag: str, repo: str, cleanup_tag: bool = True) -> int:
     return _run(args).returncode
 
 
-def pr_list(repo: str, state: str, fields: str, jq: Optional[str] = None) -> Optional[str]:
+def pr_list(repo: str, state: str, fields: str, jq: Optional[str] = None,
+            search: Optional[str] = None, limit: int = 30) -> Optional[str]:
     args = ["pr", "list", "--repo", repo, "--state", state, "--json", fields]
+    if search:
+        args += ["--search", search]
+    args += ["--limit", str(limit)]
     if jq:
         args += ["--jq", jq]
     proc = _run(args)
     if proc.returncode != 0:
         return None
     return proc.stdout.strip()
+
+
+def pr_files(pr_number: str, repo: str) -> Optional[list[str]]:
+    """Return changed paths for a PR, or ``None`` when GitHub cannot provide them."""
+    data = loads(api(f"repos/{repo}/pulls/{pr_number}/files?per_page=100"))
+    if not isinstance(data, list):
+        return None
+    return [entry["filename"] for entry in data if isinstance(entry, dict) and entry.get("filename")]
 
 
 def pr_merge_squash(pr: str, repo: str, delete_branch: bool = False) -> int:

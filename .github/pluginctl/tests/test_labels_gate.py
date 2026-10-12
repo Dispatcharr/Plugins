@@ -1,5 +1,6 @@
 from pluginctl.validate import gate
 from pluginctl.validate.labels import decide_labels
+from pluginctl import label_catalog
 
 
 def test_labels_new_plugin():
@@ -23,6 +24,25 @@ def test_labels_outside_violation_is_invalid_not_repo_update():
 def test_labels_close_pr_is_invalid():
     d = decide_labels(False, True, "", False, True)
     assert d["Invalid"] is True
+
+
+def test_label_catalog_contains_required_automation_labels():
+    labels = {label.name: label for label in label_catalog.LABELS}
+    assert labels["Plugin Update"].color == "130518"
+    assert labels["Auto Merged"].description == "PR was merged automatically after validation"
+
+
+def test_label_catalog_ensure_reconciles_all_labels(monkeypatch):
+    calls = []
+    monkeypatch.setattr(label_catalog.gh, "label_create",
+                        lambda name, color, description, repo: calls.append((name, color, description, repo)) or 0)
+    assert label_catalog.ensure("owner/repo")
+    assert len(calls) == len(label_catalog.LABELS)
+    assert all(call[-1] == "owner/repo" for call in calls)
+
+
+def test_label_catalog_ensure_requires_repository():
+    assert not label_catalog.ensure("")
 
 
 def test_gate_detect_failure():

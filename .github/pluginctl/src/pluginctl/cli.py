@@ -172,6 +172,11 @@ def cmd_automerge(args) -> int:
     return automerge.run(head_sha=args.head_sha or _env("HEAD_SHA"))
 
 
+def cmd_ensure_labels(args) -> int:
+    from . import label_catalog
+    return 0 if label_catalog.ensure(_repo(args)) else 1
+
+
 def cmd_external_readme(args) -> int:
     from .integrations import external_readme
     return external_readme.run()
@@ -263,6 +268,10 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("automerge", help="Auto-merge a pure plugin-update PR")
     p.add_argument("--head-sha", default="")
     p.set_defaults(func=cmd_automerge)
+
+    p = sub.add_parser("ensure-labels", help="Create or update labels required by pluginctl")
+    p.add_argument("--repo", default="")
+    p.set_defaults(func=cmd_ensure_labels)
 
     p = sub.add_parser("external-readme", help="Open/update the external README PR (env-driven)")
     p.set_defaults(func=cmd_external_readme)

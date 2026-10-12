@@ -7,6 +7,7 @@ same add-when-true / remove-when-false behavior as the Bash ``apply_label``.
 
 from __future__ import annotations
 
+from .. import label_catalog
 from ..core import gh
 
 LABELS = ["New Plugin", "Plugin Update", "Repo Update", "Invalid"]
@@ -28,6 +29,8 @@ def decide_labels(has_new_plugin: bool, has_updated_plugin: bool,
 
 def run(pr_number: str, has_new_plugin: bool, has_updated_plugin: bool,
         outside_files: str, outside_violation: bool, close_pr: bool) -> int:
+    if not label_catalog.ensure():
+        return 1
     desired = decide_labels(has_new_plugin, has_updated_plugin,
                             outside_files, outside_violation, close_pr)
     for label in LABELS:

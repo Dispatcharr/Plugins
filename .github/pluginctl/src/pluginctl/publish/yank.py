@@ -15,6 +15,7 @@ import os
 import subprocess
 import tempfile
 
+from .. import label_catalog
 from ..core import actions, gh
 from ..core.git import configure_identity, run as _git
 from ..core.version import sort_versions_desc
@@ -32,6 +33,9 @@ def run() -> int:
     issue = os.environ["YANK_ISSUE"]
     app_slug = os.environ.get("APP_SLUG", "")
     remote = f"https://x-access-token:{token}@github.com/{repository}.git"
+
+    if not label_catalog.ensure(repository):
+        return 1
 
     actions.log(f"Yanking {plugin} v{version} from {RELEASES_BRANCH} (issue #{issue})")
 
@@ -184,7 +188,6 @@ def _open_rollback_pr(repository, source_branch, remote, plugin, version,
 
     _git("commit", "-m", pr_title)
     _git("push", remote, rollback_branch)
-    gh.label_create("Rollback", "E11D48", "Version rollback opened by the yank workflow", repository)
     url = gh.pr_create(repository, source_branch, rollback_branch, pr_title, pr_body,
                        labels=["Rollback"]) or ""
     actions.log(f"Rollback PR opened: {rollback_branch} -> {source_branch} ({url})")

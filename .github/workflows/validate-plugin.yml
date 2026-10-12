@@ -11,8 +11,8 @@ env:
   PYTHONPATH: .github/pluginctl/src
   # Comma-separated lists of blocked GitHub usernames and plugin slugs.
   # Set these in repo Settings -> Variables as AUTHOR_BLACKLIST and PLUGIN_BLACKLIST.
-  AUTHOR_BLACKLIST: ${{ vars.AUTHOR_BLACKLIST }}
-  PLUGIN_BLACKLIST: ${{ vars.PLUGIN_BLACKLIST }}
+  AUTHOR_BLACKLIST: ${{ vars.AUTHOR_BLACKLIST || '' }}
+  PLUGIN_BLACKLIST: ${{ vars.PLUGIN_BLACKLIST || '' }}
 
 on:
   pull_request_target:
@@ -68,9 +68,39 @@ jobs:
           fi
 
   # --------------------------------------------------------------------------
-  # Job 2: Detect which plugins changed and build the matrix (+ blacklist)
+  # Job 2: Reconcile labels before any PR automation uses them
+  # --------------------------------------------------------------------------
+  ensure-labels:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Checkout config
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 1
+          sparse-checkout: .github
+          sparse-checkout-cone-mode: false
+
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Ensure automation labels
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python -m pluginctl ensure-labels
+
+  # --------------------------------------------------------------------------
+  # Job 3: Detect which plugins changed and build the matrix (+ blacklist)
   # --------------------------------------------------------------------------
   detect-changes:
+    needs: [ensure-labels]
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -114,7 +144,7 @@ jobs:
             --head-ref "${{ github.event.pull_request.head.ref }}"
 
   # --------------------------------------------------------------------------
-  # Job 3: Apply PR labels based on change classification
+  # Job 4: Apply PR labels based on change classification
   # --------------------------------------------------------------------------
   label-pr:
     needs: [detect-changes]
@@ -151,7 +181,7 @@ jobs:
             --close-pr "${{ needs.detect-changes.outputs.close_pr }}"
 
   # --------------------------------------------------------------------------
-  # Job 4: Validate PR title format
+  # Job 5: Validate PR title format
   # --------------------------------------------------------------------------
   validate-title:
     needs: [detect-changes]

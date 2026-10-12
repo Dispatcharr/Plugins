@@ -68,6 +68,25 @@ PYTHONPATH=.github/pluginctl/src python -m pluginctl \
   the CodeQL/ClamAV jobs the package is loaded from a separate base-branch
   checkout (`_trusted/`) so fork code from the PR merge tree is never executed.
 
+## Labels and auto-merge controls
+
+Run `python -m pluginctl ensure-labels --repo <owner/repo>` to create or update
+the labels used by pluginctl. The catalog mirrors the baseline labels from
+`Dispatcharr/Plugins` and adds workflow labels such as `Auto Merged`; it does
+not change unrelated labels.
+
+`AUTO_MERGE_UPDATES=true` enables automatic merging of eligible plugin updates.
+`AUTO_MERGE_BLACKLIST` is an optional, case-insensitive comma-separated list of
+GitHub logins that are excluded from automatic merging only. It does not reject
+their PRs. `AUTHOR_BLACKLIST` and `PLUGIN_BLACKLIST` remain validation controls;
+all three variables are optional and safely default to an empty list.
+
+Automatic merges are recorded with the `Auto Merged` label. By default, no
+author or plugin may receive more than four automatic merges in a rolling 24
+hours. Set `AUTO_MERGE_AUTHOR_LIMIT`, `AUTO_MERGE_PLUGIN_LIMIT`, or
+`AUTO_MERGE_RATE_WINDOW_HOURS` to override this. A limit of zero or less
+disables that limit; invalid numeric values skip automatic merging safely.
+
 ## Parity notes for maintainers
 
 - User-facing output (PR comments, manifests, READMEs) must stay byte-identical
