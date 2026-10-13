@@ -1,6 +1,6 @@
 name: Tests
 
-# Runs the pluginctl pytest suite. Dual purpose:
+# Runs pluginctl and custom CodeQL query tests. Dual purpose:
 #   - on push to main for any change outside plugins/ (tooling CI)
 #   - via workflow_call from validate-plugin.yml, so a repo-update PR's result
 #     feeds the Plugin PR Check gate and the PR comment
@@ -34,7 +34,9 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
           persist-credentials: false
-          sparse-checkout: .github/pluginctl
+          sparse-checkout: |
+            .github/codeql
+            .github/pluginctl
           sparse-checkout-cone-mode: false
 
       - name: Set up Python
@@ -48,3 +50,18 @@ jobs:
       - name: Run test suite
         working-directory: .github/pluginctl
         run: python -m pytest -q
+
+      - name: Initialize CodeQL
+        id: codeql
+        uses: github/codeql-action/init@v4
+        with:
+          languages: python
+
+      - name: Install CodeQL query test dependencies
+        run: ${{ steps.codeql.outputs.codeql-path }} pack install --additional-packs=..
+        working-directory: .github/codeql/queries/python/tests
+
+      - name: Run CodeQL query tests
+        run: |
+          ${{ steps.codeql.outputs.codeql-path }} query compile --check-only .github/codeql/queries/python
+          ${{ steps.codeql.outputs.codeql-path }} test run --additional-packs=.github/codeql/queries/python .github/codeql/queries/python/tests
