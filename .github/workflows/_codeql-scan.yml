@@ -119,6 +119,12 @@ jobs:
         id: detect-langs
         run: python -m pluginctl detect-langs
 
+      - name: Expose trusted CodeQL pack
+        if: steps.detect-langs.outputs.found == 'true'
+        run: |
+          mkdir -p .github
+          cp -R _trusted/.github/codeql .github/codeql
+
       - name: Initialize CodeQL
         if: steps.detect-langs.outputs.found == 'true'
         uses: github/codeql-action/init@v4
