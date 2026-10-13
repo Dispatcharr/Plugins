@@ -69,7 +69,7 @@ def test_new_local_plugin_passes(plugin_repo):
         "| Version | ✅ | `1.0.0` |\n"
         "| Version bump | ✅ | New plugin |\n"
         "\n"
-        "<!--META_ROW:Demo Plugin\t1.0.0\tA demo plugin\talice\t\thttps://github.com/x/demo\t-->\n"
+        "<!--META_ROW:Demo Plugin\t1.0.0\tA demo plugin\talice\t\thttps://github.com/x/demo\t\tpass-->\n"
     )
     assert frag.read_text(encoding="utf-8") == expected
 

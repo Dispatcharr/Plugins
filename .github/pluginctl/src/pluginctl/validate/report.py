@@ -47,8 +47,6 @@ def parse_fragments(fragments_dir: str) -> ParsedFragments:
     result = ParsedFragments()
     for fragment in sorted(glob.glob(os.path.join(fragments_dir, "*.fragment.md"))):
         content = _read(fragment)
-        if "❌" in content:
-            result.any_failed = True
         # META_ROW extraction. plugin.py always appends the genuine marker as
         # the fragment's last line, so anchor here rather than taking the
         # first match - a free-text field (e.g. description) earlier in the
@@ -64,8 +62,8 @@ def parse_fragments(fragments_dir: str) -> ParsedFragments:
             if meta.endswith("-->"):
                 meta = meta[:-3]
             fields = meta.split("\t")
-            fields += [""] * (7 - len(fields))
-            f_name, f_version, f_desc, f_author, f_maint, f_repo, f_discord = fields[:7]
+            fields += [""] * (8 - len(fields))
+            f_name, f_version, f_desc, f_author, f_maint, f_repo, f_discord, f_status = fields[:8]
             if f_repo or f_discord:
                 result.plugin_links += f"**`{f_name}`:**\n"
                 if f_repo:
@@ -76,6 +74,12 @@ def parse_fragments(fragments_dir: str) -> ParsedFragments:
         # visible = fragment minus META_ROW lines, trailing whitespace stripped ($() semantics)
         visible_lines = [ln for ln in content.splitlines() if not ln.startswith("<!--META_ROW:")]
         visible = "\n".join(visible_lines).rstrip("\n")
+        # New fragments carry validator-owned status in their final metadata row.
+        # Older or incomplete fragments fall back to the visible validation table.
+        if meta_line is not None and f_status in ("pass", "fail"):
+            result.any_failed |= f_status == "fail"
+        elif "❌" in visible:
+            result.any_failed = True
         result.combined_body += visible + "\n\n"
         base = os.path.basename(fragment)[: -len(".fragment.md")]
         result.pr_plugin_names.append(base)

@@ -373,6 +373,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         ", ".join(maintainers),
         repo_url,
         discord_thread,
+        "fail" if failed else "pass",
     ]
     meta_row = f"<!--META_ROW:{tsv(meta_fields)}-->"
 

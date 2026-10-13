@@ -173,3 +173,14 @@ def test_parse_fragments_ignores_forged_meta_row_before_the_real_one(tmp_path):
     assert "**`Demo`:**" in parsed.plugin_links
     assert "- [GitHub Repository](https://real.example)" in parsed.plugin_links
     assert parsed.any_failed is False
+
+
+def test_parse_fragments_uses_validator_status_not_free_text(tmp_path):
+    f = tmp_path / "demo.fragment.md"
+    f.write_text(
+        "### Plugin: `demo`\n\n"
+        "_A user-controlled description containing ❌_\n"
+        "<!--META_ROW:Demo\t1.0.0\td\talice\t\thttps://real.example\t\tpass-->\n",
+        encoding="utf-8",
+    )
+    assert report.parse_fragments(str(tmp_path)).any_failed is False
