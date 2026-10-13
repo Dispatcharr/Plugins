@@ -92,7 +92,8 @@ def test_codeql_suppressed_block_is_informational_only():
         codeql_result="success", codeql_suppressed="2",
         codeql_suppressed_findings="| Rule | Location | Description |\n"))
     assert "**2 finding(s) suppressed via inline `codeql[...]` comment**" in c
-    assert "requires maintainer review before merging" in c
+    assert "Maintainer review required." in c
+    assert "auto-merge" not in c
     # informational only - must not flip the overall pass/fail state
     assert "## 🎉 All validation checks passed!" in c
 
@@ -115,7 +116,7 @@ def test_sandbox_bypass_alone_does_not_fail_comment():
     c = report.build_comment(**_base_kwargs(
         codeql_result="success", codeql_sandbox_bypass="1",
         codeql_sandbox_findings="sandbox findings"))
-    assert "Manual Review Required" in c
+    assert "Maintainer review required." in c
     assert "## 🎉 All validation checks passed!" in c
     assert "\n---\n" in c
 
@@ -131,7 +132,7 @@ def test_capability_contract_is_informational_and_review_gated():
         codeql_result="success", codeql_capability_contract="1",
         codeql_capability_contract_findings="contract findings"))
     assert "undeclared capability finding" in c
-    assert "Manual Review Required" in c
+    assert "Maintainer review required." in c
     assert "contract findings" in c
     assert "## 🎉 All validation checks passed!" in c
 

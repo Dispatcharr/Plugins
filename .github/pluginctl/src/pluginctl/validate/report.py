@@ -223,8 +223,7 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
                 and codeql_result != "skipped"):
             L.append("")
             L.append(f"**CodeQL found {codeql_sandbox_bypass} plugin sandbox-bypass finding(s)**")
-            L.append("These findings are informational for CI status, but require maintainer review. "
-                     "The `Manual Review Required` label blocks automatic merge.")
+            L.append("Maintainer review required.")
             L.append("")
             if codeql_sandbox_findings:
                 L.append(codeql_sandbox_findings.rstrip("\n"))
@@ -234,9 +233,8 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append("")
             L.append(f"**CodeQL found {codeql_capability_contract} undeclared capability finding(s)**")
             minimum = capabilities.first_enforcing_manifest_version()
-            L.append(f"These findings apply only to runtime-enforcing plugin manifests "
-                     f"(currently version {minimum} and later) and require maintainer review. "
-                     "The `Manual Review Required` label blocks automatic merge.")
+            L.append(f"Applies to runtime-enforcing manifests (version {minimum}+). "
+                     "Maintainer review required.")
             L.append("")
             if codeql_capability_contract_findings:
                 L.append(codeql_capability_contract_findings.rstrip("\n"))
@@ -273,8 +271,7 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
         if codeql_suppressed and codeql_suppressed != "0" and codeql_result != "skipped":
             L.append("")
             L.append(f"**{codeql_suppressed} finding(s) suppressed via inline `codeql[...]` "
-                     "comment** - requires maintainer review before merging; auto-merge is "
-                     "blocked for this PR.")
+                     "comment**. Maintainer review required.")
             L.append("")
             if codeql_suppressed_findings:
                 L.append(codeql_suppressed_findings.rstrip("\n"))
