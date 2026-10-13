@@ -191,7 +191,6 @@ def classify(sarif_objs: list[dict]) -> Counts:
                     or not contract_result_requires_review(result)
                 ):
                     continue
-                counts.total += 1
                 if is_sandbox:
                     counts.sandbox_bypass_detected += 1
                 if is_contract:
@@ -201,8 +200,11 @@ def classify(sarif_objs: list[dict]) -> Counts:
                     continue
                 if is_sandbox:
                     counts.sandbox_bypass += 1
+                    continue
                 if is_contract:
                     counts.capability_contract += 1
+                    continue
+                counts.total += 1
                 sev = severity_of(result, secmap)
                 if is_blocking(sev):
                     counts.blocking += 1

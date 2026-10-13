@@ -23,17 +23,17 @@ def test_classify_buckets():
     counts = sarif.classify(_load())
     assert counts.blocking == 1
     assert counts.medium == 1
-    assert counts.low == 3
+    assert counts.low == 2
     assert counts.suppressed == 2
-    assert counts.total == 7
-    assert counts.warnings == 6
+    assert counts.total == 4
+    assert counts.warnings == 3
 
 
 def test_sandbox_bypass_is_review_gated_by_default():
     counts = sarif.classify(_load())
     assert counts.sandbox_bypass == 1
     assert counts.sandbox_bypass_detected == 2
-    assert counts.total == 7
+    assert counts.total == 4
 
 
 def test_sandbox_bypass_is_informational_when_enabled(monkeypatch):
@@ -41,17 +41,17 @@ def test_sandbox_bypass_is_informational_when_enabled(monkeypatch):
     counts = sarif.classify(_load())
     assert counts.blocking == 1
     assert counts.medium == 1
-    assert counts.low == 3
+    assert counts.low == 2
     assert counts.suppressed == 2
     assert counts.sandbox_bypass == 1
     assert counts.sandbox_bypass_detected == 2
-    assert counts.total == 7
+    assert counts.total == 4
 
 
 def test_missing_severity_defaults_to_low():
     counts = sarif.classify(_load())
     # py/unused-import has no security-severity -> 0 -> low bucket
-    assert counts.low == 3
+    assert counts.low == 2
 
 
 def test_process_message_strips_markdown_link_and_brackets():
