@@ -14,10 +14,10 @@
 # comments are ignored.
 queries:
   - uses: security-extended
+  - uses: .github/codeql/queries/python
 packs:
   python:
     - codeql/python-queries:AlertSuppression.ql
-    - .github/codeql/queries/python
   javascript:
     - codeql/javascript-queries:AlertSuppression.ql
   go:
@@ -28,3 +28,6 @@ packs:
     - codeql/java-queries:AlertSuppression.ql
   cpp:
     - codeql/cpp-queries:AlertSuppression.ql
+paths-ignore:
+  - .github/codeql/**
+  - _trusted/**

@@ -356,6 +356,7 @@ jobs:
         continue-on-error: true
 
       - name: Download CodeQL findings detail
+        if: needs.codeql-analyze.outputs.codeql_errors != '0'
         uses: actions/download-artifact@v8
         with:
           name: codeql-findings
@@ -363,6 +364,7 @@ jobs:
         continue-on-error: true
 
       - name: Download CodeQL medium findings detail
+        if: needs.codeql-analyze.outputs.codeql_mediums != '0'
         uses: actions/download-artifact@v8
         with:
           name: codeql-medium-findings
@@ -370,6 +372,7 @@ jobs:
         continue-on-error: true
 
       - name: Download CodeQL low findings detail
+        if: needs.codeql-analyze.outputs.codeql_lows != '0'
         uses: actions/download-artifact@v8
         with:
           name: codeql-low-findings
@@ -377,6 +380,7 @@ jobs:
         continue-on-error: true
 
       - name: Download CodeQL suppressed findings detail
+        if: needs.codeql-analyze.outputs.codeql_suppressed != '0'
         uses: actions/download-artifact@v8
         with:
           name: codeql-suppressed-findings
@@ -384,6 +388,7 @@ jobs:
         continue-on-error: true
 
       - name: Download CodeQL sandbox-bypass findings detail
+        if: needs.codeql-analyze.outputs.codeql_sandbox_bypass != '0'
         uses: actions/download-artifact@v8
         with:
           name: codeql-sandbox-findings
@@ -391,6 +396,7 @@ jobs:
         continue-on-error: true
 
       - name: Download CodeQL capability-contract findings detail
+        if: needs.codeql-analyze.outputs.codeql_capability_contract != '0'
         uses: actions/download-artifact@v8
         with:
           name: codeql-capability-contract-findings
@@ -398,6 +404,7 @@ jobs:
         continue-on-error: true
 
       - name: Download ClamAV findings detail
+        if: needs.clamav-scan.outputs.clamav_infected != '0'
         uses: actions/download-artifact@v8
         with:
           name: clamav-findings
