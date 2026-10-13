@@ -1,6 +1,6 @@
 /**
  * @name Plugin subprocess capability use
- * @description Calling a subprocess API requires Dispatcharr's subprocess capability in enforcing manifests.
+ * @description Calling a subprocess API requires Dispatcharr's subprocess capability.
  * @kind problem
  * @problem.severity warning
  * @precision high
@@ -59,4 +59,4 @@ where
     .getMember(["Popen", "run", "call", "check_call", "check_output"]).getACall().asExpr()
   or
   dynamicSubprocessCall(call)
-select call, "This subprocess call requires the `subprocess` capability in a runtime-enforcing plugin manifest."
+select call, "This subprocess call requires the `subprocess` capability."

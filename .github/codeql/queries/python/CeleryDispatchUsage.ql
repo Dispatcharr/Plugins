@@ -1,6 +1,6 @@
 /**
  * @name Plugin internal task dispatch capability use
- * @description Dispatcharr's allowlisted internal-task dispatcher requires the celery_dispatch capability in enforcing manifests.
+ * @description Dispatcharr's allowlisted internal-task dispatcher requires the celery_dispatch capability.
  * @kind problem
  * @problem.severity warning
  * @precision medium
@@ -17,4 +17,4 @@ where
   context.getId() = "context" and
   helper.getIndex() = key and
   key.getText() = "dispatch_internal_task"
-select call, "This internal task dispatch requires the `celery_dispatch` capability in a runtime-enforcing plugin manifest."
+select call, "This internal task dispatch requires the `celery_dispatch` capability."

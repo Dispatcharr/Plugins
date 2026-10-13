@@ -1,6 +1,6 @@
 /**
  * @name Plugin background task capability use
- * @description Dispatcharr's plugin context dispatcher requires the background_tasks capability in enforcing manifests.
+ * @description Dispatcharr's plugin context dispatcher requires the background_tasks capability.
  * @kind problem
  * @problem.severity warning
  * @precision medium
@@ -17,4 +17,4 @@ where
   context.getId() = "context" and
   helper.getIndex() = key and
   key.getText() = "dispatch_task"
-select call, "This plugin task dispatch requires the `background_tasks` capability in a runtime-enforcing plugin manifest."
+select call, "This plugin task dispatch requires the `background_tasks` capability."

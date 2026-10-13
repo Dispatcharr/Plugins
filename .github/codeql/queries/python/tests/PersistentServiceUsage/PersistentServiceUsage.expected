@@ -1,1 +1,1 @@
-| bad.py:2:5:2:42 | Function on_leader_acquired | This leader service hook requires the `persistent_service` capability in a runtime-enforcing plugin manifest. |
+| bad.py:2:5:2:42 | Function on_leader_acquired | This leader service hook requires the `persistent_service` capability. |
