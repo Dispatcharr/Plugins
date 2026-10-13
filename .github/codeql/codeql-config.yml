@@ -14,7 +14,7 @@
 # comments are ignored.
 queries:
   - uses: security-extended
-  - uses: .github/codeql/queries/python
+  - uses: ./.github/codeql/queries/python
 packs:
   python:
     - codeql/python-queries:AlertSuppression.ql
