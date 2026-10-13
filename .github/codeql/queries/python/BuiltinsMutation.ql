@@ -17,7 +17,7 @@ predicate builtinsObject(Expr expression) {
 from Expr result
 where
   exists(AssignStmt assignment, Expr target |
-    assignment.getTarget() = target and
+    assignment.getATarget() = target and
     (
       exists(Attribute attribute | target = attribute and builtinsObject(attribute.getObject())) or
       exists(Subscript subscript | target = subscript and builtinsObject(subscript.getObject()))

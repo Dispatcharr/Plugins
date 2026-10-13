@@ -27,7 +27,7 @@ predicate sysModules(Attribute attribute) {
 from Expr candidate
 where
   exists(AssignStmt assignment, Subscript target, Attribute modules |
-    assignment.getTarget() = target and
+    assignment.getATarget() = target and
     target.getObject() = modules and
     sysModules(modules) and
     sensitiveModuleName(target.getIndex()) and
