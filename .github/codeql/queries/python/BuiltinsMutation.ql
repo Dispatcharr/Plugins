@@ -14,7 +14,7 @@ predicate builtinsObject(Expr expression) {
   exists(Name builtins | expression = builtins and builtins.getId() = "__builtins__")
 }
 
-from Expr result
+from Expr candidate
 where
   exists(AssignStmt assignment, Expr target |
     assignment.getATarget() = target and
@@ -22,13 +22,13 @@ where
       exists(Attribute attribute | target = attribute and builtinsObject(attribute.getObject())) or
       exists(Subscript subscript | target = subscript and builtinsObject(subscript.getObject()))
     ) and
-    result = target
+    candidate = target
   )
   or
   exists(Call call, Name setattr |
     call.getFunc() = setattr and
     setattr.getId() = "setattr" and
     builtinsObject(call.getArg(0)) and
-    result = call
+    candidate = call
   )
-select result, "Mutating __builtins__ can replace Dispatcharr's plugin-local guarded import or open hooks."
+select candidate, "Mutating __builtins__ can replace Dispatcharr's plugin-local guarded import or open hooks."
