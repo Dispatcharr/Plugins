@@ -24,14 +24,14 @@ predicate sysModules(Attribute attribute) {
   )
 }
 
-from Expr result
+from Expr candidate
 where
   exists(AssignStmt assignment, Subscript target, Attribute modules |
     assignment.getTarget() = target and
     target.getObject() = modules and
     sysModules(modules) and
     sensitiveModuleName(target.getIndex()) and
-    result = target
+    candidate = target
   )
   or
   exists(Call call, Attribute pop, Attribute modules |
@@ -40,6 +40,6 @@ where
     pop.getObject() = modules and
     sysModules(modules) and
     sensitiveModuleName(call.getArg(0)) and
-    result = call
+    candidate = call
   )
-select result, "Changing this sys.modules entry can bypass Dispatcharr's plugin import wrappers."
+select candidate, "Changing this sys.modules entry can bypass Dispatcharr's plugin import wrappers."
