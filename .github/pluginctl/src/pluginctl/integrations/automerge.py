@@ -114,7 +114,7 @@ def rate_limit_decision(author: str, plugins: list[str], history: list[dict],
     return LabelDecision(True)
 
 
-def run(head_sha: str) -> int:
+def run(head_sha: str, disabled_reason: str = "") -> int:
     repo = os.environ.get("GH_REPO") or os.environ.get("GITHUB_REPOSITORY", "")
 
     matches_json = gh.pr_list(repo, "open", "number,headRefOid,isDraft") or "[]"
@@ -139,12 +139,17 @@ def run(head_sha: str) -> int:
     actions.log(f"Labels: {','.join(labels)}")
     actions.log(f"Mergeable: {mergeable}")
 
+    if disabled_reason:
+        actions.notice(f"{disabled_reason} - skipping.")
+        _request_manual_review(pr_number, author=(data.get("author") or {}).get("login", ""),
+                               plugins=[], labels=labels, reason=disabled_reason, repo=repo)
+        return 0
+
     decision = evaluate_labels(labels, mergeable)
     if not decision.ok:
         actions.notice(f"{decision.reason} - skipping.")
-        if "Repo Update" not in labels or len(labels) > 1:
-            _request_manual_review(pr_number, author=(data.get("author") or {}).get("login", ""),
-                                   plugins=[], labels=labels, reason=decision.reason, repo=repo)
+        _request_manual_review(pr_number, author=(data.get("author") or {}).get("login", ""),
+                               plugins=[], labels=labels, reason=decision.reason, repo=repo)
         return 0
 
     plugins = reverify_is_pure_update(pr_number)

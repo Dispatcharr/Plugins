@@ -1,19 +1,18 @@
 name: Auto-merge Plugin Updates
 
-# Opt-in via the AUTO_MERGE_UPDATES repo variable. When enabled, squash-merges
-# a PR automatically once "Validate Plugin" succeeds, but ONLY for pure plugin
-# version-bump updates. Never for new plugins, repo/tooling changes, invalid
-# PRs, or PRs that mix a new plugin with an update. AUTO_MERGE_BLACKLIST is an
-# optional comma-separated list of authors excluded only from automatic merges.
+# After every successful validation, this workflow either squash-merges an
+# eligible pure plugin version-bump update or marks the PR for manual review.
+# AUTO_MERGE_UPDATES controls merging, not the review decision. New plugins,
+# repo/tooling changes, invalid PRs, and mixed changes require review.
+# AUTO_MERGE_BLACKLIST is an optional comma-separated list of authors excluded
+# only from automatic merges.
 # Rate limits default to four author and plugin merges per rolling 24 hours;
 # override with AUTO_MERGE_AUTHOR_LIMIT, AUTO_MERGE_PLUGIN_LIMIT, and
 # AUTO_MERGE_RATE_WINDOW_HOURS.
 #
-# Runs the merge with the GitHub App token specifically (never GITHUB_TOKEN):
-# pushes authored by the App's bot identity correctly cascade into
-# publish-plugins.yml's `on: push` trigger, whereas GITHUB_TOKEN-authored pushes
-# are exempt from triggering other workflows. If the App isn't configured,
-# auto-merge is skipped entirely rather than falling back.
+# Merges require the GitHub App token because its pushes cascade into the publish
+# workflow. Without it, the PR is marked for review instead of falling back to
+# GITHUB_TOKEN.
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -27,11 +26,11 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   auto-merge:
-    if: github.event.workflow_run.conclusion == 'success' && vars.AUTO_MERGE_UPDATES == 'true'
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     concurrency:
@@ -53,13 +52,7 @@ jobs:
           app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
-      - name: Skip - GitHub App not configured
-        if: steps.token.outputs.use_app != 'true'
-        run: |
-          echo "::notice::GH_APP_ID or GH_APP_PRIVATE_KEY not configured. Skipping auto-merge (merging with GITHUB_TOKEN would not trigger publish-plugins.yml)."
-
-      - name: Auto-merge pure plugin update
-        if: steps.token.outputs.use_app == 'true'
+      - name: Decide auto-merge or request review
         env:
           GH_TOKEN: ${{ steps.token.outputs.token }}
           GH_REPO: ${{ github.repository }}
@@ -72,4 +65,15 @@ jobs:
           AUTO_MERGE_AUTHOR_LIMIT: ${{ vars.AUTO_MERGE_AUTHOR_LIMIT || '' }}
           AUTO_MERGE_PLUGIN_LIMIT: ${{ vars.AUTO_MERGE_PLUGIN_LIMIT || '' }}
           AUTO_MERGE_RATE_WINDOW_HOURS: ${{ vars.AUTO_MERGE_RATE_WINDOW_HOURS || '' }}
-        run: python -m pluginctl automerge --head-sha "$HEAD_SHA"
+          AUTO_MERGE_ENABLED: ${{ vars.AUTO_MERGE_UPDATES == 'true' }}
+          USE_APP: ${{ steps.token.outputs.use_app }}
+        run: |
+          if [[ "$AUTO_MERGE_ENABLED" != "true" ]]; then
+            python -m pluginctl automerge --head-sha "$HEAD_SHA" \
+              --disabled-reason "Automatic merging is disabled for this repository."
+          elif [[ "$USE_APP" != "true" ]]; then
+            python -m pluginctl automerge --head-sha "$HEAD_SHA" \
+              --disabled-reason "GitHub App credentials are not configured for automatic merging."
+          else
+            python -m pluginctl automerge --head-sha "$HEAD_SHA"
+          fi

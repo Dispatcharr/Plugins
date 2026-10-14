@@ -345,7 +345,7 @@ def cmd_yank(args) -> int:
 
 def cmd_automerge(args) -> int:
     from .integrations import automerge
-    return automerge.run(head_sha=args.head_sha or _env("HEAD_SHA"))
+    return automerge.run(head_sha=args.head_sha or _env("HEAD_SHA"), disabled_reason=args.disabled_reason)
 
 
 def cmd_ensure_labels(args) -> int:
@@ -452,6 +452,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("automerge", help="Auto-merge a pure plugin-update PR")
     p.add_argument("--head-sha", default="")
+    p.add_argument("--disabled-reason", default="")
     p.set_defaults(func=cmd_automerge)
 
     p = sub.add_parser("ensure-labels", help="Create or update labels required by pluginctl")
