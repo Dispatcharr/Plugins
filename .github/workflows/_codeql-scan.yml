@@ -42,6 +42,7 @@ on:
         value: ${{ jobs.analyze.outputs.codeql_capability_contract_detected }}
 
 permissions:
+  actions: read
   contents: read
   security-events: write
   pull-requests: write
