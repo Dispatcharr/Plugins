@@ -270,14 +270,19 @@ def _plugin_card_data(plugins: list[str], repository: str) -> dict[str, str]:
     if not external_upstream:
         upstream = f"https://github.com/{repository}"
     current_tag = f"v{current_version}" if external_upstream else f"{plugins[0]}-{current_version}"
-    links = [f"[v{current_version}]({upstream}/releases/tag/{current_tag})"]
+    links = [f"[v{current_version}]({upstream}/releases/tag/{current_tag})"] if external_upstream else []
     previous_text = _git("show", f"origin/main:plugins/{plugins[0]}/plugin.json", check=False).stdout
     try:
         previous_version = str(json.loads(previous_text).get("version") or "")
     except json.JSONDecodeError:
         previous_version = ""
     if previous_version and previous_version != current_version:
-        previous_tag = f"v{previous_version}" if external_upstream else f"{plugins[0]}-{previous_version}"
-        links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/{previous_tag}...{current_tag})")
+        if external_upstream:
+            links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/v{previous_version}...v{current_version})")
+        else:
+            previous_commit = _git("rev-parse", "origin/main", check=False).stdout.strip()
+            current_commit = _git("rev-parse", "HEAD", check=False).stdout.strip()
+            if previous_commit and current_commit:
+                links.append(f"[{previous_commit[:7]}...{current_commit[:7]}]({upstream}/compare/{previous_commit}...{current_commit})")
     result["source_links"] = "-# " + " · ".join(links)
     return result

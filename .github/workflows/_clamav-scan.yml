@@ -19,6 +19,12 @@ on:
       metadata_only:
         required: true
         type: string
+      gh_app_id:
+        required: false
+        type: string
+    secrets:
+      gh_app_private_key:
+        required: false
     outputs:
       clamav_status:
         value: ${{ jobs.scan.outputs.clamav_status }}
@@ -58,6 +64,13 @@ jobs:
           path: _trusted
           sparse-checkout: .github/pluginctl
           sparse-checkout-cone-mode: false
+
+      - name: GitHub App token
+        id: token
+        uses: ./_trusted/.github/actions/gh-app-token
+        with:
+          app-id: ${{ inputs.gh_app_id }}
+          private-key: ${{ secrets.gh_app_private_key }}
 
       - name: Limit checkout to changed plugin folders only
         run: |
@@ -172,7 +185,7 @@ jobs:
       - name: Apply quarantine label
         if: always() && steps.status.outputs.clamav_status == 'failure'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           gh label create "QUARANTINE" \

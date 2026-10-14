@@ -243,13 +243,14 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
         if not external_upstream:
             upstream = f"https://github.com/{repo}"
         source_tag = f"v{version}" if external_upstream else tag
-        links.append(f"[v{version}]({upstream}/releases/tag/{source_tag})")
+        if external_upstream:
+            links.append(f"[v{version}]({upstream}/releases/tag/{source_tag})")
         previous = [entry for entry in release_tags if entry != tag]
         if previous:
             previous_tag = previous[0]
             previous_version = previous_tag[len(plugin) + 1:]
-            compare_previous = f"v{previous_version}" if external_upstream else previous_tag
-            links.append(f"[v{previous_version}...v{version}]({upstream}/compare/{compare_previous}...{source_tag})")
+            if external_upstream:
+                links.append(f"[v{previous_version}...v{version}]({upstream}/compare/v{previous_version}...v{version})")
         release_manifest = gh.loads(gh.api(
             f"repos/{repo}/contents/metadata/{plugin}/manifest.json?ref=releases"
         )) or {}
@@ -258,6 +259,12 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
             versions = (release_data.get("manifest") or {}).get("versions") or []
             source_sha = next((str(entry.get("commit_sha") or "") for entry in versions
                                if str(entry.get("version")) == version), "")
+            if not external_upstream and previous:
+                previous_version = previous[0][len(plugin) + 1:]
+                previous_sha = next((str(entry.get("commit_sha") or "") for entry in versions
+                                     if str(entry.get("version")) == previous_version), "")
+                if previous_sha and source_sha:
+                    links.append(f"[{previous_sha[:7]}...{source_sha[:7]}]({upstream}/compare/{previous_sha}...{source_sha})")
         except (KeyError, ValueError, TypeError):
             source_sha = ""
         pr_number, pr_url = gh.commit_pull_number(repo, source_sha) if source_sha else (None, None)
@@ -313,7 +320,8 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
         if not external_upstream:
             upstream = f"https://github.com/{repo}"
         current_tag = f"v{current_version}" if external_upstream else f"{plugin}-{current_version}"
-        links.append(f"[v{current_version}]({upstream}/releases/tag/{current_tag})")
+        if external_upstream:
+            links.append(f"[v{current_version}]({upstream}/releases/tag/{current_tag})")
         pr_detail = gh.loads(gh.api(f"repos/{repo}/pulls/{pr['number']}")) or {}
         base_sha = ((pr_detail.get("base") or {}).get("sha") or "")
         base_plugin = gh.loads(gh.api(

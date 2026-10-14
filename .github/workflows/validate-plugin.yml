@@ -249,6 +249,9 @@ jobs:
       pr_number: ${{ github.event.pull_request.number }}
       base_ref: ${{ github.event.pull_request.base.ref }}
       metadata_only: ${{ needs.detect-changes.outputs.metadata_only }}
+      gh_app_id: ${{ vars.GH_APP_ID }}
+    secrets:
+      gh_app_private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
   # --------------------------------------------------------------------------
   # Job 6b: Tooling test suite (reusable workflow) for authorized repo updates
@@ -513,12 +516,21 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           fetch-depth: 1
-          sparse-checkout: .github/pluginctl
+          sparse-checkout: |
+            .github/pluginctl
+            .github/actions/gh-app-token
           sparse-checkout-cone-mode: false
+
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
       - name: Check for quarantine label
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token || github.token }}
         run: |
           LABELS=$(gh pr view "${{ github.event.pull_request.number }}" \
             --repo "${{ github.repository }}" \
@@ -547,7 +559,7 @@ jobs:
       - name: Request maintainer review after successful validation
         if: success() && (needs.detect-changes.outputs.has_new_plugin == 'true' || needs.codeql-analyze.outputs.codeql_suppressed != '0' || needs.codeql-analyze.outputs.codeql_sandbox_bypass_detected != '0' || needs.codeql-analyze.outputs.codeql_capability_contract_detected != '0')
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           DISCORD_WEBHOOKS: ${{ secrets.DISCORD_WEBHOOKS }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

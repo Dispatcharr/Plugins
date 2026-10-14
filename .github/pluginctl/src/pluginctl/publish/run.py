@@ -176,10 +176,11 @@ def _emit_published(repository: str, changed: str, source_branch: str) -> None:
         plugin_key, _, version = line.partition("@")
         plugin = plugin_key.replace("_", "-")
         commit_sha = ""
+        release_versions = []
         try:
             with open(f"metadata/{plugin}/manifest.json", encoding="utf-8") as fh:
-                versions = (json.load(fh).get("manifest") or {}).get("versions") or []
-            commit_sha = next((str(entry.get("commit_sha") or "") for entry in versions
+                release_versions = (json.load(fh).get("manifest") or {}).get("versions") or []
+            commit_sha = next((str(entry.get("commit_sha") or "") for entry in release_versions
                                if str(entry.get("version")) == version), "")
         except (OSError, ValueError):
             pass
@@ -201,8 +202,8 @@ def _emit_published(repository: str, changed: str, source_branch: str) -> None:
             upstream = f"https://github.com/{repository}"
         links = []
         source_tag = f"v{version}" if external_upstream else tag
-        links.append(f"[v{version}]({upstream}/releases/tag/{source_tag})")
         if external_upstream:
+            links.append(f"[v{version}]({upstream}/releases/tag/{source_tag})")
             previous = [entry for entry in version_util.versioned_tags(all_tags, plugin) if entry != tag]
             if previous:
                 previous_version = previous[0][len(plugin) + 1:]
@@ -211,7 +212,11 @@ def _emit_published(repository: str, changed: str, source_branch: str) -> None:
             previous = [entry for entry in version_util.versioned_tags(all_tags, plugin) if entry != tag]
             if previous:
                 previous_tag = previous[0]
-                links.append(f"[v{previous_tag[len(plugin) + 1:]}...v{version}]({upstream}/compare/{previous_tag}...{tag})")
+                previous_version = previous_tag[len(plugin) + 1:]
+                previous_commit = next((str(entry.get("commit_sha") or "") for entry in release_versions
+                                        if str(entry.get("version")) == previous_version), "")
+                if previous_commit and commit_sha:
+                    links.append(f"[{previous_commit[:7]}...{commit_sha[:7]}]({upstream}/compare/{previous_commit}...{commit_sha})")
         if pr_number and pr_url:
             links.append(f"[#{pr_number}]({pr_url})")
         payload["metadata"] = "-# " + " · ".join(links)
