@@ -11,6 +11,36 @@ Emission is **opt-in and best-effort**:
 - A delivery failure never fails the pipeline, it logs a `::warning::` and the
   workflow continues.
 
+## Discord Components V2
+
+Discord delivery is separate from the signed generic webhook above. Configure
+the `DISCORD_WEBHOOKS` **repository secret** as a JSON routing map. Webhook URLs
+are credentials and must never be stored in repository variables.
+
+```json
+{
+  "releases": {"url": "https://discord.com/api/webhooks/...", "events": ["plugin.published"]},
+  "maintainers": {"url": "https://discord.com/api/webhooks/...", "events": ["pr.auto_merged", "pr.review_required"]},
+  "audit": {"url": "https://discord.com/api/webhooks/...", "events": ["*"]}
+}
+```
+
+Supported events are `plugin.published`, `pr.auto_merged`, and
+`pr.review_required`. Each matching route receives a Components V2 card. A
+route containing `"*"` receives every supported event.
+
+Preview without sending:
+
+```bash
+PYTHONPATH=.github/pluginctl/src python -m pluginctl discord-webhook --event plugin.published
+PYTHONPATH=.github/pluginctl/src python -m pluginctl discord-webhook --event pr.review_required --random
+```
+
+Use `--send --webhook-url <url>` for a one-off destination, or set
+`DISCORD_WEBHOOKS` for configured routes. Passing URLs on the command line can
+expose their credentials in shell history, so environment configuration is
+preferred.
+
 ## Transport
 
 Each event is a single `POST` to `WEBHOOK_URL` with a compact JSON body and

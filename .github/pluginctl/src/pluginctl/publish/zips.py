@@ -120,7 +120,6 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
         notes = _release_notes(repository, plugin_name, commit_sha, commit_sha_short)
         actions.log(f"  {plugin_name} v{version} - uploading to GitHub Releases")
         gh.release_create(release_tag, repository, f"{plugin_name} v{version}", notes, zip_path)
-        os.remove(zip_path)
 
     with open("changed_plugins.txt", "w", encoding="utf-8") as fh:
         for line in changed:

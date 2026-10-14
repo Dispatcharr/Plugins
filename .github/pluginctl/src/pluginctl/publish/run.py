@@ -9,6 +9,7 @@ calls is unit-tested individually.
 from __future__ import annotations
 
 import os
+import json
 import subprocess
 import tempfile
 
@@ -151,11 +152,11 @@ def _commit_and_push(repository, source_branch, remote) -> int:
          f"Source commit: {source_commit}{plugin_list}")
     _git("push", remote, RELEASES_BRANCH)
     actions.log(f"Successfully published to {RELEASES_BRANCH}")
-    _emit_published(repository, changed)
+    _emit_published(repository, changed, source_branch)
     return 0
 
 
-def _emit_published(repository: str, changed: str) -> None:
+def _emit_published(repository: str, changed: str, source_branch: str) -> None:
     """Emit one plugin.published event per changed plugin (best-effort, concurrent).
 
     Deliveries are independent and already non-fatal, so they run in parallel
@@ -165,18 +166,70 @@ def _emit_published(repository: str, changed: str) -> None:
 
     from ..integrations import webhooks
     actor = os.environ.get("GITHUB_ACTOR", "")
+    source_sha = _git("rev-parse", f"origin/{source_branch}", check=False).stdout.strip()
+    from ..core import gh, version as version_util
+    all_tags = gh.release_list_tags(repository)
     payloads = []
     for line in changed.splitlines():
         if "@" not in line:
             continue
         plugin_key, _, version = line.partition("@")
-        payloads.append(webhooks.plugin_published(plugin_key.replace("_", "-"),
-                                                  version, None, actor))
+        plugin = plugin_key.replace("_", "-")
+        commit_sha = ""
+        try:
+            with open(f"metadata/{plugin}/manifest.json", encoding="utf-8") as fh:
+                versions = (json.load(fh).get("manifest") or {}).get("versions") or []
+            commit_sha = next((str(entry.get("commit_sha") or "") for entry in versions
+                               if str(entry.get("version")) == version), "")
+        except (OSError, ValueError):
+            pass
+        pr_number, pr_url = gh.commit_pull_number(repository, commit_sha) if commit_sha else (None, None)
+        payload = webhooks.plugin_published(plugin, version, pr_number, actor)
+        tag = f"{plugin}-{version}"
+        payload["release_url"] = f"https://github.com/{repository}/releases/tag/{tag}"
+        asset_url = f"https://github.com/{repository}/releases/download/{tag}/{tag}.zip"
+        raw_manifest = _git("show", f"origin/{source_branch}:plugins/{plugin}/plugin.json", check=False).stdout
+        try:
+            plugin_manifest = json.loads(raw_manifest)
+        except json.JSONDecodeError:
+            plugin_manifest = {}
+        payload["description"] = str(plugin_manifest.get("description") or "")
+        payload["author"] = str(plugin_manifest.get("author") or "unknown")
+        upstream = str(plugin_manifest.get("repo_url") or "").rstrip("/")
+        links = []
+        if upstream.startswith("https://github.com/"):
+            links.append(f"[v{version}]({upstream}/releases/tag/v{version})")
+            previous = [entry for entry in version_util.versioned_tags(all_tags, plugin) if entry != tag]
+            if previous:
+                previous_version = previous[0][len(plugin) + 1:]
+                links.append(f"[v{previous_version}...v{version}]({upstream}/compare/v{previous_version}...v{version})")
+        if pr_number and pr_url:
+            links.append(f"[#{pr_number}]({pr_url})")
+        payload["metadata"] = "-# " + " · ".join(links)
+        attachment = f"{plugin}-{version}.zip"
+        attachment_path = f"/tmp/{attachment}"
+        if os.path.isfile(attachment_path):
+            payload["attachment_filename"] = attachment
+            payload["attachment_path"] = attachment_path
+        for ext in ("png", "svg", "jpg", "webp"):
+            path = f"plugins/{plugin}/logo.{ext}"
+            if source_sha and _git("cat-file", "-e", f"origin/{source_branch}:{path}", check=False).returncode == 0:
+                payload["logo_url"] = f"https://raw.githubusercontent.com/{repository}/{source_sha}/{path}"
+                break
+        payloads.append(payload)
     if not payloads:
         return
     with ThreadPoolExecutor(max_workers=min(8, len(payloads))) as pool:
         for payload in payloads:
             pool.submit(webhooks.emit, "plugin.published", payload)
+    webhooks.emit_discord("plugin.published", {"releases": payloads}, repository=repository)
+    for payload in payloads:
+        path = payload.get("attachment_path")
+        if path:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
 
 
 def _only_timestamps() -> bool:

@@ -542,3 +542,38 @@ jobs:
           REPORT_RESULT: ${{ needs.report.result }}
           TEST_RESULT: ${{ needs.test-suite.result }}
         run: python -m pluginctl gate
+
+      - name: Request maintainer review after successful validation
+        if: success() && (needs.detect-changes.outputs.has_new_plugin == 'true' || needs.codeql-analyze.outputs.codeql_suppressed != '0' || needs.codeql-analyze.outputs.codeql_sandbox_bypass_detected != '0' || needs.codeql-analyze.outputs.codeql_capability_contract_detected != '0')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DISCORD_WEBHOOKS: ${{ secrets.DISCORD_WEBHOOKS }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          HAS_NEW_PLUGIN: ${{ needs.detect-changes.outputs.has_new_plugin }}
+        run: |
+          labels=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json labels --jq '[.labels[].name] | join("\n")')
+          if printf '%s\n' "$labels" | grep -qx 'Manual Review Required'; then
+            exit 0
+          fi
+          gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-label 'Manual Review Required'
+          if [[ "$HAS_NEW_PLUGIN" == "true" ]]; then
+            export reason='New plugins require maintainer review.'
+          else
+            export reason='CodeQL findings require maintainer review.'
+          fi
+          python - <<'PY'
+          import os
+          from pluginctl.integrations import webhooks
+          pr = os.environ["PR_NUMBER"]
+          repo = os.environ["GITHUB_REPOSITORY"]
+          payload = {
+              "pr": pr, "author": os.environ["PR_AUTHOR"], "plugins": [],
+              "reason": os.environ.get("reason", "Manual review is required."),
+              "reason_code": "new_plugin" if os.environ["HAS_NEW_PLUGIN"] == "true" else "codeql_review",
+              "pr_url": f"https://github.com/{repo}/pull/{pr}",
+          }
+          webhooks.emit("pr.review_required", payload)
+          webhooks.emit_discord("pr.review_required", payload, repository=repo)
+          PY

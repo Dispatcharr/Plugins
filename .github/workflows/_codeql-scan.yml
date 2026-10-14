@@ -211,37 +211,6 @@ jobs:
           path: codeql-capability-contract-findings.md
           if-no-files-found: ignore
 
-      - name: Apply/clear manual review label
-        # Purely informational for auto-merge gating (see automerge.py's
-        # BLOCKING_LABELS) - never fails the job, so a maintainer can still
-        # merge by hand after reviewing.
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          SUPPRESSED_COUNT: ${{ steps.status.outputs.codeql_suppressed }}
-          SANDBOX_BYPASS_COUNT: ${{ steps.status.outputs.codeql_sandbox_bypass_detected }}
-          CAPABILITY_CONTRACT_COUNT: ${{ steps.status.outputs.codeql_capability_contract_detected }}
-          PR_NUMBER: ${{ inputs.pr_number }}
-        run: |
-          gh label create "Manual Review Required" \
-            --color "FBCA04" \
-            --description "CodeQL security findings or suppressions require maintainer review" \
-            --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
-          review_count=$(( ${SUPPRESSED_COUNT:-0} + ${SANDBOX_BYPASS_COUNT:-0} + ${CAPABILITY_CONTRACT_COUNT:-0} ))
-          if [[ "$review_count" -gt 0 ]]; then
-            gh pr edit "$PR_NUMBER" \
-              --add-label "Manual Review Required" \
-              --repo "$GITHUB_REPOSITORY"
-          else
-            gh pr edit "$PR_NUMBER" \
-              --remove-label "Manual Review Required" \
-              --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
-          fi
-          for label in "CodeQL Suppression Used" "Sandbox Bypass Detected" "Capability Contract Review Required"; do
-            gh pr edit "$PR_NUMBER" --remove-label "$label" --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
-          done
-
       - name: Fail job if CodeQL found high/error/critical issues
         if: always() && steps.status.outputs.codeql_status == 'failure'
         run: exit 1

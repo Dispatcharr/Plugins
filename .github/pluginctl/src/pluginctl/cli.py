@@ -157,6 +157,172 @@ def cmd_webhook(args) -> int:
     return 0  # emission failures never fail the pipeline
 
 
+def cmd_discord_webhook(args) -> int:
+    from .integrations import webhooks
+    repository = _repo(args)
+    events = sorted(webhooks.SUPPORTED_DISCORD_EVENTS) if args.event == "all" else [args.event]
+    if args.data and args.event == "all":
+        raise ValueError("--data cannot be combined with --event all")
+    for event in events:
+        data = json.loads(args.data) if args.data else _discord_fixture(event)
+        if args.random:
+            repository = "Dispatcharr/Plugins"
+            data = _random_discord_fixture(event, repository)
+        payload = webhooks.discord_payload(event, data, repository)
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        if not args.send:
+            continue
+        temporary_attachment = ""
+        temporary_directory = ""
+        if data.get("attachment_url") and not data.get("attachment_path"):
+            import tempfile
+            import urllib.request
+            temporary_directory = tempfile.mkdtemp(prefix="pluginctl-discord-")
+            temporary_attachment = os.path.join(temporary_directory, data["attachment_filename"])
+            with urllib.request.urlopen(data["attachment_url"], timeout=30) as response:
+                with open(temporary_attachment, "wb") as fh:
+                    fh.write(response.read())
+            data["attachment_path"] = temporary_attachment
+        try:
+            webhooks.emit_discord(event, data, repository=repository, url=args.webhook_url or None)
+        finally:
+            if temporary_attachment:
+                os.unlink(temporary_attachment)
+            if temporary_directory:
+                os.rmdir(temporary_directory)
+    return 0
+
+
+def _discord_fixture(event: str) -> dict:
+    fixtures = {
+        "plugin.published": {"plugin": "example-plugin", "version": "1.2.3", "release_url": "https://github.com/example/plugins/releases"},
+        "pr.auto_merged": {"pr": "42", "author": "octocat", "plugins": ["example-plugin"]},
+        "pr.review_required": {"pr": "42", "author": "octocat", "plugins": ["example-plugin"], "reason": "Manual review is required."},
+    }
+    return fixtures[event]
+
+
+def _random_discord_fixture(event: str, repo: str) -> dict:
+    """Use a real, logo-bearing Dispatcharr/Plugins candidate for simulation."""
+    import base64
+    import random
+    from .core import gh
+
+    def logo_url(plugin: str, ref: str) -> str:
+        path = logos.get(plugin)
+        return f"https://raw.githubusercontent.com/{repo}/main/{path}" if path else ""
+
+    tree = gh.loads(gh.api(f"repos/{repo}/git/trees/main?recursive=1")) or {}
+    logos = {}
+    for entry in tree.get("tree", []):
+        path = entry.get("path", "")
+        if path.startswith("plugins/") and path.rsplit("/", 1)[-1] in {
+            "logo.png", "logo.svg", "logo.jpg", "logo.webp",
+        }:
+            logos.setdefault(path.split("/")[1], path)
+
+    if event == "plugin.published":
+        plugins = sorted(logos)
+        if not plugins:
+            raise ValueError("No logo-bearing plugins found in Dispatcharr/Plugins.")
+        from .core import version as version_util
+        published = [(candidate, version_util.versioned_tags(gh.release_list_tags(repo), candidate))
+                     for candidate in plugins]
+        published = [(candidate, tags) for candidate, tags in published if tags]
+        if not published:
+            raise ValueError("No published releases found for logo-bearing plugins.")
+        plugin, release_tags = random.choice(published)
+        manifest = gh.loads(gh.api(f"repos/{repo}/contents/plugins/{plugin}/plugin.json?ref=main")) or {}
+        raw = json.loads(base64.b64decode(manifest["content"]).decode("utf-8"))
+        tag = release_tags[0]
+        version = tag[len(plugin) + 1:]
+        asset_url = f"https://github.com/{repo}/releases/download/{tag}/{tag}.zip"
+        links = []
+        upstream = str(raw.get("repo_url") or "").rstrip("/")
+        if upstream.startswith("https://github.com/"):
+            links.append(f"[v{version}]({upstream}/releases/tag/v{version})")
+            previous = [entry for entry in release_tags if entry != tag]
+            if previous:
+                previous_version = previous[0][len(plugin) + 1:]
+                links.append(f"[v{previous_version}...v{version}]({upstream}/compare/v{previous_version}...v{version})")
+        release_manifest = gh.loads(gh.api(
+            f"repos/{repo}/contents/metadata/{plugin}/manifest.json?ref=releases"
+        )) or {}
+        try:
+            release_data = json.loads(base64.b64decode(release_manifest["content"]).decode("utf-8"))
+            versions = (release_data.get("manifest") or {}).get("versions") or []
+            source_sha = next((str(entry.get("commit_sha") or "") for entry in versions
+                               if str(entry.get("version")) == version), "")
+        except (KeyError, ValueError, TypeError):
+            source_sha = ""
+        pr_number, pr_url = gh.commit_pull_number(repo, source_sha) if source_sha else (None, None)
+        if pr_number and pr_url:
+            links.append(f"[#{pr_number}]({pr_url})")
+        return {"plugin": plugin, "version": version, "description": str(raw.get("description") or ""),
+                "author": str(raw.get("author") or "unknown"),
+                "logo_url": logo_url(plugin, "main"),
+                "release_url": f"https://github.com/{repo}/releases/tag/{tag}",
+                "metadata": "-# " + " · ".join(links),
+                "attachment_filename": f"{tag}.zip", "attachment_url": asset_url}
+
+    fields = "number,author,url,headRefOid,mergedAt,labels"
+    state = "closed" if event == "pr.auto_merged" else "open"
+    prs = gh.loads(gh.pr_list(repo, state, fields, limit=100)) or []
+    def merged_plugin_prs(candidates: list[dict]) -> list[dict]:
+        return [pr for pr in candidates if pr.get("mergedAt") and any(
+            label.get("name") in {"New Plugin", "Plugin Update"}
+            for label in (pr.get("labels") or [])
+        )]
+    if event == "pr.auto_merged":
+        prs = merged_plugin_prs(prs)
+    elif event == "pr.review_required":
+        # Prefer a live review candidate. If none has a logo, include real merged
+        # plugin PRs so --random remains useful for Components V2 layout testing.
+        prs += merged_plugin_prs(gh.loads(gh.pr_list(repo, "closed", fields, limit=100)) or [])
+    random.shuffle(prs)
+    candidates = []
+    for pr in prs[:25]:
+        paths = gh.pr_files(str(pr["number"]), repo) or []
+        plugins = sorted({path.split("/")[1] for path in paths if path.startswith("plugins/")
+                          and path.count("/") >= 2 and path.split("/")[1] in logos})
+        for plugin in plugins:
+            logo = logo_url(plugin, pr.get("headRefOid", ""))
+            if logo:
+                candidates.append((pr, plugin, logo))
+                break
+    if not candidates:
+        raise ValueError(f"No {state} logo-bearing plugin PRs found in Dispatcharr/Plugins.")
+    pr, plugin, logo = random.choice(candidates)
+    raw_plugin = gh.loads(gh.api(
+        f"repos/{repo}/contents/plugins/{plugin}/plugin.json?ref={pr.get('headRefOid', '')}"
+    )) or {}
+    try:
+        plugin_data = json.loads(base64.b64decode(raw_plugin["content"]).decode("utf-8"))
+    except (KeyError, ValueError, TypeError):
+        plugin_data = {}
+    upstream = str(plugin_data.get("repo_url") or "").rstrip("/")
+    current_version = str(plugin_data.get("version") or "")
+    links = []
+    if upstream.startswith("https://github.com/") and current_version:
+        links.append(f"[v{current_version}]({upstream}/releases/tag/v{current_version})")
+        pr_detail = gh.loads(gh.api(f"repos/{repo}/pulls/{pr['number']}")) or {}
+        base_sha = ((pr_detail.get("base") or {}).get("sha") or "")
+        base_plugin = gh.loads(gh.api(
+            f"repos/{repo}/contents/plugins/{plugin}/plugin.json?ref={base_sha}"
+        )) or {}
+        try:
+            base_data = json.loads(base64.b64decode(base_plugin["content"]).decode("utf-8"))
+            previous_version = str(base_data.get("version") or "")
+        except (KeyError, ValueError, TypeError):
+            previous_version = ""
+        if previous_version and previous_version != current_version:
+            links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/v{previous_version}...v{current_version})")
+    return {"pr": str(pr["number"]), "author": str(plugin_data.get("author") or "unknown"),
+            "pr_url": pr.get("url", ""), "plugins": [plugin], "plugin_name": plugin_data.get("name") or plugin,
+            "description": str(plugin_data.get("description") or ""),
+            "source_links": "-# " + " · ".join(links), "logo_url": logo}
+
+
 def cmd_publish(args) -> int:
     from .publish import run as publish_run
     return publish_run.run(source_branch=args.source_branch)
@@ -257,6 +423,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--event", required=True)
     p.add_argument("--data", default="{}")
     p.set_defaults(func=cmd_webhook)
+
+    p = sub.add_parser("discord-webhook", help="Preview or send a Discord Components V2 event")
+    p.add_argument("--event", required=True, choices=["all", "plugin.published", "pr.auto_merged", "pr.review_required"])
+    p.add_argument("--data", default="")
+    p.add_argument("--repo", default="")
+    p.add_argument("--random", action="store_true")
+    p.add_argument("--send", action="store_true")
+    p.add_argument("--webhook-url", default="")
+    p.set_defaults(func=cmd_discord_webhook)
 
     p = sub.add_parser("publish", help="Publish plugins to the releases branch")
     p.add_argument("source_branch")

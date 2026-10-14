@@ -57,3 +57,35 @@ def test_emit_swallows_delivery_error():
     def boom(request, timeout=15):
         raise OSError("connection refused")
     assert webhooks.emit("x", {}, url="https://h", secret="s", _opener=boom) is False
+
+
+def test_discord_payload_uses_components_v2_and_optional_logo():
+    payload = webhooks.discord_payload("plugin.published", {
+        "plugin": "demo", "version": "1.0.0", "logo_url": "https://images.example/demo.png",
+    }, "owner/repo")
+    assert payload["flags"] == 32768
+    assert "content" not in payload
+    container = payload["components"][0]
+    assert container["type"] == 17
+    section = container["components"][2]
+    assert section["type"] == 9
+    assert section["accessory"]["type"] == 11
+
+
+def test_discord_routes_and_wildcard_delivery():
+    captured = []
+    class _Resp:
+        status = 204
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def getcode(self): return 204
+    def opener(request, timeout=15):
+        captured.append(request.full_url)
+        return _Resp()
+    config = json.dumps({
+        "published": {"url": "https://discord.example/a", "events": ["plugin.published"]},
+        "all": {"url": "https://discord.example/b?wait=true", "events": ["*"]},
+    })
+    assert webhooks.emit_discord("plugin.published", {"plugin": "demo"}, config=config, _opener=opener)
+    assert len(captured) == 2
+    assert all("with_components=true" in url for url in captured)

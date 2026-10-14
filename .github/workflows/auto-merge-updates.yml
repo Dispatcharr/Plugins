@@ -67,6 +67,7 @@ jobs:
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           WEBHOOK_URL: ${{ vars.WEBHOOK_URL }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          DISCORD_WEBHOOKS: ${{ secrets.DISCORD_WEBHOOKS }}
           AUTO_MERGE_BLACKLIST: ${{ vars.AUTO_MERGE_BLACKLIST || '' }}
           AUTO_MERGE_AUTHOR_LIMIT: ${{ vars.AUTO_MERGE_AUTHOR_LIMIT || '' }}
           AUTO_MERGE_PLUGIN_LIMIT: ${{ vars.AUTO_MERGE_PLUGIN_LIMIT || '' }}

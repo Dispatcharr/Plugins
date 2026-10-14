@@ -24,7 +24,7 @@ LABELS = (
     Label("Plugin Update", "130518", "A plugin already in the repository is being updated."),
     Label("Repo Update", "86ADC3", "Scripts or other repository infrastructure."),
     Label("Testing", "F1E909", "This PR was created for testing and should not be merged."),
-    Label("Manual Review Required", "FBCA04", "CodeQL security findings or suppressions require maintainer review"),
+    Label("Manual Review Required", "FBCA04", "Security findings, suppressions, or new plugin require maintainer review"),
     Label("QUARANTINE", "FFFF00", "ClamAV detected a potential threat in this PR"),
     Label("Rollback", "E11D48", "Version rollback opened by the yank workflow"),
     Label("Auto Merged", "0E8A16", "PR was merged automatically after validation"),

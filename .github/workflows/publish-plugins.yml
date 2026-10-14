@@ -68,6 +68,7 @@ jobs:
           FORCE_REBUILD_PLUGIN: ${{ inputs.force_rebuild_plugin }}
           WEBHOOK_URL: ${{ vars.WEBHOOK_URL }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          DISCORD_WEBHOOKS: ${{ secrets.DISCORD_WEBHOOKS }}
         run: |
           set -o pipefail
           if [[ "${FORCE_REBUILD}" == "true" && "${FORCE_REBUILD_CONFIRM}" != "CONFIRM" ]]; then
