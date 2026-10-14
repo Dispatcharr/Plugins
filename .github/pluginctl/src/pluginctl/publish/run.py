@@ -196,7 +196,7 @@ def _emit_published(repository: str, changed: str, source_branch: str) -> None:
         payload["description"] = str(plugin_manifest.get("description") or "")
         payload["author"] = str(plugin_manifest.get("author") or "unknown")
         upstream = str(plugin_manifest.get("repo_url") or "").rstrip("/")
-        external_upstream = upstream.startswith("https://github.com/")
+        external_upstream = plugin_manifest.get("source_type") == "external" and upstream.startswith("https://github.com/")
         if not external_upstream:
             upstream = f"https://github.com/{repository}"
         links = []

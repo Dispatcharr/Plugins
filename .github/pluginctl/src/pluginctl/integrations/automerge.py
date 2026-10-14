@@ -266,7 +266,7 @@ def _plugin_card_data(plugins: list[str], repository: str) -> dict[str, str]:
     current_version = str(current.get("version") or "")
     if not current_version:
         return result
-    external_upstream = upstream.startswith("https://github.com/")
+    external_upstream = current.get("source_type") == "external" and upstream.startswith("https://github.com/")
     if not external_upstream:
         upstream = f"https://github.com/{repository}"
     current_tag = f"v{current_version}" if external_upstream else f"{plugins[0]}-{current_version}"

@@ -239,7 +239,7 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
         asset_url = f"https://github.com/{repo}/releases/download/{tag}/{tag}.zip"
         links = []
         upstream = str(raw.get("repo_url") or "").rstrip("/")
-        external_upstream = upstream.startswith("https://github.com/")
+        external_upstream = raw.get("source_type") == "external" and upstream.startswith("https://github.com/")
         if not external_upstream:
             upstream = f"https://github.com/{repo}"
         source_tag = f"v{version}" if external_upstream else tag
@@ -309,7 +309,7 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
     current_version = str(plugin_data.get("version") or "")
     links = []
     if current_version:
-        external_upstream = upstream.startswith("https://github.com/")
+        external_upstream = plugin_data.get("source_type") == "external" and upstream.startswith("https://github.com/")
         if not external_upstream:
             upstream = f"https://github.com/{repo}"
         current_tag = f"v{current_version}" if external_upstream else f"{plugin}-{current_version}"

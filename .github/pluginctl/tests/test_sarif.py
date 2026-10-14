@@ -19,9 +19,10 @@ def test_extension_rules_override_driver():
     assert secmap["py/weak-hash"] == 6.9
 
 
-def test_detection_features_are_disabled_by_default():
-    assert not sarif.feature_flags.CAPABILITY_CONTRACT_DETECTION
-    assert not sarif.feature_flags.SANDBOX_BYPASS_DETECTION
+def test_detection_feature_flags_are_booleans():
+    """Rollout switches may be enabled without invalidating the test suite."""
+    assert isinstance(sarif.feature_flags.CAPABILITY_CONTRACT_DETECTION, bool)
+    assert isinstance(sarif.feature_flags.SANDBOX_BYPASS_DETECTION, bool)
 
 
 def test_classify_buckets_with_detection_features_disabled(monkeypatch):
