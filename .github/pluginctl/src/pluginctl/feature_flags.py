@@ -1,10 +1,7 @@
 """Hardcoded rollout switches for trusted pluginctl automation."""
 
-# Neither family fails required validation. Both are review-gated through PR
-# labels, and must not be environment-configurable by untrusted PR code.
-CAPABILITY_CONTRACT_DETECTION = True
-SANDBOX_BYPASS_DETECTION = True
-
+CAPABILITY_CONTRACT_DETECTION = False
+SANDBOX_BYPASS_DETECTION = False
 SPLIT_MANIFEST_BASE_URLS = False
 
 # Experimental disclosure support. Keep disabled until its long-term policy is

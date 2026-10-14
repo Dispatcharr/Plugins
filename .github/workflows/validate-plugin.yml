@@ -146,11 +146,14 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.token.outputs.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           python -m pluginctl detect \
-            --author "${{ github.event.pull_request.user.login }}" \
-            --base-ref "${{ github.event.pull_request.base.ref }}" \
-            --head-ref "${{ github.event.pull_request.head.ref }}"
+            --author "$PR_AUTHOR" \
+            --base-ref "$BASE_REF" \
+            --head-ref "$HEAD_REF"
 
   # --------------------------------------------------------------------------
   # Job 4: Apply PR labels based on change classification

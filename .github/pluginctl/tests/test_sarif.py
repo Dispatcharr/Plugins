@@ -19,20 +19,28 @@ def test_extension_rules_override_driver():
     assert secmap["py/weak-hash"] == 6.9
 
 
-def test_classify_buckets():
+def test_detection_features_are_disabled_by_default():
+    assert not sarif.feature_flags.CAPABILITY_CONTRACT_DETECTION
+    assert not sarif.feature_flags.SANDBOX_BYPASS_DETECTION
+
+
+def test_classify_buckets_with_detection_features_disabled(monkeypatch):
+    monkeypatch.setattr(sarif.feature_flags, "CAPABILITY_CONTRACT_DETECTION", False)
+    monkeypatch.setattr(sarif.feature_flags, "SANDBOX_BYPASS_DETECTION", False)
     counts = sarif.classify(_load())
     assert counts.blocking == 1
     assert counts.medium == 1
     assert counts.low == 2
-    assert counts.suppressed == 2
+    assert counts.suppressed == 1
     assert counts.total == 4
     assert counts.warnings == 3
 
 
-def test_sandbox_bypass_is_review_gated_by_default():
+def test_sandbox_bypass_is_ignored_when_disabled(monkeypatch):
+    monkeypatch.setattr(sarif.feature_flags, "SANDBOX_BYPASS_DETECTION", False)
     counts = sarif.classify(_load())
-    assert counts.sandbox_bypass == 1
-    assert counts.sandbox_bypass_detected == 2
+    assert counts.sandbox_bypass == 0
+    assert counts.sandbox_bypass_detected == 0
     assert counts.total == 4
 
 
@@ -137,6 +145,7 @@ def test_capability_contract_requires_an_enforcing_manifest(tmp_path, monkeypatc
                                                "region": {"startLine": 1}}}],
     }
     assert sarif.contract_result_requires_review(result)
+    monkeypatch.setattr(sarif.feature_flags, "CAPABILITY_CONTRACT_DETECTION", True)
     assert sarif.classify([{"runs": [{"results": [result]}]}]).capability_contract == 1
 
 
