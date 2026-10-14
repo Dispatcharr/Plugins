@@ -139,12 +139,6 @@ def run(head_sha: str, disabled_reason: str = "") -> int:
     actions.log(f"Labels: {','.join(labels)}")
     actions.log(f"Mergeable: {mergeable}")
 
-    if disabled_reason:
-        actions.notice(f"{disabled_reason} - skipping.")
-        _request_manual_review(pr_number, author=(data.get("author") or {}).get("login", ""),
-                               plugins=[], labels=labels, reason=disabled_reason, repo=repo)
-        return 0
-
     decision = evaluate_labels(labels, mergeable)
     if not decision.ok:
         actions.notice(f"{decision.reason} - skipping.")
@@ -159,6 +153,11 @@ def run(head_sha: str, disabled_reason: str = "") -> int:
         return 0
 
     author = (data.get("author") or {}).get("login", "")
+    if disabled_reason:
+        actions.notice(f"{disabled_reason} - skipping.")
+        _request_manual_review(pr_number, author=author, plugins=plugins,
+                               labels=labels, reason=disabled_reason, repo=repo)
+        return 0
     if csv_contains(author, os.environ.get("AUTO_MERGE_BLACKLIST", "")):
         actions.notice(f"PR author '{author}' is on the auto-merge blacklist - skipping.")
         _request_manual_review(pr_number, author=author, plugins=plugins, labels=labels,
