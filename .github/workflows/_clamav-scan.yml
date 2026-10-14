@@ -62,7 +62,9 @@ jobs:
           repository: ${{ github.repository }}
           ref: ${{ inputs.base_ref }}
           path: _trusted
-          sparse-checkout: .github/pluginctl
+          sparse-checkout: |
+            .github/pluginctl
+            .github/actions/gh-app-token
           sparse-checkout-cone-mode: false
 
       - name: GitHub App token
