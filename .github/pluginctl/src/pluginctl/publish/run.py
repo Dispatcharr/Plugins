@@ -196,13 +196,22 @@ def _emit_published(repository: str, changed: str, source_branch: str) -> None:
         payload["description"] = str(plugin_manifest.get("description") or "")
         payload["author"] = str(plugin_manifest.get("author") or "unknown")
         upstream = str(plugin_manifest.get("repo_url") or "").rstrip("/")
+        external_upstream = upstream.startswith("https://github.com/")
+        if not external_upstream:
+            upstream = f"https://github.com/{repository}"
         links = []
-        if upstream.startswith("https://github.com/"):
-            links.append(f"[v{version}]({upstream}/releases/tag/v{version})")
+        source_tag = f"v{version}" if external_upstream else tag
+        links.append(f"[v{version}]({upstream}/releases/tag/{source_tag})")
+        if external_upstream:
             previous = [entry for entry in version_util.versioned_tags(all_tags, plugin) if entry != tag]
             if previous:
                 previous_version = previous[0][len(plugin) + 1:]
                 links.append(f"[v{previous_version}...v{version}]({upstream}/compare/v{previous_version}...v{version})")
+        else:
+            previous = [entry for entry in version_util.versioned_tags(all_tags, plugin) if entry != tag]
+            if previous:
+                previous_tag = previous[0]
+                links.append(f"[v{previous_tag[len(plugin) + 1:]}...v{version}]({upstream}/compare/{previous_tag}...{tag})")
         if pr_number and pr_url:
             links.append(f"[#{pr_number}]({pr_url})")
         payload["metadata"] = "-# " + " · ".join(links)

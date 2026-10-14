@@ -209,7 +209,7 @@ def run(head_sha: str) -> int:
     payload = webhooks.pr_auto_merged(pr_number, plugins)
     payload.update({"author": author, "pr_url": f"https://github.com/{repo}/pull/{pr_number}"})
     payload.update(_logo_data(repo, plugins))
-    payload.update(_plugin_card_data(plugins))
+    payload.update(_plugin_card_data(plugins, repo))
     webhooks.emit("pr.auto_merged", payload)
     webhooks.emit_discord("pr.auto_merged", payload, repository=repo)
     return 0
@@ -228,7 +228,7 @@ def _request_manual_review(pr_number: str, *, author: str, plugins: list[str], l
     payload = {"pr": pr_number, "author": author, "plugins": plugins, "labels": labels + ["Manual Review Required"],
                "reason": reason, "reason_code": reason_code, "pr_url": f"https://github.com/{repo}/pull/{pr_number}"}
     payload.update(_logo_data(repo, plugins))
-    payload.update(_plugin_card_data(plugins))
+    payload.update(_plugin_card_data(plugins, repo))
     webhooks.emit("pr.review_required", payload)
     webhooks.emit_discord("pr.review_required", payload, repository=repo)
 
@@ -246,7 +246,7 @@ def _logo_data(repo: str, plugins: list[str]) -> dict[str, str]:
     return {}
 
 
-def _plugin_card_data(plugins: list[str]) -> dict[str, str]:
+def _plugin_card_data(plugins: list[str], repository: str) -> dict[str, str]:
     """Read the first plugin's display name and upstream release links from checkout."""
     if not plugins:
         return {}
@@ -260,15 +260,20 @@ def _plugin_card_data(plugins: list[str]) -> dict[str, str]:
               "author": str(current.get("author") or "unknown")}
     upstream = str(current.get("repo_url") or "").rstrip("/")
     current_version = str(current.get("version") or "")
-    if not (upstream.startswith("https://github.com/") and current_version):
+    if not current_version:
         return result
-    links = [f"[v{current_version}]({upstream}/releases/tag/v{current_version})"]
+    external_upstream = upstream.startswith("https://github.com/")
+    if not external_upstream:
+        upstream = f"https://github.com/{repository}"
+    current_tag = f"v{current_version}" if external_upstream else f"{plugins[0]}-{current_version}"
+    links = [f"[v{current_version}]({upstream}/releases/tag/{current_tag})"]
     previous_text = _git("show", f"origin/main:plugins/{plugins[0]}/plugin.json", check=False).stdout
     try:
         previous_version = str(json.loads(previous_text).get("version") or "")
     except json.JSONDecodeError:
         previous_version = ""
     if previous_version and previous_version != current_version:
-        links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/v{previous_version}...v{current_version})")
+        previous_tag = f"v{previous_version}" if external_upstream else f"{plugins[0]}-{previous_version}"
+        links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/{previous_tag}...{current_tag})")
     result["source_links"] = "-# " + " · ".join(links)
     return result

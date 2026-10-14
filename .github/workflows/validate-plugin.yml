@@ -551,6 +551,7 @@ jobs:
           DISCORD_WEBHOOKS: ${{ secrets.DISCORD_WEBHOOKS }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           HAS_NEW_PLUGIN: ${{ needs.detect-changes.outputs.has_new_plugin }}
         run: |
           labels=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json labels --jq '[.labels[].name] | join("\n")')
@@ -564,15 +565,36 @@ jobs:
             export reason='CodeQL findings require maintainer review.'
           fi
           python - <<'PY'
+          import base64
+          import json
           import os
+          from pluginctl.core import gh
           from pluginctl.integrations import webhooks
           pr = os.environ["PR_NUMBER"]
           repo = os.environ["GITHUB_REPOSITORY"]
+          files = gh.pr_files(pr, repo) or []
+          manifests = [path for path in files if path.startswith("plugins/") and path.endswith("/plugin.json")]
+          slug = manifests[0].split("/")[1] if manifests else "unknown"
+          plugin = {}
+          if slug != "unknown":
+              content = gh.loads(gh.api(f"repos/{repo}/contents/plugins/{slug}/plugin.json?ref={os.environ['PR_HEAD_SHA']}")) or {}
+              try:
+                  plugin = json.loads(base64.b64decode(content["content"]).decode("utf-8"))
+              except (KeyError, ValueError, TypeError):
+                  pass
+          logo_url = ""
+          for ext in ("png", "svg", "jpg", "webp"):
+              path = f"plugins/{slug}/logo.{ext}"
+              if slug != "unknown" and gh.api(f"repos/{repo}/contents/{path}?ref={os.environ['PR_HEAD_SHA']}"):
+                  logo_url = f"https://raw.githubusercontent.com/{repo}/{os.environ['PR_HEAD_SHA']}/{path}"
+                  break
           payload = {
-              "pr": pr, "author": os.environ["PR_AUTHOR"], "plugins": [],
+              "pr": pr, "author": plugin.get("author") or os.environ["PR_AUTHOR"], "plugins": [slug],
+              "plugin_name": plugin.get("name") or slug, "description": plugin.get("description") or "",
               "reason": os.environ.get("reason", "Manual review is required."),
               "reason_code": "new_plugin" if os.environ["HAS_NEW_PLUGIN"] == "true" else "codeql_review",
               "pr_url": f"https://github.com/{repo}/pull/{pr}",
+              "logo_url": logo_url,
           }
           webhooks.emit("pr.review_required", payload)
           webhooks.emit_discord("pr.review_required", payload, repository=repo)

@@ -239,12 +239,17 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
         asset_url = f"https://github.com/{repo}/releases/download/{tag}/{tag}.zip"
         links = []
         upstream = str(raw.get("repo_url") or "").rstrip("/")
-        if upstream.startswith("https://github.com/"):
-            links.append(f"[v{version}]({upstream}/releases/tag/v{version})")
-            previous = [entry for entry in release_tags if entry != tag]
-            if previous:
-                previous_version = previous[0][len(plugin) + 1:]
-                links.append(f"[v{previous_version}...v{version}]({upstream}/compare/v{previous_version}...v{version})")
+        external_upstream = upstream.startswith("https://github.com/")
+        if not external_upstream:
+            upstream = f"https://github.com/{repo}"
+        source_tag = f"v{version}" if external_upstream else tag
+        links.append(f"[v{version}]({upstream}/releases/tag/{source_tag})")
+        previous = [entry for entry in release_tags if entry != tag]
+        if previous:
+            previous_tag = previous[0]
+            previous_version = previous_tag[len(plugin) + 1:]
+            compare_previous = f"v{previous_version}" if external_upstream else previous_tag
+            links.append(f"[v{previous_version}...v{version}]({upstream}/compare/{compare_previous}...{source_tag})")
         release_manifest = gh.loads(gh.api(
             f"repos/{repo}/contents/metadata/{plugin}/manifest.json?ref=releases"
         )) or {}
@@ -303,8 +308,12 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
     upstream = str(plugin_data.get("repo_url") or "").rstrip("/")
     current_version = str(plugin_data.get("version") or "")
     links = []
-    if upstream.startswith("https://github.com/") and current_version:
-        links.append(f"[v{current_version}]({upstream}/releases/tag/v{current_version})")
+    if current_version:
+        external_upstream = upstream.startswith("https://github.com/")
+        if not external_upstream:
+            upstream = f"https://github.com/{repo}"
+        current_tag = f"v{current_version}" if external_upstream else f"{plugin}-{current_version}"
+        links.append(f"[v{current_version}]({upstream}/releases/tag/{current_tag})")
         pr_detail = gh.loads(gh.api(f"repos/{repo}/pulls/{pr['number']}")) or {}
         base_sha = ((pr_detail.get("base") or {}).get("sha") or "")
         base_plugin = gh.loads(gh.api(
@@ -316,7 +325,8 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
         except (KeyError, ValueError, TypeError):
             previous_version = ""
         if previous_version and previous_version != current_version:
-            links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/v{previous_version}...v{current_version})")
+            previous_tag = f"v{previous_version}" if external_upstream else f"{plugin}-{previous_version}"
+            links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/{previous_tag}...{current_tag})")
     return {"pr": str(pr["number"]), "author": str(plugin_data.get("author") or "unknown"),
             "pr_url": pr.get("url", ""), "plugins": [plugin], "plugin_name": plugin_data.get("name") or plugin,
             "description": str(plugin_data.get("description") or ""),
