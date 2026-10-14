@@ -41,7 +41,9 @@ def test_label_catalog_ensure_reconciles_all_labels(monkeypatch):
     assert all(call[-1] == "owner/repo" for call in calls)
 
 
-def test_label_catalog_ensure_requires_repository():
+def test_label_catalog_ensure_requires_repository(monkeypatch):
+    monkeypatch.delenv("GH_REPO", raising=False)
+    monkeypatch.delenv("GITHUB_REPOSITORY", raising=False)
     assert not label_catalog.ensure("")
 
 
