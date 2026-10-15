@@ -261,7 +261,7 @@ jobs:
     if: >-
       needs.detect-changes.result == 'success' &&
       needs.detect-changes.outputs.outside_files != '' &&
-      needs.detect-changes.outputs.outside_violation != 'true' &&
+      needs.detect-changes.outputs.outside_violation == 'false' &&
       needs.detect-changes.outputs.close_pr == 'false'
     uses: ./.github/workflows/tests.yml
     with:

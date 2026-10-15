@@ -34,6 +34,9 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
           persist-credentials: false
+          # validate-plugin.yml only calls this workflow after trusted
+          # detect-changes confirms the PR author has repository write access.
+          allow-unsafe-pr-checkout: true
           sparse-checkout: |
             .github/codeql
             .github/pluginctl
