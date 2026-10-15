@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-11T00:45:41Z",
+  "generated_at": "2026-10-15T12:44:21Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -15,22 +15,35 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1422963882548265110",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-11T00:45:10Z",
+    "last_updated": "2026-10-15T12:43:39Z",
     "latest": {
-      "version": "1.26.2840039",
-      "commit_sha": "f2c9af3a4ca59c83fbb38b5bd83e532dcdd1ca13",
-      "commit_sha_short": "f2c9af3",
-      "build_timestamp": "2026-10-11T00:45:23Z",
-      "last_updated": "2026-10-11T00:45:10Z",
-      "checksum_md5": "d48c1dafb1d5460221d7f6631e6e1347",
-      "checksum_sha256": "e2d45292add8312bccf6d95e5e08c66940fc9b5e2797507247c61d879c6d5474",
+      "version": "1.26.2881225",
+      "commit_sha": "2e4d8a9d05aa01b4f6c4f0cea38f34cbe5ecc8fa",
+      "commit_sha_short": "2e4d8a9",
+      "build_timestamp": "2026-10-15T12:43:59Z",
+      "last_updated": "2026-10-15T12:43:39Z",
+      "checksum_md5": "df503d0bca03c1cf4b3f5aea6f1d4ec2",
+      "checksum_sha256": "5014961f5d8c6834b00a276e1422be4674eb45916e11fcfcd3397df0e9e0884e",
       "min_dispatcharr_version": "v0.20.0",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2840039/Channel-Maparr.zip",
-      "latest_url": "channel-mapparr-1.26.2840039/channel-mapparr-1.26.2840039.zip",
-      "url": "channel-mapparr-1.26.2840039/channel-mapparr-1.26.2840039.zip",
-      "size": 759
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2881225/Channel-Maparr.zip",
+      "latest_url": "channel-mapparr-1.26.2881225/channel-mapparr-1.26.2881225.zip",
+      "url": "channel-mapparr-1.26.2881225/channel-mapparr-1.26.2881225.zip",
+      "size": 766
     },
     "versions": [
+      {
+        "version": "1.26.2881225",
+        "commit_sha": "2e4d8a9d05aa01b4f6c4f0cea38f34cbe5ecc8fa",
+        "commit_sha_short": "2e4d8a9",
+        "build_timestamp": "2026-10-15T12:43:59Z",
+        "last_updated": "2026-10-15T12:43:39Z",
+        "checksum_md5": "df503d0bca03c1cf4b3f5aea6f1d4ec2",
+        "checksum_sha256": "5014961f5d8c6834b00a276e1422be4674eb45916e11fcfcd3397df0e9e0884e",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2881225/Channel-Maparr.zip",
+        "url": "channel-mapparr-1.26.2881225/channel-mapparr-1.26.2881225.zip",
+        "size": 766
+      },
       {
         "version": "1.26.2840039",
         "commit_sha": "f2c9af3a4ca59c83fbb38b5bd83e532dcdd1ca13",
@@ -145,20 +158,8 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "channel-mapparr-1.26.2141433/channel-mapparr-1.26.2141433.zip",
         "size": 621
-      },
-      {
-        "version": "1.26.1791324",
-        "commit_sha": "a5bea099ba5abbf25c9e84cf2e9957070fc84dee",
-        "commit_sha_short": "a5bea09",
-        "build_timestamp": "2026-06-29T11:28:20Z",
-        "last_updated": "2026-06-29T07:28:13-04:00",
-        "checksum_md5": "6de805788f3da1bc3b688bce93070d1c",
-        "checksum_sha256": "92fe4860950f5c02a3ead294bf6f7e591c9d73f78b688aaca5a245561a2cd28e",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "channel-mapparr-1.26.1791324/channel-mapparr-1.26.1791324.zip",
-        "size": 588
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasrcNgAKCRB+wDprTCI0\nzvASAP4j1+Ck+FoNDF6bNklLdYtS3OmS7miNEixhA5vhttj5egEA+7FBF6Ca6En7\nRE29BCiNMl57R7frg4Dn5Sbya5MePgw=\n=ezpn\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatDKpgAKCRB+wDprTCI0\nznMMAP9cAz2EW5gnxCHQgzXdB1xiRkMWuAhv6R7tEX8KxNfzEwEAiuhuAo9CaTeX\nLGWH0MlRQVkGSjzWEiUC0cV0DHANcAg=\n=FhDu\n-----END PGP SIGNATURE-----"
 }
