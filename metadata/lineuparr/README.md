@@ -2,7 +2,7 @@
 
 # Lineuparr
 
-**Version:** `1.26.2880000` | **Author:** PiratesIRC | **Last Updated:** Oct 15 2026, 00:04 UTC
+**Version:** `1.26.2881058` | **Author:** PiratesIRC | **Last Updated:** Oct 15 2026, 11:03 UTC
 
 Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them.
 
@@ -14,20 +14,21 @@ Mirror real-world provider channel lineups by creating channel groups, channels,
 
 ### Latest Release
 
-- **Download:** [`lineuparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2880000/lineuparr-1.26.2880000.zip)
-- **Built:** Oct 15 2026, 00:05 UTC
-- **Source Commit:** [`c759363`](https://github.com/Dispatcharr/Plugins/commit/c759363f16cff78055ed5b078de27dabb0aad047)
+- **Download:** [`lineuparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2881058/lineuparr-1.26.2881058.zip)
+- **Built:** Oct 15 2026, 11:03 UTC
+- **Source Commit:** [`b119e7e`](https://github.com/Dispatcharr/Plugins/commit/b119e7ea6cb2726098fa4da7adfd94b9d1fc0543)
 
 **Checksums:**
 ```
-MD5:    7b364e8569368a89e8e08ac9f1807c7a
-SHA256: aabf797562a6abaf14108d4fb4cd54a4dc01928f2050bd1d36b0cc441bc58082
+MD5:    113800ec1a7977440f1afc369c87c6e9
+SHA256: 39aed56384f4ed9066c25bffee8b817043faeec2c07f29393be6d7e73f54d38c
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2881058` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2881058/lineuparr-1.26.2881058.zip) | Oct 15 2026, 11:03 UTC | [`b119e7e`](https://github.com/Dispatcharr/Plugins/commit/b119e7ea6cb2726098fa4da7adfd94b9d1fc0543) | 113800ec1a7977440f1afc369c87c6e9 | 39aed56384f4ed9066c25bffee8b817043faeec2c07f29393be6d7e73f54d38c |
 | `1.26.2880000` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2880000/lineuparr-1.26.2880000.zip) | Oct 15 2026, 00:05 UTC | [`c759363`](https://github.com/Dispatcharr/Plugins/commit/c759363f16cff78055ed5b078de27dabb0aad047) | 7b364e8569368a89e8e08ac9f1807c7a | aabf797562a6abaf14108d4fb4cd54a4dc01928f2050bd1d36b0cc441bc58082 |
 | `1.26.2831530` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2831530/lineuparr-1.26.2831530.zip) | Oct 10 2026, 15:35 UTC | [`f27d830`](https://github.com/Dispatcharr/Plugins/commit/f27d830c44766d513a3443abf50f7092762208e8) | a9fe3029612716ab733bad530b0c1d84 | b815f05d269679e95d31c6f9570a91bdc91503a6887d05365e2f33e272df4d04 |
 | `1.26.2821835` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2821835/lineuparr-1.26.2821835.zip) | Oct 09 2026, 18:41 UTC | [`e66282c`](https://github.com/Dispatcharr/Plugins/commit/e66282ca01274495b23c22a60b89b11cda36a767) | dece7f089b66f4cbbb1a64e3c1b2a294 | 83eb0d6cd801a15b8e30cc90f3cf6fe59ac98e800c5a8f5f1c37807135ea227f |
@@ -37,7 +38,6 @@ SHA256: aabf797562a6abaf14108d4fb4cd54a4dc01928f2050bd1d36b0cc441bc58082
 | `1.26.2291211` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2291211/lineuparr-1.26.2291211.zip) | Aug 17 2026, 12:18 UTC | [`d8d31a9`](https://github.com/Dispatcharr/Plugins/commit/d8d31a97780e2875831a22b78bf52263baa0485a) | c9feb41615487ac7c26d59e56a372828 | c3d73602e91c065a5aac7db7901556909ea08b54a4f515bedd46533aaff1ecf3 |
 | `1.26.2271740` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2271740/lineuparr-1.26.2271740.zip) | Aug 15 2026, 18:21 UTC | [`51dc15c`](https://github.com/Dispatcharr/Plugins/commit/51dc15cdc6e4859cdcad5d56baf6f9587d4c1f5f) | 04eb22929a7c6441063d47ca45800fae | 17e25884accec92b05c396f7f8a2e3ee8c3f5db2df0b850c2fc075eb4b67c436 |
 | `1.26.2241618` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2241618/lineuparr-1.26.2241618.zip) | Aug 12 2026, 17:50 UTC | [`5ba093d`](https://github.com/Dispatcharr/Plugins/commit/5ba093de507732b40c6334e995f987fbe540423b) | 00e307dbcc82f5a4a6ed4cdf81d81f2e | fc590ffa3e4351fddce850c4baa16d4876cfa9c218490304cceaa2cad9b47162 |
-| `1.26.2171315` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2171315/lineuparr-1.26.2171315.zip) | Aug 05 2026, 14:26 UTC | [`ec73378`](https://github.com/Dispatcharr/Plugins/commit/ec73378d08dfa6275c691e26d7f1264d0ac24255) | 561a6fead42d2cd84c58cd6b76034557 | ec70ac36837f389fe6d9f5b480bbe0d7bc88fb34a3d737f8edaf108a536843a7 |
 
 ---
 
@@ -107,6 +107,9 @@ Over 200 built-in channel aliases, plus your own in JSON. Every setting and acti
 | `NL_ODIDO_lineup.json` | ODIDO | NL | ~155 |
 | `NL_KPN_lineup.json` | KPN Interactive TV, television and radio | NL | ~290 |
 | `QA_beIN-MENA_lineup.json` | beIN MENA (Middle East and North Africa) | QA | ~168 |
+| `TZ_Azam-TV_lineup.json` | Azam TV | TZ | ~146 |
+| `TZ_DStv-Premium_lineup.json` | DStv Premium | TZ | ~192 |
+| `TZ_Combined_lineup.json` | TZ Combined (Azam TV + DStv Premium) | TZ | ~310 |
 
 The beIN MENA lineup is regional rather than single country, so its country filtering is partial. Its filename country code is QA, which rejects streams tagged for a country outside the region: an Australian, Belgian or French beIN feed will not attach to one of its channels. Streams tagged for another Middle East or North Africa country, and streams tagged AR for Arabic, are treated as untagged and are kept, which is deliberate because those are the tags the region's own feeds carry.
 
