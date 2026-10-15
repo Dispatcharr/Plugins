@@ -40,6 +40,12 @@ For code changes, CodeQL scans submitted source. ClamAV scans submitted files an
 
 The validation workflow posts a result comment on the pull request. A pull request from an account that is not allowed to modify any affected plugin is closed automatically with instructions.
 
+## Disclaimer
+
+- All external tools, integrations, and services are **used at your own risk**.
+- Users are responsible for verifying the integrity and behavior of any code they choose to run.
+- The Dispatcharr team is **not liable** for any damage, data loss, or security issues resulting from the use of shared tools or services.
+
 ## License
 
 The registry code, workflows, and documentation are available under the

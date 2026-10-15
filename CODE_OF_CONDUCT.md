@@ -15,8 +15,15 @@ Dispatcharr welcomes contributions that help people manage content they are auth
 6. **No third-party terms violations:** Do not violate the license, terms of service, or acceptable-use policy of a service that the plugin integrates with.
 7. **No sandbox or capability-list circumvention:** Do not bypass the plugin sandbox or circumvent required capability declarations (for manifest versions where they are required).
 8. **No incomplete pull requests:** Do not submit a pull request with a blank or materially incomplete description. Doing so may result in auto-merge privileges being revoked.
+9. **Open source licensing required:** Every plugin must be released under an OSI-approved open source license.
 
 These rules may change at any time without notice, at the discretion of the Dispatcharr team.
+
+## Disclaimer
+
+- All external tools, integrations, and services are **used at your own risk**.
+- Users are responsible for verifying the integrity and behavior of any code they choose to run.
+- The Dispatcharr team is **not liable** for any damage, data loss, or security issues resulting from the use of shared tools or services.
 
 ## Reporting and enforcement
 

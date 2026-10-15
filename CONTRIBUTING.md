@@ -137,6 +137,12 @@ CodeQL scans submitted code for security findings. ClamAV scans submitted files 
 
 Only repository maintainers may change `.github/`. Pull requests from blocked authors or for blocked plugins are closed automatically. A pull request whose author cannot modify any changed plugin is also closed automatically.
 
+## Disclaimer
+
+- All external tools, integrations, and services are **used at your own risk**.
+- Users are responsible for verifying the integrity and behavior of any code they choose to run.
+- The Dispatcharr team is **not liable** for any damage, data loss, or security issues resulting from the use of shared tools or services.
+
 ## Versioning updates
 
 Use a three-segment version in `MAJOR.MINOR.PATCH` form. We recommend following [semantic versioning](https://semver.org/): increment PATCH for fixes, MINOR for backward-compatible features, and MAJOR for breaking changes.
