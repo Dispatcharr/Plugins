@@ -1,3 +1,6 @@
+> [!CAUTION]
+> The repository's workflows recently changed. Please bear with us while we work through expected issues and hiccups. [Report a workflow issue](https://github.com/Dispatcharr/Plugins/issues/new?template=repo-issue.yml).
+
 # Dispatcharr Plugin Repository
 
 This repository distributes plugins for Dispatcharr. Develop, test, and release your plugin in its own repository. Submit a pull request here when a version is ready for public use.
@@ -25,9 +28,9 @@ Review the [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a plugin. It 
 
 ## Issues and support
 
-Use this repository's issue tracker for registry matters: validation or publishing workflow problems, submission-process issues, repository tooling, and documentation errors. [Report a repository issue](../../issues/new?template=repo-issue.yml).
+Use this repository's issue tracker for registry matters: validation or publishing workflow problems, submission-process issues, repository tooling, and documentation errors. [Report a repository issue](https://github.com/Dispatcharr/Plugins/issues/new?template=repo-issue.yml).
 
-For bugs, compatibility problems, support requests, or feature requests for a specific plugin, use that plugin's source repository or its thread in the [Dispatcharr Discord](https://discord.gg/Sp45V5BcxU). To remove a published version from the registry, [submit a Version Removal Request](../../issues/new?template=version-removal-request.yml).
+For bugs, compatibility problems, support requests, or feature requests for a specific plugin, use that plugin's source repository or its thread in the [Dispatcharr Discord](https://discord.gg/Sp45V5BcxU). To remove a published version from the registry, [submit a Version Removal Request](https://github.com/Dispatcharr/Plugins/issues/new?template=version-removal-request.yml).
 
 ## Pull request validation
 

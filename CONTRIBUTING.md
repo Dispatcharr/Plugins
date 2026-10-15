@@ -1,3 +1,6 @@
+> [!CAUTION]
+> The repository's workflows recently changed. Please bear with us while we work through expected issues and hiccups. [Report a workflow issue](https://github.com/Dispatcharr/Plugins/issues/new?template=repo-issue.yml).
+
 # Contributing a Dispatcharr Plugin
 
 This repository is a public plugin registry, not a plugin development environment. Build, test, and iterate in your own repository. Open a pull request here when a stable version is ready for distribution.
@@ -96,11 +99,11 @@ At least one of `author` or `maintainers` must name the GitHub account opening t
 
 ## Issues and support
 
-Use this repository's issue tracker for registry matters: validation or publishing workflow problems, submission-process issues, repository tooling, and documentation errors. [Report a repository issue](../../issues/new?template=repo-issue.yml).
+Use this repository's issue tracker for registry matters: validation or publishing workflow problems, submission-process issues, repository tooling, and documentation errors. [Report a repository issue](https://github.com/Dispatcharr/Plugins/issues/new?template=repo-issue.yml).
 
 Do not use it for bugs, compatibility problems, support requests, or feature requests for a specific plugin. Use the plugin's own source repository, linked in its `plugin.json`, or its thread in the [Dispatcharr Discord](https://discord.gg/Sp45V5BcxU).
 
-To remove a published plugin version from the registry, [submit a Version Removal Request](../../issues/new?template=version-removal-request.yml).
+To remove a published plugin version from the registry, [submit a Version Removal Request](https://github.com/Dispatcharr/Plugins/issues/new?template=version-removal-request.yml).
 
 ## Submit the pull request
 
@@ -157,4 +160,4 @@ The registry publishes a versioned ZIP and a `-latest` alias GitHub Release, cal
 
 ## Remove a published version
 
-To request removal of a version, open a [Version Removal Request](../../issues/new/choose). A maintainer runs the yank workflow. If the removed version was latest, the prior version becomes latest. If it was the only version, the plugin is removed from the registry. Existing downloads are unaffected.
+To request removal of a version, open a [Version Removal Request](https://github.com/Dispatcharr/Plugins/issues/new?template=version-removal-request.yml). A maintainer runs the yank workflow. If the removed version was latest, the prior version becomes latest. If it was the only version, the plugin is removed from the registry. Existing downloads are unaffected.
