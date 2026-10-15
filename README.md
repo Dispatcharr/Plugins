@@ -66,6 +66,7 @@ Speeds up channel startup for low-bitrate (usually audio only) streams by loweri
 
 ---
 
+
 ### [Channel Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-mapparr/README.md)
 
 **Version:** `1.26.2881225` | **Author:** PiratesIRC | **Last Updated:** Oct 15 2026, 12:43 UTC
@@ -83,6 +84,7 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 **Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`2e4d8a9`](https://github.com/Dispatcharr/Plugins/commit/2e4d8a9d05aa01b4f6c4f0cea38f34cbe5ecc8fa)
 
 ---
+
 
 ### [Clapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/clapparr/README.md)
 
@@ -102,6 +104,7 @@ The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and epis
 
 ---
 
+
 ### [Could Not Dispatch](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/could-not-dispatch/README.md)
 
 **Version:** `0.5.0` | **Author:** PilaScat | **Last Updated:** Oct 06 2026, 23:20 UTC
@@ -118,6 +121,7 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ---
 
+
 ### [Decypharr VOD](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/decypharr-vod/README.md)
 
 **Version:** `1.0.7` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 02 2026, 18:22 UTC
@@ -133,6 +137,7 @@ Native Dispatcharr VOD integration for Decypharr media, providing automatic scan
 **Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/decypharr-vod) | **Last Change:** [`2055cc8`](https://github.com/Dispatcharr/Plugins/commit/2055cc80f96ee26d0ebf3d5adfa2dd73c6bdf0d7)
 
 ---
+
 
 ### [Dispatcharr Exporter](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dispatcharr-exporter/README.md)
 
@@ -152,6 +157,7 @@ Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitori
 
 ---
 
+
 ### [Ranked Matchups (Top Games)](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dispatcharr-ranked-matchups/README.md)
 
 **Version:** `1.35.0` | **Author:** Jacob-Lasky | **Last Updated:** Oct 15 2026, 17:08 UTC
@@ -167,6 +173,7 @@ Never miss a good game. Scores every upcoming game across 39 leagues, tours and 
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-ranked-matchups) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dispatcharr-ranked-matchups/README.md) | **Last Change:** [`cd25137`](https://github.com/Dispatcharr/Plugins/commit/cd25137b98fb22f49124d5604341dbd2a7a5c3ca)
 
 ---
+
 
 ### [Dispatchwrapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dispatchwrapparr/README.md)
 
@@ -186,6 +193,7 @@ An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 
 ---
 
+
 ### [Dustarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dustarr/README.md)
 
 **Version:** `1.26.2832018` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 20:24 UTC
@@ -204,6 +212,7 @@ Records which channels are actually watched and reports the ones that are not, s
 
 ---
 
+
 ### [EPG & Sports Editor](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/epg-and-sports-editor/README.md)
 
 **Version:** `0.5.08` | **Author:** jstevenscl | **Last Updated:** Oct 03 2026, 21:37 UTC
@@ -219,6 +228,7 @@ Transform and clean your EPG data using regex and find/replace rules. Creates vi
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epg-and-sports-editor) | **Last Change:** [`d929e64`](https://github.com/Dispatcharr/Plugins/commit/d929e64c0ea5aca533ef4b538fea6a5143761e66)
 
 ---
+
 
 ### [EPG Janitor](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/epg-janitor/README.md)
 
@@ -238,6 +248,7 @@ Scans for channels with EPG assignments but no program data. Auto-matches EPG to
 
 ---
 
+
 ### [Event Channel Managarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/event-channel-managarr/README.md)
 
 **Version:** `1.26.2832019` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 20:25 UTC
@@ -256,6 +267,7 @@ Automates channel visibility by hiding channels without events and showing those
 
 ---
 
+
 ### [Gluetun Rotate](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/gluetun-rotate/README.md)
 
 **Version:** `0.4.0` | **Author:** PilaScat | **Last Updated:** Oct 07 2026, 00:03 UTC
@@ -271,6 +283,7 @@ Moves Gluetun to another VPN server when the IPTV provider refuses the current e
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/gluetun-rotate) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/gluetun-rotate/README.md) | **Last Change:** [`4b4e9db`](https://github.com/Dispatcharr/Plugins/commit/4b4e9db4f79245acaabfe246307e04da5de5dd57)
 
 ---
+
 
 ### [IPTV Checker](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/iptv-checker/README.md)
 
@@ -290,6 +303,7 @@ Check IPTV stream status and quality with ffprobe, then rename, move, restore or
 
 ---
 
+
 ### [Lineuparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/lineuparr/README.md)
 
 **Version:** `1.26.2881058` | **Author:** PiratesIRC | **Last Updated:** Oct 15 2026, 11:03 UTC
@@ -308,6 +322,7 @@ Mirror real-world provider channel lineups by creating channel groups, channels,
 
 ---
 
+
 ### [M3U Expiration Notifier](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/m3u-expiration-notifier/README.md)
 
 **Version:** `1.0.0` | **Author:** barryanderson | **Last Updated:** Jul 17 2026, 00:26 UTC
@@ -323,6 +338,7 @@ Checks your M3U account expiration dates on a schedule and emails you before (an
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/m3u-expiration-notifier) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/m3u-expiration-notifier/README.md) | **Last Change:** [`af83e50`](https://github.com/Dispatcharr/Plugins/commit/af83e5054bf456bbe78b841eabc3a3373abbbae1)
 
 ---
+
 
 ### [Multiview](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/multiview/README.md)
 
@@ -342,6 +358,7 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
 ---
 
+
 ### [Newsflasharr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/newsflasharr/README.md)
 
 **Version:** `1.26.2832058` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 21:19 UTC
@@ -360,6 +377,7 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 
 ---
 
+
 ### [Packet Slapper](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/packet-slapper/README.md)
 
 **Version:** `1.0.3` | **Author:** write-erase | **Last Updated:** Oct 06 2026, 22:16 UTC
@@ -375,6 +393,7 @@ Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure spee
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/packet-slapper) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/packet-slapper/README.md) | **Last Change:** [`c2d4441`](https://github.com/Dispatcharr/Plugins/commit/c2d44413106619a95d620c87d0067b29109872da)
 
 ---
+
 
 ### [PWS - Pirate Weatharr Station](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/pirate-weatharr-station/README.md)
 
@@ -392,6 +411,7 @@ TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to t
 
 ---
 
+
 ### [Profilarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/profilarr/README.md)
 
 **Version:** `2.1.6` | **Author:** Tw1zT3d2four7 | **Last Updated:** Sep 24 2026, 04:31 UTC
@@ -407,6 +427,7 @@ Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directl
 **Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/profilarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/profilarr/README.md) | **Last Change:** [`f5a6a0b`](https://github.com/Dispatcharr/Plugins/commit/f5a6a0bd3da24796156d458289cd813bf713e9d6)
 
 ---
+
 
 ### [reservoarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/reservoarr/README.md)
 
@@ -426,6 +447,7 @@ Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dyi
 
 ---
 
+
 ### [Segmentarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/segmentarr/README.md)
 
 **Version:** `1.5.7` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 09 2026, 14:25 UTC
@@ -441,6 +463,7 @@ HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams in
 **Maintainers:** Tw1zT3d2four7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/segmentarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/segmentarr/README.md) | **Last Change:** [`56c2220`](https://github.com/Dispatcharr/Plugins/commit/56c222040c2a2357c79de3d96d4142cbeeed01b6)
 
 ---
+
 
 ### [Stream Dripper](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-dripper/README.md)
 
@@ -460,6 +483,7 @@ Automatically drops all active streams once per day at a configured time, with a
 
 ---
 
+
 ### [Stream-Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-mapparr/README.md)
 
 **Version:** `1.26.2841900` | **Author:** PiratesIRC | **Last Updated:** Oct 11 2026, 19:06 UTC
@@ -477,6 +501,7 @@ Automatically add matching streams to channels based on name similarity and qual
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/stream-mapparr/README.md) | **Last Change:** [`0bccc7e`](https://github.com/Dispatcharr/Plugins/commit/0bccc7eebc3dc3a39baf16702b5d59abf8a86db9)
 
 ---
+
 
 ### [Telegram Alerts](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/telegram-alerts/README.md)
 
@@ -496,6 +521,7 @@ Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Include
 
 ---
 
+
 ### [Ticker](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/ticker/README.md)
 
 **Version:** `0.5.04` | **Author:** jstevenscl | **Last Updated:** Oct 13 2026, 03:29 UTC
@@ -511,6 +537,7 @@ Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports 
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/ticker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/ticker/README.md) | **Last Change:** [`12e6ac1`](https://github.com/Dispatcharr/Plugins/commit/12e6ac1b921157e685777e5816a77a4959088aac)
 
 ---
+
 
 ### [Twitcharr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/twitcharr/README.md)
 
@@ -528,6 +555,7 @@ Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV gu
 
 ---
 
+
 ### [Underfed](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/underfed/README.md)
 
 **Version:** `0.8.0` | **Author:** PilaScat | **Last Updated:** Oct 12 2026, 14:28 UTC
@@ -543,6 +571,7 @@ Moves a channel off a source that is starving it, drifting its sound or refusing
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/underfed) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/underfed/README.md) | **Last Change:** [`7caef90`](https://github.com/Dispatcharr/Plugins/commit/7caef90467b4318d946777387b150999cc4f35f5)
 
 ---
+
 
 ### [VOD Manager](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/vod-manager/README.md)
 
@@ -560,6 +589,7 @@ Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the ver
 
 ---
 
+
 ### [VOD Probe](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/vod-probe/README.md)
 
 **Version:** `1.3.3` | **Author:** oxios0x00 | **Last Updated:** Oct 10 2026, 10:04 UTC
@@ -575,6 +605,7 @@ Probes the real quality of each VOD relation (movies and every episode of every 
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/vod-probe) | **Last Change:** [`b52f675`](https://github.com/Dispatcharr/Plugins/commit/b52f675f54ab92cb0c6312aa53dce7b53d20c5b6)
 
 ---
+
 
 ### [VOD to Media Library](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/vod2mlib/README.md)
 
@@ -594,6 +625,7 @@ Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD cata
 
 ---
 
+
 ### [Waybill](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/waybill/README.md)
 
 **Version:** `1.3.0` | **Author:** Matthew-Beckett | **Last Updated:** May 12 2026, 19:36 UTC
@@ -611,6 +643,7 @@ Waybill matches, renames, and organizes any streams no matter the provider. Infi
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/waybill) | **Last Change:** [`cdd18dd`](https://github.com/Dispatcharr/Plugins/commit/cdd18dd7f396035b9cd486d3e45375eed3bcc744)
 
 ---
+
 
 ### [YouTubearr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/youtubearr/README.md)
 
@@ -631,6 +664,7 @@ Zero-dependency YouTube livestream plugin with automatic monitoring and configur
 ---
 
 
+
 ## Deprecated Plugins
 
 These plugins are deprecated and may be removed in the future.
@@ -645,4 +679,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 15 2026, 17:09 UTC*
+*Last updated: Oct 15 2026, 19:40 UTC*
