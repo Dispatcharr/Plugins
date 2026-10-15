@@ -6,6 +6,11 @@ import json
 import os
 import secrets
 
+try:
+    from .regex_order import regex_sort_key
+except ImportError:
+    from regex_order import regex_sort_key  # script context (compositor_worker.py)
+
 
 def _load_plugin_config() -> dict:
     config_path = os.path.join(os.path.dirname(__file__), "plugin.json")
@@ -115,7 +120,7 @@ _VIDEO_ENCODER_FIELD = {
     "type": "select",
     "default": "libx264",
     "options": [],  # populated from _ENCODER_OPTIONS in build_plugin_fields
-    "description": "Software encoder (libx264) or hardware GPU encoder. NVENC requires NVIDIA GPU; QSV/VAAPI require Intel/AMD GPU with /dev/dri support.",
+    "description": "Software encoder or hardware GPU encoder. Hardware profiles automatically use GPU tile composition when this FFmpeg build supports it; otherwise streams retain CPU composition. NVENC requires NVIDIA GPU; QSV/VAAPI require Intel/AMD GPU with /dev/dri support.",
 }
 
 # Per-encoder quality / preset fields
@@ -600,18 +605,20 @@ def _build_layout_channel_options(layout_id: str, settings: dict, ch_count: int,
         from apps.channels.models import Channel
         if selector_type == "regex" and regex_pattern:
             excluded = _get_multiview_channel_ids() | _get_streamless_channel_ids()
-            for ch in (
+            regex_sort = settings.get(f"multiview_{layout_id}_regex_sort", "channel_number")
+            matched = list(
                 Channel.objects.filter(name__iregex=regex_pattern)
                 .exclude(id__in=excluded)
-                .order_by("channel_number")[:ch_count]
-                .values("id", "name", "channel_number")
-                .distinct()
-            ):
-                if ch["id"] in seen:
+            )
+            matched.sort(key=lambda ch: regex_sort_key(
+                regex_pattern, ch.name, ch.channel_number, regex_sort,
+            ))
+            for ch in matched[:ch_count]:
+                if ch.id in seen:
                     continue
-                seen.add(ch["id"])
-                num = int(ch["channel_number"]) if ch["channel_number"] is not None else ""
-                opts.append({"value": str(ch["id"]), "label": f"{num} - {ch['name']}"})
+                seen.add(ch.id)
+                num = int(ch.channel_number) if ch.channel_number is not None else ""
+                opts.append({"value": str(ch.id), "label": f"{num} - {ch.name}"})
         else:
             for m in range(1, ch_count + 1):
                 ch_id = settings.get(f"multiview_{layout_id}_channel_{m}", "_none")
@@ -701,14 +708,31 @@ def _build_multiview_block(layout_id: str, position: int, ch_count: int, selecto
     if is_regex:
         fields.append(
             {
+                "id": f"multiview_{layout_id}_regex_sort",
+                "label": f"Layout {n} Regex Sort",
+                "type": "select",
+                "default": "channel_number",
+                "options": [
+                    {"value": "channel_number", "label": "Channel number"},
+                    {"value": "channel_number_reverse", "label": "Channel number (descending)"},
+                    {"value": "pattern", "label": "Top-level regex alternatives"},
+                ],
+                "description": (
+                    "Top-level regex alternatives uses | alternatives from left to right. "
+                    "For example, event-a|event-b|event-c puts matching channels in that order."
+                ),
+            }
+        )
+        fields.append(
+            {
                 "id": f"multiview_{layout_id}_regex_pattern",
                 "label": f"Layout {n} Channel Pattern",
-                "type": "string",
+                "type": "text",
                 "default": "",
-                "placeholder": r"e.g. TSN\s*\d or ^CA \|",
+                "placeholder": r"e.g. ^Event \| (Alpha|Beta)$",
                 "description": (
                     "Case-insensitive regex matched against channel names. "
-                    "Channels are sorted by channel number before tiling."
+                    "The field wraps long patterns for easier editing."
                 ),
             }
         )

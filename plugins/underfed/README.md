@@ -9,14 +9,16 @@ Nothing times out, nothing errors, nothing switches. The buffer drains, the play
 out of segments, and viewers sit there watching a stall that no log explains.
 
 Underfed reads the number that already exists and that nothing else acts on. It also reads
-a second one: the timestamp discontinuities ffmpeg logs when a source's sound drifts away
-from the picture.
+the timestamp discontinuities ffmpeg logs when a source's sound drifts away from the
+picture, and the share of the picture or the sound a source is missing while it arrives at
+full rate.
 
 ## Requirements
 
 - Dispatcharr with the plugin system (the Plugins page)
 - [reservoarr](https://github.com/brko7/reservoarr) as the stream profile, which writes the
-  telemetry this plugin reads
+  telemetry this plugin reads; the missing picture or sound rule needs the `vholes=` and
+  `aholes=` fields, proposed to reservoarr for 6.3.9 and not in a release yet
 - A Dispatcharr API key
 
 ## Install
@@ -34,12 +36,15 @@ changes nothing. Read the journal under Check status, then turn it off.
 | API key | A Dispatcharr API key, from Settings → Users. The watcher needs it to read channel status and to change source |
 | Observe only | Records what it would have done without doing it |
 | Trigger below | Share of the content rate under which a source counts as underfed. 70 is a sensible floor: a healthy source sits at 100 |
-| Confirm for | How long a shortfall, or the timestamp discontinuities, must last before acting. Short dips recover on their own |
+| Confirm for | How long a shortfall must last before acting. Short dips recover on their own |
 | Switches per hour | Per channel, over the last hour, restarts of the watcher included. Stops it bouncing between two sources that are both weak |
 | Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
 | Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
-| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm for, the source is switched. 0 turns it off |
-| Refused source held back | A source the provider answers 403 to goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
+| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm discontinuities for, the source is switched. 0 turns it off |
+| Confirm discontinuities for | How long the discontinuities must last before acting, 15 s by default. A storm is unmistakable and the sound drifts further every second, so this is shorter than Confirm for |
+| Picture or sound missing | Share of each telemetry window a source's picture or sound is missing, as reservoarr reports it in `vholes=` and `aholes=`; the worse of the two counts. A healthy source reads 0. At this share, on every line for Confirm missing picture or sound for, the source is switched. 0 turns it off; with a reservoarr without `vholes=` and `aholes=`, as 6.3.8, there is nothing to read |
+| Confirm missing picture or sound for | How long the missing share must hold before acting, 30 s by default |
+| Refused source held back | A source the provider answers 403 to, or that closes the connection without sending a byte, goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
 | Dispatcharr URL | Reached from inside the container |
@@ -90,8 +95,19 @@ again. reservoarr's ffmpeg logs it in `delaybuf.log`, in pairs:
 ```
 
 A healthy source logs a handful of these a minute; that one logged up to 1,836. When a source
-stays at Timestamp discontinuities or above for the confirmation window, counted over the last
-minute, the watcher moves the channel on the same way.
+stays at Timestamp discontinuities or above for Confirm discontinuities for, counted over the
+last minute, the watcher moves the channel on the same way.
+
+A source can also arrive at full rate while whole stretches of it are missing: on 12 October
+2026 one dropped 4 s out of every 8, picture and sound, with `in` matching `crate`, no
+discontinuity and ffmpeg's `speed=` at 1.0. reservoarr, with the change proposed for 6.3.9,
+measures it on the timestamps of the incoming picture and sound and ends each telemetry line
+with `vholes=N% aholes=N%`, the share of that window each one is missing; sound that stops
+while the picture runs reads 100. It is measured before ffmpeg, so silence padded in later
+does not hide it.
+When every line of a source reads Picture or sound missing or more, for either of the two, for
+Confirm missing picture or sound for, after the warm-up, the watcher moves the channel on the
+same way. The journal says which one was missing: `what` is `video`, `audio` or `both`.
 
 It refuses to act when any of these is true:
 
@@ -129,6 +145,15 @@ refusal anyway.
 
 A channel whose chain has one source only, or whose refused source is already last, is left
 alone: there is nowhere lower to go.
+
+A source that **closes the connection without sending a byte** is treated the same way (0.7.0).
+Some edges accept the connection, hold it for about twenty seconds and then close it, and
+Dispatcharr retries the same source three times before it moves on: about 43 seconds, past the
+30 seconds after which some clients give up. On the evening of 10 October 2026 one such source
+cost six viewers in a row between 23 and 50 seconds each. The sign is reservoarr's `giving up`
+right after an `upstream EOF`. Other give-ups do not count: the provider's MP4 placeholder means
+the channel has nothing on air, so every source of the chain would answer with it, and a 407 or a
+520 is the provider or the VPN, not the source.
 
 ## What this does not fix
 

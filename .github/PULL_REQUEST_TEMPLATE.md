@@ -17,7 +17,13 @@
 
 ## About this submission
 
-<!-- Briefly describe the change: new plugin, update, metadata change, etc. -->
+<!--
+Briefly describe the change: new plugin, update, metadata change, etc.
+
+Use of this template is optional, but every pull request must include a meaningful description. A blank or materially incomplete description may result in auto-merge privileges being revoked.
+
+If submitting through automation, consider including a link to the relevant changelog, release notes, or other change summary.
+-->
 
 ## Pre-submission checklist
 

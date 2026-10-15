@@ -4,7 +4,7 @@ A Dispatcharr plugin that automatically manages channel visibility based on EPG 
 > **New to Dispatcharr plugins?** Start with the **[Dispatcharr Plugin Workflow guide](https://piratesirc.github.io/Dispatcharr-Plugin-Workflow/)**.
 > It explains what each plugin and tool does, where they overlap, and what order to use them in.
 
-<sub>The **visibility changes** badge is the number of channels this plugin has actually switched on or off on the maintainer's own installation, counted from its run ledger and refreshed twice a day. It counts channels that changed, not channels looked at: a channel that stays in the same state across many scheduled runs is not counted again, and channels merely scanned, along with dry runs, are excluded. Both directions are included, because on that installation most of the work is re-hiding channels an M3U refresh had re-enabled. The ledger starts when it was first deployed rather than at the plugin's first release, so this is a total since then, not a lifetime one. It is one installation's total, not a project metric.</sub>
+<sub>The badges count installations that send anonymous usage counts. See <a href="#anonymous-usage-counts">Anonymous usage counts</a>.</sub>
 
 ## Features
 
@@ -18,15 +18,18 @@ period you set, has passed.
 
 **Reads either the channel name or the stream name.** Providers that leave the
 channel name fixed and put the game in the stream name are handled by switching one
-setting.
+setting, or by listing just those channel groups in **Stream Name Groups** so other
+groups keep reading channel names. On Dispatcharr 0.32.0 or later such a group can
+also get its own guide source that reads the stream name.
 
 **Fills the guide for channels that have no EPG.** An optional plugin-managed dummy
 EPG source renders the event title during its window, `Upcoming at <time>: <title>`
 before it and `Ended at <time>: <title>` after, in the viewer's local time. Channels
 whose names claim a different timezone get their own source rather than being pulled
-back and forth. Two channel-name layouts are understood: the US form
+back and forth. Three channel-name layouts are understood: the US form
 (`PPV EVENT 12: Title (MM.DD HH:MM AM/PM TZ)`, and bare numbered slots such as
-`07 - 8/14 7pm Broncos at Falcons`) and the Swedish pipe-delimited form.
+`07 - 8/14 7pm Broncos at Falcons`), the Swedish pipe-delimited form, and the `AT`
+form with the date after an `@` (`NHL 01: Kraken @ Red Wings @ 9 Oct 07:00 PM ET`).
 
 **Gives a channel group its own guide source.** Groups whose events are labelled in
 different timezones, or that need different durations or title patterns, can each be
@@ -55,8 +58,9 @@ silent.
 **Previews safely.** Dry Run reports what would change and writes the CSV without
 touching a single channel or creating any EPG binding.
 
-**Makes no outbound network request.** The plugin talks to Dispatcharr's database
-and nothing else.
+**Makes one outbound request, an anonymous usage count.** The plugin talks to Dispatcharr's database
+and to one HTTPS endpoint, plugin-stats.dpas.workers.dev, which receives the anonymous usage
+count. You can switch that off in settings. See [Anonymous usage counts](#anonymous-usage-counts).
 
 ## Requirements
 
@@ -82,6 +86,44 @@ are the ones worth getting right before the first applied run.
 | **[Development notes](https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/blob/main/docs/DEVELOPMENT.md)** | The runtime model, code map, deploying, testing, adding a setting or action, the release procedure, and how to contribute |
 | **[Documentation index](https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/blob/main/docs/README.md)** | The above, described by who is reading |
 
+## Anonymous usage counts
+
+The Visibility Changes and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and runs at
+least one action or scheduled scan. Visibility Changes counts the channels this
+plugin switched on or off in applied runs, the same transition count the run
+ledger records (see the user guide's Run Ledger section). Dry runs and runs that
+change no channel are not counted. An M3U refresh sends nothing unless Auto-rescan after M3U refresh is on.
+
+When an action or a scheduled scan finishes, the plugin sends this plugin's
+Visibility Changes total and a random id for this plugin on this install to the
+plugin author's counter at plugin-stats.dpas.workers.dev. It sends at most once an hour, or ten minutes after the last successful send when a run has just changed channel visibility. A run that finishes inside that gap is not sent later: the total goes out with the first later action or scheduled scan that is an hour past the last successful send, or with a later run that changes visibility once ten minutes have passed.
+
+The server stores that id with the total and the date of the last report, and
+keeps them until this install unticks the setting and the delete succeeds, or
+until the plugin author removes them by hand. An install that stops reporting
+still counts toward Visibility Changes. The connection shows the server your
+public IP address; the server uses it only to limit abuse and does not store it
+in its database, though when an install first registers it keeps a salted
+one-way hash of it (of its /64 block for IPv6) for up to three days. Cloudflare,
+which hosts the server, keeps its own request logs. No names, channels, streams,
+URLs, providers or settings are sent. The figures are self-reported by installs
+and capped by the server, not verified.
+
+What counts as an active install: an install that sent at least one report in
+the last 30 UTC days. A badge changes after the server's hourly recount, which
+runs at the start of each UTC hour, and Shields may cache the badge for up to an
+hour more, so a new report can take up to about two hours to show.
+
+The setting is the last one in the settings form, in its own section. Unticking
+it takes effect when the next action or scheduled scan finishes; the plugin then
+asks the server to delete this install's figures. Once the server confirms the
+delete, the plugin forgets its id, and ticking the setting again later starts a
+new one; if the delete could not reach the server, the plugin keeps the id and
+retries. The plugin keeps that id and the timing of its reports in
+/data/plugin_stats/event-channel-managarr/ (install_id, sent, backoff, disabled,
+delete_backoff, lock). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked leaves the old figures on the server, and the new id then sends the full total again, so the badge counts it twice.
+
 ## Disclaimer
 
 **Event Channel Managarr provides no television content of any kind.** It supplies no channels, no
@@ -92,11 +134,11 @@ already exists in **your** Dispatcharr installation.
 What it reads is channel *names* and the programme data already stored against your channels. It
 parses event titles, dates and times out of those names to decide which channels currently
 have an event. **It never opens, reads, decodes, records, restreams or redistributes a stream**, and
-it never reads a stream URL. **It makes no outbound network request at all.** The update checker that
+it never reads a stream URL. **Its only outbound network request is the anonymous usage count** to plugin-stats.dpas.workers.dev, which you can switch off in settings (see [Anonymous usage counts](#anonymous-usage-counts)). The update checker that
 once called the GitHub releases API was removed in `1.26.2251616`, along with the code behind it.
 
 What it writes is confined to your own Dispatcharr database and its data directory: channel
-visibility in the profiles you select, bindings to a dummy EPG source it manages, and CSV exports.
+visibility in the profiles you select, bindings to a dummy EPG source it manages, and CSV exports, plus one small folder for the anonymous usage count, /data/plugin_stats/event-channel-managarr/ (see [Anonymous usage counts](#anonymous-usage-counts)).
 The main scan has a **Dry Run** that writes nothing and exports what it *would* do to CSV. Run that
 first. The other actions that change data (**Run Now**, **Remove EPG from Hidden Channels**, **Clear
 CSV Exports**, **Cleanup Orphaned Tasks**) each ask for confirmation before they act.

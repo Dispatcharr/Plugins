@@ -1,0 +1,4 @@
+name: dispatcharr/plugin-capability-security-queries
+version: 0.2.0
+dependencies:
+  codeql/python-all: "*"

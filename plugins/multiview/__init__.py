@@ -45,6 +45,21 @@ def _load_submodule(name: str):
     return mod
 
 
+def _m3u_content(settings: dict, order: list) -> str:
+    """Build the playlist with numbering that follows the persisted layout order."""
+    lines = ["#EXTM3U"]
+    for number, layout_id in enumerate(order, start=1):
+        name = settings.get(f"multiview_{layout_id}_name", f"Multiview {layout_id}") or f"Multiview {layout_id}"
+        safe_name = name.replace('"', "'")  # quotes break EXTINF attribute parsing
+        stream_url = f"http://127.0.0.1:{DEFAULT_SERVER_PORT}/stream/{layout_id}"
+        lines.append(
+            f'#EXTINF:-1 tvg-id="mv-{layout_id}" tvg-chno="{number}" '
+            f'tvg-name="{safe_name}",{safe_name}'
+        )
+        lines.append(stream_url)
+    return "\n".join(lines) + "\n"
+
+
 def _config():
     return _load_submodule("config")
 
@@ -216,15 +231,7 @@ class Plugin:
             settings, _changed = config_mod.ensure_custom_layout_order(settings)
         order = settings.get("multiview_order", [])
 
-        lines = ["#EXTM3U"]
-        for n in order:
-            name = settings.get(f"multiview_{n}_name", f"Multiview {n}") or f"Multiview {n}"
-            safe_name = name.replace('"', "'")  # quotes break EXTINF attribute parsing
-            stream_url = f"http://127.0.0.1:{DEFAULT_SERVER_PORT}/stream/{n}"
-            lines.append(f'#EXTINF:-1 tvg-id="mv-{n}" tvg-name="{safe_name}",{safe_name}')
-            lines.append(stream_url)
-
-        m3u_content = "\n".join(lines) + "\n"
+        m3u_content = _m3u_content(settings, order)
 
         m3u_path = os.path.join(_PLUGIN_DIR, "multiview.m3u")
         try:

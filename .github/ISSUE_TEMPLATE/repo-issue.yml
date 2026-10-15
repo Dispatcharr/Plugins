@@ -5,6 +5,9 @@ body:
   - type: markdown
     attributes:
       value: |
+        > **Workflow transition**
+        > The repository's workflows recently changed. Please bear with us while we work through expected issues and hiccups.
+
         > **Plugin issues belong elsewhere.**
         > If your issue is about a specific plugin (bugs, feature requests, compatibility), use one of these instead:
         > - The plugin's own GitHub repository (linked in its `plugin.json`)

@@ -6,6 +6,7 @@ import os
 from datetime import timedelta, timezone as dt_timezone
 
 from . import config as _mvconfig
+from .regex_order import regex_sort_key
 
 logger = logging.getLogger(__name__)
 
@@ -21,12 +22,15 @@ def resolve_channel_names(settings: dict, n: int) -> list:
             if not pattern:
                 return []
             excluded = _mvconfig._get_multiview_channel_ids() | _mvconfig._get_streamless_channel_ids()
-            return list(
+            regex_sort = settings.get(f"multiview_{n}_regex_sort", "channel_number")
+            matched = list(
                 Channel.objects.filter(name__iregex=pattern)
                 .exclude(id__in=excluded)
-                .order_by("channel_number")[:ch_count]
-                .values_list("name", flat=True)
             )
+            matched.sort(key=lambda ch: regex_sort_key(
+                pattern, ch.name, ch.channel_number, regex_sort,
+            ))
+            return [ch.name for ch in matched[:ch_count]]
         names = []
         for m in range(1, ch_count + 1):
             ch_id = settings.get(f"multiview_{n}_channel_{m}", "_none")

@@ -20,7 +20,7 @@ import zipfile
 
 logger = logging.getLogger(__name__)
 
-PYAV_VERSION = "14.2.0"
+PYAV_VERSION = "18.1.0"
 PY_TAG = "cp313"
 
 _PLUGIN_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -76,16 +76,24 @@ def _save_settings(updates: dict):
     cfg.save()
 
 
-def _find_wheel(arch: str):
-    """Return (url, filename) of the cp313 manylinux wheel for this arch."""
+def _matches_wheel(fn: str, arch: str) -> bool:
+    """Whether *fn* is a compatible manylinux PyAV wheel for this runtime."""
     info = ARCHES[arch]
+    # PyAV 17+ distributes a cp311-abi3 wheel that is compatible with CPython
+    # 3.13. Older releases used a cp313-specific wheel, so support both tags.
+    python_compatible = f"-{PY_TAG}-" in fn or "-cp311-abi3-" in fn
+    return (fn.endswith(".whl") and python_compatible and "manylinux" in fn
+            and info["token"] in fn)
+
+
+def _find_wheel(arch: str):
+    """Return (url, filename) of the compatible manylinux wheel for *arch*."""
     api = f"https://pypi.org/pypi/av/{PYAV_VERSION}/json"
     with urllib.request.urlopen(api, timeout=30) as r:
         data = json.load(r)
     for f in data.get("urls", []):
         fn = f.get("filename", "")
-        if (fn.endswith(".whl") and f"-{PY_TAG}-" in fn
-                and "manylinux" in fn and info["token"] in fn):
+        if _matches_wheel(fn, arch):
             return f["url"], fn
     raise RuntimeError(
         f"no {PY_TAG} manylinux {info['token']} wheel in av {PYAV_VERSION} on PyPI")

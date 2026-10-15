@@ -1,6 +1,6 @@
 {
   "name": "VOD Probe",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Probes the real quality of each VOD relation (movies and every episode of every series version) with ffprobe in a background task and writes it into the relation's custom_properties, so every tool reading Dispatcharr's API can use it. Can also backfill missing tmdb_id/imdb_id from the provider's per-title detail endpoint, merging safely into an existing catalogue entry when one already has the id. Dry run by default.",
   "author": "oxios0x00",
   "license": "MIT",

@@ -56,6 +56,9 @@ Over 200 built-in channel aliases, plus your own in JSON. Every setting and acti
 | `NL_ODIDO_lineup.json` | ODIDO | NL | ~155 |
 | `NL_KPN_lineup.json` | KPN Interactive TV, television and radio | NL | ~290 |
 | `QA_beIN-MENA_lineup.json` | beIN MENA (Middle East and North Africa) | QA | ~168 |
+| `TZ_Azam-TV_lineup.json` | Azam TV | TZ | ~146 |
+| `TZ_DStv-Premium_lineup.json` | DStv Premium | TZ | ~192 |
+| `TZ_Combined_lineup.json` | TZ Combined (Azam TV + DStv Premium) | TZ | ~310 |
 
 The beIN MENA lineup is regional rather than single country, so its country filtering is partial. Its filename country code is QA, which rejects streams tagged for a country outside the region: an Australian, Belgian or French beIN feed will not attach to one of its channels. Streams tagged for another Middle East or North Africa country, and streams tagged AR for Arabic, are treated as untagged and are kept, which is deliberate because those are the tags the region's own feeds carry.
 
@@ -88,7 +91,7 @@ Remove the old plugin from the **Plugins** page, restart Dispatcharr (`docker re
 
 | Page | What is in it |
 |---|---|
-| **[User guide](https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin/blob/main/docs/USER-GUIDE.md)** | Every setting, every action, match sensitivity, country matching, custom aliases, reports and emailing, file locations, troubleshooting, and how the matching pipeline works. |
+| **[User guide](https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin/blob/main/docs/USER-GUIDE.md)** | Every setting, every action, match sensitivity, country matching, custom aliases, adding a second provider, keeping channels up to date, requesting a new lineup, reports and emailing, file locations, troubleshooting, and how the matching pipeline works. |
 | **[Lineup file format](https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin/blob/main/docs/LINEUP-FORMAT.md)** | Writing your own lineup: the JSON shape, the filename rule, per-channel aliases, and marking foreign channels. |
 
 ## Contributing
@@ -128,6 +131,25 @@ The plugin never contacts a media provider. It never opens, fetches, decodes, re
 All product names, channel names, trademarks and registered trademarks mentioned in this project or appearing in its lineup files are the property of their respective owners. This project is an independent, community-built plugin. It is not affiliated with, endorsed by, or sponsored by any television network, broadcaster, streaming service or IPTV provider, and it is not affiliated with the Dispatcharr project beyond being a plugin written for it.
 
 The software is provided as-is, without warranty of any kind, as set out in the licence. This section describes the design of the software and the author's intent. It is not legal advice. If you need to know whether your own use is lawful, ask someone qualified in your jurisdiction.
+
+## Anonymous usage counts
+
+The Channels Created and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and runs at
+least one action or sync. When an action or sync finishes, at most once an hour,
+or ten minutes after the last report when a sync has just created channels, the
+plugin sends this plugin's Channels Created total and a random id for this
+plugin on this install to the plugin author's counter at
+plugin-stats.dpas.workers.dev. The server stores that id with the total and the
+date of the last report. The connection shows the server your public IP address;
+the server uses it only to limit abuse and does not store it in its database,
+though when an install first registers it keeps a salted one-way hash of it (of
+its /64 block for IPv6) for up to three days. Cloudflare, which hosts the
+server, keeps its own request logs. No names, channels, streams, providers or
+settings are sent. The figures are self-reported by installs and capped by the
+server, not verified. Untick the setting to stop sending; this install's figures
+are deleted from the server the next time an action or sync finishes after you
+untick.
 
 ## License
 
