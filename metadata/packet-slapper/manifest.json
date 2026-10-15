@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T22:16:44Z",
+  "generated_at": "2026-10-15T21:43:37Z",
   "manifest": {
     "slug": "packet-slapper",
     "name": "Packet Slapper",
@@ -11,21 +11,33 @@
     "repo_url": "https://github.com/write-erase/packet-slapper",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-06T22:16:12Z",
+    "last_updated": "2026-10-15T21:43:06Z",
     "latest": {
-      "version": "1.0.3",
-      "commit_sha": "c2d44413106619a95d620c87d0067b29109872da",
-      "commit_sha_short": "c2d4441",
-      "build_timestamp": "2026-10-06T22:16:35Z",
-      "last_updated": "2026-10-06T22:16:12Z",
-      "checksum_md5": "b5fdaa795b88e3d30ea2c22321925a27",
-      "checksum_sha256": "de7c7a3a00b951bc5055974a5b002946d5f8e4a8569441cfd1c324f65360679b",
-      "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v1.0.3/packet-slapper.zip",
-      "latest_url": "packet-slapper-1.0.3/packet-slapper-1.0.3.zip",
-      "url": "packet-slapper-1.0.3/packet-slapper-1.0.3.zip",
-      "size": 39
+      "version": "1.0.4",
+      "commit_sha": "172f4b44d3b7063dca5a8fc1ccb005be67ab2611",
+      "commit_sha_short": "172f4b4",
+      "build_timestamp": "2026-10-15T21:43:28Z",
+      "last_updated": "2026-10-15T21:43:06Z",
+      "checksum_md5": "2be84dbd3f27df76bf6a281d423891ac",
+      "checksum_sha256": "dae9f339c9b4ef100e8e1996921a8d89fe9de5078ad05cca466a2254f9b25c9a",
+      "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v1.0.4/packet-slapper.zip",
+      "latest_url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
+      "url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
+      "size": 42
     },
     "versions": [
+      {
+        "version": "1.0.4",
+        "commit_sha": "172f4b44d3b7063dca5a8fc1ccb005be67ab2611",
+        "commit_sha_short": "172f4b4",
+        "build_timestamp": "2026-10-15T21:43:28Z",
+        "last_updated": "2026-10-15T21:43:06Z",
+        "checksum_md5": "2be84dbd3f27df76bf6a281d423891ac",
+        "checksum_sha256": "dae9f339c9b4ef100e8e1996921a8d89fe9de5078ad05cca466a2254f9b25c9a",
+        "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v1.0.4/packet-slapper.zip",
+        "url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
+        "size": 42
+      },
       {
         "version": "1.0.3",
         "commit_sha": "c2d44413106619a95d620c87d0067b29109872da",
@@ -76,5 +88,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasVzTwAKCRB+wDprTCI0\nzh5tAQDyqix0RcLvHGo0CRCABMZWldZSdmvRbb1dqE/WBPU/igEAylp/oSmpQDz9\n5HSrKTRdfHejCucryh/zTozE5lEVpwI=\n=6MgI\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatFJCwAKCRB+wDprTCI0\nzrsZAP9hdt0NFvhN5hGJ7aYc8bMeRhHzyldsi4fRfO22I5s34gD+NbZJ0GPOfRHK\nqMuG49JX24A0k+bx5SNoDeJTBB4ONAQ=\n=nhdG\n-----END PGP SIGNATURE-----"
 }
