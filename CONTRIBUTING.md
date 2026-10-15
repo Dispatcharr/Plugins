@@ -1,7 +1,7 @@
 > [!CAUTION]
 > The repository's workflows recently changed. Please bear with us while we work through expected issues and hiccups. [Report a workflow issue](https://github.com/Dispatcharr/Plugins/issues/new?template=repo-issue.yml).
 
-# Contributing a Dispatcharr Plugin
+# Contributing
 
 This repository is a public plugin registry, not a plugin development environment. Build, test, and iterate in your own repository. Open a pull request here when a stable version is ready for distribution.
 
