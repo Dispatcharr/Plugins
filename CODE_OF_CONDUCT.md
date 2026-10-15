@@ -1,3 +1,6 @@
+> [!CAUTION]
+> The repository's workflows recently changed. Please bear with us while we work through expected issues and hiccups. [Report a workflow issue](https://github.com/Dispatcharr/Plugins/issues/new?template=repo-issue.yml).
+
 # Code of Conduct
 
 Dispatcharr welcomes contributions that help people manage content they are authorized to access and distribute. Contributors are responsible for ensuring that their plugins, documentation, and support activities comply with applicable law and the rights of content owners.
