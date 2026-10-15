@@ -15,12 +15,9 @@ Contributions must not:
 7. Contact an external service for telemetry, analytics, licensing, updates, or other phone-home behavior without clearly labeling that behavior and obtaining the user's explicit consent.
 8. Are abandonware, including submissions without a committed maintainer or a plan for maintenance, transfer, or removal. (These may be removed or unlisted without warning at repository maintainer discretion.)
 9. Violate the license, terms of service, or acceptable-use policy of a service that the plugin integrates with.
+10. Submit a pull request with a blank or materially incomplete description. Doing so may result in auto-merge privileges being revoked.
 
-These rules apply to plugin source, release artifacts, metadata, documentation, pull requests, issues, discussions, and linked materials.
-
-## Expected conduct
-
-Treat other community members with respect. Keep discussion focused on the project, give constructive feedback, and do not harass, threaten, discriminate against, or publish another person's private information without permission.
+These rules may change at any time without notice, at the discretion of the Dispatcharr team.
 
 ## Reporting and enforcement
 
