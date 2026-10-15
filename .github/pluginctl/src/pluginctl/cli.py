@@ -259,12 +259,8 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
             versions = (release_data.get("manifest") or {}).get("versions") or []
             source_sha = next((str(entry.get("commit_sha") or "") for entry in versions
                                if str(entry.get("version")) == version), "")
-            if not external_upstream and previous:
-                previous_version = previous[0][len(plugin) + 1:]
-                previous_sha = next((str(entry.get("commit_sha") or "") for entry in versions
-                                     if str(entry.get("version")) == previous_version), "")
-                if previous_sha and source_sha:
-                    links.append(f"[{previous_sha[:7]}...{source_sha[:7]}]({upstream}/compare/{previous_sha}...{source_sha})")
+            if not external_upstream and source_sha:
+                links.append(f"[{source_sha[:7]}]({upstream}/commit/{source_sha})")
         except (KeyError, ValueError, TypeError):
             source_sha = ""
         pr_number, pr_url = gh.commit_pull_number(repo, source_sha) if source_sha else (None, None)

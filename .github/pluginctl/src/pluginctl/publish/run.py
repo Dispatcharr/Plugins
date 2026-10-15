@@ -209,14 +209,8 @@ def _emit_published(repository: str, changed: str, source_branch: str) -> None:
                 previous_version = previous[0][len(plugin) + 1:]
                 links.append(f"[v{previous_version}...v{version}]({upstream}/compare/v{previous_version}...v{version})")
         else:
-            previous = [entry for entry in version_util.versioned_tags(all_tags, plugin) if entry != tag]
-            if previous:
-                previous_tag = previous[0]
-                previous_version = previous_tag[len(plugin) + 1:]
-                previous_commit = next((str(entry.get("commit_sha") or "") for entry in release_versions
-                                        if str(entry.get("version")) == previous_version), "")
-                if previous_commit and commit_sha:
-                    links.append(f"[{previous_commit[:7]}...{commit_sha[:7]}]({upstream}/compare/{previous_commit}...{commit_sha})")
+            if commit_sha:
+                links.append(f"[{commit_sha[:7]}]({upstream}/commit/{commit_sha})")
         if pr_number and pr_url:
             links.append(f"[#{pr_number}]({pr_url})")
         payload["metadata"] = "-# " + " · ".join(links)
