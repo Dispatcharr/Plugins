@@ -120,6 +120,12 @@ Use one of these pull request title formats. A colon after `]` is optional.
 
 Use of the pull request template is optional, but every pull request must include a meaningful description. A blank or materially incomplete description may result in auto-merge privileges being revoked. If you submit pull requests through automation, consider configuring it to include a link to the relevant changelog, release notes, or other change summary.
 
+### Automatic merging
+
+Automatic merging is not guaranteed. It only considers cleanly mergeable, non-draft updates to existing plugins that change files only under `plugins/` and pass validation. New plugins, repository changes, mixed changes, validation failures, security findings, and pull requests marked for manual review require maintainer review.
+
+By default, automatic merging is limited to four updates per author and four updates per plugin in a rolling 24-hour period. Maintainers may change these limits, exclude authors from automatic merging, or require review for any pull request. A successful automatic merge receives the `Auto Merged` label.
+
 ## What validation checks
 
 The workflow verifies the folder name, `plugin.json` presence and syntax, required metadata, three-segment version format, author or maintainer permission, license, Dispatcharr version constraints, optional URL fields, and external-plugin requirements. It also verifies that an external ZIP can be reached.
