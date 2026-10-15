@@ -5,19 +5,9 @@ This repository distributes plugins for Dispatcharr. Develop, test, and release 
 > [!NOTE]
 > AI tools are used in this repository and may be used in plugins. Contributors are responsible for maintaining their plugins and for the output of any tools used to develop them.
 
-## Find a plugin
+## Find plugins
 
-| Resource | What it contains |
-| --- | --- |
-| [Browse published plugin metadata](https://github.com/Dispatcharr/Plugins/tree/releases) | Generated manifests and plugin READMEs |
-| [Download a plugin](https://github.com/Dispatcharr/Plugins/releases) | Versioned ZIP files and latest ZIP aliases |
-| [Read the root manifest](https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json) | Plugin metadata and download locations |
-
-```bash
-curl -O https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.json
-```
-
-The manifest has a `root_url` and each plugin's relative `latest_url`. Combine them to form a download URL. Each plugin also has an absolute `manifest_url` for its metadata on the `releases` branch.
+In Dispatcharr under **Plugins**, select **Find Plugins** to browse and install published plugins.
 
 ## Publish a plugin
 
