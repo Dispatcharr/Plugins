@@ -146,9 +146,9 @@ def test_write_manifest_uses_formatted_json_and_ignores_existing_whitespace(tmp_
     assert dest.read_text(encoding="utf-8") == json.dumps({"manifest": payload})
 
 
-def test_sign_manifest_signs_compact_payload_with_jq_newline(tmp_path, monkeypatch):
+def test_sign_manifest_uses_dispatcharr_verification_payload(tmp_path, monkeypatch):
     path = tmp_path / "manifest.json"
-    manifest = {"registry_name": "demo", "plugins": []}
+    manifest = {"registry_name": "démo", "plugins": []}
     path.write_text(json.dumps({"manifest": manifest}), encoding="utf-8")
     captured = {}
 
@@ -164,8 +164,31 @@ def test_sign_manifest_signs_compact_payload_with_jq_newline(tmp_path, monkeypat
     monkeypatch.setattr(m.subprocess, "run", run)
 
     assert m.sign_manifest(str(path), "0123456789ABCDEF", None)
-    assert captured["input"] == jsonio.dumps(manifest) + "\n"
+    assert captured["input"] == json.dumps(manifest, separators=(",", ":"), ensure_ascii=True) + "\n"
     assert json.loads(path.read_text(encoding="utf-8"))["signature"] == "signature"
+
+
+def test_sig_is_current_rejects_signature_for_an_old_payload_format(tmp_path, monkeypatch):
+    path = tmp_path / "manifest.json"
+    manifest = {"registry_name": "démo", "plugins": []}
+    path.write_text(json.dumps({"manifest": manifest, "signature": "signature"}), encoding="utf-8")
+    captured = {}
+
+    class Result:
+        def __init__(self, returncode=0, stdout=""):
+            self.returncode = returncode
+            self.stdout = stdout
+
+    def run(args, **kwargs):
+        if "--list-packets" in args:
+            return Result(stdout="issuer key ID 0123456789ABCDEF")
+        captured["input"] = kwargs["input"]
+        return Result(returncode=1)
+
+    monkeypatch.setattr(m.subprocess, "run", run)
+
+    assert not m.sig_is_current(str(path), "0123456789ABCDEF")
+    assert captured["input"] == json.dumps(manifest, separators=(",", ":"), ensure_ascii=True) + "\n"
 
 
 def test_pages_url_returns_empty_string_when_pages_is_unavailable(monkeypatch):

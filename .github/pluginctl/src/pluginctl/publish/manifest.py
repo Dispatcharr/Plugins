@@ -192,8 +192,13 @@ def write_manifest_if_changed(dest: str, payload: dict, generated_at: str) -> bo
     return True
 
 
+def _signing_payload(manifest: dict) -> str:
+    """Return the canonical bytes reconstructed by Dispatcharr for verification."""
+    return json.dumps(manifest, separators=(",", ":"), ensure_ascii=True) + "\n"
+
+
 def sig_is_current(file: str, gpg_key_id: str) -> bool:
-    """True when the embedded ``.signature`` was issued by ``gpg_key_id``."""
+    """True when the embedded signature is current and verifies for its payload."""
     try:
         with open(file, encoding="utf-8") as fh:
             data = json.load(fh)
@@ -208,12 +213,16 @@ def sig_is_current(file: str, gpg_key_id: str) -> bool:
     try:
         out = subprocess.run(["gpg", "--list-packets", tmp_path],
                              capture_output=True, text=True).stdout
+        m = re.search(r"issuer key ID ([A-Fa-f0-9]{16})", out)
+        if not m or m.group(1).upper() != (gpg_key_id or "").upper():
+            return False
+        verify = subprocess.run(
+            ["gpg", "--batch", "--verify", tmp_path, "-"],
+            input=_signing_payload(data["manifest"]), capture_output=True, text=True,
+        )
+        return verify.returncode == 0
     finally:
         os.unlink(tmp_path)
-    m = re.search(r"issuer key ID ([A-Fa-f0-9]{16})", out)
-    if not m:
-        return False
-    return m.group(1).upper() == (gpg_key_id or "").upper()
 
 
 def sign_manifest(file: str, gpg_key_id: str, passphrase: Optional[str]) -> bool:
@@ -222,9 +231,7 @@ def sign_manifest(file: str, gpg_key_id: str, passphrase: Optional[str]) -> bool
         return True
     with open(file, encoding="utf-8") as fh:
         data = json.load(fh)
-    # jq -c writes a terminating newline. Dispatcharr reconstructs this exact
-    # historical payload before verification, so it is part of the signature.
-    payload = jsonio.dumps(data["manifest"]) + "\n"
+    payload = _signing_payload(data["manifest"])
     args = ["gpg", "--batch", "--yes", "--armor", "--detach-sign",
             "--local-user", gpg_key_id, "--output", "-"]
     if passphrase:
