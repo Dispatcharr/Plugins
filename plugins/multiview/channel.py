@@ -12,6 +12,13 @@ import sys
 import threading
 import time
 
+try:
+    from .audio_policy import samples_before_pts
+    from .frame_policy import FrameReduction
+except ImportError:
+    from audio_policy import samples_before_pts
+    from frame_policy import FrameReduction
+
 # Vendored PyAV is shipped per-platform under vendor/<os-arch>/; pick the one
 # matching this machine and put it on the path before importing av.
 _VENDOR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vendor")
@@ -140,6 +147,9 @@ class Channel:
         self.provides_audio = bool(spec.get("audio", False))
         self.lang = spec.get("lang", "und")
         self.featured = bool(spec.get("featured", False))
+        self.frame_reduction = FrameReduction(spec.get("output_fps", "30"))
+        self.hwaccel = spec.get("hwaccel")
+        self.hwaccel_device = spec.get("hwaccel_device")
         self.valign = spec.get("valign", "center")
         self.halign = spec.get("halign", "center")
         self.fallback = (*black_planes(self.w, self.h), 0, 0, self.w, self.h)
@@ -150,6 +160,8 @@ class Channel:
             threading.Thread(target=self._load_logo, args=(logo,), daemon=True).start()
         self.running = True
         self.vcount = 0          # decoded video frames (for rate diagnostics)
+        self.scaled_vcount = 0
+        self.reduced_vcount = 0
         # The compositor selects frames by source PTS. Keeping a short queue
         # decouples that deterministic choice from decoder-thread wake timing.
         self.vlock = threading.Lock()
@@ -168,7 +180,26 @@ class Channel:
         # clk_pts reset. Protected by self.alock (same as aframes/abuffered).
         self.last_taken_pts: "float | None" = None
         self.audio_resyncs = 0
+        self.audio_gate_since: "float | None" = None
+        self.audio_pts_offset = 0.0
+        self.audio_gate_recoveries = 0
         self._reconnect_requested = False
+
+    def _open_container(self):
+        if self.hwaccel:
+            try:
+                from av.codec.hwaccel import HWAccel, hwdevices_available
+                if self.hwaccel not in hwdevices_available():
+                    raise RuntimeError(f"PyAV has no {self.hwaccel} device support")
+                accel = HWAccel(self.hwaccel, device=self.hwaccel_device,
+                                allow_software_fallback=False)
+                cont = av.open(self.url, options=DECODE_OPTS, hwaccel=accel)
+                log(f"channel {self.name}: hardware decode={self.hwaccel}")
+                return cont
+            except Exception as e:  # noqa: BLE001
+                log(f"channel {self.name}: hardware decode unavailable ({e}); using software")
+                self.hwaccel = None
+        return av.open(self.url, options=DECODE_OPTS)
 
     def _make_fallback(self, logo):
         Y, U, V = black_planes(self.w, self.h)
@@ -229,14 +260,17 @@ class Channel:
                 self.aframes.clear()
                 self.abuffered = 0
                 self.last_taken_pts = None
+                self.audio_gate_since = None
+                self.audio_pts_offset = 0.0
             self.clk_pts = None
             self.clk_wall = None
+            self.frame_reduction.reset()
             with self.vlock:
                 self.vframes.clear()
                 self.display = self.fallback
             vcount_before = self.vcount
             try:
-                cont = av.open(self.url, options=DECODE_OPTS)
+                cont = self._open_container()
                 vs = cont.streams.video[0]
                 # Multi-threaded decode so 1080p sources keep up with the output
                 # rate (single-threaded PyAV decode runs ~22-27fps -> slow motion).
@@ -270,6 +304,8 @@ class Channel:
                             continue
                         if packet.stream.type == "video":
                             for frame in packet.decode():
+                                self.vcount += 1
+                                pts_s = None
                                 if frame.pts is not None:
                                     pts_s = float(frame.pts * vs.time_base)
                                     now = time.monotonic()
@@ -284,13 +320,16 @@ class Channel:
                                             with self.vlock:
                                                 self.vframes.clear()
                                                 self.display = self.fallback
+                                if not self.frame_reduction.keep(pts_s):
+                                    self.reduced_vcount += 1
+                                    continue
                                 tile = fit_into_tile(frame, self.w, self.h, self.valign, self.halign)
                                 with self.vlock:
                                     self.latest = tile
                                     self.fresh_until = time.monotonic() + TILE_STALE_SECS
                                     if frame.pts is not None:
                                         self.vframes.append((pts_s, tile))
-                                self.vcount += 1
+                                self.scaled_vcount += 1
                         elif res is not None and packet.stream.type == "audio":
                             for frame in packet.decode():
                                 pts_s = (float(frame.pts * aus.time_base)
@@ -354,31 +393,42 @@ class Channel:
         return self.clk_pts + (time.monotonic() - self.clk_wall)
 
     def _align_to_pts(self, pts_limit: float):
-        """Discard buffered audio chunks that end before pts_limit."""
+        """Discard audio samples before pts_limit."""
         with self.alock:
             while self.aframes:
                 pts_s, chunk = self.aframes[0]
                 if pts_s is None:
                     break
-                if pts_s + chunk.shape[0] / AUDIO_RATE < pts_limit:
+                stale = samples_before_pts(pts_s, chunk.shape[0], pts_limit, AUDIO_RATE)
+                if stale == chunk.shape[0]:
                     self.aframes.pop(0)
                     self.abuffered -= chunk.shape[0]
+                elif stale:
+                    self.aframes[0] = (pts_s + stale / AUDIO_RATE, chunk[stale:])
+                    self.abuffered -= stale
+                    break
                 else:
                     break
 
     def audio_status(self):
         """Return a consistent snapshot for compositor A/V diagnostics."""
         with self.alock:
-            return self.last_taken_pts, self.abuffered, self.audio_resyncs
+            first_pts = self.aframes[0][0] if self.aframes else None
+            return (self.last_taken_pts, self.abuffered, self.audio_resyncs,
+                    first_pts, self.audio_gate_since, self.audio_pts_offset,
+                    self.audio_gate_recoveries)
 
-    def take(self, nsamples: int) -> np.ndarray:
-        """Return exactly nsamples of int16 (nsamples, 2), silence-padded."""
+    def take(self, nsamples: int, pts_limit=None) -> np.ndarray:
+        """Return PCM through *pts_limit*, silence-padding future samples."""
         out = np.zeros((nsamples, 2), np.int16)
         filled = 0
         with self.alock:
             while filled < nsamples and self.aframes:
                 pts_s, chunk = self.aframes[0]
-                need = nsamples - filled
+                available = samples_before_pts(pts_s, chunk.shape[0], pts_limit, AUDIO_RATE)
+                if available == 0:
+                    break
+                need = min(nsamples - filled, available)
                 if chunk.shape[0] <= need:
                     out[filled:filled + chunk.shape[0]] = chunk
                     self.aframes.pop(0)
@@ -387,14 +437,16 @@ class Channel:
                     if pts_s is not None:
                         self.last_taken_pts = pts_s + chunk.shape[0] / AUDIO_RATE
                 else:
-                    out[filled:] = chunk[:need]
+                    out[filled:filled + need] = chunk[:need]
                     # A buffered chunk's PTS always identifies its first retained
                     # sample. Without this adjustment, each partial read makes
                     # drift detection measure from the chunk's original start.
                     next_pts = pts_s + need / AUDIO_RATE if pts_s is not None else None
                     self.aframes[0] = (next_pts, chunk[need:])
                     self.abuffered -= need
-                    filled = nsamples
+                    filled += need
                     if pts_s is not None:
                         self.last_taken_pts = pts_s + need / AUDIO_RATE
+                if available < chunk.shape[0]:
+                    break
         return out
