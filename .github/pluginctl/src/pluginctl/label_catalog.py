@@ -18,16 +18,16 @@ class Label:
 # Baseline labels mirror Dispatcharr/Plugins. The remaining entries are labels
 # created by this repository's automation.
 LABELS = (
-    Label("CodeQL Suppression Used", "FBCA04", "PR relies on an inline CodeQL suppression comment - requires maintainer review"),
+    Label("CodeQL Suppression Used", "FBCA04", "PR relies on an inline CodeQL suppression comment and requires maintainer review"),
     Label("Invalid", "333333", "The PR is invalid or created in error."),
     Label("New Plugin", "19D64D", "A new plugin being contributed to the repository."),
     Label("Plugin Update", "130518", "A plugin already in the repository is being updated."),
     Label("Repo Update", "86ADC3", "Scripts or other repository infrastructure."),
     Label("Testing", "F1E909", "This PR was created for testing and should not be merged."),
-    Label("Manual Review Required", "CFD3D7", "Security findings, suppressions, or new plugin require maintainer review"),
+    Label("Manual Review Required", "CFD3D7", "Security findings, suppressions, or new plugins require maintainer review"),
     Label("QUARANTINE", "FFFF00", "ClamAV detected a potential threat in this PR"),
     Label("Rollback", "E11D48", "Version rollback opened by the yank workflow"),
-    Label("Auto Merged", "0E8A16", "PR was merged automatically after validation"),
+    Label("Auto Merged", "333333", "PR was merged automatically after validation"),
 )
 
 
