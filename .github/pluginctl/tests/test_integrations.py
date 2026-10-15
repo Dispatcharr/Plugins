@@ -32,6 +32,12 @@ def test_automerge_ok():
     assert automerge.evaluate_labels(["Plugin Update"], "MERGEABLE").ok
 
 
+def test_manual_review_is_skipped_for_repo_updates_and_existing_review_labels():
+    assert not automerge.should_request_manual_review(["Repo Update"])
+    assert not automerge.should_request_manual_review(["Manual Review Required"])
+    assert automerge.should_request_manual_review(["Plugin Update"])
+
+
 def test_automerge_blacklist_csv_is_optional_and_case_insensitive():
     assert not automerge.csv_contains("Alice", "")
     assert automerge.csv_contains("Alice", " bob, ALICE ,carol")

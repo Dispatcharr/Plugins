@@ -48,6 +48,11 @@ def evaluate_labels(labels: list[str], mergeable: str) -> LabelDecision:
     return LabelDecision(True)
 
 
+def should_request_manual_review(labels: list[str]) -> bool:
+    """Skip manual-review handling for repository-update PRs."""
+    return "Manual Review Required" not in labels and "Repo Update" not in labels
+
+
 def reverify_is_pure_update(pr_number: str, base_branch: str = "main") -> list[str] | None:
     """Re-derive from the diff that the PR only updates existing plugins."""
     if _git("fetch", "origin", f"pull/{pr_number}/merge:pr-merge-{pr_number}", check=False).returncode != 0:
@@ -222,7 +227,7 @@ def run(head_sha: str, disabled_reason: str = "") -> int:
 def _request_manual_review(pr_number: str, *, author: str, plugins: list[str], labels: list[str],
                            reason: str, repo: str) -> None:
     """Latch manual review and notify only on the absent -> present transition."""
-    if "Manual Review Required" in labels:
+    if not should_request_manual_review(labels):
         return
     if gh.pr_edit_label(pr_number, "Manual Review Required", True) != 0:
         actions.warning(f"Could not add Manual Review Required to PR #{pr_number}.")
