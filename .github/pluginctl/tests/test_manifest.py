@@ -146,6 +146,28 @@ def test_write_manifest_uses_formatted_json_and_ignores_existing_whitespace(tmp_
     assert dest.read_text(encoding="utf-8") == json.dumps({"manifest": payload})
 
 
+def test_sign_manifest_signs_compact_payload_with_jq_newline(tmp_path, monkeypatch):
+    path = tmp_path / "manifest.json"
+    manifest = {"registry_name": "demo", "plugins": []}
+    path.write_text(json.dumps({"manifest": manifest}), encoding="utf-8")
+    captured = {}
+
+    class Result:
+        returncode = 0
+        stdout = "signature\n"
+
+    def run(args, **kwargs):
+        captured["args"] = args
+        captured["input"] = kwargs["input"]
+        return Result()
+
+    monkeypatch.setattr(m.subprocess, "run", run)
+
+    assert m.sign_manifest(str(path), "0123456789ABCDEF", None)
+    assert captured["input"] == jsonio.dumps(manifest) + "\n"
+    assert json.loads(path.read_text(encoding="utf-8"))["signature"] == "signature"
+
+
 def test_pages_url_returns_empty_string_when_pages_is_unavailable(monkeypatch):
     monkeypatch.setattr(gh, "api", lambda *args, **kwargs: None)
     assert gh.pages_url("org/repo") == ""

@@ -222,7 +222,9 @@ def sign_manifest(file: str, gpg_key_id: str, passphrase: Optional[str]) -> bool
         return True
     with open(file, encoding="utf-8") as fh:
         data = json.load(fh)
-    payload = jsonio.dumps(data["manifest"])
+    # jq -c writes a terminating newline. Dispatcharr reconstructs this exact
+    # historical payload before verification, so it is part of the signature.
+    payload = jsonio.dumps(data["manifest"]) + "\n"
     args = ["gpg", "--batch", "--yes", "--armor", "--detach-sign",
             "--local-user", gpg_key_id, "--output", "-"]
     if passphrase:
