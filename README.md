@@ -12,7 +12,7 @@ This branch contains all published plugin releases.
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.3.5` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
-| [`Channel Mapparr`](#channel-mapparr) | `1.26.2901605` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
+| [`Channel Mapparr`](#channel-mapparr) | `1.26.2901846` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.5.0` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream. |
 | [`Decypharr VOD`](#decypharr-vod) | `1.0.7` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
@@ -69,7 +69,7 @@ Speeds up channel startup for low-bitrate (usually audio only) streams by loweri
 
 ### [Channel Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-mapparr/README.md)
 
-**Version:** `1.26.2901605` | **Author:** PiratesIRC | **Last Updated:** Oct 17 2026, 16:14 UTC
+**Version:** `1.26.2901846` | **Author:** PiratesIRC | **Last Updated:** Oct 17 2026, 21:57 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.
 
@@ -78,10 +78,10 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.2901605`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2901605/channel-mapparr-1.26.2901605.zip)
+- [Latest Release (`1.26.2901846`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2901846/channel-mapparr-1.26.2901846.zip)
 - [All Versions (10 available)](./metadata/channel-mapparr)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`5741478`](https://github.com/Dispatcharr/Plugins/commit/5741478bb12bae8832897f6600ab4659077bb2dd)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`763fa0a`](https://github.com/Dispatcharr/Plugins/commit/763fa0aeccc097965c0056465fd216d33608064f)
 
 ---
 
@@ -679,4 +679,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 17 2026, 18:59 UTC*
+*Last updated: Oct 17 2026, 21:57 UTC*

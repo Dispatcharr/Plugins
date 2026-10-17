@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17T16:15:32Z",
+  "generated_at": "2026-10-17T21:57:44Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -15,22 +15,35 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1422963882548265110",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-17T16:14:54Z",
+    "last_updated": "2026-10-17T17:57:10-04:00",
     "latest": {
-      "version": "1.26.2901605",
-      "commit_sha": "5741478bb12bae8832897f6600ab4659077bb2dd",
-      "commit_sha_short": "5741478",
-      "build_timestamp": "2026-10-17T16:15:12Z",
-      "last_updated": "2026-10-17T16:14:54Z",
-      "checksum_md5": "e8fa75b12edc80ca5e0224e61a5fc7e0",
-      "checksum_sha256": "612b1790cf29f93902add1878ff4c27cf3ac9887a29baeb6bbc4877c5539661d",
+      "version": "1.26.2901846",
+      "commit_sha": "763fa0aeccc097965c0056465fd216d33608064f",
+      "commit_sha_short": "763fa0a",
+      "build_timestamp": "2026-10-17T21:57:27Z",
+      "last_updated": "2026-10-17T17:57:10-04:00",
+      "checksum_md5": "28d3958a01c9d85a51ac4e0a4ca008f1",
+      "checksum_sha256": "3a7d8a14c94bc1b0d179651558f4c6fa00909f44d10976aa441b1c417a97f0f2",
       "min_dispatcharr_version": "v0.20.0",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2901605/Channel-Maparr.zip",
-      "latest_url": "channel-mapparr-1.26.2901605/channel-mapparr-1.26.2901605.zip",
-      "url": "channel-mapparr-1.26.2901605/channel-mapparr-1.26.2901605.zip",
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2901846/Channel-Maparr.zip",
+      "latest_url": "channel-mapparr-1.26.2901846/channel-mapparr-1.26.2901846.zip",
+      "url": "channel-mapparr-1.26.2901846/channel-mapparr-1.26.2901846.zip",
       "size": 766
     },
     "versions": [
+      {
+        "version": "1.26.2901846",
+        "commit_sha": "763fa0aeccc097965c0056465fd216d33608064f",
+        "commit_sha_short": "763fa0a",
+        "build_timestamp": "2026-10-17T21:57:27Z",
+        "last_updated": "2026-10-17T17:57:10-04:00",
+        "checksum_md5": "28d3958a01c9d85a51ac4e0a4ca008f1",
+        "checksum_sha256": "3a7d8a14c94bc1b0d179651558f4c6fa00909f44d10976aa441b1c417a97f0f2",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2901846/Channel-Maparr.zip",
+        "url": "channel-mapparr-1.26.2901846/channel-mapparr-1.26.2901846.zip",
+        "size": 766
+      },
       {
         "version": "1.26.2901605",
         "commit_sha": "5741478bb12bae8832897f6600ab4659077bb2dd",
@@ -147,20 +160,8 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2241126/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2241126/channel-mapparr-1.26.2241126.zip",
         "size": 735
-      },
-      {
-        "version": "1.26.2170831",
-        "commit_sha": "3826bb24bfc5de22f36bad3cbaa7ea8cdba50432",
-        "commit_sha_short": "3826bb2",
-        "build_timestamp": "2026-08-05T14:18:53Z",
-        "last_updated": "2026-08-05T14:18:34Z",
-        "checksum_md5": "dfee5f6fb79699555556fe286dd646a6",
-        "checksum_sha256": "b74927ac709435a16652aa83f88ad926702263a8b01b12655651e170688f68f1",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "channel-mapparr-1.26.2170831/channel-mapparr-1.26.2170831.zip",
-        "size": 640
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatOfJgAKCRB+wDprTCI0\nzhqwAP9LbEw3SuhEor6XaV57MinbN3t5MVFj/IG2GfWWOJCY6AD/Vg+aq/l6FQ9W\nTjvgmHZrfb3MFyYByE2SVW7RW7yq8Q0=\n=0Hg2\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatPvWQAKCRB+wDprTCI0\nzlEAAQCsGjELy9eLTittg/5xIBsQkJE06gIcUDBXdCrUoMxeRwD+P4u8gbSqsfNl\nfZDylro/1MbVz/ZrCHBfrqwgG0gCLws=\n=65kz\n-----END PGP SIGNATURE-----"
 }
