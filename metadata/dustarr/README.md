@@ -2,7 +2,7 @@
 
 # Dustarr
 
-**Version:** `1.26.2832018` | **Author:** PiratesIRC | **Last Updated:** Oct 10 2026, 20:24 UTC
+**Version:** `1.26.2901903` | **Author:** PiratesIRC | **Last Updated:** Oct 17 2026, 21:57 UTC
 
 Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.
 
@@ -14,20 +14,21 @@ Records which channels are actually watched and reports the ones that are not, s
 
 ### Latest Release
 
-- **Download:** [`dustarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2832018/dustarr-1.26.2832018.zip)
-- **Built:** Oct 10 2026, 20:24 UTC
-- **Source Commit:** [`8b49bab`](https://github.com/Dispatcharr/Plugins/commit/8b49bab36a73fbd7bfd560647175d59e2c68958a)
+- **Download:** [`dustarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2901903/dustarr-1.26.2901903.zip)
+- **Built:** Oct 17 2026, 21:58 UTC
+- **Source Commit:** [`1b882f2`](https://github.com/Dispatcharr/Plugins/commit/1b882f233078ff663758cc1ecdf82ff16afea84a)
 
 **Checksums:**
 ```
-MD5:    1f947cd7fd07a12805b031f4f57649f5
-SHA256: a03ea8c72e507e8022e3ac7d2f0c44ffdbc2a5c8cbb9be9b238695b7bd80cddc
+MD5:    5d457ca12c31346cda8a080abbb0390a
+SHA256: 21b8d14c01e702ad18ac1d78ceb4c3b65ab19db826fb2e2e5cd4595c69ed90c9
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2901903` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2901903/dustarr-1.26.2901903.zip) | Oct 17 2026, 21:58 UTC | [`1b882f2`](https://github.com/Dispatcharr/Plugins/commit/1b882f233078ff663758cc1ecdf82ff16afea84a) | 5d457ca12c31346cda8a080abbb0390a | 21b8d14c01e702ad18ac1d78ceb4c3b65ab19db826fb2e2e5cd4595c69ed90c9 |
 | `1.26.2832018` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2832018/dustarr-1.26.2832018.zip) | Oct 10 2026, 20:24 UTC | [`8b49bab`](https://github.com/Dispatcharr/Plugins/commit/8b49bab36a73fbd7bfd560647175d59e2c68958a) | 1f947cd7fd07a12805b031f4f57649f5 | a03ea8c72e507e8022e3ac7d2f0c44ffdbc2a5c8cbb9be9b238695b7bd80cddc |
 | `1.26.2821314` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2821314/dustarr-1.26.2821314.zip) | Oct 09 2026, 13:24 UTC | [`c9305c6`](https://github.com/Dispatcharr/Plugins/commit/c9305c63733bfefa972e2dfacbac146f832ed400) | 1e7222a2b3f01a0d56cfb6f5efc24b33 | d2b2861c2fc1981adc2ccf0456f983c0d1dee54130a9784c0f25ce4ebcf88d3b |
 | `1.26.2481620` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2481620/dustarr-1.26.2481620.zip) | Sep 05 2026, 17:14 UTC | [`8a2dffb`](https://github.com/Dispatcharr/Plugins/commit/8a2dffb328107de46d80063dc81eff7620dab49f) | 10420fa1c73260bb9b0659349ba6b014 | 280bc46c6de5af6ed3cef44f4e84a9a4704bfee4933e9245303c13df8e4a3990 |
@@ -130,7 +131,7 @@ This is the part worth reading before installing anything that watches what your
 
 ## Where things are written
 
-The report and the CSV land in `/config/dustarr/`. `/config` is Dispatcharr's existing bind mount, so that is a real folder on your host: open the report by double clicking it. The full list of paths is in the [user guide](https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md#where-the-files-are-written).
+The report and the CSV land in `/config/dustarr/`. `/config` is Dispatcharr's existing bind mount, so that is a real folder on your host: open the report by double clicking it. When `/config` cannot be written, they go to `/data/dustarr/reports/` instead. The full list of paths is in the [user guide](https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md#where-the-files-are-written).
 
 ## Anonymous usage counts
 
