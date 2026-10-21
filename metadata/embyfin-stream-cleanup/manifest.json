@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-11T01:57:22Z",
+  "generated_at": "2026-10-21T13:28:42Z",
   "manifest": {
     "slug": "embyfin-stream-cleanup",
     "name": "Embyfin Stream Cleanup",
@@ -12,10 +12,12 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-07-17T17:38:58-04:00",
+    "download_count": 855,
     "latest": {
       "version": "1.3.0",
       "commit_sha": "c5c8cd52948305d6eb701297b666e37dfc5b0c79",
       "commit_sha_short": "c5c8cd5",
+      "changelog": "180",
       "build_timestamp": "2026-07-17T21:39:16Z",
       "last_updated": "2026-07-17T17:38:58-04:00",
       "checksum_md5": "6fa65aef898c225ad3fba47d9708c573",
@@ -23,94 +25,109 @@
       "min_dispatcharr_version": "v0.22.0",
       "latest_url": "embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip",
       "url": "embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip",
-      "size": 302
+      "size": 302,
+      "download_count": 403
     },
     "versions": [
       {
         "version": "1.3.0",
         "commit_sha": "c5c8cd52948305d6eb701297b666e37dfc5b0c79",
         "commit_sha_short": "c5c8cd5",
+        "changelog": "180",
         "build_timestamp": "2026-07-17T21:39:16Z",
         "last_updated": "2026-07-17T17:38:58-04:00",
         "checksum_md5": "6fa65aef898c225ad3fba47d9708c573",
         "checksum_sha256": "6ee76b5aa4126aaf84e9824ea58b9e03b03a5d3215a4d3d87f4fb5bcc6e055ce",
         "min_dispatcharr_version": "v0.22.0",
         "url": "embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip",
-        "size": 302
+        "size": 302,
+        "download_count": 403
       },
       {
         "version": "1.2.0",
         "commit_sha": "315a967448ff4db469a66491ebc404bfb8e0bb42",
         "commit_sha_short": "315a967",
+        "changelog": "69",
         "build_timestamp": "2026-05-15T17:13:29Z",
         "last_updated": "2026-05-15T13:13:11-04:00",
         "checksum_md5": "b898fd7cfbf60bb0807c659f1c26be5f",
         "checksum_sha256": "f1f94d9a8cb6b311ac5e864b9e810a64017ee1bf85027e41a18144cf52292969",
         "min_dispatcharr_version": "v0.22.0",
         "url": "embyfin-stream-cleanup-1.2.0/embyfin-stream-cleanup-1.2.0.zip",
-        "size": 1567
+        "size": 1567,
+        "download_count": 438
       },
       {
         "version": "1.1.2",
         "commit_sha": "006432da42655d524601830db5aa888437551c84",
         "commit_sha_short": "006432d",
+        "changelog": "61",
         "build_timestamp": "2026-05-10T18:26:06Z",
         "last_updated": "2026-05-10T14:25:53-04:00",
         "checksum_md5": "b5c83e690b790616134e9d954fbd81ef",
         "checksum_sha256": "1af5193583bcb037c00012b157fb2c52c0c0462c9beca9da3f26c91033eec47a",
         "min_dispatcharr_version": "v0.22.0",
         "url": "embyfin-stream-cleanup-1.1.2/embyfin-stream-cleanup-1.1.2.zip",
-        "size": 1567
+        "size": 1567,
+        "download_count": 5
       },
       {
         "version": "1.1.1",
         "commit_sha": "94161991dd24c6bc86be99d9044b8cf5e6622952",
         "commit_sha_short": "9416199",
+        "changelog": "55",
         "build_timestamp": "2026-04-28T18:33:24Z",
         "last_updated": "2026-04-28T14:33:09-04:00",
         "checksum_md5": "91600ee7bd50ee34715eee4cfab52320",
         "checksum_sha256": "362c6c061bb016caaf756790d45b8aceecbff6201e6f1fb6df30d115608c797b",
         "min_dispatcharr_version": "v0.22.0",
         "url": "embyfin-stream-cleanup-1.1.1/embyfin-stream-cleanup-1.1.1.zip",
-        "size": 1566
+        "size": 1566,
+        "download_count": 3
       },
       {
         "version": "1.1.0",
         "commit_sha": "c3305c3d5afc9226577cb01f8fae58c9785338c0",
         "commit_sha_short": "c3305c3",
+        "changelog": "51",
         "build_timestamp": "2026-04-27T15:41:09Z",
         "last_updated": "2026-04-27T11:40:56-04:00",
         "checksum_md5": "56757faccd9078f600df8010c877248b",
         "checksum_sha256": "c348327c1a17080481d4c3307802a67b2edb918e8b00f0e52ef8baf5102c1d5c",
         "min_dispatcharr_version": "v0.22.0",
         "url": "embyfin-stream-cleanup-1.1.0/embyfin-stream-cleanup-1.1.0.zip",
-        "size": 1565
+        "size": 1565,
+        "download_count": 2
       },
       {
         "version": "1.0.1",
         "commit_sha": "ede9f2ea1412434bf69c6e5e114347a6fdd7e140",
         "commit_sha_short": "ede9f2e",
+        "changelog": "45",
         "build_timestamp": "2026-04-18T19:34:25Z",
         "last_updated": "2026-04-18T15:34:12-04:00",
         "checksum_md5": "000da3ce36a2d0026a1816092cb5cf0e",
         "checksum_sha256": "c36760c599599e76d510bb648e207244921ceb53fbf25b60fdfc865682c438ab",
         "min_dispatcharr_version": "v0.22.0",
         "url": "embyfin-stream-cleanup-1.0.1/embyfin-stream-cleanup-1.0.1.zip",
-        "size": 1565
+        "size": 1565,
+        "download_count": 2
       },
       {
         "version": "1.0.0",
         "commit_sha": "74dabedde785395324cc1ff88c15fe26e01386e6",
         "commit_sha_short": "74dabed",
+        "changelog": "44",
         "build_timestamp": "2026-04-18T19:12:30Z",
         "last_updated": "2026-04-18T15:12:16-04:00",
         "checksum_md5": "bf39bfed86009314dd91bc5138415dfc",
         "checksum_sha256": "6d4b1fa35595e8032ab46beb6e893e319bbd621cf73b0ac06caa96aacedeea70",
         "min_dispatcharr_version": "v0.22.0",
         "url": "embyfin-stream-cleanup-1.0.0/embyfin-stream-cleanup-1.0.0.zip",
-        "size": 31
+        "size": 31,
+        "download_count": 2
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCanqBgwAKCRB+wDprTCI0\nzvBFAQC6yLLrNu4MrIaGDLHpKDMXOGh9I+S/rK5SlUUU3rpEDQEAlublOA4iGoz1\nCwAvivCu4VuQAC8dNXqRthlMQiQTOA0=\n=psk3\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+NwAKCRB+wDprTCI0\nzo3mAP9FL9fMfCER2cWjqnOjuIam+aJdSjjVhgLPVit60V0dIwEAxxPWWK5/5Iqf\n3BRPD//A6517e7DAAF/y+aPvUbkz8As=\n=65Be\n-----END PGP SIGNATURE-----"
 }

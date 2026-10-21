@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-22T22:50:38Z",
+  "generated_at": "2026-10-21T13:28:42Z",
   "manifest": {
     "slug": "clapparr",
     "name": "Clapparr",
@@ -12,10 +12,12 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-08-22T18:50:11-04:00",
+    "download_count": 301,
     "latest": {
       "version": "1.3.0",
       "commit_sha": "41752afd9a5678d2f7a9a49f2209331a620e119f",
       "commit_sha_short": "41752af",
+      "changelog": "252",
       "build_timestamp": "2026-08-22T22:50:28Z",
       "last_updated": "2026-08-22T18:50:11-04:00",
       "checksum_md5": "9a1952028dc26dcf136dfdfb00e450cf",
@@ -24,13 +26,15 @@
       "source_url": "https://github.com/v8eta/clapparr/releases/download/v1.3.0/plugin-clapparr-v1.3.0.zip",
       "latest_url": "clapparr-1.3.0/clapparr-1.3.0.zip",
       "url": "clapparr-1.3.0/clapparr-1.3.0.zip",
-      "size": 43
+      "size": 43,
+      "download_count": 301
     },
     "versions": [
       {
         "version": "1.3.0",
         "commit_sha": "41752afd9a5678d2f7a9a49f2209331a620e119f",
         "commit_sha_short": "41752af",
+        "changelog": "252",
         "build_timestamp": "2026-08-22T22:50:28Z",
         "last_updated": "2026-08-22T18:50:11-04:00",
         "checksum_md5": "9a1952028dc26dcf136dfdfb00e450cf",
@@ -38,9 +42,10 @@
         "min_dispatcharr_version": "v0.20.0",
         "source_url": "https://github.com/v8eta/clapparr/releases/download/v1.3.0/plugin-clapparr-v1.3.0.zip",
         "url": "clapparr-1.3.0/clapparr-1.3.0.zip",
-        "size": 43
+        "size": 43,
+        "download_count": 301
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaoonvwAKCRB+wDprTCI0\nzlIpAQDNg8cu6+VVJ8rNHtz/LL2wawX09o/JKnH/WGGsDI1I7wD/W04LDCRG/S8C\n2s8XMg+9G1iAwUUOCb552m1va4EyqAM=\n=ZNTD\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+FgAKCRB+wDprTCI0\nzsOtAQCV0Oif6djeaPu7Bl8JY6qJYK7EPh17InCaBCeQCexZOAD+IacNIrdis9Qo\nKSsIByvSlZaoy2EdmmETpPLWWSxhuAU=\n=JW+f\n-----END PGP SIGNATURE-----"
 }

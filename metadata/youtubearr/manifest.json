@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T12:56:21Z",
+  "generated_at": "2026-10-21T13:28:42Z",
   "manifest": {
     "slug": "youtubearr",
     "name": "YouTubearr",
@@ -10,10 +10,12 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-09-16T12:55:53Z",
+    "download_count": 1777,
     "latest": {
       "version": "1.40.1",
       "commit_sha": "e14ea92d80763c52784047f843aa76069b45c7c1",
       "commit_sha_short": "e14ea92",
+      "changelog": "307",
       "build_timestamp": "2026-09-16T12:56:16Z",
       "last_updated": "2026-09-16T12:55:53Z",
       "checksum_md5": "b55e865bef8184938cad616281e1895c",
@@ -21,106 +23,123 @@
       "min_dispatcharr_version": "v0.20.0",
       "latest_url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
       "url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
-      "size": 5017
+      "size": 5017,
+      "download_count": 457
     },
     "versions": [
       {
         "version": "1.40.1",
         "commit_sha": "e14ea92d80763c52784047f843aa76069b45c7c1",
         "commit_sha_short": "e14ea92",
+        "changelog": "307",
         "build_timestamp": "2026-09-16T12:56:16Z",
         "last_updated": "2026-09-16T12:55:53Z",
         "checksum_md5": "b55e865bef8184938cad616281e1895c",
         "checksum_sha256": "599662f81b0a4df8f85dfc5beccd84e991c0d789d2f602b4f8ef6eb0c92dddee",
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
-        "size": 5017
+        "size": 5017,
+        "download_count": 457
       },
       {
         "version": "1.40.0",
         "commit_sha": "e072e4d9c92cb6b1f8e69550ee2661c76fa30dec",
         "commit_sha_short": "e072e4d",
+        "changelog": "268",
         "build_timestamp": "2026-08-30T20:48:50Z",
         "last_updated": "2026-08-30T20:48:27Z",
         "checksum_md5": "5fcf8e39242719fbfdf543154bec71bd",
         "checksum_sha256": "f727da48396a8db7b693ed2b62fff37c1a29501159ecbd0f18eeb47568bebe7d",
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.40.0/youtubearr-1.40.0.zip",
-        "size": 5014
+        "size": 5014,
+        "download_count": 251
       },
       {
         "version": "1.30.1",
         "commit_sha": "1e79c55fd33ce921c6c938990945e0ab23a7ef07",
         "commit_sha_short": "1e79c55",
+        "changelog": "204",
         "build_timestamp": "2026-07-31T23:08:04Z",
         "last_updated": "2026-07-31T23:07:43Z",
         "checksum_md5": "f8b8235a327688034c30348c5752182f",
         "checksum_sha256": "406d9039876f1bc8e466181c536076f45c4502df122b0b3ebd0c521894174876",
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.30.1/youtubearr-1.30.1.zip",
-        "size": 5011
+        "size": 5011,
+        "download_count": 349
       },
       {
         "version": "1.30.0",
         "commit_sha": "5f3a8d5c3febd0f564298152b52a42fbf6ea3df5",
         "commit_sha_short": "5f3a8d5",
+        "changelog": "157",
         "build_timestamp": "2026-06-28T00:18:25Z",
         "last_updated": "2026-06-27T19:18:09-05:00",
         "checksum_md5": "f3cbf196554e659b560f13bd73da4724",
         "checksum_sha256": "9b4008bd911f2d1adcb59a7247593c12d153b39af98dd8cd8739dbb57032b910",
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.30.0/youtubearr-1.30.0.zip",
-        "size": 5007
+        "size": 5007,
+        "download_count": 382
       },
       {
         "version": "1.20.0",
         "commit_sha": "0900a376c840979b09ee5d3834e468d7c117094b",
         "commit_sha_short": "0900a37",
+        "changelog": "112",
         "build_timestamp": "2026-06-06T20:09:10Z",
         "last_updated": "2026-06-06T16:08:54-04:00",
         "checksum_md5": "c4276714614be08d1e0788c242f4790e",
         "checksum_sha256": "e1426aaea4268aa5d80c29a5e0b002b323d30da4a08f28df6d8a445fc239e614",
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.20.0/youtubearr-1.20.0.zip",
-        "size": 5007
+        "size": 5007,
+        "download_count": 328
       },
       {
         "version": "1.19.0",
         "commit_sha": "d4683054a70509329279d4ce5e20779591bd297a",
         "commit_sha_short": "d468305",
+        "changelog": "79",
         "build_timestamp": "2026-05-17T16:52:41Z",
         "last_updated": "2026-05-17T12:52:26-04:00",
         "checksum_md5": "4ba22e811ea172d005e3d6636705498e",
         "checksum_sha256": "6f39f837cab14821d131ea9990b3e7898dffa022634c727e0df86d08f085dfc0",
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.19.0/youtubearr-1.19.0.zip",
-        "size": 5001
+        "size": 5001,
+        "download_count": 3
       },
       {
         "version": "1.18.0",
         "commit_sha": "debb66d9d3205e01fd4b2d808931e5f5564793a5",
         "commit_sha_short": "debb66d",
+        "changelog": "71",
         "build_timestamp": "2026-05-16T17:33:09Z",
         "last_updated": "2026-05-16T13:32:58-04:00",
         "checksum_md5": "87b63e8220947c4cb40890d2aebdc62e",
         "checksum_sha256": "b90df4a54d499f35a32db6b45bc1ed01040fe4da47d7763225142658ac01e81c",
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.18.0/youtubearr-1.18.0.zip",
-        "size": 5001
+        "size": 5001,
+        "download_count": 3
       },
       {
         "version": "1.17.7",
         "commit_sha": "de0e8ba2d627eb6227392a7dc590571ef869ca85",
         "commit_sha_short": "de0e8ba",
+        "changelog": "58",
         "build_timestamp": "2026-05-02T22:55:51Z",
         "last_updated": "2026-05-02T18:55:36-04:00",
         "checksum_md5": "b6880b3c69679cd108eadab0189bd884",
         "checksum_sha256": "47e205d2b88a6b4609493328eea4a7e517a55c6ab02788b31aac1c86640eaab8",
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.17.7/youtubearr-1.17.7.zip",
-        "size": 5001
+        "size": 5001,
+        "download_count": 4
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqqR+gAKCRB+wDprTCI0\nzgb3AQCaIgpcleg7St5eEwaAmuJ9X1/isNGw3PJkBhGQg8bwkQEAr/HsHFqoysTA\nf3U/TeGV9N/bUzjMEEOqmoqBhGrAVgw=\n=dDnj\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+qAAKCRB+wDprTCI0\nzoEFAQCHJT0IRaZpGrmsqYxAMkWXYKUqYoQCI9AWm5mM96+WAgD+MwnFb9orTBZg\nmNQcesCdDaLS2TGCvj4evThev+W5vgo=\n=Iq+U\n-----END PGP SIGNATURE-----"
 }

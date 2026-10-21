@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T19:59:22Z",
+  "generated_at": "2026-10-21T13:28:42Z",
   "manifest": {
     "slug": "multiview",
     "name": "Multiview",
@@ -11,10 +11,12 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-15T19:58:49Z",
+    "download_count": 1408,
     "latest": {
       "version": "0.5.0",
       "commit_sha": "db79a9f0d2accf70c4fc923bbdf5a6ef734427bb",
       "commit_sha_short": "db79a9f",
+      "changelog": "441",
       "build_timestamp": "2026-10-15T19:59:10Z",
       "last_updated": "2026-10-15T19:58:49Z",
       "checksum_md5": "3985141e91a46edeea133e3e68be251e",
@@ -22,130 +24,151 @@
       "min_dispatcharr_version": "v0.27.0",
       "latest_url": "multiview-0.5.0/multiview-0.5.0.zip",
       "url": "multiview-0.5.0/multiview-0.5.0.zip",
-      "size": 377
+      "size": 377,
+      "download_count": 120
     },
     "versions": [
       {
         "version": "0.5.0",
         "commit_sha": "db79a9f0d2accf70c4fc923bbdf5a6ef734427bb",
         "commit_sha_short": "db79a9f",
+        "changelog": "441",
         "build_timestamp": "2026-10-15T19:59:10Z",
         "last_updated": "2026-10-15T19:58:49Z",
         "checksum_md5": "3985141e91a46edeea133e3e68be251e",
         "checksum_sha256": "464f95fc401fffb4912a10233176370eafc01ec3885fea1409f91f86cd5c0857",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.5.0/multiview-0.5.0.zip",
-        "size": 377
+        "size": 377,
+        "download_count": 120
       },
       {
         "version": "0.4.3",
         "commit_sha": "5a45cc2f372ca1afb0d5a76f5cb68855d6fc49df",
         "commit_sha_short": "5a45cc2",
+        "changelog": "269",
         "build_timestamp": "2026-08-31T14:40:33Z",
         "last_updated": "2026-08-31T14:40:15Z",
         "checksum_md5": "5a983ba6b28660eab7623d1966c5e053",
         "checksum_sha256": "7fabbfe1a36fe242c2d55a867b3a1a9f3699a76bcfd8f43887fbe10ce579b021",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.4.3/multiview-0.4.3.zip",
-        "size": 361
+        "size": 361,
+        "download_count": 478
       },
       {
         "version": "0.4.2",
         "commit_sha": "38f5f73656df833e60dd9759c230cd957c6b1157",
         "commit_sha_short": "38f5f73",
+        "changelog": "188",
         "build_timestamp": "2026-07-21T17:30:58Z",
         "last_updated": "2026-07-21T17:30:42Z",
         "checksum_md5": "b93869a72cc145a04d74a37f4ed3fe4c",
         "checksum_sha256": "266e5721e361530478fed564c0c946af618cf8c501601dbc582e565c9b89ec57",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.4.2/multiview-0.4.2.zip",
-        "size": 360
+        "size": 360,
+        "download_count": 355
       },
       {
         "version": "0.4.1",
         "commit_sha": "fc3b6aac4a2cb95bc2e55ed45e410984c4a7443f",
         "commit_sha_short": "fc3b6aa",
+        "changelog": "182",
         "build_timestamp": "2026-07-17T22:39:49Z",
         "last_updated": "2026-07-17T18:39:28-04:00",
         "checksum_md5": "7003dc14b1c3a21a5e25846259300339",
         "checksum_sha256": "89aba669a63ba31c236fba6288f209a54dff32c0164d2928bfa1ae3d6f5e392f",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.4.1/multiview-0.4.1.zip",
-        "size": 360
+        "size": 360,
+        "download_count": 61
       },
       {
         "version": "0.4.0",
         "commit_sha": "d4f59a2df34f56859291edf54836d787c7e704f8",
         "commit_sha_short": "d4f59a2",
+        "changelog": "181",
         "build_timestamp": "2026-07-17T21:40:04Z",
         "last_updated": "2026-07-17T17:39:50-04:00",
         "checksum_md5": "8c404791cd7102d3f4a7b516509c146d",
         "checksum_sha256": "911d3d5fff28440e90bf4799d50d37087084e7e5a15f31448948a1d5f14aea97",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.4.0/multiview-0.4.0.zip",
-        "size": 359
+        "size": 359,
+        "download_count": 3
       },
       {
         "version": "0.3.1",
         "commit_sha": "261c88c65259049ff7edcc3ab76192c6d21932e8",
         "commit_sha_short": "261c88c",
+        "changelog": "170",
         "build_timestamp": "2026-07-06T18:12:00Z",
         "last_updated": "2026-07-06T14:11:43-04:00",
         "checksum_md5": "70174cc503ae72ba3bc43542fc300dd1",
         "checksum_sha256": "f8aa3a7b5aba97170236d3e79afcd4c83a613393e25d3b5dceedb794ca576a95",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.3.1/multiview-0.3.1.zip",
-        "size": 288
+        "size": 288,
+        "download_count": 139
       },
       {
         "version": "0.3.0",
         "commit_sha": "c4d6f23237d380becd9f189404fef92d21b08d4a",
         "commit_sha_short": "c4d6f23",
+        "changelog": "164",
         "build_timestamp": "2026-07-01T01:30:49Z",
         "last_updated": "2026-06-30T21:30:34-04:00",
         "checksum_md5": "b95c051bc87f738606fb2f0ce61764b0",
         "checksum_sha256": "3423ff6933b0145216580dc68ce98a2cddacf7a2145da1cc4d73dde165af04c1",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.3.0/multiview-0.3.0.zip",
-        "size": 288
+        "size": 288,
+        "download_count": 97
       },
       {
         "version": "0.2.3",
         "commit_sha": "e2ce714328e250fd26c76225f3fcb19c11fbcd91",
         "commit_sha_short": "e2ce714",
+        "changelog": "153",
         "build_timestamp": "2026-06-25T19:54:35Z",
         "last_updated": "2026-06-25T15:54:13-04:00",
         "checksum_md5": "e018214696d2384ee83c0e4a477fa397",
         "checksum_sha256": "b839189c95f337f46e53dbf264e190f15cea3fa6ba1b154d231e10c54d69c726",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.2.3/multiview-0.2.3.zip",
-        "size": 60
+        "size": 60,
+        "download_count": 106
       },
       {
         "version": "0.2.2",
         "commit_sha": "44dfc72a8430545e47e9ff5fb47a8b46a59a71dd",
         "commit_sha_short": "44dfc72",
+        "changelog": "151",
         "build_timestamp": "2026-06-25T15:01:19Z",
         "last_updated": "2026-06-25T11:00:55-04:00",
         "checksum_md5": "3e1990619d1c115906e6088e3b4a66fe",
         "checksum_sha256": "b39084758c2f80ba4d31e3d4887ddf9ce259cd71d9185b903d364cd14c9d8dba",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.2.2/multiview-0.2.2.zip",
-        "size": 58
+        "size": 58,
+        "download_count": 22
       },
       {
         "version": "0.2.1",
         "commit_sha": "07bc152bd72dba4a50f750fde34f22545517aa04",
         "commit_sha_short": "07bc152",
+        "changelog": "148",
         "build_timestamp": "2026-06-24T23:24:11Z",
         "last_updated": "2026-06-24T19:23:52-04:00",
         "checksum_md5": "d935a9af652ffb03022693938a8ffafd",
         "checksum_sha256": "99f8e4f6ed1a32c8cb800e15b91f870346fe045f5462d8cfccb93b9762a00e7a",
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.2.1/multiview-0.2.1.zip",
-        "size": 57
+        "size": 57,
+        "download_count": 27
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatFScQAKCRB+wDprTCI0\nzgZkAP46rA+pp8xY/mWoehsePzbciSk0SOVxENRFwOHafWdaMAD9HP5RKqaYQCWV\nT7yywT7Fn891kRTdQpszjTUpFOGp4go=\n=L5+x\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+ZgAKCRB+wDprTCI0\nzoFFAQDNwLiGPw/7MmEUANeiYuUmhoVsaT2SpeCBfvYhyZbGHQD+PM4XhtBscHzw\nU54Av9gMjGTpGJpVNXRlTmQyzLcoeAI=\n=x3lZ\n-----END PGP SIGNATURE-----"
 }

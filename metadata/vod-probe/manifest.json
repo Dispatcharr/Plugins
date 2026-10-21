@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T10:04:33Z",
+  "generated_at": "2026-10-21T13:28:42Z",
   "manifest": {
     "slug": "vod-probe",
     "name": "VOD Probe",
@@ -12,10 +12,12 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-10T10:04:01Z",
+    "download_count": 154,
     "latest": {
       "version": "1.3.3",
       "commit_sha": "b52f675f54ab92cb0c6312aa53dce7b53d20c5b6",
       "commit_sha_short": "b52f675",
+      "changelog": "408",
       "build_timestamp": "2026-10-10T10:04:27Z",
       "last_updated": "2026-10-10T10:04:01Z",
       "checksum_md5": "dd346d3865eae81d45a2c325fbe9479b",
@@ -23,34 +25,39 @@
       "source_url": "https://github.com/oxios0x00/dispatcharr-vod-probe/releases/download/v1.3.3/vod_probe.zip",
       "latest_url": "vod-probe-1.3.3/vod-probe-1.3.3.zip",
       "url": "vod-probe-1.3.3/vod-probe-1.3.3.zip",
-      "size": 590
+      "size": 590,
+      "download_count": 104
     },
     "versions": [
       {
         "version": "1.3.3",
         "commit_sha": "b52f675f54ab92cb0c6312aa53dce7b53d20c5b6",
         "commit_sha_short": "b52f675",
+        "changelog": "408",
         "build_timestamp": "2026-10-10T10:04:27Z",
         "last_updated": "2026-10-10T10:04:01Z",
         "checksum_md5": "dd346d3865eae81d45a2c325fbe9479b",
         "checksum_sha256": "e2a068cbb7b264e16d5a8925fc2ca7c50fcf18bfc46d61450458c09f14f6ebc5",
         "source_url": "https://github.com/oxios0x00/dispatcharr-vod-probe/releases/download/v1.3.3/vod_probe.zip",
         "url": "vod-probe-1.3.3/vod-probe-1.3.3.zip",
-        "size": 590
+        "size": 590,
+        "download_count": 104
       },
       {
         "version": "1.3.2",
         "commit_sha": "80413280036aeac2cd4b08c8d358844dae2cbb3e",
         "commit_sha_short": "8041328",
+        "changelog": "379",
         "build_timestamp": "2026-10-03T14:31:17Z",
         "last_updated": "2026-10-03T10:30:56-04:00",
         "checksum_md5": "2d70ad62b80c25aab64ec259fb008670",
         "checksum_sha256": "538c07074d737f63557b342360ba5496a16fd43b1cac0ad28693b86b7a80702f",
         "source_url": "https://github.com/oxios0x00/dispatcharr-vod-probe/releases/download/v1.3.2/vod_probe.zip",
         "url": "vod-probe-1.3.2/vod-probe-1.3.2.zip",
-        "size": 589
+        "size": 589,
+        "download_count": 50
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasoNtQAKCRB+wDprTCI0\nzurYAP9bjBEe1bU1zrpok+ONythBJMxFY2Ky6gCQeUe/x/EVSQD/edUPq3XHj8BF\nVciOy1aNNBMwWAIuXCQtNvDOIxVWnA8=\n=0BEs\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+ngAKCRB+wDprTCI0\nzuTpAQCOM2PeHXr00DoI2bBamnMWh1N0+2fjYDkjPf8RaGOTDwEAmaozt9Bo3rbq\n/vjXyuZf5TNGgsFZGY1liYgdwmPHpA0=\n=jCEW\n-----END PGP SIGNATURE-----"
 }

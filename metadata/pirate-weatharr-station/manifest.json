@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T08:10:21Z",
+  "generated_at": "2026-10-21T13:28:42Z",
   "manifest": {
     "slug": "pirate-weatharr-station",
     "name": "PWS - Pirate Weatharr Station",
@@ -12,10 +12,12 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-06T08:09:42Z",
+    "download_count": 1045,
     "latest": {
       "version": "1.6.0",
       "commit_sha": "c2e3d69ab46b4bfc91ed80ae219cb234a7c7c60c",
       "commit_sha_short": "c2e3d69",
+      "changelog": "388",
       "build_timestamp": "2026-10-06T08:10:06Z",
       "last_updated": "2026-10-06T08:09:42Z",
       "checksum_md5": "9b47a3a8242e744b93a2a8a424bebe22",
@@ -23,70 +25,81 @@
       "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v1.6.0/pirate-weatharr-station-1.6.0.zip",
       "latest_url": "pirate-weatharr-station-1.6.0/pirate-weatharr-station-1.6.0.zip",
       "url": "pirate-weatharr-station-1.6.0/pirate-weatharr-station-1.6.0.zip",
-      "size": 35837
+      "size": 35837,
+      "download_count": 234
     },
     "versions": [
       {
         "version": "1.6.0",
         "commit_sha": "c2e3d69ab46b4bfc91ed80ae219cb234a7c7c60c",
         "commit_sha_short": "c2e3d69",
+        "changelog": "388",
         "build_timestamp": "2026-10-06T08:10:06Z",
         "last_updated": "2026-10-06T08:09:42Z",
         "checksum_md5": "9b47a3a8242e744b93a2a8a424bebe22",
         "checksum_sha256": "5b22d97a3526bc1e74f9f7b6b9cd449d65e485a6a0989f497c13427517cee64b",
         "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v1.6.0/pirate-weatharr-station-1.6.0.zip",
         "url": "pirate-weatharr-station-1.6.0/pirate-weatharr-station-1.6.0.zip",
-        "size": 35837
+        "size": 35837,
+        "download_count": 234
       },
       {
         "version": "1.5.1",
         "commit_sha": "d70208b451f884ee294e6e5f03bac70db7dc2add",
         "commit_sha_short": "d70208b",
+        "changelog": "385",
         "build_timestamp": "2026-10-05T17:41:14Z",
         "last_updated": "2026-10-05T17:40:49Z",
         "checksum_md5": "1c9caa76ce3024ace09dc188ac8db0a6",
         "checksum_sha256": "11bd6bacf405cbbf1f42afdbe9df6ce3113c1ba1530942d08082bbeac99dd307",
         "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v1.5.1/pirate-weatharr-station-1.5.1.zip",
         "url": "pirate-weatharr-station-1.5.1/pirate-weatharr-station-1.5.1.zip",
-        "size": 35832
+        "size": 35832,
+        "download_count": 23
       },
       {
         "version": "1.4.2",
         "commit_sha": "3c4dd6126c9c7c2bdc12f8e9c33fd8295b3f1c18",
         "commit_sha_short": "3c4dd61",
+        "changelog": "381",
         "build_timestamp": "2026-10-01T19:46:10Z",
         "last_updated": "2026-10-01T19:45:40Z",
         "checksum_md5": "1998819e6011a1f35904d41776643097",
         "checksum_sha256": "380c998bc0463b317f49f8756579ea41ab1233fbb86e8c15effe1827c60963e0",
         "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v1.4.2/pirate-weatharr-station-1.4.2.zip",
         "url": "pirate-weatharr-station-1.4.2/pirate-weatharr-station-1.4.2.zip",
-        "size": 35887
+        "size": 35887,
+        "download_count": 92
       },
       {
         "version": "1.3.2",
         "commit_sha": "878b01c6f9a5f53c8c9c9e1e78994b5d7fc69d07",
         "commit_sha_short": "878b01c",
+        "changelog": "248",
         "build_timestamp": "2026-08-18T04:54:14Z",
         "last_updated": "2026-08-18T04:53:57Z",
         "checksum_md5": "0a2369bfb13318e04ccc14e00e8a605f",
         "checksum_sha256": "40bc77a571270d47205d4ec5cb74b172352c2465845dfa59e574e1ca26a3165b",
         "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v1.3.2/pirate-weatharr-station-1.3.2.zip",
         "url": "pirate-weatharr-station-1.3.2/pirate-weatharr-station-1.3.2.zip",
-        "size": 35852
+        "size": 35852,
+        "download_count": 449
       },
       {
         "version": "1.0.0",
         "commit_sha": "6411b9759caf40f17bcc38e88e358fc669c71488",
         "commit_sha_short": "6411b97",
+        "changelog": "203",
         "build_timestamp": "2026-07-31T12:47:36Z",
         "last_updated": "2026-07-31T08:47:14-04:00",
         "checksum_md5": "e190adfe0b8739be04fa80291c4dffcc",
         "checksum_sha256": "a44cef5f3470854f1b05faaf64c76fecb67df23050ad5439e900f35e07499263",
         "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v1.0.0/pirate-weatharr-station-1.0.0.zip",
         "url": "pirate-weatharr-station-1.0.0/pirate-weatharr-station-1.0.0.zip",
-        "size": 34811
+        "size": 34811,
+        "download_count": 247
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCasSs8AAKCRB+wDprTCI0\nzuMaAP45MoFSguNJ/5KlWFv55m28bBXqT95WABz+urZvbHu5mgEAzvK88ZlZNw3j\nnCaAmbpHWehetIhZzKIWa8zqA/zWaw4=\n=brFN\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+cgAKCRB+wDprTCI0\nzjirAQDoj8qCWnYjMQr+npQcokS9iV4HpydZ44gxHUcB5ZlqhQD8Ck75vH5tsjt/\nZUov8Dq4lOVZN71G0P5ZjL3ssSI6swk=\n=J7I6\n-----END PGP SIGNATURE-----"
 }

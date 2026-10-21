@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T17:11:40Z",
+  "generated_at": "2026-10-21T13:28:42Z",
   "manifest": {
     "slug": "audio-buffer-tuner",
     "name": "Audio Buffer Tuner",
@@ -16,10 +16,12 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-09-16T13:11:15-04:00",
+    "download_count": 93,
     "latest": {
       "version": "0.3.5",
       "commit_sha": "3ceeddd53b4d49d5d14584768f69121e8094d6df",
       "commit_sha_short": "3ceeddd",
+      "changelog": "308",
       "build_timestamp": "2026-09-16T17:11:27Z",
       "last_updated": "2026-09-16T13:11:15-04:00",
       "checksum_md5": "5cf6208253d8f12c5f0d473211e21728",
@@ -28,13 +30,15 @@
       "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v0.3.5/audio-buffer-tuner.zip",
       "latest_url": "audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip",
       "url": "audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip",
-      "size": 95
+      "size": 95,
+      "download_count": 93
     },
     "versions": [
       {
         "version": "0.3.5",
         "commit_sha": "3ceeddd53b4d49d5d14584768f69121e8094d6df",
         "commit_sha_short": "3ceeddd",
+        "changelog": "308",
         "build_timestamp": "2026-09-16T17:11:27Z",
         "last_updated": "2026-09-16T13:11:15-04:00",
         "checksum_md5": "5cf6208253d8f12c5f0d473211e21728",
@@ -42,9 +46,10 @@
         "min_dispatcharr_version": "v0.31.0",
         "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v0.3.5/audio-buffer-tuner.zip",
         "url": "audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip",
-        "size": 95
+        "size": 95,
+        "download_count": 93
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaqrNzAAKCRB+wDprTCI0\nzk0fAPwMLqDA7eTEtidD76mgKvH3UF8+6WCEJ44t8ZG+e8wYbQD9H23922HXZMkt\nNyMCvfFTBDXw0JfJ/SrAcyRmTZ613wc=\n=f8rO\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+DgAKCRB+wDprTCI0\nzsrHAQDMW4CQjL8kn+8jHaB6DkfKa4AFfXYRjycmThWSQ8NZWgEAw+M3snCLlzau\nXXiL2wJgtd1N/ynTkzsOg3X2472GKwI=\n=sJxp\n-----END PGP SIGNATURE-----"
 }
