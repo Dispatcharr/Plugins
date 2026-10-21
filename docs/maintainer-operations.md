@@ -58,7 +58,7 @@ Every skipped candidate is marked for manual review. Successful automatic merges
 
 | Workflow | When to use it | Notes |
 | --- | --- | --- |
-| **Publish Plugins** | Publishes plugin releases after changes reach `main`, or rebuilds releases manually. | A full rebuild is destructive. Manual rebuilds require `force_rebuild_confirm` to be `CONFIRM`. Target one plugin with `force_rebuild_plugin` whenever possible. |
+| **Publish Plugins** | Publishes plugin releases after changes reach `main`, rebuilds releases manually, and refreshes generated manifests every Sunday at 00:00 UTC. | A full rebuild is destructive. Manual rebuilds require `force_rebuild_confirm` to be `CONFIRM`. Target one plugin with `force_rebuild_plugin` whenever possible. The scheduled run can publish updated GitHub Release download totals when that manifest feature flag is enabled. |
 | **Yank Plugin Version** | Removes a published version following a Version Removal Request. | Requires the plugin slug, version, and authorizing issue number. It updates releases and closes the request. |
 | **Run Migrations** | Performs maintainer-directed repository or release-branch migrations. | Review workflow inputs and logs before running it. |
 | **Update External README** | Synchronizes documentation to the configured external repository. | It is inactive until the optional external-README settings are configured. |

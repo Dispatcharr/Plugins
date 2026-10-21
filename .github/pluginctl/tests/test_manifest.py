@@ -45,6 +45,40 @@ def test_version_entry_empty_metadata():
     assert entry == {"version": "1.2.0", "url": "u", "size": 5}
 
 
+def test_release_download_counts_sums_assets_across_pages(monkeypatch):
+    class Result:
+        returncode = 0
+        stdout = json.dumps([
+            [{"tag_name": "demo-1.2.0", "assets": [
+                {"download_count": 5}, {"download_count": "3"}, {"download_count": -1},
+            ]}],
+            [{"tag_name": "demo-1.1.0", "assets": []}],
+        ])
+
+    monkeypatch.setattr(gh, "_run", lambda args: Result())
+
+    assert gh.release_download_counts("org/repo") == {
+        "demo-1.2.0": 8,
+        "demo-1.1.0": 0,
+    }
+
+
+def test_release_download_counts_ignores_api_and_json_failures(monkeypatch):
+    class Failed:
+        returncode = 1
+        stdout = ""
+
+    monkeypatch.setattr(gh, "_run", lambda args: Failed())
+    assert gh.release_download_counts("org/repo") == {}
+
+    class Invalid:
+        returncode = 0
+        stdout = "not json"
+
+    monkeypatch.setattr(gh, "_run", lambda args: Invalid())
+    assert gh.release_download_counts("org/repo") == {}
+
+
 def test_override_current_min_max():
     zips = [{"version": "1.2.0", "url": "u", "size": 5}]
     out = m.override_current_min_max(zips, "1.2.0", "v0.9.0", "")
@@ -93,6 +127,25 @@ def test_root_entry_key_order():
         "last_updated", "latest_version", "latest_md5", "latest_sha256",
         "latest_url", "latest_size", "min_dispatcharr_version",
     ]  # max_dispatcharr_version "" -> dropped
+
+
+def test_manifest_download_counts_are_emitted_at_release_and_plugin_levels():
+    zips = [
+        m.build_version_entry(META, "demo-1.2.0/demo-1.2.0.zip", 10, "1.2.0", 8),
+        m.build_version_entry({"version": "1.1.0"}, "demo-1.1.0/demo-1.1.0.zip", 9, "1.1.0", 3),
+    ]
+    plugin = m.build_plugin_entry(
+        PLUGIN_RAW, "demo", "demo-1.2.0/demo-1.2.0.zip", "registry", "registry",
+        zips, META, 10, download_count=11, latest_download_count=8)
+    root = m.build_root_entry(
+        PLUGIN_RAW, "demo", META, 10, "", "", "u", "manifest", download_count=11)
+
+    assert [entry["download_count"] for entry in plugin["versions"]] == [8, 3]
+    assert plugin["latest"]["download_count"] == 8
+    assert plugin["download_count"] == 11
+    assert root["download_count"] == 11
+    assert list(plugin).index("download_count") == list(plugin).index("last_updated") + 1
+    assert list(root).index("download_count") == list(root).index("last_updated") + 1
 
 
 def test_trim_description():
@@ -269,6 +322,44 @@ def test_generate_emits_and_strips_ai_assisted_with_feature_flag(tmp_path, monke
     assert m.generate("main", "releases", "org/repo", "") == 0
     assert "ai_assisted" not in json.loads(plugin_manifest.read_text(encoding="utf-8"))["manifest"]
     assert "ai_assisted" not in json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]["plugins"][0]
+
+
+def test_generate_emits_and_removes_download_totals_with_feature_flag(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(
+        json.dumps({"name": "Demo", "version": "1.2.0", "description": "d"}),
+        encoding="utf-8")
+    build_meta_dir = tmp_path / "build-meta"
+    metadata_dir = build_meta_dir / "demo"
+    metadata_dir.mkdir(parents=True)
+    (metadata_dir / "demo-1.2.0.json").write_text(json.dumps(META), encoding="utf-8")
+    (metadata_dir / "demo-1.1.0.json").write_text(
+        json.dumps({**META, "version": "1.1.0"}), encoding="utf-8")
+    monkeypatch.setattr(gh, "release_list_tags", lambda repo: ["demo-1.2.0", "demo-1.1.0"])
+    monkeypatch.setattr(gh, "release_download_counts", lambda repo: {
+        "demo-1.2.0": 8,
+        "demo-1.1.0": 3,
+    })
+    monkeypatch.setattr(feature_flags, "MANIFEST_DOWNLOAD_TOTALS", True)
+
+    assert m.generate("main", "releases", "org/repo", str(build_meta_dir)) == 0
+    plugin = json.loads((tmp_path / "metadata/demo/manifest.json").read_text(encoding="utf-8"))["manifest"]
+    root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert plugin["download_count"] == 11
+    assert plugin["latest"]["download_count"] == 8
+    assert [entry["download_count"] for entry in plugin["versions"]] == [8, 3]
+    assert root["plugins"][0]["download_count"] == 11
+
+    monkeypatch.setattr(feature_flags, "MANIFEST_DOWNLOAD_TOTALS", False)
+    assert m.generate("main", "releases", "org/repo", str(build_meta_dir)) == 0
+    plugin = json.loads((tmp_path / "metadata/demo/manifest.json").read_text(encoding="utf-8"))["manifest"]
+    root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert "download_count" not in plugin
+    assert "download_count" not in plugin["latest"]
+    assert all("download_count" not in entry for entry in plugin["versions"])
+    assert "download_count" not in root["plugins"][0]
 
 
 def test_generate_emits_ai_assisted_for_history_evidence(tmp_path, monkeypatch):
