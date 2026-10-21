@@ -129,6 +129,18 @@ def test_root_entry_key_order():
     ]  # max_dispatcharr_version "" -> dropped
 
 
+def test_manifest_emits_changelog_numbers_when_available():
+    metadata = {**META, "changelog": "42"}
+    version = m.build_version_entry(metadata, "u", 10, "1.2.0")
+    plugin = m.build_plugin_entry(
+        PLUGIN_RAW, "demo", "u", "registry", "registry", [version], metadata, 10)
+    root = m.build_root_entry(PLUGIN_RAW, "demo", metadata, 10, "", "", "u", "manifest")
+
+    assert version["changelog"] == "42"
+    assert plugin["latest"]["changelog"] == "42"
+    assert root["latest_changelog"] == "42"
+
+
 def test_manifest_download_counts_are_emitted_at_release_and_plugin_levels():
     zips = [
         m.build_version_entry(META, "demo-1.2.0/demo-1.2.0.zip", 10, "1.2.0", 8),
@@ -342,6 +354,7 @@ def test_generate_emits_and_removes_download_totals_with_feature_flag(tmp_path, 
         "demo-1.2.0": 8,
         "demo-1.1.0": 3,
     })
+    monkeypatch.setattr(gh, "commit_pull_number", lambda repo, sha: ("42", "https://example.test/pr/42"))
     monkeypatch.setattr(feature_flags, "MANIFEST_DOWNLOAD_TOTALS", True)
 
     assert m.generate("main", "releases", "org/repo", str(build_meta_dir)) == 0
@@ -351,6 +364,9 @@ def test_generate_emits_and_removes_download_totals_with_feature_flag(tmp_path, 
     assert plugin["latest"]["download_count"] == 8
     assert [entry["download_count"] for entry in plugin["versions"]] == [8, 3]
     assert root["plugins"][0]["download_count"] == 11
+    assert [entry["changelog"] for entry in plugin["versions"]] == ["42", "42"]
+    assert plugin["latest"]["changelog"] == "42"
+    assert root["plugins"][0]["latest_changelog"] == "42"
 
     monkeypatch.setattr(feature_flags, "MANIFEST_DOWNLOAD_TOTALS", False)
     assert m.generate("main", "releases", "org/repo", str(build_meta_dir)) == 0
@@ -360,6 +376,7 @@ def test_generate_emits_and_removes_download_totals_with_feature_flag(tmp_path, 
     assert "download_count" not in plugin["latest"]
     assert all("download_count" not in entry for entry in plugin["versions"])
     assert "download_count" not in root["plugins"][0]
+    assert root["plugins"][0]["latest_changelog"] == "42"
 
 
 def test_generate_emits_ai_assisted_for_history_evidence(tmp_path, monkeypatch):

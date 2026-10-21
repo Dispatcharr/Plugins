@@ -34,6 +34,7 @@ def _metadata_fields(metadata: dict, min_da, max_da) -> dict:
         "version": metadata.get("version"),
         "commit_sha": metadata.get("commit_sha"),
         "commit_sha_short": metadata.get("commit_sha_short"),
+        "changelog": metadata.get("changelog"),
         "build_timestamp": metadata.get("build_timestamp"),
         "last_updated": metadata.get("last_updated"),
         "checksum_md5": metadata.get("checksum_md5"),
@@ -152,6 +153,7 @@ def build_root_entry(plugin_raw: dict, plugin_name: str, latest_metadata: dict,
         "last_updated": latest_metadata.get("last_updated") if latest_metadata else None,
         "download_count": download_count,
         "latest_version": latest_metadata.get("version") if latest_metadata else None,
+        "latest_changelog": latest_metadata.get("changelog") if latest_metadata else None,
         "latest_md5": latest_metadata.get("checksum_md5") if latest_metadata else None,
         "latest_sha256": latest_metadata.get("checksum_sha256") if latest_metadata else None,
         "latest_url": latest_url,
@@ -359,6 +361,7 @@ def generate(source_branch: str, releases_branch: str, repository: str,
     )
     root_entries: list[dict] = []
     plugin_count = 0
+    changelog_numbers: dict[str, Optional[str]] = {}
 
     for plugin_dir in sorted(glob.glob("plugins/*/")):
         plugin_file = os.path.join(plugin_dir, "plugin.json")
@@ -423,6 +426,14 @@ def generate(source_branch: str, releases_branch: str, repository: str,
                     if entry.get("version") == canonical_version:
                         metadata = entry
                         break
+
+            commit_sha = str(metadata.get("commit_sha") or "")
+            if metadata and "changelog" not in metadata and commit_sha:
+                if commit_sha not in changelog_numbers:
+                    changelog_numbers[commit_sha] = gh.commit_pull_number(repository, commit_sha)[0]
+                changelog = changelog_numbers[commit_sha]
+                if changelog:
+                    metadata = {**metadata, "changelog": changelog}
 
             zip_size_kb = 0
             if metadata:

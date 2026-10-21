@@ -76,6 +76,8 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
         source_type = raw.get("source_type") or "local"
         build_timestamp = now_iso()
         commit_sha, commit_sha_short, commit_date = _commit_info(source_branch, plugin_dir)
+        pull_request_number, pull_request_url = (
+            gh.commit_pull_number(repository, commit_sha) if commit_sha else (None, None))
         last_updated = commit_date or now_iso()
         source_url_resolved = ""
 
@@ -103,6 +105,7 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
             "version": version,
             "commit_sha": commit_sha or None,
             "commit_sha_short": commit_sha_short or None,
+            "changelog": pull_request_number,
             "build_timestamp": build_timestamp,
             "last_updated": last_updated,
             "checksum_md5": checksum_md5,
@@ -117,7 +120,9 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
                   "w", encoding="utf-8") as fh:
             fh.write(jsonio.dumps(meta))
 
-        notes = _release_notes(repository, plugin_name, commit_sha, commit_sha_short)
+        notes = _release_notes(
+            repository, plugin_name, commit_sha, commit_sha_short,
+            pull_request_number, pull_request_url)
         actions.log(f"  {plugin_name} v{version} - uploading to GitHub Releases")
         gh.release_create(release_tag, repository, f"{plugin_name} v{version}", notes, zip_path)
 
@@ -129,15 +134,15 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
 
 
 def _release_notes(repository: str, plugin_name: str, commit_sha: str,
-                   commit_sha_short: str) -> str:
+                   commit_sha_short: str, pull_request_number: Optional[str] = None,
+                   pull_request_url: Optional[str] = None) -> str:
     readme_url = f"https://github.com/{repository}/blob/releases/metadata/{plugin_name}/README.md"
     notes = ""
     if commit_sha:
         commit_url = f"https://github.com/{repository}/commit/{commit_sha}"
         notes = f"**Commit:** [`{commit_sha_short}`]({commit_url})"
-        pr_number, pr_url = gh.commit_pull_number(repository, commit_sha)
-        if pr_number:
-            notes += f"\n**PR:** [#{pr_number}]({pr_url})"
+        if pull_request_number:
+            notes += f"\n**PR:** [#{pull_request_number}]({pull_request_url})"
         notes += "\n"
     notes += f"**README:** [Plugin README]({readme_url})"
     return notes
