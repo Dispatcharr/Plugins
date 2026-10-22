@@ -86,6 +86,36 @@ def test_override_current_min_max():
     assert "max_dispatcharr_version" not in out[0]  # "" -> None -> dropped
 
 
+def test_effective_minimum_uses_the_higher_catalog_or_manifest_floor(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "manifest_version": 1,
+    }) == "v0.34.0"
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "manifest_version": 2,
+        "min_dispatcharr_version": "0.35.0",
+    }) == "0.35.0"
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "manifest_version": 0,
+        "min_dispatcharr_version": "v0.20.0",
+    }) == "v0.20.0"
+
+
+def test_effective_minimum_uses_an_external_runtime_manifest_sidecar(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / ".dispatcharr-runtime-manifest.json").write_text(
+        json.dumps({"manifest_version": 2}), encoding="utf-8"
+    )
+
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "source_type": "external",
+        "min_dispatcharr_version": "v0.20.0",
+    }) == "v0.34.0"
+
+
 def test_plugin_entry_key_order():
     zips = [m.build_version_entry(META, "demo-1.2.0/demo-1.2.0.zip", 10, "1.2.0")]
     entry = m.build_plugin_entry(
@@ -291,6 +321,32 @@ def test_generate_uses_legacy_manifest_by_default(tmp_path, monkeypatch):
     root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
     assert root["root_url"] == "https://github.com/org/repo/releases/download"
     assert root["plugins"][0]["manifest_url"].startswith("https://raw.githubusercontent.com/")
+
+
+def test_generate_writes_the_effective_minimum_to_all_manifest_entries(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(json.dumps({
+        "name": "Demo", "version": "1.0.0", "description": "d",
+        "manifest_version": 2, "min_dispatcharr_version": "v0.20.0",
+    }), encoding="utf-8")
+    build_meta = tmp_path / "build-meta" / "demo"
+    build_meta.mkdir(parents=True)
+    (build_meta / "demo-1.0.0.json").write_text(json.dumps({
+        **META, "version": "1.0.0",
+    }), encoding="utf-8")
+    monkeypatch.setattr(gh, "release_list_tags", lambda repo: ["demo-1.0.0"])
+
+    assert m.generate("main", "releases", "org/repo", str(tmp_path / "build-meta")) == 0
+
+    plugin_manifest = json.loads(
+        (tmp_path / "metadata" / "demo" / "manifest.json").read_text(encoding="utf-8")
+    )["manifest"]
+    root_manifest = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert plugin_manifest["latest"]["min_dispatcharr_version"] == "v0.34.0"
+    assert plugin_manifest["versions"][0]["min_dispatcharr_version"] == "v0.34.0"
+    assert root_manifest["plugins"][0]["min_dispatcharr_version"] == "v0.34.0"
 
 
 def test_generate_uses_split_manifest_and_copies_icon_when_enabled(tmp_path, monkeypatch):

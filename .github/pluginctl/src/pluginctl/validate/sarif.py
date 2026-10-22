@@ -20,6 +20,7 @@ import re
 from dataclasses import dataclass
 
 from .. import capabilities, feature_flags
+from .. import runtime_manifest
 
 ZWSP = "​"
 CAPABILITY_CONTRACT_PREFIX = "plugin/capability-contract/"
@@ -127,21 +128,10 @@ def _runtime_manifest(plugin_name: str) -> dict | None:
         with open(catalog_path, encoding="utf-8") as fh:
             catalog = json.load(fh)
     except (OSError, json.JSONDecodeError):
-        catalog = None
-    # The sidecar is created only by the external-release scan. Local plugin
-    # submissions must not be able to override their actual runtime manifest.
-    paths = [catalog_path]
-    if isinstance(catalog, dict) and catalog.get("source_type") == "external":
-        paths.insert(0, os.path.join("plugins", plugin_name, ".dispatcharr-runtime-manifest.json"))
-    for path in paths:
-        try:
-            with open(path, encoding="utf-8") as fh:
-                manifest = json.load(fh)
-        except (OSError, json.JSONDecodeError):
-            continue
-        if isinstance(manifest, dict) and "manifest_version" in manifest:
-            return manifest
-    return None
+        return None
+    if not isinstance(catalog, dict):
+        return None
+    return runtime_manifest.load(os.path.dirname(catalog_path), catalog)
 
 
 def contract_result_requires_review(result: dict) -> bool:

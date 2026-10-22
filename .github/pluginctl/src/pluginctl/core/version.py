@@ -26,6 +26,23 @@ def is_dispatcharr_version(version: str) -> bool:
     return bool(_DA_VERSION_RE.match(version or ""))
 
 
+def higher_dispatcharr_version(first: str | None, second: str | None) -> str | None:
+    """Return the higher Dispatcharr version, preserving its original prefix."""
+    if not first:
+        return second
+    if not second:
+        return first
+    if not is_dispatcharr_version(first):
+        return second
+    if not is_dispatcharr_version(second):
+        return first
+
+    def parts(version: str) -> tuple[int, int, int]:
+        return tuple(int(part) for part in version.removeprefix("v").split("."))
+
+    return first if parts(first) >= parts(second) else second
+
+
 def version_greater_than(new_version: str, old_version: str) -> bool:
     """Return True when new > old, comparing major/minor/patch as integers.
 

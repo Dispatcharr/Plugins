@@ -17,11 +17,11 @@ import subprocess
 import tempfile
 from typing import Optional
 
-from .. import feature_flags
+from .. import capabilities, feature_flags, runtime_manifest
 from ..core import jsonio
 from ..core.jsonio import drop_none
 from ..core.timeutil import now_iso
-from ..core.version import versioned_tags
+from ..core.version import higher_dispatcharr_version, versioned_tags
 from . import ai_assisted
 
 
@@ -43,6 +43,18 @@ def _metadata_fields(metadata: dict, min_da, max_da) -> dict:
         "max_dispatcharr_version": max_da,
         "source_url": metadata.get("source_url"),
     }
+
+
+def effective_min_dispatcharr_version(plugin_dir: str, plugin_raw: dict) -> str:
+    """Return the higher catalog or versioned-runtime-manifest minimum."""
+    declared_minimum = str(plugin_raw.get("min_dispatcharr_version") or "")
+    manifest = runtime_manifest.load(plugin_dir, plugin_raw)
+    if manifest is None or not capabilities.manifest_version_is_valid(manifest):
+        return declared_minimum
+    schema_minimum = capabilities.manifest_version_min_app_version(
+        capabilities.parse_manifest_version(manifest)
+    )
+    return higher_dispatcharr_version(declared_minimum, schema_minimum) or ""
 
 
 def build_version_entry(metadata: dict, url: str, size, canonical_version: str,
@@ -86,21 +98,25 @@ def override_current_min_max(versioned_zips: list[dict], current_version: str,
 
 
 def build_plugin_entry(plugin_raw: dict, plugin_name: str, latest_url: str,
-                       registry_url: str, registry_name: str,
-                       versioned_zips: list[dict], latest_metadata: dict,
-                       latest_size_kb, ai_assisted_disclosed: bool = False,
-                       download_count: Optional[int] = None,
-                       latest_download_count: Optional[int] = None) -> dict:
+                        registry_url: str, registry_name: str,
+                        versioned_zips: list[dict], latest_metadata: dict,
+                        latest_size_kb, ai_assisted_disclosed: bool = False,
+                        download_count: Optional[int] = None,
+                        latest_download_count: Optional[int] = None,
+                        min_da: Optional[str] = None,
+                        max_da: Optional[str] = None) -> dict:
     """Per-plugin manifest ``.manifest`` payload (metadata/<slug>/manifest.json)."""
     def g(key):
         return plugin_raw.get(key)
 
+    effective_min_da = g("min_dispatcharr_version") if min_da is None else min_da
+    effective_max_da = g("max_dispatcharr_version") if max_da is None else max_da
     latest = None
     if latest_metadata:
         latest = drop_none({
             **_metadata_fields(latest_metadata,
-                               g("min_dispatcharr_version"),
-                               g("max_dispatcharr_version")),
+                               effective_min_da,
+                               effective_max_da),
             "latest_url": latest_url,
             "url": versioned_zips[0]["url"] if versioned_zips else None,
             "size": latest_size_kb,
@@ -372,7 +388,7 @@ def generate(source_branch: str, releases_branch: str, repository: str,
         with open(plugin_file, encoding="utf-8") as fh:
             raw = json.load(fh)
         current_version = str(raw.get("version"))
-        min_da = str(raw.get("min_dispatcharr_version") or "")
+        min_da = effective_min_dispatcharr_version(plugin_dir, raw)
         max_da = str(raw.get("max_dispatcharr_version") or "")
         unlisted = raw.get("unlisted") is True
         ai_assisted_disclosed = (
@@ -457,10 +473,10 @@ def generate(source_branch: str, releases_branch: str, repository: str,
 
         plugin_entry = build_plugin_entry(raw, plugin_name, latest_url, registry_url,
                                            registry_name, versioned_zips, latest_metadata,
-                                           latest_size_kb, ai_assisted_disclosed,
-                                           (plugin_download_count
-                                            if feature_flags.MANIFEST_DOWNLOAD_TOTALS else None),
-                                           latest_download_count)
+                                            latest_size_kb, ai_assisted_disclosed,
+                                            (plugin_download_count
+                                             if feature_flags.MANIFEST_DOWNLOAD_TOTALS else None),
+                                            latest_download_count, min_da, max_da)
         written = write_manifest_if_changed(existing_manifest_file, plugin_entry, generated_at)
         sign_if_needed(existing_manifest_file, written)
 

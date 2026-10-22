@@ -24,6 +24,7 @@ from ..core.hashing import file_digests
 from ..core.jsonio import drop_none
 from ..core.timeutil import now_iso
 from ..validate.detect import is_safe_name
+from .manifest import effective_min_dispatcharr_version
 
 
 def _download(url: str, dest: str, attempts: int = 3) -> bool:
@@ -97,7 +98,7 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
                                check=True, stdout=subprocess.DEVNULL)
 
         checksum_md5, checksum_sha256 = file_digests(zip_path, "md5", "sha256")
-        min_da = str(raw.get("min_dispatcharr_version") or "")
+        min_da = effective_min_dispatcharr_version(plugin_dir, raw)
         max_da = str(raw.get("max_dispatcharr_version") or "")
         zip_size_kb = os.path.getsize(zip_path) // 1024
 
