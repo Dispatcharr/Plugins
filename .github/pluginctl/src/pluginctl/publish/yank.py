@@ -17,7 +17,7 @@ import tempfile
 
 from .. import label_catalog
 from ..core import actions, gh
-from ..core.git import configure_identity, run as _git
+from ..core.git import configure_identity, push_branch_with_lease, run as _git
 from ..core.version import sort_versions_desc
 from . import manifest, readmes
 
@@ -247,7 +247,7 @@ def _open_rollback_pr(repository, source_branch, remote, plugin, version,
                    f"**Authorized by:** #{issue}\n\n{source_note}\n\nCloses #{issue}")
 
     _git("commit", "-m", pr_title)
-    _git("push", "--force-with-lease", remote, rollback_branch)
+    push_branch_with_lease(remote, rollback_branch)
     url = gh.pr_create(repository, source_branch, rollback_branch, pr_title, pr_body,
                        labels=["Rollback"]) or ""
     actions.log(f"Rollback PR opened: {rollback_branch} -> {source_branch} ({url})")

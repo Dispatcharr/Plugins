@@ -10,7 +10,7 @@ import tempfile
 
 from .. import label_catalog
 from ..core import actions, gh
-from ..core.git import configure_identity, run as _git
+from ..core.git import configure_identity, push_branch_with_lease, run as _git
 
 _SAFE_PLUGIN_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
@@ -45,7 +45,7 @@ def _open_pr_for_branch(repository: str, branch: str) -> str:
 
 def _push_branch(remote: str, branch: str) -> None:
     """Publish the branch, replacing a stale branch left by a closed request PR."""
-    _git("push", "--force-with-lease", remote, branch)
+    push_branch_with_lease(remote, branch)
 
 
 def run() -> int:

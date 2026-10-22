@@ -38,11 +38,11 @@ def test_open_pr_for_branch_returns_matching_pr(monkeypatch):
 
 def test_push_branch_replaces_stale_automation_branch_with_a_lease(monkeypatch):
     calls = []
-    monkeypatch.setattr(unlist, "_git", lambda *args: calls.append(args))
+    monkeypatch.setattr(unlist, "push_branch_with_lease", lambda *args: calls.append(args))
 
     unlist._push_branch("https://example.test/repo.git", "unlist/demo")
 
-    assert calls == [("push", "--force-with-lease", "https://example.test/repo.git", "unlist/demo")]
+    assert calls == [("https://example.test/repo.git", "unlist/demo")]
 
 
 def test_run_rejects_closed_authorizing_issue(monkeypatch):
