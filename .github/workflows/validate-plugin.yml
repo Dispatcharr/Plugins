@@ -198,7 +198,7 @@ jobs:
   # --------------------------------------------------------------------------
   validate-title:
     needs: [detect-changes]
-    if: github.event.pull_request.draft == false && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false' && needs.detect-changes.outputs.skip_validation != 'true'
+    if: github.event.pull_request.draft == false && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:

@@ -29,10 +29,10 @@ def evaluate(detect_result: str, close_pr: str, skip_validation: str,
     # early-pass so a pure repo update cannot merge with red tests.
     if test_result in ("failure", "cancelled"):
         return GateResult(False, "Tooling test suite failed. See the Test Suite job for details.")
-    if skip_validation == "true":
-        return GateResult(True, "No plugin changes detected and author has write access - passing.")
     if title_result == "failure":
         return GateResult(False, "PR title does not match the required format. Rename the PR and re-run.")
+    if skip_validation == "true":
+        return GateResult(True, "No plugin changes detected and author has write access - passing.")
     if outside_violation == "true":
         return GateResult(False, "PR contains unauthorized changes outside the plugins/ directory.")
     if close_pr == "true":

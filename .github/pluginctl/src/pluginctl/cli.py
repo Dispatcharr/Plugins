@@ -347,6 +347,11 @@ def cmd_yank(args) -> int:
     return yank.run()
 
 
+def cmd_unlist(args) -> int:
+    from .publish import unlist
+    return unlist.run()
+
+
 def cmd_automerge(args) -> int:
     from .integrations import automerge
     return automerge.run(head_sha=args.head_sha or _env("HEAD_SHA"), disabled_reason=args.disabled_reason)
@@ -453,6 +458,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("yank", help="Yank a plugin version (env-driven)")
     p.set_defaults(func=cmd_yank)
+
+    p = sub.add_parser("unlist", help="Open a PR to unlist a plugin (env-driven)")
+    p.set_defaults(func=cmd_unlist)
 
     p = sub.add_parser("automerge", help="Auto-merge a pure plugin-update PR")
     p.add_argument("--head-sha", default="")
