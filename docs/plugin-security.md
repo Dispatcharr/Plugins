@@ -39,7 +39,9 @@ instead reported as potential wrapper-bypass attempts for maintainer review.
 ## Sandbox Bypass Queries
 
 The pack separately detects concrete attempts to undermine the current
-plugin-local builtins and import wrappers:
+plugin-local builtins and import wrappers. These checks apply only to enforcing
+runtime manifests (v2 and later), and each rule declares its supported manifest
+version range:
 
 | Rule | Detection |
 |---|---|
