@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T05:17:45Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "event-channel-managarr",
     "name": "Event Channel Managarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-10T20:25:46Z",
-    "download_count": 1559,
+    "download_count": 1568,
     "latest": {
       "version": "1.26.2832019",
       "commit_sha": "39cf0ba01aa2120e0ad1d42bfe5ac11813a8d4ad",
@@ -26,11 +26,12 @@
       "checksum_md5": "b4db356095d5cf3a106502dc029bf478",
       "checksum_sha256": "caa3a24791a4c5d59fac89094d4d7880759f3142c646344e5abdfafc0eb1a16f",
       "min_dispatcharr_version": "v0.20.0",
+      "max_dispatcharr_version": "",
       "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2832019/Event-Channel-Managarr.zip",
       "latest_url": "event-channel-managarr-1.26.2832019/event-channel-managarr-1.26.2832019.zip",
       "url": "event-channel-managarr-1.26.2832019/event-channel-managarr-1.26.2832019.zip",
       "size": 258,
-      "download_count": 426
+      "download_count": 435
     },
     "versions": [
       {
@@ -46,7 +47,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2832019/Event-Channel-Managarr.zip",
         "url": "event-channel-managarr-1.26.2832019/event-channel-managarr-1.26.2832019.zip",
         "size": 258,
-        "download_count": 426
+        "download_count": 435
       },
       {
         "version": "1.26.2831317",
@@ -185,5 +186,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcgAAKCRB+wDprTCI0\nzhJtAQCg/jAhcAEyVe76Eoy/FPQxwbkSqeBVhxcBVXIl55ASxAEA6vH6zI2GdEyO\nh1LmeHAwMN8nlq04uW0GHyICDEHbEwQ=\n=ltsE\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT4wAKCRB+wDprTCI0\nzh2tAP42/Sj+mtOP7q/2e1FeJz/Kc+iGENUHVVhw+PwBxi0VigD9FJGw6LEozA1i\nGDGxX2dmAMNMAY54nWGhdGH6QjezawU=\n=ICVz\n-----END PGP SIGNATURE-----"
 }

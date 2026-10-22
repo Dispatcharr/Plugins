@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T05:17:45Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "packet-slapper",
     "name": "Packet Slapper",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-15T21:43:06Z",
-    "download_count": 165,
+    "download_count": 167,
     "latest": {
       "version": "1.0.4",
       "commit_sha": "172f4b44d3b7063dca5a8fc1ccb005be67ab2611",
@@ -22,11 +22,13 @@
       "last_updated": "2026-10-15T21:43:06Z",
       "checksum_md5": "2be84dbd3f27df76bf6a281d423891ac",
       "checksum_sha256": "dae9f339c9b4ef100e8e1996921a8d89fe9de5078ad05cca466a2254f9b25c9a",
+      "min_dispatcharr_version": "",
+      "max_dispatcharr_version": "",
       "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v1.0.4/packet-slapper.zip",
       "latest_url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
       "url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
       "size": 42,
-      "download_count": 55
+      "download_count": 57
     },
     "versions": [
       {
@@ -41,7 +43,7 @@
         "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v1.0.4/packet-slapper.zip",
         "url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
         "size": 42,
-        "download_count": 55
+        "download_count": 57
       },
       {
         "version": "1.0.3",
@@ -101,5 +103,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcgQAKCRB+wDprTCI0\nzjd5AP9n1/ixZ9x1XLzJ+u6MllUA81/GKkxAp/zQXCyein/yiwEAmbfcW3UDKUyr\nnEFt2bzAVSVnycKwOttMjuTq1MGQqAo=\n=SBMs\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT5QAKCRB+wDprTCI0\nziDGAP46Dh6eNSruI/Xurcibm23rlHR6F7awPduF5/77jdKG0AD7BgNnkRRStP8O\nj7XSTCBH1c6kaIH07tA66VrX2WoNeQE=\n=hbp8\n-----END PGP SIGNATURE-----"
 }

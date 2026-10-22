@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T13:28:42Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "embyfin-stream-cleanup",
     "name": "Embyfin Stream Cleanup",
@@ -23,6 +23,7 @@
       "checksum_md5": "6fa65aef898c225ad3fba47d9708c573",
       "checksum_sha256": "6ee76b5aa4126aaf84e9824ea58b9e03b03a5d3215a4d3d87f4fb5bcc6e055ce",
       "min_dispatcharr_version": "v0.22.0",
+      "max_dispatcharr_version": "",
       "latest_url": "embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip",
       "url": "embyfin-stream-cleanup-1.3.0/embyfin-stream-cleanup-1.3.0.zip",
       "size": 302,
@@ -129,5 +130,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+NwAKCRB+wDprTCI0\nzo3mAP9FL9fMfCER2cWjqnOjuIam+aJdSjjVhgLPVit60V0dIwEAxxPWWK5/5Iqf\n3BRPD//A6517e7DAAF/y+aPvUbkz8As=\n=65Be\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT4gAKCRB+wDprTCI0\nzthiAPsEleTIUhM0m9pNhle4xF9ciDSUOFdhVW2LjFW92HyTHAEAvPRQ27UbUYk/\nBdJAKOU34PTXlUbMhYSq6FGlMmyHfww=\n=wyU+\n-----END PGP SIGNATURE-----"
 }

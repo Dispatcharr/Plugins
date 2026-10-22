@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T05:17:45Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "stream-mapparr",
     "name": "Stream-Mapparr",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-18T19:54:23Z",
-    "download_count": 2135,
+    "download_count": 2178,
     "latest": {
       "version": "1.26.2911937",
       "commit_sha": "79767cd3ca436d0a626727af77fa4fe3ce3829b5",
@@ -23,11 +23,12 @@
       "checksum_md5": "b424c81027fd9bb5052c788b8c8c14df",
       "checksum_sha256": "7cbe5837dbf7b300b86bae06871d8cb4cc2fd31aa9de2708351d4800b4022cc6",
       "min_dispatcharr_version": "v0.20.0",
+      "max_dispatcharr_version": "",
       "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.2911937/Stream-Mapparr.zip",
       "latest_url": "stream-mapparr-1.26.2911937/stream-mapparr-1.26.2911937.zip",
       "url": "stream-mapparr-1.26.2911937/stream-mapparr-1.26.2911937.zip",
       "size": 607,
-      "download_count": 329
+      "download_count": 372
     },
     "versions": [
       {
@@ -43,7 +44,7 @@
         "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.2911937/Stream-Mapparr.zip",
         "url": "stream-mapparr-1.26.2911937/stream-mapparr-1.26.2911937.zip",
         "size": 607,
-        "download_count": 329
+        "download_count": 372
       },
       {
         "version": "1.26.2911353",
@@ -182,5 +183,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcgwAKCRB+wDprTCI0\nznvHAQD1peKtiAiZXiNmrg5CXLvQ0BH/3sFe7Cxu37cVgGOJkAEAkvqNBRbFBXJb\nSES7WohjkI0g5ycWKYKWJBKaqlp5sAY=\n=L0wo\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT5gAKCRB+wDprTCI0\nzlYiAP9zo6oDl9ImNSI1I2HrJQFPTNR+MkkvK+s3YeTx+qHOcAEA8xQOmSqaOdWH\nMW7ceSMLfOuZdmehEJfGaBpjit9pWQg=\n=1Gt3\n-----END PGP SIGNATURE-----"
 }

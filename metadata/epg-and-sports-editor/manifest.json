@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T05:17:45Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-22T05:17:14Z",
-    "download_count": 657,
+    "download_count": 690,
     "latest": {
       "version": "0.5.09",
       "commit_sha": "d65334ec39a2697b3e826ff59da6f248d2a65232",
@@ -22,11 +22,13 @@
       "last_updated": "2026-10-22T05:17:14Z",
       "checksum_md5": "fc13eb90b28cd26124adf22ee06ee253",
       "checksum_sha256": "63a44bd7de1fe984be9a5b9945c22fcb47e9b9a22fd238364dd98745f4190e03",
+      "min_dispatcharr_version": "",
+      "max_dispatcharr_version": "",
       "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.09/epg-and-sports-editor-v0.5.09.zip",
       "latest_url": "epg-and-sports-editor-0.5.09/epg-and-sports-editor-0.5.09.zip",
       "url": "epg-and-sports-editor-0.5.09/epg-and-sports-editor-0.5.09.zip",
       "size": 170,
-      "download_count": 0
+      "download_count": 30
     },
     "versions": [
       {
@@ -41,7 +43,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.09/epg-and-sports-editor-v0.5.09.zip",
         "url": "epg-and-sports-editor-0.5.09/epg-and-sports-editor-0.5.09.zip",
         "size": 170,
-        "download_count": 0
+        "download_count": 30
       },
       {
         "version": "0.5.08",
@@ -55,7 +57,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.08/epg-and-sports-editor-v0.5.08.zip",
         "url": "epg-and-sports-editor-0.5.08/epg-and-sports-editor-0.5.08.zip",
         "size": 170,
-        "download_count": 351
+        "download_count": 354
       },
       {
         "version": "0.5.07",
@@ -171,5 +173,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcfwAKCRB+wDprTCI0\nznUkAP9dzmMk963MRhCZPHSPnoHYbMflZSK44Xevrd/S69VIDwD+NzozW0MRm3oY\nBbIUqjgUKj/stRD+rbPc63Wh9On6/g0=\n=4Gfg\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT4gAKCRB+wDprTCI0\nzkzCAQCvafErWlJO+WQ5u5i0WiBM11CMb7O6DGF7v43XXEqVOAD9FgZf4QOY8fHG\nMb7EdJyUV2zOko48tv5GnIT/wPwJXQE=\n=KfAP\n-----END PGP SIGNATURE-----"
 }

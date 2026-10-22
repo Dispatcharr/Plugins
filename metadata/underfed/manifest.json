@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T05:17:45Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "underfed",
     "name": "Underfed",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-12T14:28:08Z",
-    "download_count": 500,
+    "download_count": 507,
     "latest": {
       "version": "0.8.0",
       "commit_sha": "7caef90467b4318d946777387b150999cc4f35f5",
@@ -22,11 +22,13 @@
       "last_updated": "2026-10-12T14:28:08Z",
       "checksum_md5": "d5732d4b73981a1acb5732432c92816e",
       "checksum_sha256": "d77ddf45dd5b3a5a8659e771c034f02e11fcd4ba17a8b5a5ac50d46de25af912",
+      "min_dispatcharr_version": "",
+      "max_dispatcharr_version": "",
       "source_url": "https://github.com/PilaScat/underfed/releases/download/v0.8.0/underfed-0.8.0.zip",
       "latest_url": "underfed-0.8.0/underfed-0.8.0.zip",
       "url": "underfed-0.8.0/underfed-0.8.0.zip",
       "size": 53,
-      "download_count": 144
+      "download_count": 151
     },
     "versions": [
       {
@@ -41,7 +43,7 @@
         "source_url": "https://github.com/PilaScat/underfed/releases/download/v0.8.0/underfed-0.8.0.zip",
         "url": "underfed-0.8.0/underfed-0.8.0.zip",
         "size": 53,
-        "download_count": 144
+        "download_count": 151
       },
       {
         "version": "0.7.0",
@@ -115,5 +117,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmchAAKCRB+wDprTCI0\nzrcpAQDwJ7+R8OEh+XXxOLvWvmH2AbYzmYGGpPOdnj55lL3mgAEA/7YO99/aZt6f\ntzRZo4j5mLPj095O+1yAeJRQ699JCAk=\n=j4kr\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT5wAKCRB+wDprTCI0\nztyOAP4tzSK7QeYWsmmM36OHqbG7MQF4dpivcjb8miJIzYAvKQEAnoUTPVXLf/b6\nKbM7OsdZALCWvqhRa45VWJm+PwTaNwk=\n=VTey\n-----END PGP SIGNATURE-----"
 }

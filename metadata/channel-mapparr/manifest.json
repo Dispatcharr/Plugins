@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T05:17:45Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-18T10:29:38-04:00",
-    "download_count": 3542,
+    "download_count": 3569,
     "latest": {
       "version": "1.26.2911354",
       "commit_sha": "1025b6f7adb4475fc509f97f9b4725de9711aec4",
@@ -27,11 +27,12 @@
       "checksum_md5": "05e2e51c8519fd4cee0abd3e1191d34a",
       "checksum_sha256": "9fc5b90b11ee4f1dd77b62796ec19d107aabd63ff57ae1008b5ec691f3f715cb",
       "min_dispatcharr_version": "v0.20.0",
+      "max_dispatcharr_version": "",
       "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2911354/Channel-Maparr.zip",
       "latest_url": "channel-mapparr-1.26.2911354/channel-mapparr-1.26.2911354.zip",
       "url": "channel-mapparr-1.26.2911354/channel-mapparr-1.26.2911354.zip",
       "size": 766,
-      "download_count": 296
+      "download_count": 323
     },
     "versions": [
       {
@@ -47,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2911354/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2911354/channel-mapparr-1.26.2911354.zip",
         "size": 766,
-        "download_count": 296
+        "download_count": 323
       },
       {
         "version": "1.26.2901846",
@@ -186,5 +187,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcfQAKCRB+wDprTCI0\nzjAwAP0aWIVMVZoVKwLRhDlRDx4aOhvz8j00CSVJwzpomD8UnwD6AxVB3PNwGVsJ\n2wOxos51ndrvZ+14s75+MAkXWvq3pAE=\n=+jZj\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT4AAKCRB+wDprTCI0\nzv0qAP9jz2/6clAhQI+omIpbcowwSvvys/H6LH5VKcm2qumLOwEAyWo5Y2tk8DEi\nUuGokq4EeAV/OHr1uSm+3I/E4INA2gg=\n=7GCO\n-----END PGP SIGNATURE-----"
 }

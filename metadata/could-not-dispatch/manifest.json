@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T05:17:45Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "could-not-dispatch",
     "name": "Could Not Dispatch",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-06T23:20:38Z",
-    "download_count": 1238,
+    "download_count": 1251,
     "latest": {
       "version": "0.5.0",
       "commit_sha": "8e2b381c3088d1899c334452f36bcb201678c319",
@@ -22,11 +22,13 @@
       "last_updated": "2026-10-06T23:20:38Z",
       "checksum_md5": "82e6b5ae22f415dbf37b5a2204950451",
       "checksum_sha256": "59995d4a526216d2000b2dbe36a8dbb64aa0fb8b702685ad4c1844388e1b0ec4",
+      "min_dispatcharr_version": "",
+      "max_dispatcharr_version": "",
       "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.5.0/could-not-dispatch-0.5.0.zip",
       "latest_url": "could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip",
       "url": "could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip",
       "size": 63,
-      "download_count": 288
+      "download_count": 301
     },
     "versions": [
       {
@@ -41,7 +43,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.5.0/could-not-dispatch-0.5.0.zip",
         "url": "could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip",
         "size": 63,
-        "download_count": 288
+        "download_count": 301
       },
       {
         "version": "0.4.0",
@@ -115,5 +117,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcfgAKCRB+wDprTCI0\nzsaTAP9ArWECQg+OYDeGWCiui7EqezKQ+obQcb8XOR8do+ZbswD/SKUOgXOceuu9\n67bNvn8pdGh670DGuDB8c9O1imvNGAY=\n=Kkwr\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT4QAKCRB+wDprTCI0\nzj+XAQD4G5yzQnIntIeORQiwWoh0znBPJPVAwRebdJveu+hScAD+OWLScK2L/aU/\n0AYZbm9P3D0X7MN1uhyyNAQA+8WPQws=\n=Go/Y\n-----END PGP SIGNATURE-----"
 }

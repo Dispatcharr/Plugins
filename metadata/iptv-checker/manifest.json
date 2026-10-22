@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T05:17:45Z",
+  "generated_at": "2026-10-22T22:53:16Z",
   "manifest": {
     "slug": "iptv-checker",
     "name": "IPTV Checker",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-17T17:57:27-04:00",
-    "download_count": 5229,
+    "download_count": 5272,
     "latest": {
       "version": "1.26.2901902",
       "commit_sha": "06c0d380e674e99b7fa98e5e0cf7b4914dd78eee",
@@ -23,11 +23,12 @@
       "checksum_md5": "faca88cf2cfb2ace4ed681e9bd75af80",
       "checksum_sha256": "dfa15b723017d12efcb0855ca15dffebaac6c2aa30bc286556c01fdc87b31c9e",
       "min_dispatcharr_version": "v0.20.0",
+      "max_dispatcharr_version": "",
       "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.2901902/iptv_checker-v1.26.2901902.zip",
       "latest_url": "iptv-checker-1.26.2901902/iptv-checker-1.26.2901902.zip",
       "url": "iptv-checker-1.26.2901902/iptv-checker-1.26.2901902.zip",
       "size": 414,
-      "download_count": 327
+      "download_count": 369
     },
     "versions": [
       {
@@ -43,7 +44,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.2901902/iptv_checker-v1.26.2901902.zip",
         "url": "iptv-checker-1.26.2901902/iptv-checker-1.26.2901902.zip",
         "size": 414,
-        "download_count": 327
+        "download_count": 369
       },
       {
         "version": "1.26.2831712",
@@ -118,7 +119,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.2201040/iptv_checker-v1.26.2201040.zip",
         "url": "iptv-checker-1.26.2201040/iptv-checker-1.26.2201040.zip",
         "size": 392,
-        "download_count": 818
+        "download_count": 819
       },
       {
         "version": "1.26.2191412",
@@ -181,5 +182,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcgAAKCRB+wDprTCI0\nzme5AP9uKcu5Xwc7Ve6jfNpoAixvCjivnXUAMj78yjHdP6jNYQEA3m+8PrTr3FOc\na3Rl4PiV5NSZhGjaqPOF5ULC7yCJIgI=\n=n+uA\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT4wAKCRB+wDprTCI0\nzkykAQCviUpNL8latA0JJ9rBhIzTihGwwicY2s+yRHtdhxVTzAEApH8EZqxf/1CS\ndkV29Us3E2wKQRSA0lHixyL63lhPkwI=\n=oDVU\n-----END PGP SIGNATURE-----"
 }
