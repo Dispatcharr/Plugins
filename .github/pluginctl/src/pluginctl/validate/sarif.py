@@ -154,7 +154,7 @@ def contract_result_requires_review(result: dict) -> bool:
         return True
     version = capabilities.parse_manifest_version(manifest)
     return (
-        capabilities.manifest_version_enforces_sandbox(version)
+        capabilities.capability_contract_rule_applies(_rule_id(result), version)
         and capability_id not in capabilities.effective_capabilities(manifest)
     )
 

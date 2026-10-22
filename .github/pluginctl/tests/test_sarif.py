@@ -168,6 +168,49 @@ def test_capability_contract_accepts_declared_or_legacy_manifests(tmp_path, monk
     assert not sarif.contract_result_requires_review(result)
 
 
+def test_capability_contract_rules_respect_schema_ranges(tmp_path, monkeypatch):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    monkeypatch.chdir(tmp_path)
+    v3_rule = "plugin/capability-contract/v3-only"
+    retired_rule = "plugin/capability-contract/retired-in-v3"
+    monkeypatch.setitem(sarif.capabilities.KNOWN_CAPABILITIES, "v3_only", {
+        "min_manifest_version": 3,
+        "max_manifest_version": None,
+        "codeql_rules": [v3_rule],
+    })
+    monkeypatch.setitem(sarif.capabilities.KNOWN_CAPABILITIES, "retired_in_v3", {
+        "min_manifest_version": 1,
+        "max_manifest_version": 2,
+        "codeql_rules": [retired_rule],
+    })
+
+    for manifest_version in (0, 1, 2):
+        (plugin_dir / "plugin.json").write_text(
+            json.dumps({"manifest_version": manifest_version, "capabilities": []}),
+            encoding="utf-8",
+        )
+        assert not sarif.contract_result_requires_review({
+            "ruleId": v3_rule,
+            "locations": [{"physicalLocation": {"artifactLocation": {
+                "uri": "plugins/demo/plugin.py"}, "region": {"startLine": 1}}}],
+        })
+
+    (plugin_dir / "plugin.json").write_text(
+        json.dumps({"manifest_version": 3, "capabilities": []}), encoding="utf-8"
+    )
+    assert sarif.contract_result_requires_review({
+        "ruleId": v3_rule,
+        "locations": [{"physicalLocation": {"artifactLocation": {
+            "uri": "plugins/demo/plugin.py"}, "region": {"startLine": 1}}}],
+    })
+    assert not sarif.contract_result_requires_review({
+        "ruleId": retired_rule,
+        "locations": [{"physicalLocation": {"artifactLocation": {
+            "uri": "plugins/demo/plugin.py"}, "region": {"startLine": 1}}}],
+    })
+
+
 def test_local_plugin_cannot_override_its_manifest_with_an_external_sidecar(tmp_path, monkeypatch):
     plugin_dir = tmp_path / "plugins" / "demo"
     plugin_dir.mkdir(parents=True)

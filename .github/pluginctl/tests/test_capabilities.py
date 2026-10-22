@@ -13,6 +13,34 @@ def test_legacy_and_transition_versions_remain_non_enforcing():
     assert capabilities.first_enforcing_manifest_version() == 2
 
 
+def test_versioned_manifest_schemas_require_dispatcharr_v0340():
+    assert capabilities.manifest_version_min_app_version(0) is None
+    assert capabilities.manifest_version_min_app_version(1) == "v0.34.0"
+    assert capabilities.manifest_version_min_app_version(2) == "v0.34.0"
+
+
+def test_capability_contract_rules_only_apply_within_their_schema_range(monkeypatch):
+    v3_rule = "plugin/capability-contract/v3-only"
+    retired_rule = "plugin/capability-contract/retired-in-v3"
+    monkeypatch.setitem(capabilities.KNOWN_CAPABILITIES, "v3_only", {
+        "min_manifest_version": 3,
+        "max_manifest_version": None,
+        "codeql_rules": [v3_rule],
+    })
+    monkeypatch.setitem(capabilities.KNOWN_CAPABILITIES, "retired_in_v3", {
+        "min_manifest_version": 1,
+        "max_manifest_version": 2,
+        "codeql_rules": [retired_rule],
+    })
+
+    assert not capabilities.capability_contract_rule_applies(v3_rule, 0)
+    assert not capabilities.capability_contract_rule_applies(v3_rule, 1)
+    assert not capabilities.capability_contract_rule_applies(v3_rule, 2)
+    assert capabilities.capability_contract_rule_applies(v3_rule, 3)
+    assert capabilities.capability_contract_rule_applies(retired_rule, 2)
+    assert not capabilities.capability_contract_rule_applies(retired_rule, 3)
+
+
 def test_declared_capabilities_preserve_unknown_future_values():
     manifest = {"manifest_version": 99, "capabilities": ["subprocess", "future_capability"]}
     assert capabilities.declared_capabilities(manifest) == {"subprocess", "future_capability"}

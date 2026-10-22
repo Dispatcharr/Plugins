@@ -21,11 +21,12 @@ scanned runtime manifest is enforcing and omits the matching capability:
 | `persistent-service` | `on_leader_acquired` without `persistent_service` |
 
 `pluginctl.capabilities` mirrors Dispatcharr's capability and manifest-version
-policy. Versions 0 and 1 do not produce contract findings. Future manifest
-versions use the latest known policy, as Dispatcharr does. Unknown future
-capabilities remain valid declarations. For external plugins, the scan saves the
-release manifest separately from catalog metadata. A catalog `plugin.json`
-without a `manifest_version` is not treated as a runtime manifest.
+policy. Versions 0 and 1 do not produce contract findings. Each capability
+contract rule declares the manifest versions where it applies, so new checks do
+not affect older schemas and retired checks do not affect newer schemas. Unknown
+future capabilities remain valid declarations. For external plugins, the scan
+saves the release manifest separately from catalog metadata. A catalog
+`plugin.json` without a `manifest_version` is not treated as a runtime manifest.
 An explicitly malformed version is retained for manual review rather than being
 treated as a legacy manifest by the scanner.
 
