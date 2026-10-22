@@ -121,6 +121,49 @@ KNOWN_CAPABILITIES: dict[str, dict[str, Any]] = {
     },
 }
 
+SANDBOX_BYPASS_RULES: dict[str, dict[str, int | None]] = {
+    "plugin/sandbox-bypass/asyncio-process-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/builtins-mutation": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/ctypes-usage": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/direct-builtins-access": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/filesystem-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/importlib-wrapped-module": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/os-process-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/requests-session-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/socket-convenience-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/sys-modules-tamper": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+}
+
 MANIFEST_SCHEMA_POLICIES: dict[int, dict[str, Any]] = {
     0: {
         "min_app_version": None,
@@ -218,6 +261,16 @@ def capability_contract_rule_applies(rule_id: str, manifest_version: int) -> boo
                 and rule_applies_to_manifest_version(policy, manifest_version)
             )
     return False
+
+
+def sandbox_bypass_rule_applies(rule_id: str, manifest_version: int) -> bool:
+    """Whether a CodeQL sandbox-bypass rule applies to this schema version."""
+    policy = SANDBOX_BYPASS_RULES.get(rule_id)
+    return bool(
+        policy
+        and manifest_version_enforces_sandbox(manifest_version)
+        and rule_applies_to_manifest_version(policy, manifest_version)
+    )
 
 
 def declared_capabilities(manifest: dict[str, Any]) -> set[str]:

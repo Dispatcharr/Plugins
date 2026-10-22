@@ -149,6 +149,17 @@ def contract_result_requires_review(result: dict) -> bool:
     )
 
 
+def sandbox_result_requires_review(result: dict) -> bool:
+    """Only sandbox-bypass findings in enforcing runtime manifests are findings."""
+    manifest = _runtime_manifest(_uri_plugin_name(result))
+    if manifest is None:
+        return False
+    if not capabilities.manifest_version_is_valid(manifest):
+        return True
+    version = capabilities.parse_manifest_version(manifest)
+    return capabilities.sandbox_bypass_rule_applies(_rule_id(result), version)
+
+
 @dataclass
 class Counts:
     blocking: int = 0
@@ -174,7 +185,10 @@ def classify(sarif_objs: list[dict]) -> Counts:
             for result in (run.get("results") or []):
                 is_sandbox = is_sandbox_bypass_rule(_rule_id(result))
                 is_contract = is_capability_contract_rule(_rule_id(result))
-                if is_sandbox and not feature_flags.SANDBOX_BYPASS_DETECTION:
+                if is_sandbox and (
+                    not feature_flags.SANDBOX_BYPASS_DETECTION
+                    or not sandbox_result_requires_review(result)
+                ):
                     continue
                 if is_contract and (
                     not feature_flags.CAPABILITY_CONTRACT_DETECTION
@@ -252,7 +266,11 @@ def findings_table(sarif_objs: list[dict], predicate, repo: str, sha: str,
                     continue
                 rid = _rule_id(result)
                 if is_sandbox_bypass_rule(rid):
-                    if not feature_flags.SANDBOX_BYPASS_DETECTION or exclude_sandbox_bypass:
+                    if (
+                        not feature_flags.SANDBOX_BYPASS_DETECTION
+                        or exclude_sandbox_bypass
+                        or not sandbox_result_requires_review(result)
+                    ):
                         continue
                 if is_capability_contract_rule(rid) and (
                     not feature_flags.CAPABILITY_CONTRACT_DETECTION
@@ -285,7 +303,10 @@ def sandbox_findings_table(sarif_objs: list[dict], repo: str, sha: str,
                 if is_suppressed(result):
                     continue
                 rid = _rule_id(result)
-                if not is_sandbox_bypass_rule(rid):
+                if (
+                    not is_sandbox_bypass_rule(rid)
+                    or not sandbox_result_requires_review(result)
+                ):
                     continue
                 uri, line = _location(result)
                 msg = process_message((result.get("message") or {}).get("text"))
@@ -335,7 +356,10 @@ def suppressed_findings_table(sarif_objs: list[dict], repo: str, sha: str,
                 if not is_suppressed(result):
                     continue
                 rid = _rule_id(result)
-                if is_sandbox_bypass_rule(rid) and not feature_flags.SANDBOX_BYPASS_DETECTION:
+                if is_sandbox_bypass_rule(rid) and (
+                    not feature_flags.SANDBOX_BYPASS_DETECTION
+                    or not sandbox_result_requires_review(result)
+                ):
                     continue
                 if is_capability_contract_rule(rid) and (
                     not feature_flags.CAPABILITY_CONTRACT_DETECTION
