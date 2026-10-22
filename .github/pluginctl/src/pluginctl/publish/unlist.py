@@ -110,7 +110,7 @@ def run() -> int:
                 f"Existing releases remain available.\n\n"
                 f"**Authorized by:** #{issue}\n\nCloses #{issue}")
         pr_url = gh.pr_create(repository, source_branch, branch, title, body,
-                              labels=["Plugin Unlisting"])
+                              labels=["Unlisting"])
         if not pr_url:
             actions.error("Unlisting branch was pushed, but the pull request could not be created.")
             return 1

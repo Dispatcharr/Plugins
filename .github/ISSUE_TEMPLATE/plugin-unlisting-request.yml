@@ -1,6 +1,7 @@
 name: Plugin Unlisting Request
 description: Request that a plugin be removed from registry discovery without removing its releases.
-labels: ["Plugin Unlisting"]
+title: "[Plugin Unlisting] "
+labels: ["Unlisting"]
 body:
   - type: markdown
     attributes:

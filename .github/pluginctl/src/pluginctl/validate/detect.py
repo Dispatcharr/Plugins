@@ -114,13 +114,20 @@ def run(pr_author: str, base_ref: str, head_ref: str = "",
             cached_write_access = gh.has_write_access(owner, name, pr_author)
         return cached_write_access
 
-    # Bot-authored yank rollback PRs bypass plugin validation entirely.
-    if pr_author.endswith("[bot]") and head_ref.startswith("yank/"):
-        actions.log(f"Bot-authored yank rollback PR detected ({pr_author}, {head_ref}) "
+    # Bot-authored maintainer-operation PRs are created by privileged workflows
+    # after their authorizing issue has been checked. They bypass contributor
+    # ownership validation and title checks, which are for user-authored PRs.
+    automated_operation = next(
+        (name for name in ("yank", "unlist") if head_ref.startswith(f"{name}/")),
+        "",
+    )
+    if pr_author.endswith("[bot]") and automated_operation:
+        actions.log(f"Bot-authored {automated_operation} PR detected ({pr_author}, {head_ref}) "
                     "- skipping plugin validation.")
         actions.set_outputs(matrix="[]", plugin_count="0", close_pr="false",
-                            close_reason="", skip_validation="true",
-                            outside_violation="false", pub_key_changed="false",
+                             close_reason="", skip_validation="true",
+                             skip_title_validation="true",
+                             outside_violation="false", pub_key_changed="false",
                             has_new_plugin="false", has_updated_plugin="false",
                             metadata_only="false")
         return 0

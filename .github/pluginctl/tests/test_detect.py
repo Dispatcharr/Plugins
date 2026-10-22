@@ -85,6 +85,22 @@ def test_unsafe_named_companion_folder_blocks_pr(tmp_path, monkeypatch):
     assert outputs["matrix"] == "[]"
 
 
+@pytest.mark.parametrize("branch", ["yank/demo-1.2.3", "unlist/demo"])
+def test_bot_maintainer_operation_skips_contributor_validation(tmp_path, monkeypatch, branch):
+    monkeypatch.chdir(tmp_path)
+    out = tmp_path / "gh_output"
+    out.write_text("", encoding="utf-8")
+    monkeypatch.setenv("GITHUB_OUTPUT", str(out))
+
+    assert detect.run("dispatcharr-plugins-bot[bot]", "main", head_ref=branch) == 0
+
+    outputs = _outputs(out)
+    assert outputs["skip_validation"] == "true"
+    assert outputs["skip_title_validation"] == "true"
+    assert outputs["plugin_count"] == "0"
+    assert outputs["close_pr"] == "false"
+
+
 def test_metadata_only_update_accepts_approved_field_removal(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     pdir = tmp_path / "plugins" / "demo-plugin"

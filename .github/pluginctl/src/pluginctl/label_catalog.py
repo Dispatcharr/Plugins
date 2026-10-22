@@ -27,7 +27,7 @@ LABELS = (
     Label("Manual Review Required", "CFD3D7", "Security findings, suppressions, or new plugins require maintainer review"),
     Label("QUARANTINE", "FFFF00", "ClamAV detected a potential threat in this PR"),
     Label("Rollback", "E11D48", "Version rollback opened by the yank workflow"),
-    Label("Plugin Unlisting", "B60205", "Maintainer request to remove a plugin from registry discovery"),
+    Label("Unlisting", "B60205", "Maintainer request to remove a plugin from registry discovery"),
     Label("Auto Merged", "333333", "PR was merged automatically after validation"),
 )
 

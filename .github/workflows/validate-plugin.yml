@@ -113,6 +113,7 @@ jobs:
       outside_files: ${{ steps.detect.outputs.outside_files }}
       outside_violation: ${{ steps.detect.outputs.outside_violation }}
       skip_validation: ${{ steps.detect.outputs.skip_validation }}
+      skip_title_validation: ${{ steps.detect.outputs.skip_title_validation }}
       pub_key_changed: ${{ steps.detect.outputs.pub_key_changed }}
       has_new_plugin: ${{ steps.detect.outputs.has_new_plugin }}
       has_updated_plugin: ${{ steps.detect.outputs.has_updated_plugin }}
@@ -198,7 +199,7 @@ jobs:
   # --------------------------------------------------------------------------
   validate-title:
     needs: [detect-changes]
-    if: github.event.pull_request.draft == false && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false'
+    if: github.event.pull_request.draft == false && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false' && needs.detect-changes.outputs.skip_title_validation != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
