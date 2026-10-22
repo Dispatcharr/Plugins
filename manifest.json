@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T23:01:49Z",
+  "generated_at": "2026-10-22T23:24:45Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -113,7 +113,7 @@
         "author": "Jacob-Lasky",
         "license": "MIT",
         "last_updated": "2026-10-16T14:29:09Z",
-        "download_count": 709,
+        "download_count": 710,
         "latest_version": "1.36.0",
         "latest_changelog": "448",
         "latest_md5": "10f714d203c969838e1e0b4fa5fae8bd",
@@ -196,7 +196,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-10T20:25:46Z",
-        "download_count": 1568,
+        "download_count": 1569,
         "latest_version": "1.26.2832019",
         "latest_changelog": "419",
         "latest_md5": "b4db356095d5cf3a106502dc029bf478",
@@ -262,7 +262,7 @@
         "author": "barryanderson",
         "license": "MIT",
         "last_updated": "2026-07-16T20:26:29-04:00",
-        "download_count": 350,
+        "download_count": 351,
         "latest_version": "1.0.0",
         "latest_changelog": "178",
         "latest_md5": "3bc650df39ff169f519c1586af1a2bc1",
@@ -602,5 +602,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqV4gAKCRB+wDprTCI0\nzhcFAP4oeE9BjLt/OfaWHGLvSrFZAETmTYQpXUFxJT1vytac7wD+OoMDlDwgbjxw\nWWXlfeLNnHEQNFo5nIjrh1S2GuPG0QE=\n=/AvJ\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqbQgAKCRB+wDprTCI0\nzruVAQDHHlUAEH5uX+Synku69PZisqnyXWQIcVgTox7JjiGzkQEAxgYj6KvjbdIM\nE6bMRLfcjVAiDl1sGbjjt58g1+UVPg8=\n=SI5S\n-----END PGP SIGNATURE-----"
 }
