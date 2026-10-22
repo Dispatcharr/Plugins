@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T13:28:42Z",
+  "generated_at": "2026-10-22T05:17:45Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-18T10:29:38-04:00",
-    "download_count": 3480,
+    "download_count": 3542,
     "latest": {
       "version": "1.26.2911354",
       "commit_sha": "1025b6f7adb4475fc509f97f9b4725de9711aec4",
@@ -31,7 +31,7 @@
       "latest_url": "channel-mapparr-1.26.2911354/channel-mapparr-1.26.2911354.zip",
       "url": "channel-mapparr-1.26.2911354/channel-mapparr-1.26.2911354.zip",
       "size": 766,
-      "download_count": 236
+      "download_count": 296
     },
     "versions": [
       {
@@ -47,7 +47,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2911354/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2911354/channel-mapparr-1.26.2911354.zip",
         "size": 766,
-        "download_count": 236
+        "download_count": 296
       },
       {
         "version": "1.26.2901846",
@@ -62,7 +62,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2901846/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2901846/channel-mapparr-1.26.2901846.zip",
         "size": 766,
-        "download_count": 67
+        "download_count": 69
       },
       {
         "version": "1.26.2901605",
@@ -186,5 +186,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+FQAKCRB+wDprTCI0\nzk0pAP9RRL6qMloBUVVfQ2jCVhJoQ2PzaqGK03hDtaElkK8m8gEAnwgV1y7FHwK2\nccXbxoAgcwd94arQPaZ2Kc+WbwuGHQ0=\n=IPTy\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcfQAKCRB+wDprTCI0\nzjAwAP0aWIVMVZoVKwLRhDlRDx4aOhvz8j00CSVJwzpomD8UnwD6AxVB3PNwGVsJ\n2wOxos51ndrvZ+14s75+MAkXWvq3pAE=\n=+jZj\n-----END PGP SIGNATURE-----"
 }

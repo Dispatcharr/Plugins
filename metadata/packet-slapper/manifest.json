@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T13:28:42Z",
+  "generated_at": "2026-10-22T05:17:45Z",
   "manifest": {
     "slug": "packet-slapper",
     "name": "Packet Slapper",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-15T21:43:06Z",
-    "download_count": 158,
+    "download_count": 165,
     "latest": {
       "version": "1.0.4",
       "commit_sha": "172f4b44d3b7063dca5a8fc1ccb005be67ab2611",
@@ -26,7 +26,7 @@
       "latest_url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
       "url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
       "size": 42,
-      "download_count": 48
+      "download_count": 55
     },
     "versions": [
       {
@@ -41,7 +41,7 @@
         "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v1.0.4/packet-slapper.zip",
         "url": "packet-slapper-1.0.4/packet-slapper-1.0.4.zip",
         "size": 42,
-        "download_count": 48
+        "download_count": 55
       },
       {
         "version": "1.0.3",
@@ -101,5 +101,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+bgAKCRB+wDprTCI0\nzu0eAQCq/GQY8gTGDksb0swYRRk4hdPJxUY428QPg2FZ5gxmOQEAqNGct0s7ioWz\na1wJNjTTf1FUfMPQY6/NCxsUUxxsOgY=\n=2SEx\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmcgQAKCRB+wDprTCI0\nzjd5AP9n1/ixZ9x1XLzJ+u6MllUA81/GKkxAp/zQXCyein/yiwEAmbfcW3UDKUyr\nnEFt2bzAVSVnycKwOttMjuTq1MGQqAo=\n=SBMs\n-----END PGP SIGNATURE-----"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T13:28:42Z",
+  "generated_at": "2026-10-22T05:17:45Z",
   "manifest": {
     "slug": "waybill",
     "name": "Waybill",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-05-12T18:47:18Z",
-    "download_count": 54,
+    "download_count": 55,
     "latest": {
       "version": "1.3.0",
       "build_timestamp": "2026-05-12T18:47:18Z",
@@ -25,7 +25,7 @@
       "latest_url": "waybill-1.3.0/waybill-1.3.0.zip",
       "url": "waybill-1.3.0/waybill-1.3.0.zip",
       "size": 995,
-      "download_count": 54
+      "download_count": 55
     },
     "versions": [
       {
@@ -39,9 +39,9 @@
         "source_url": "https://github.com/Matthew-Beckett/waybill/releases/download/v1.3.0/waybill-1.3.0-py3-none-any.zip",
         "url": "waybill-1.3.0/waybill-1.3.0.zip",
         "size": 995,
-        "download_count": 54
+        "download_count": 55
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCati+ogAKCRB+wDprTCI0\nzk+4AP9h1BjW6BfVztn8Fl7kORjDUlmUrny1QMp8v3k/6Uj8ygEAkUoLAk08FO/X\n1nAsIt+0NyQqg4ywe1jIJOrmHMunxg0=\n=orhF\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatmchAAKCRB+wDprTCI0\nznUDAPwOLVkuyiRMrBGUrhx+DaL1oIzhGkpYHiPcx0a7KldLgwEAiKr4/Y/seU9p\n3gwECZth84XU4X48W3NgQB2IPwZ77gc=\n=44nZ\n-----END PGP SIGNATURE-----"
 }
