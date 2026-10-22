@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T22:53:16Z",
+  "generated_at": "2026-10-22T23:01:49Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -370,6 +370,40 @@
         "min_dispatcharr_version": "v0.25.0"
       },
       {
+        "slug": "sample-manifest-v1",
+        "name": "Manifest v1 Example",
+        "description": "Example of the version 1 capability declaration format.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/sample-manifest-v1/manifest.json",
+        "author": "Dispatcharr Team",
+        "license": "Unlicense",
+        "last_updated": "2026-10-22T19:01:08-04:00",
+        "download_count": 0,
+        "latest_version": "1.0.0",
+        "latest_changelog": "463",
+        "latest_md5": "b64f574fbaecee83de9041cdc2d84c78",
+        "latest_sha256": "633fc189167d95cdd71aacdedc7e7095e17ede88ae69a1b52bee088275016d7f",
+        "latest_url": "sample-manifest-v1-1.0.0/sample-manifest-v1-1.0.0.zip",
+        "latest_size": 1,
+        "min_dispatcharr_version": "v0.34.0"
+      },
+      {
+        "slug": "sample-manifest-v2",
+        "name": "Manifest v2 Example",
+        "description": "Example of version 2 capability enforcement and durable plugin storage.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/sample-manifest-v2/manifest.json",
+        "author": "Dispatcharr Team",
+        "license": "Unlicense",
+        "last_updated": "2026-10-22T19:01:08-04:00",
+        "download_count": 0,
+        "latest_version": "1.0.0",
+        "latest_changelog": "463",
+        "latest_md5": "f43cc8218eaf78a8ab2f7c28e478cc36",
+        "latest_sha256": "3f4352e80f8be00b69cc2423becf0b6bb059c6c5a1d53da8c4a28e82998140f5",
+        "latest_url": "sample-manifest-v2-1.0.0/sample-manifest-v2-1.0.0.zip",
+        "latest_size": 1,
+        "min_dispatcharr_version": "v0.34.0"
+      },
+      {
         "slug": "segmentarr",
         "name": "Segmentarr",
         "description": "HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile.",
@@ -557,7 +591,7 @@
         "author": "jeff-gooch",
         "license": "Unlicense",
         "last_updated": "2026-09-16T12:55:53Z",
-        "download_count": 1786,
+        "download_count": 1787,
         "latest_version": "1.40.1",
         "latest_changelog": "307",
         "latest_md5": "b55e865bef8184938cad616281e1895c",
@@ -568,5 +602,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqT6AAKCRB+wDprTCI0\nziEpAQDZN4v+73ESfqJmJSVAZCGeh9ewKAUvquG7N3Ry9RrfTwD/d56J/lkSmiX+\nkuongl6k0TCPSP3nf3BLgzP2zZYrTgk=\n=kTRc\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqV4gAKCRB+wDprTCI0\nzhcFAP4oeE9BjLt/OfaWHGLvSrFZAETmTYQpXUFxJT1vytac7wD+OoMDlDwgbjxw\nWWXlfeLNnHEQNFo5nIjrh1S2GuPG0QE=\n=/AvJ\n-----END PGP SIGNATURE-----"
 }

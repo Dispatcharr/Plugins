@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-10-22T23:01:49Z",
+  "manifest": {
+    "slug": "sample-manifest-v2",
+    "name": "Manifest v2 Example",
+    "description": "Example of version 2 capability enforcement and durable plugin storage.",
+    "author": "Dispatcharr Team",
+    "maintainers": [
+      "sethwv"
+    ],
+    "license": "Unlicense",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-10-22T19:01:08-04:00",
+    "download_count": 0,
+    "latest": {
+      "version": "1.0.0",
+      "commit_sha": "f01f575bc5179f37597415b9ad1e496307b845d1",
+      "commit_sha_short": "f01f575",
+      "changelog": "463",
+      "build_timestamp": "2026-10-22T23:01:39Z",
+      "last_updated": "2026-10-22T19:01:08-04:00",
+      "checksum_md5": "f43cc8218eaf78a8ab2f7c28e478cc36",
+      "checksum_sha256": "3f4352e80f8be00b69cc2423becf0b6bb059c6c5a1d53da8c4a28e82998140f5",
+      "min_dispatcharr_version": "v0.34.0",
+      "max_dispatcharr_version": "",
+      "latest_url": "sample-manifest-v2-1.0.0/sample-manifest-v2-1.0.0.zip",
+      "url": "sample-manifest-v2-1.0.0/sample-manifest-v2-1.0.0.zip",
+      "size": 1,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "commit_sha": "f01f575bc5179f37597415b9ad1e496307b845d1",
+        "commit_sha_short": "f01f575",
+        "changelog": "463",
+        "build_timestamp": "2026-10-22T23:01:39Z",
+        "last_updated": "2026-10-22T19:01:08-04:00",
+        "checksum_md5": "f43cc8218eaf78a8ab2f7c28e478cc36",
+        "checksum_sha256": "3f4352e80f8be00b69cc2423becf0b6bb059c6c5a1d53da8c4a28e82998140f5",
+        "min_dispatcharr_version": "v0.34.0",
+        "url": "sample-manifest-v2-1.0.0/sample-manifest-v2-1.0.0.zip",
+        "size": 1,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqV4gAKCRB+wDprTCI0\nzv+QAQCxqCXW2oSRQ9f7SiYUim+7t0lY+cvVVWtIY5sknziOQQEAnw7Kc3lDWOPA\n4UtsaYDJd80GjDk5/n/UIO4Lpig5jAs=\n=nJY4\n-----END PGP SIGNATURE-----"
+}
