@@ -43,6 +43,11 @@ def _open_pr_for_branch(repository: str, branch: str) -> str:
     return str(first.get("html_url") or "")
 
 
+def _push_branch(remote: str, branch: str) -> None:
+    """Publish the branch, replacing a stale branch left by a closed request PR."""
+    _git("push", "--force-with-lease", remote, branch)
+
+
 def run() -> int:
     repository = os.environ["GITHUB_REPOSITORY"]
     token = os.environ["GITHUB_TOKEN"]
@@ -101,7 +106,7 @@ def run() -> int:
 
         _git("add", plugin_json)
         _git("commit", "-m", f"Unlist {plugin}\n\nRefs #{issue}")
-        _git("push", remote, branch)
+        _push_branch(remote, branch)
 
         title = f"[{plugin}]: Unlist plugin"
         body = (f"## Plugin Unlisting\n\n"

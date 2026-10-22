@@ -36,6 +36,15 @@ def test_open_pr_for_branch_returns_matching_pr(monkeypatch):
     assert unlist._open_pr_for_branch("org/repo", "unlist/demo") == "https://github.com/org/repo/pull/42"
 
 
+def test_push_branch_replaces_stale_automation_branch_with_a_lease(monkeypatch):
+    calls = []
+    monkeypatch.setattr(unlist, "_git", lambda *args: calls.append(args))
+
+    unlist._push_branch("https://example.test/repo.git", "unlist/demo")
+
+    assert calls == [("push", "--force-with-lease", "https://example.test/repo.git", "unlist/demo")]
+
+
 def test_run_rejects_closed_authorizing_issue(monkeypatch):
     monkeypatch.setenv("GITHUB_REPOSITORY", "org/repo")
     monkeypatch.setenv("GITHUB_TOKEN", "token")
