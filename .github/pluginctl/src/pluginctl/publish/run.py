@@ -47,7 +47,8 @@ def run(source_branch: str) -> int:
             if os.path.exists(f):
                 os.remove(f)
         _git("fetch", "origin", source_branch)
-        _git("checkout", f"origin/{source_branch}", "--", "plugins")
+        _git("checkout", f"origin/{source_branch}", "--", "plugins",
+             ".github/pluginctl/registry-messages.json")
         os.makedirs("zips", exist_ok=True)
 
         if not force_rebuild:

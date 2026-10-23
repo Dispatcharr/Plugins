@@ -10,6 +10,7 @@ changed" logic are preserved in :func:`write_manifest_if_changed` /
 
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import re
@@ -17,7 +18,7 @@ import subprocess
 import tempfile
 from typing import Optional
 
-from .. import capabilities, feature_flags, runtime_manifest
+from .. import capabilities, feature_flags, messages, runtime_manifest
 from ..core import jsonio
 from ..core.jsonio import drop_none
 from ..core.timeutil import now_iso
@@ -180,7 +181,8 @@ def build_root_entry(plugin_raw: dict, plugin_name: str, latest_metadata: dict,
 
 
 def build_root_manifest(registry_url: str, registry_name: str, download_base_url: str,
-                        root_entries: list[dict], metadata_base_url: Optional[str] = None) -> dict:
+                         root_entries: list[dict], metadata_base_url: Optional[str] = None,
+                         registry_messages: Optional[list[dict]] = None) -> dict:
     root = {
         "registry_url": registry_url,
         "registry_name": registry_name,
@@ -190,6 +192,7 @@ def build_root_manifest(registry_url: str, registry_name: str, download_base_url
     else:
         root["download_base_url"] = download_base_url
         root["metadata_base_url"] = metadata_base_url
+    root["messages"] = registry_messages if registry_messages is not None else []
     root["plugins"] = root_entries
     return root
 
@@ -494,9 +497,16 @@ def generate(source_branch: str, releases_branch: str, repository: str,
                                                 if feature_flags.MANIFEST_DOWNLOAD_TOTALS else None)))
         plugin_count += 1
 
+    try:
+        registry_messages = messages.load_active(now=datetime.datetime.now(datetime.timezone.utc))
+    except messages.FeedError as exc:
+        actions.error(f"Registry messages are invalid: {exc}")
+        return 1
+
     inner_root = build_root_manifest(
         registry_url, registry_name, download_base_url, root_entries,
-        metadata_base_url if feature_flags.SPLIT_MANIFEST_BASE_URLS else None)
+        metadata_base_url if feature_flags.SPLIT_MANIFEST_BASE_URLS else None,
+        registry_messages)
     written = write_manifest_if_changed("manifest.json", inner_root, generated_at)
     sign_if_needed("manifest.json", written)
 

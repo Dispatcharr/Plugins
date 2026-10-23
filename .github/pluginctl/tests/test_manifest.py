@@ -220,10 +220,25 @@ def test_root_manifest_split_base_urls_key_order():
         "https://org.github.io/repo")
     assert list(root) == [
         "registry_url", "registry_name", "download_base_url",
-        "metadata_base_url", "plugins",
+        "metadata_base_url", "messages", "plugins",
     ]
     assert "root_url" not in root
     assert root["plugins"][0]["manifest_url"] == "metadata/demo/manifest.json"
+
+
+def test_root_manifest_includes_registry_messages_only_at_root():
+    root = m.build_root_manifest(
+        "https://github.com/org/repo", "org/repo", "https://dl", [],
+        registry_messages=[{
+            "id": "123e4567-e89b-42d3-a456-426614174000",
+            "severity": "info", "body": "Hello",
+        }],
+    )
+
+    assert root["messages"] == [{
+        "id": "123e4567-e89b-42d3-a456-426614174000",
+        "severity": "info", "body": "Hello",
+    }]
 
 
 def test_write_manifest_uses_formatted_json_and_ignores_existing_whitespace(tmp_path):
@@ -320,6 +335,7 @@ def test_generate_uses_legacy_manifest_by_default(tmp_path, monkeypatch):
 
     root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
     assert root["root_url"] == "https://github.com/org/repo/releases/download"
+    assert root["messages"] == []
     assert root["plugins"][0]["manifest_url"].startswith("https://raw.githubusercontent.com/")
 
 

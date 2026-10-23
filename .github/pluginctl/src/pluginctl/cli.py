@@ -367,6 +367,11 @@ def cmd_external_readme(args) -> int:
     return external_readme.run()
 
 
+def cmd_messages(args) -> int:
+    from . import messages
+    return messages.command(args)
+
+
 # --------------------------------------------------------------------------- #
 # Parser
 # --------------------------------------------------------------------------- #
@@ -473,6 +478,37 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("external-readme", help="Open/update the external README PR (env-driven)")
     p.set_defaults(func=cmd_external_readme)
+
+    p = sub.add_parser("messages", help="Manage signed registry messages")
+    message_sub = p.add_subparsers(dest="messages_command", required=True)
+    def message_parser(name: str, help_text: str):
+        child = message_sub.add_parser(name, help=help_text)
+        child.add_argument("--file", default=".github/pluginctl/registry-messages.json")
+        return child
+
+    message_parser("list", "List registry messages")
+    message_parser("check", "Validate canonical registry-message JSON")
+    p_add = message_parser("add", "Add a registry message")
+    for argument, destination in (("--severity", "severity"), ("--title", "title"),
+                                  ("--body", "body"), ("--link", "link"),
+                                  ("--starts-at", "starts_at"), ("--expires-at", "expires_at"),
+                                  ("--target", "target")):
+        p_add.add_argument(argument, dest=destination)
+    p_add.add_argument("--dev", choices=["true", "false"])
+    p_update = message_parser("update", "Update a registry message")
+    p_update.add_argument("--id")
+    for argument, destination in (("--severity", "severity"), ("--title", "title"),
+                                  ("--body", "body"), ("--link", "link"),
+                                  ("--starts-at", "starts_at"), ("--expires-at", "expires_at"),
+                                  ("--target", "target")):
+        p_update.add_argument(argument, dest=destination)
+    p_update.add_argument("--dev", action=argparse.BooleanOptionalAction, default=None)
+    for field in ("title", "link", "starts_at", "expires_at", "target", "dev"):
+        p_update.add_argument(f"--clear-{field.replace('_', '-')}",
+                              dest=f"clear_{field}", action="store_true")
+    p_remove = message_parser("remove", "Remove a registry message")
+    p_remove.add_argument("--id")
+    p.set_defaults(func=cmd_messages)
 
     return parser
 
