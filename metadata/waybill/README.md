@@ -2,7 +2,7 @@
 
 # Waybill
 
-**Version:** `1.3.0` | **Author:** Matthew-Beckett | **Last Updated:** May 12 2026, 19:36 UTC
+**Version:** `1.3.0` | **Author:** Matthew-Beckett | **Last Updated:** Oct 22 2026, 23:59 UTC
 
 Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control.
 

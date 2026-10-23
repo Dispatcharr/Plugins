@@ -45,7 +45,6 @@ This branch contains all published plugin releases.
 | [`VOD Manager`](#vod-manager) | `2.6.4` | oxios0x00 | MIT | Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default. |
 | [`VOD Probe`](#vod-probe) | `1.3.3` | oxios0x00 | MIT | Probes the real quality of each VOD relation (movies and every episode of every series version) with ffprobe in a background task and writes it into the relation's custom_properties, so every tool reading Dispatcharr's API can use it. Can also backfill missing tmdb_id/imdb_id from the provider's per-title detail endpoint, merging safely into an existing catalogue entry when one already has the id. Dry run by default. |
 | [`VOD to Media Library`](#vod-to-media-library) | `1.18.1` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
-| [`Waybill`](#waybill) | `1.3.0` | Matthew-Beckett | MIT | Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control. |
 | [`YouTubearr`](#youtubearr) | `1.40.1` | jeff-gooch | Unlicense | Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering |
 
 ---
@@ -662,25 +661,6 @@ Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD cata
 ---
 
 
-### [Waybill](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/waybill/README.md)
-
-**Version:** `1.3.0` | **Author:** Matthew-Beckett | **Last Updated:** May 12 2026, 19:36 UTC
-
-Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Matthew-Beckett/waybill)
-
-![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.23.0-brightgreen?style=flat-square) ![Dispatcharr max](https://img.shields.io/badge/Dispatcharr_max-0.24.0-orange?style=flat-square)
-
-**Downloads:**
-- [Latest Release (`1.3.0`)](https://github.com/Dispatcharr/Plugins/releases/download/waybill-1.3.0/waybill-1.3.0.zip)
-- [All Versions (1 available)](./metadata/waybill)
-
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/waybill) | **Last Change:** [`cdd18dd`](https://github.com/Dispatcharr/Plugins/commit/cdd18dd7f396035b9cd486d3e45375eed3bcc744)
-
----
-
-
 ### [YouTubearr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/youtubearr/README.md)
 
 **Version:** `1.40.1` | **Author:** jeff-gooch | **Last Updated:** Sep 16 2026, 12:55 UTC
@@ -715,4 +695,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 22 2026, 23:54 UTC*
+*Last updated: Oct 23 2026, 00:00 UTC*

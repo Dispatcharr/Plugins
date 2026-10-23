@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T23:54:38Z",
+  "generated_at": "2026-10-23T00:00:19Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -567,23 +567,6 @@
         "min_dispatcharr_version": "v0.24.0"
       },
       {
-        "slug": "waybill",
-        "name": "Waybill",
-        "description": "Waybill matches, renames, and organizes any streams no matter the provider. Infinitely configurable pipelines for total control.",
-        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/waybill/manifest.json",
-        "author": "Matthew-Beckett",
-        "license": "MIT",
-        "last_updated": "2026-05-12T18:47:18Z",
-        "download_count": 55,
-        "latest_version": "1.3.0",
-        "latest_md5": "87beb9950ded642b504fc24a88c506da",
-        "latest_sha256": "50d03442d3e0fcdb984fb17a90b8e785dbbf2b5eab68fda1f367953071727547",
-        "latest_url": "waybill-1.3.0/waybill-1.3.0.zip",
-        "latest_size": 995,
-        "min_dispatcharr_version": "0.23.0",
-        "max_dispatcharr_version": "0.24.0"
-      },
-      {
         "slug": "youtubearr",
         "name": "YouTubearr",
         "description": "Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering",
@@ -602,5 +585,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqiQwAKCRB+wDprTCI0\nztYXAP0XmnQCPNMiOoJa0dqeg80tR6BSEA6zXnj6K/eAV5lJrgEA9g7+CIQ3PR63\n4HKprh+yMfF4IpliVMGD45b9TNf+Ews=\n=TW9s\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatqjlgAKCRB+wDprTCI0\nztqIAP9rqQmw+eYs3w20FqLU1WZzt52uKaEonc8yLjwLyqrnOwEApHra9PCbgviv\nytAG0l3IqZ1SsclFNtB7JqsC7gx5Vg4=\n=8kfd\n-----END PGP SIGNATURE-----"
 }
