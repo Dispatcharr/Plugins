@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-23T03:06:51Z",
+  "generated_at": "2026-10-23T22:22:19Z",
   "manifest": {
     "slug": "pirate-weatharr-station",
     "name": "PWS - Pirate Weatharr Station",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-06T08:09:42Z",
-    "download_count": 1056,
+    "download_count": 1065,
     "latest": {
       "version": "1.6.0",
       "commit_sha": "c2e3d69ab46b4bfc91ed80ae219cb234a7c7c60c",
@@ -28,7 +28,7 @@
       "latest_url": "pirate-weatharr-station-1.6.0/pirate-weatharr-station-1.6.0.zip",
       "url": "pirate-weatharr-station-1.6.0/pirate-weatharr-station-1.6.0.zip",
       "size": 35837,
-      "download_count": 245
+      "download_count": 254
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/dexdeadly/pirate-weatharr-station/releases/download/v1.6.0/pirate-weatharr-station-1.6.0.zip",
         "url": "pirate-weatharr-station-1.6.0/pirate-weatharr-station-1.6.0.zip",
         "size": 35837,
-        "download_count": 245
+        "download_count": 254
       },
       {
         "version": "1.5.1",
@@ -103,5 +103,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatrPUgAKCRB+wDprTCI0\nzr8SAP0dKaGRE0WI0i0cBdz+EZbXIBhHK2XmljCvk2ZRQAsmiQD8DsClqYteu/9O\nc6c8+claU5NiGCWJ+5XnVoZuGTk8eQA=\n=s9xh\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatveIgAKCRB+wDprTCI0\nzhJ7AP9jURgaJr+lOmIk3NioOuFw+LYI3Jlg5f53wgwpdAFNugD/QgEuzhTinoUN\nTc0Z7FDR8pa9dmd6DcjAw3+utieJdAM=\n=F5X5\n-----END PGP SIGNATURE-----"
 }
