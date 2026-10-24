@@ -2,7 +2,7 @@
 
 # VOD Probe
 
-**Version:** `1.3.3` | **Author:** oxios0x00 | **Last Updated:** Oct 10 2026, 10:04 UTC
+**Version:** `1.3.4` | **Author:** oxios0x00 | **Last Updated:** Oct 24 2026, 07:02 UTC
 
 Probes the real quality of each VOD relation (movies and every episode of every series version) with ffprobe in a background task and writes it into the relation's custom_properties, so every tool reading Dispatcharr's API can use it. Can also backfill missing tmdb_id/imdb_id from the provider's per-title detail endpoint, merging safely into an existing catalogue entry when one already has the id. Dry run by default.
 
@@ -12,20 +12,21 @@ Probes the real quality of each VOD relation (movies and every episode of every 
 
 ### Latest Release
 
-- **Download:** [`vod-probe-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/vod-probe-1.3.3/vod-probe-1.3.3.zip)
-- **Built:** Oct 10 2026, 10:04 UTC
-- **Source Commit:** [`b52f675`](https://github.com/Dispatcharr/Plugins/commit/b52f675f54ab92cb0c6312aa53dce7b53d20c5b6)
+- **Download:** [`vod-probe-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/vod-probe-1.3.4/vod-probe-1.3.4.zip)
+- **Built:** Oct 24 2026, 07:02 UTC
+- **Source Commit:** [`6aed020`](https://github.com/Dispatcharr/Plugins/commit/6aed02022cc080d7109f9519db52b6982313c0af)
 
 **Checksums:**
 ```
-MD5:    dd346d3865eae81d45a2c325fbe9479b
-SHA256: e2a068cbb7b264e16d5a8925fc2ca7c50fcf18bfc46d61450458c09f14f6ebc5
+MD5:    49cbe14431df756e75bfa8b984e01f29
+SHA256: a89db1c6556167ab267a218a82aef56016df61babb37f67ffeaef4898cd7f3c2
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.3.4` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/vod-probe-1.3.4/vod-probe-1.3.4.zip) | Oct 24 2026, 07:02 UTC | [`6aed020`](https://github.com/Dispatcharr/Plugins/commit/6aed02022cc080d7109f9519db52b6982313c0af) | 49cbe14431df756e75bfa8b984e01f29 | a89db1c6556167ab267a218a82aef56016df61babb37f67ffeaef4898cd7f3c2 |
 | `1.3.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/vod-probe-1.3.3/vod-probe-1.3.3.zip) | Oct 10 2026, 10:04 UTC | [`b52f675`](https://github.com/Dispatcharr/Plugins/commit/b52f675f54ab92cb0c6312aa53dce7b53d20c5b6) | dd346d3865eae81d45a2c325fbe9479b | e2a068cbb7b264e16d5a8925fc2ca7c50fcf18bfc46d61450458c09f14f6ebc5 |
 | `1.3.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/vod-probe-1.3.2/vod-probe-1.3.2.zip) | Oct 03 2026, 14:31 UTC | [`8041328`](https://github.com/Dispatcharr/Plugins/commit/80413280036aeac2cd4b08c8d358844dae2cbb3e) | 2d70ad62b80c25aab64ec259fb008670 | 538c07074d737f63557b342360ba5496a16fd43b1cac0ad28693b86b7a80702f |
 
