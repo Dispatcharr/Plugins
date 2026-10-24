@@ -2,7 +2,7 @@
 
 # EPG Janitor
 
-**Version:** `1.26.2901817` | **Author:** PiratesIRC | **Last Updated:** Oct 17 2026, 18:25 UTC
+**Version:** `1.26.2971048` | **Author:** PiratesIRC | **Last Updated:** Oct 24 2026, 11:26 UTC
 
 Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments.
 
@@ -14,20 +14,21 @@ Scans for channels with EPG assignments but no program data. Auto-matches EPG to
 
 ### Latest Release
 
-- **Download:** [`epg-janitor-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2901817/epg-janitor-1.26.2901817.zip)
-- **Built:** Oct 17 2026, 18:25 UTC
-- **Source Commit:** [`b55013e`](https://github.com/Dispatcharr/Plugins/commit/b55013ef45a1ce624f6e27a3eb8bc254db92f285)
+- **Download:** [`epg-janitor-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2971048/epg-janitor-1.26.2971048.zip)
+- **Built:** Oct 24 2026, 11:26 UTC
+- **Source Commit:** [`e8dac58`](https://github.com/Dispatcharr/Plugins/commit/e8dac58d086dcee24cf06c54932f2a4b23f0e711)
 
 **Checksums:**
 ```
-MD5:    ec10772f3d36e04454e068eac38b0473
-SHA256: cb87b8968f8132722d9387a40c6f49aa72032b917e87fcb5e580ee3e520892e0
+MD5:    51c681950acdd4a3d09daad503430e2f
+SHA256: cd3e35029ad669719e6494b6710d8782fc0b52ed42bb73b72a6523d0581ebaf4
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.2971048` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2971048/epg-janitor-1.26.2971048.zip) | Oct 24 2026, 11:26 UTC | [`e8dac58`](https://github.com/Dispatcharr/Plugins/commit/e8dac58d086dcee24cf06c54932f2a4b23f0e711) | 51c681950acdd4a3d09daad503430e2f | cd3e35029ad669719e6494b6710d8782fc0b52ed42bb73b72a6523d0581ebaf4 |
 | `1.26.2901817` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2901817/epg-janitor-1.26.2901817.zip) | Oct 17 2026, 18:25 UTC | [`b55013e`](https://github.com/Dispatcharr/Plugins/commit/b55013ef45a1ce624f6e27a3eb8bc254db92f285) | ec10772f3d36e04454e068eac38b0473 | cb87b8968f8132722d9387a40c6f49aa72032b917e87fcb5e580ee3e520892e0 |
 | `1.26.2832018` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2832018/epg-janitor-1.26.2832018.zip) | Oct 10 2026, 20:24 UTC | [`81947ce`](https://github.com/Dispatcharr/Plugins/commit/81947cefec13629f9e5579e772b879103ccfeb98) | efd2962982e1cd37032600a84e2702a8 | e120b41abeb582f1cc80b736501cb92f38fbf57eb8223b88f73a21bdfbdfeccc |
 | `1.26.2481223` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2481223/epg-janitor-1.26.2481223.zip) | Sep 05 2026, 19:57 UTC | [`ceb7847`](https://github.com/Dispatcharr/Plugins/commit/ceb784785395a3750996e248f9cd24812d52987f) | de24b7ac4404039dec564a5bd315d4f8 | 2cc9ba6b40733bf40a059376deb72da9639cec40df4dcdcfa0cd77abffb7f60a |
@@ -37,7 +38,6 @@ SHA256: cb87b8968f8132722d9387a40c6f49aa72032b917e87fcb5e580ee3e520892e0
 | `1.26.1791309` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1791309/epg-janitor-1.26.1791309.zip) | Jun 29 2026, 11:27 UTC | [`7ffd2cc`](https://github.com/Dispatcharr/Plugins/commit/7ffd2ccc1e04038873a22979f325ee68773da6e5) | 0b1509586098119da3e920c579893a26 | 9e72f5c744dbcc2f70437a9bb7c45c4e4bfbd4daca6d2d2c802624b141a90d59 |
 | `1.26.1660712` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1660712/epg-janitor-1.26.1660712.zip) | Jun 15 2026, 14:20 UTC | [`dba280a`](https://github.com/Dispatcharr/Plugins/commit/dba280a1d4493541da20ace73c736ac6ecb7f842) | 1ec4eba71a3d9190da36389713927fd3 | aedcc482a09c0f0e24851658fa2d1a59313ddd330eeb52231e9e24cfb8347b64 |
 | `1.26.1420824` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1420824/epg-janitor-1.26.1420824.zip) | May 22 2026, 14:19 UTC | [`a5ccaa9`](https://github.com/Dispatcharr/Plugins/commit/a5ccaa94fb0ddb806eb2ef36abef0c8a665afb8d) | d50bf65d2cd18488c6be7f652a36e90a | 55cc84fa57d509b3eefea3511ffbb9705ee5dd2f1994f6c247e6ee6372484ba0 |
-| `1.26.1021352` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.1021352/epg-janitor-1.26.1021352.zip) | Apr 12 2026, 19:22 UTC | [`2cf371a`](https://github.com/Dispatcharr/Plugins/commit/2cf371ad80c2219d832938067564d40b038ccd26) | 25cf566d3e3c0fec1f99d78d7b09dd85 | 9109e92484c73b24fad2c92b455f9a3bd8e2280b51b6eac7120c14de42314499 |
 
 ---
 

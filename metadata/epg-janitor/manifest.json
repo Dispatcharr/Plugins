@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T07:02:45Z",
+  "generated_at": "2026-10-24T11:27:01Z",
   "manifest": {
     "slug": "epg-janitor",
     "name": "EPG Janitor",
@@ -15,26 +15,41 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1420051973994053848",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-17T18:25:31Z",
-    "download_count": 5203,
+    "last_updated": "2026-10-24T11:26:22Z",
+    "download_count": 5207,
     "latest": {
-      "version": "1.26.2901817",
-      "commit_sha": "b55013ef45a1ce624f6e27a3eb8bc254db92f285",
-      "commit_sha_short": "b55013e",
-      "changelog": "451",
-      "build_timestamp": "2026-10-17T18:25:50Z",
-      "last_updated": "2026-10-17T18:25:31Z",
-      "checksum_md5": "ec10772f3d36e04454e068eac38b0473",
-      "checksum_sha256": "cb87b8968f8132722d9387a40c6f49aa72032b917e87fcb5e580ee3e520892e0",
+      "version": "1.26.2971048",
+      "commit_sha": "e8dac58d086dcee24cf06c54932f2a4b23f0e711",
+      "commit_sha_short": "e8dac58",
+      "changelog": "473",
+      "build_timestamp": "2026-10-24T11:26:42Z",
+      "last_updated": "2026-10-24T11:26:22Z",
+      "checksum_md5": "51c681950acdd4a3d09daad503430e2f",
+      "checksum_sha256": "cd3e35029ad669719e6494b6710d8782fc0b52ed42bb73b72a6523d0581ebaf4",
       "min_dispatcharr_version": "v0.20.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.2901817/EPG-Janitor.zip",
-      "latest_url": "epg-janitor-1.26.2901817/epg-janitor-1.26.2901817.zip",
-      "url": "epg-janitor-1.26.2901817/epg-janitor-1.26.2901817.zip",
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.2971048/EPG-Janitor.zip",
+      "latest_url": "epg-janitor-1.26.2971048/epg-janitor-1.26.2971048.zip",
+      "url": "epg-janitor-1.26.2971048/epg-janitor-1.26.2971048.zip",
       "size": 476,
-      "download_count": 430
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.26.2971048",
+        "commit_sha": "e8dac58d086dcee24cf06c54932f2a4b23f0e711",
+        "commit_sha_short": "e8dac58",
+        "changelog": "473",
+        "build_timestamp": "2026-10-24T11:26:42Z",
+        "last_updated": "2026-10-24T11:26:22Z",
+        "checksum_md5": "51c681950acdd4a3d09daad503430e2f",
+        "checksum_sha256": "cd3e35029ad669719e6494b6710d8782fc0b52ed42bb73b72a6523d0581ebaf4",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.2971048/EPG-Janitor.zip",
+        "url": "epg-janitor-1.26.2971048/epg-janitor-1.26.2971048.zip",
+        "size": 476,
+        "download_count": 0
+      },
       {
         "version": "1.26.2901817",
         "commit_sha": "b55013ef45a1ce624f6e27a3eb8bc254db92f285",
@@ -48,7 +63,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.2901817/EPG-Janitor.zip",
         "url": "epg-janitor-1.26.2901817/epg-janitor-1.26.2901817.zip",
         "size": 476,
-        "download_count": 430
+        "download_count": 438
       },
       {
         "version": "1.26.2832018",
@@ -166,22 +181,8 @@
         "url": "epg-janitor-1.26.1420824/epg-janitor-1.26.1420824.zip",
         "size": 428,
         "download_count": 314
-      },
-      {
-        "version": "1.26.1021352",
-        "commit_sha": "2cf371ad80c2219d832938067564d40b038ccd26",
-        "commit_sha_short": "2cf371a",
-        "changelog": "34",
-        "build_timestamp": "2026-04-12T19:22:54Z",
-        "last_updated": "2026-04-12T15:22:44-04:00",
-        "checksum_md5": "25cf566d3e3c0fec1f99d78d7b09dd85",
-        "checksum_sha256": "9109e92484c73b24fad2c92b455f9a3bd8e2280b51b6eac7120c14de42314499",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "epg-janitor-1.26.1021352/epg-janitor-1.26.1021352.zip",
-        "size": 416,
-        "download_count": 4
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatxYGwAKCRB+wDprTCI0\nzv0hAP9FqNV/PofHsZKYCc7Dfh1tKWW0Ee89VL8dDCjznZ3ycwEAu5uIbTX5QdMM\nKVXYyqSWGxJYDN8sFdkGioGH7SMNnwg=\n=Yf8R\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatyWCgAKCRB+wDprTCI0\nzjKOAP4m5dR8hjIvyymSbk0SNShcZnds2kfXfRBKk6qp8RABeQEAqjrEAZjoJVcy\n3xwEI18tsJOtdE89i7ob7I8J0wCnfgo=\n=kQrx\n-----END PGP SIGNATURE-----"
 }
