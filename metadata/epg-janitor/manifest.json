@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T13:57:12Z",
+  "generated_at": "2026-10-24T15:39:36Z",
   "manifest": {
     "slug": "epg-janitor",
     "name": "EPG Janitor",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-24T11:26:22Z",
-    "download_count": 5224,
+    "download_count": 5242,
     "latest": {
       "version": "1.26.2971048",
       "commit_sha": "e8dac58d086dcee24cf06c54932f2a4b23f0e711",
@@ -32,7 +32,7 @@
       "latest_url": "epg-janitor-1.26.2971048/epg-janitor-1.26.2971048.zip",
       "url": "epg-janitor-1.26.2971048/epg-janitor-1.26.2971048.zip",
       "size": 476,
-      "download_count": 14
+      "download_count": 31
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.2971048/EPG-Janitor.zip",
         "url": "epg-janitor-1.26.2971048/epg-janitor-1.26.2971048.zip",
         "size": 476,
-        "download_count": 14
+        "download_count": 31
       },
       {
         "version": "1.26.2901817",
@@ -63,7 +63,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.2901817/EPG-Janitor.zip",
         "url": "epg-janitor-1.26.2901817/epg-janitor-1.26.2901817.zip",
         "size": 476,
-        "download_count": 441
+        "download_count": 442
       },
       {
         "version": "1.26.2832018",
@@ -184,5 +184,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaty5PQAKCRB+wDprTCI0\nzk0XAQCaYjE297OVjDFZ5m9RGxbdzp/Ry3P5vSnraEsMzMeqjgD+MPME1Hz0u28d\nANNvKznEm3mARp8w6FceBiC5lEr77w8=\n=X3G7\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatzRPQAKCRB+wDprTCI0\nzht1AP9mBgTzTVBg0ZUOdjm44sXc8yLxLw8X1fhkPU3BMUgnJgEAgYoorG2kFh9N\nG55p7lXrnpDc8fR+cjGN3oH8bmFIAwY=\n=U4mD\n-----END PGP SIGNATURE-----"
 }
