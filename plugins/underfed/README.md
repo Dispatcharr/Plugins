@@ -10,8 +10,8 @@ out of segments, and viewers sit there watching a stall that no log explains.
 
 Underfed reads the number that already exists and that nothing else acts on. It also reads
 the timestamp discontinuities ffmpeg logs when a source's sound drifts away from the
-picture, and the share of the picture or the sound a source is missing while it arrives at
-full rate.
+picture, the share of the picture or the sound a source is missing while it arrives at
+full rate, and the corrupt-packet loops that make reservoarr reconnect again and again.
 
 ## Requirements
 
@@ -44,6 +44,8 @@ changes nothing. Read the journal under Check status, then turn it off.
 | Confirm discontinuities for | How long the discontinuities must last before acting, 15 s by default. A storm is unmistakable and the sound drifts further every second, so this is shorter than Confirm for |
 | Picture or sound missing | Share of each telemetry window a source's picture or sound is missing, as reservoarr reports it in `vholes=` and `aholes=`; the worse of the two counts. A healthy source reads 0. At this share, on every line for Confirm missing picture or sound for, the source is switched. 0 turns it off; with a reservoarr without `vholes=` and `aholes=`, as 6.3.8, there is nothing to read |
 | Confirm missing picture or sound for | How long the missing share must hold before acting, 30 s by default |
+| Corrupt-packet loops | How many `corrupt-loop detected` lines one source may log within Corrupt-packet loops within before it is switched, 3 by default. 0 turns it off |
+| Corrupt-packet loops within | The window those loops are counted over, 5 minutes by default |
 | Refused source held back | A source the provider answers 403 to, or that closes the connection without sending a byte, goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
 | Excluded channels | One channel name per line |
 | reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
@@ -108,6 +110,18 @@ does not hide it.
 When every line of a source reads Picture or sound missing or more, for either of the two, for
 Confirm missing picture or sound for, after the warm-up, the watcher moves the channel on the
 same way. The journal says which one was missing: `what` is `video`, `audio` or `both`.
+
+When ffmpeg reports the same corrupt packet three times, reservoarr reconnects and flushes its
+buffer, and says so:
+
+```
+2026-10-21T20:30:51+0000 [198329.ts] corrupt-loop detected in stream (dts=1143489600 x3) - forcing upstream reconnect + buffer flush
+```
+
+Once is a glitch. A source that does it again and again, as a provider's looping "channel
+offline" card does, is a valid stream at full rate, so the rules above never see it. When one
+source logs Corrupt-packet loops of these within Corrupt-packet loops within, the watcher moves
+the channel on the same way.
 
 It refuses to act when any of these is true:
 
