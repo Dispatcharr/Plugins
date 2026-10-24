@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T19:52:07Z",
+  "generated_at": "2026-10-24T20:37:27Z",
   "manifest": {
     "slug": "vod-probe",
     "name": "VOD Probe",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-24T07:02:13Z",
-    "download_count": 179,
+    "download_count": 181,
     "latest": {
       "version": "1.3.4",
       "commit_sha": "6aed02022cc080d7109f9519db52b6982313c0af",
@@ -28,7 +28,7 @@
       "latest_url": "vod-probe-1.3.4/vod-probe-1.3.4.zip",
       "url": "vod-probe-1.3.4/vod-probe-1.3.4.zip",
       "size": 590,
-      "download_count": 15
+      "download_count": 17
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/oxios0x00/dispatcharr-vod-probe/releases/download/v1.3.4/vod_probe.zip",
         "url": "vod-probe-1.3.4/vod-probe-1.3.4.zip",
         "size": 590,
-        "download_count": 15
+        "download_count": 17
       },
       {
         "version": "1.3.3",
@@ -75,5 +75,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCat0MbQAKCRB+wDprTCI0\nznQ1AQC5X2N7H90Cg4ven1p79rJXUU3XNVpqGsCBG9VBYQYrQgEAmZuGPlkYuuRf\nVGPBCN1Y+lf8j8+f1SRmGj76JxgA1QQ=\n=/kQi\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCat0XDgAKCRB+wDprTCI0\nznVeAQDQI+VxtQS33GmeDdaNr0dtvmQLWJL5bCo89uj+Gma9SQD+J7S0l0uJmmIW\ndT27smChSF/fGIMDI/mXCZayJxSl9AE=\n=oMGM\n-----END PGP SIGNATURE-----"
 }
