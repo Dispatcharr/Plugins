@@ -2,7 +2,7 @@
 
 # Could Not Dispatch
 
-**Version:** `0.5.0` | **Author:** PilaScat | **Last Updated:** Oct 06 2026, 23:20 UTC
+**Version:** `0.5.1` | **Author:** PilaScat | **Last Updated:** Oct 24 2026, 18:47 UTC
 
 Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip)
-- **Built:** Oct 06 2026, 23:20 UTC
-- **Source Commit:** [`8e2b381`](https://github.com/Dispatcharr/Plugins/commit/8e2b381c3088d1899c334452f36bcb201678c319)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.1/could-not-dispatch-0.5.1.zip)
+- **Built:** Oct 24 2026, 18:47 UTC
+- **Source Commit:** [`6a8a793`](https://github.com/Dispatcharr/Plugins/commit/6a8a793c03cc8709e3a02276d99494edd7739650)
 
 **Checksums:**
 ```
-MD5:    82e6b5ae22f415dbf37b5a2204950451
-SHA256: 59995d4a526216d2000b2dbe36a8dbb64aa0fb8b702685ad4c1844388e1b0ec4
+MD5:    57207ad2fef6e6fc6371177179a9f674
+SHA256: ab87ea90671fa95d70c547d2d035f60d2b3489d04fbb248131803ef525b9a0a4
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.5.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.1/could-not-dispatch-0.5.1.zip) | Oct 24 2026, 18:47 UTC | [`6a8a793`](https://github.com/Dispatcharr/Plugins/commit/6a8a793c03cc8709e3a02276d99494edd7739650) | 57207ad2fef6e6fc6371177179a9f674 | ab87ea90671fa95d70c547d2d035f60d2b3489d04fbb248131803ef525b9a0a4 |
 | `0.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip) | Oct 06 2026, 23:20 UTC | [`8e2b381`](https://github.com/Dispatcharr/Plugins/commit/8e2b381c3088d1899c334452f36bcb201678c319) | 82e6b5ae22f415dbf37b5a2204950451 | 59995d4a526216d2000b2dbe36a8dbb64aa0fb8b702685ad4c1844388e1b0ec4 |
 | `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.4.0/could-not-dispatch-0.4.0.zip) | Sep 14 2026, 14:46 UTC | [`3ee82eb`](https://github.com/Dispatcharr/Plugins/commit/3ee82eb1a2a2abf598e570d617b944149cc019ad) | 534e882eaa7b4ac919695c672eac80d5 | f96552647275488771c74526dfb0780f1ce82e5065a0494dbfb694636bf97d29 |
 | `0.3.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip) | Sep 14 2026, 08:03 UTC | [`37ccdd6`](https://github.com/Dispatcharr/Plugins/commit/37ccdd6b23115c565056cee99dc6496056e01afa) | be434828ca3eb55b7c7f52a9cc47aa81 | 37fa4ac3d14775486deb328933c5258dc4fae6846cada3852e4de2752adf3640 |
