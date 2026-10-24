@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T13:12:54Z",
+  "generated_at": "2026-10-24T13:17:59Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -8,7 +8,7 @@
       {
         "id": "5fba1255-b2d7-4d7a-bf4c-1338dfd8c94e",
         "severity": "info",
-        "body": "Plugins published to the official repo/marketplace with a manifest version >0 will not be installable on Dispatcharr instances at or below v0.33.0. Please keep this in mind when deciding to migrate to new versions. At this time, the repo will not accept clones for older instances.",
+        "body": "Plugins published to the official repo/marketplace with a manifest version >0 will not be installable on Dispatcharr instances at or below v0.33.0. Please keep this in mind when deciding to migrate to new versions.",
         "title": "Manifest Compatibility Notice",
         "target": "<0.35.0"
       }
@@ -155,7 +155,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-17T17:57:40-04:00",
-        "download_count": 668,
+        "download_count": 669,
         "latest_version": "1.26.2901903",
         "latest_changelog": "455",
         "latest_md5": "5d457ca12c31346cda8a080abbb0390a",
@@ -172,7 +172,7 @@
         "author": "jstevenscl",
         "license": "MIT",
         "last_updated": "2026-10-24T13:12:16Z",
-        "download_count": 714,
+        "download_count": 715,
         "latest_version": "0.5.11",
         "latest_changelog": "475",
         "latest_md5": "985e581c0a802fa29398e72611c6236e",
@@ -188,7 +188,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-24T11:26:22Z",
-        "download_count": 5215,
+        "download_count": 5216,
         "latest_version": "1.26.2971048",
         "latest_changelog": "473",
         "latest_md5": "51c681950acdd4a3d09daad503430e2f",
@@ -238,7 +238,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-17T17:57:27-04:00",
-        "download_count": 5377,
+        "download_count": 5379,
         "latest_version": "1.26.2901902",
         "latest_changelog": "454",
         "latest_md5": "faca88cf2cfb2ace4ed681e9bd75af80",
@@ -386,7 +386,7 @@
         "author": "Dispatcharr Team",
         "license": "Unlicense",
         "last_updated": "2026-10-22T19:01:08-04:00",
-        "download_count": 0,
+        "download_count": 1,
         "latest_version": "1.0.0",
         "latest_changelog": "463",
         "latest_md5": "b64f574fbaecee83de9041cdc2d84c78",
@@ -403,7 +403,7 @@
         "author": "Dispatcharr Team",
         "license": "Unlicense",
         "last_updated": "2026-10-22T19:01:08-04:00",
-        "download_count": 0,
+        "download_count": 1,
         "latest_version": "1.0.0",
         "latest_changelog": "463",
         "latest_md5": "f43cc8218eaf78a8ab2f7c28e478cc36",
@@ -594,5 +594,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatyu3gAKCRB+wDprTCI0\nzr8jAQCLSoS9eCtv8yzADpABjqf25syH9YwYNA6MNuRrxs42vwD/ZhurKLzmM8vX\nixvkPPIML4VhKh/tauqp/v9DXvSQgAg=\n=9k4m\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatywDAAKCRB+wDprTCI0\nzpQmAQD3k0ux5JYBSD57rQmOdIAPkveL45qpSQY19TsLzC3oHwEAgAkm2yzvvWGo\nSQ15LxDGOfNqljddrWbQe+kChAfLjAc=\n=cN5x\n-----END PGP SIGNATURE-----"
 }
