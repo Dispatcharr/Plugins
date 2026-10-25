@@ -1,0 +1,55 @@
+{
+  "generated_at": "2026-10-25T23:27:27Z",
+  "manifest": {
+    "slug": "channel-name-cleaner",
+    "name": "Channel Name Cleaner",
+    "description": "Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler.",
+    "author": "noodlemctwoodle",
+    "maintainers": [
+      "noodlemctwoodle"
+    ],
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner/releases/download/v{version}/channel-name-cleaner.zip",
+    "repo_url": "https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-10-25T19:26:53-04:00",
+    "download_count": 0,
+    "latest": {
+      "version": "0.2.0",
+      "commit_sha": "e59d4dc67585aa93c278f17bb7307f8cdd539dc8",
+      "commit_sha_short": "e59d4dc",
+      "changelog": "470",
+      "build_timestamp": "2026-10-25T23:27:09Z",
+      "last_updated": "2026-10-25T19:26:53-04:00",
+      "checksum_md5": "e29fe20a3140365f6fbeb00a33c8f502",
+      "checksum_sha256": "779e759cf495b32bd6efd345db4151fd8a2522433d3ea717e6f74d42de16d8e6",
+      "min_dispatcharr_version": "v0.20.0",
+      "max_dispatcharr_version": "",
+      "source_url": "https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner/releases/download/v0.2.0/channel-name-cleaner.zip",
+      "latest_url": "channel-name-cleaner-0.2.0/channel-name-cleaner-0.2.0.zip",
+      "url": "channel-name-cleaner-0.2.0/channel-name-cleaner-0.2.0.zip",
+      "size": 10,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "0.2.0",
+        "commit_sha": "e59d4dc67585aa93c278f17bb7307f8cdd539dc8",
+        "commit_sha_short": "e59d4dc",
+        "changelog": "470",
+        "build_timestamp": "2026-10-25T23:27:09Z",
+        "last_updated": "2026-10-25T19:26:53-04:00",
+        "checksum_md5": "e29fe20a3140365f6fbeb00a33c8f502",
+        "checksum_sha256": "779e759cf495b32bd6efd345db4151fd8a2522433d3ea717e6f74d42de16d8e6",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner/releases/download/v0.2.0/channel-name-cleaner.zip",
+        "url": "channel-name-cleaner-0.2.0/channel-name-cleaner-0.2.0.zip",
+        "size": 10,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCat6QYwAKCRB+wDprTCI0\nzsGgAP9jkksTA4b3lnZFyW1QaSK74vhNkzf3NfkJfOUAVU1vRwD9EL3X0AZWGF5G\nn5gCiXZ5QXTgCQuZTWo9SgHMYfMpkwE=\n=k1vh\n-----END PGP SIGNATURE-----"
+}

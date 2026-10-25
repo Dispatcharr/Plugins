@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-25T16:50:39Z",
+  "generated_at": "2026-10-25T23:27:27Z",
   "manifest": {
     "slug": "segmentarr",
     "name": "Segmentarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-09T14:25:33Z",
-    "download_count": 132,
+    "download_count": 134,
     "latest": {
       "version": "1.5.7",
       "commit_sha": "56c222040c2a2357c79de3d96d4142cbeeed01b6",
@@ -31,7 +31,7 @@
       "latest_url": "segmentarr-1.5.7/segmentarr-1.5.7.zip",
       "url": "segmentarr-1.5.7/segmentarr-1.5.7.zip",
       "size": 272,
-      "download_count": 119
+      "download_count": 121
     },
     "versions": [
       {
@@ -46,7 +46,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Segmentarr/releases/download/v1.5.7/segmentarr.zip",
         "url": "segmentarr-1.5.7/segmentarr-1.5.7.zip",
         "size": 272,
-        "download_count": 119
+        "download_count": 121
       },
       {
         "version": "1.5.6",
@@ -78,5 +78,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCat4zZQAKCRB+wDprTCI0\nzoHeAQCET8zIVKXOtNFPIiHl0kl/iVEGUm06d5dArqlAPUVyHQD/QU4gYjHx0Iap\nv/9kIYk5w7C3wkRb5hX5LkhtvnZA1wY=\n=KgPf\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCat6QZgAKCRB+wDprTCI0\nzskQAP0cC+aFETa4x1Q9o0YQTwEddL8asBT6zAuy4IrD6j0o7AD/VmkuIrI2o5cW\nYuDz8JdnJPIJdDCLUtgh1yspbWegBwk=\n=Zsl7\n-----END PGP SIGNATURE-----"
 }

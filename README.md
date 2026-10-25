@@ -13,6 +13,7 @@ This branch contains all published plugin releases.
 |--------|---------|-------|---------|-------------|
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.3.5` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2971911` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
+| [`Channel Name Cleaner`](#channel-name-cleaner) | `0.2.0` | noodlemctwoodle | MIT | Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.6.0` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream. |
 | [`Decypharr VOD`](#decypharr-vod) | `1.0.7` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
@@ -83,6 +84,25 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 - [All Versions (10 available)](./metadata/channel-mapparr)
 
 **Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`b786c14`](https://github.com/Dispatcharr/Plugins/commit/b786c1415f1c629c25bb5c2356ad9d7c2e7e8377)
+
+---
+
+
+### [Channel Name Cleaner](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-name-cleaner/README.md)
+
+**Version:** `0.2.0` | **Author:** noodlemctwoodle | **Last Updated:** Oct 25 2026, 23:26 UTC
+
+Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner)
+
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
+
+**Downloads:**
+- [Latest Release (`0.2.0`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-name-cleaner-0.2.0/channel-name-cleaner-0.2.0.zip)
+- [All Versions (1 available)](./metadata/channel-name-cleaner)
+
+**Maintainers:** noodlemctwoodle | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-name-cleaner) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-name-cleaner/README.md) | **Last Change:** [`e59d4dc`](https://github.com/Dispatcharr/Plugins/commit/e59d4dc67585aa93c278f17bb7307f8cdd539dc8)
 
 ---
 
@@ -695,4 +715,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 25 2026, 16:50 UTC*
+*Last updated: Oct 25 2026, 23:27 UTC*
