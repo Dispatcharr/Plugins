@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-25T14:09:58Z",
+  "generated_at": "2026-10-25T14:17:48Z",
   "manifest": {
     "slug": "event-channel-managarr",
     "name": "Event Channel Managarr",
@@ -14,26 +14,41 @@
     "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-10T20:25:46Z",
-    "download_count": 1633,
+    "last_updated": "2026-10-25T14:17:17Z",
+    "download_count": 1347,
     "latest": {
-      "version": "1.26.2832019",
-      "commit_sha": "39cf0ba01aa2120e0ad1d42bfe5ac11813a8d4ad",
-      "commit_sha_short": "39cf0ba",
-      "changelog": "419",
-      "build_timestamp": "2026-10-10T20:26:41Z",
-      "last_updated": "2026-10-10T20:25:46Z",
-      "checksum_md5": "b4db356095d5cf3a106502dc029bf478",
-      "checksum_sha256": "caa3a24791a4c5d59fac89094d4d7880759f3142c646344e5abdfafc0eb1a16f",
+      "version": "1.26.2981408",
+      "commit_sha": "02d21a65ec69b8a2d66b68ebcf921d606c3eaf03",
+      "commit_sha_short": "02d21a6",
+      "changelog": "485",
+      "build_timestamp": "2026-10-25T14:17:34Z",
+      "last_updated": "2026-10-25T14:17:17Z",
+      "checksum_md5": "c60ae887d51105e418d36bb492065422",
+      "checksum_sha256": "3aaba9931cdca6bcf6dd8dd5dc7b353ea3cddf71f3062e5ca0ab536bf4f64d80",
       "min_dispatcharr_version": "v0.20.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2832019/Event-Channel-Managarr.zip",
-      "latest_url": "event-channel-managarr-1.26.2832019/event-channel-managarr-1.26.2832019.zip",
-      "url": "event-channel-managarr-1.26.2832019/event-channel-managarr-1.26.2832019.zip",
-      "size": 258,
-      "download_count": 500
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2981408/Event-Channel-Managarr.zip",
+      "latest_url": "event-channel-managarr-1.26.2981408/event-channel-managarr-1.26.2981408.zip",
+      "url": "event-channel-managarr-1.26.2981408/event-channel-managarr-1.26.2981408.zip",
+      "size": 259,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.26.2981408",
+        "commit_sha": "02d21a65ec69b8a2d66b68ebcf921d606c3eaf03",
+        "commit_sha_short": "02d21a6",
+        "changelog": "485",
+        "build_timestamp": "2026-10-25T14:17:34Z",
+        "last_updated": "2026-10-25T14:17:17Z",
+        "checksum_md5": "c60ae887d51105e418d36bb492065422",
+        "checksum_sha256": "3aaba9931cdca6bcf6dd8dd5dc7b353ea3cddf71f3062e5ca0ab536bf4f64d80",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2981408/Event-Channel-Managarr.zip",
+        "url": "event-channel-managarr-1.26.2981408/event-channel-managarr-1.26.2981408.zip",
+        "size": 259,
+        "download_count": 0
+      },
       {
         "version": "1.26.2832019",
         "commit_sha": "39cf0ba01aa2120e0ad1d42bfe5ac11813a8d4ad",
@@ -47,7 +62,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2832019/Event-Channel-Managarr.zip",
         "url": "event-channel-managarr-1.26.2832019/event-channel-managarr-1.26.2832019.zip",
         "size": 258,
-        "download_count": 500
+        "download_count": 502
       },
       {
         "version": "1.26.2831317",
@@ -168,23 +183,8 @@
         "url": "event-channel-managarr-1.26.2561458/event-channel-managarr-1.26.2561458.zip",
         "size": 244,
         "download_count": 6
-      },
-      {
-        "version": "1.26.2490035",
-        "commit_sha": "cefbc813301c6d62ccf430ba5c5f15e06e2f69be",
-        "commit_sha_short": "cefbc81",
-        "changelog": "282",
-        "build_timestamp": "2026-09-06T01:00:15Z",
-        "last_updated": "2026-09-06T01:00:00Z",
-        "checksum_md5": "e387645ae1b91cba2ec237e3f49e2a88",
-        "checksum_sha256": "fc5963545ab5d70d0cd2eb606ddc62de2a1562908a690849b752477a7cbba283",
-        "min_dispatcharr_version": "v0.20.0",
-        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.2490035/Event-Channel-Managarr.zip",
-        "url": "event-channel-managarr-1.26.2490035/event-channel-managarr-1.26.2490035.zip",
-        "size": 242,
-        "download_count": 288
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCat4NvAAKCRB+wDprTCI0\nzpa8AP4l3AlJ3LEQVy4M3GWVT0HB+xzO75a0CWAJDvrH4uJ4gwEAmZh3Yg89w/fU\nIgZGrqJ8Gna022L6iJ0084RZ05sk0AA=\n=Lr1U\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCat4PkAAKCRB+wDprTCI0\nziH7AQD5XcUdAAF/RIQVe1rmlwdJKexLOfNdJu3auteoMOhZtAEAiP1mxheumT5O\nIyl/loExg1Lw6EdUeaqn27zaery5Ew0=\n=oWvc\n-----END PGP SIGNATURE-----"
 }
