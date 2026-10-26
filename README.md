@@ -34,8 +34,6 @@ This branch contains all published plugin releases.
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.6.0` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
 | [`reservoarr`](#reservoarr) | `6.5.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
-| [`Manifest v1 Example`](#manifest-v1-example) | `1.0.0` | Dispatcharr Team | Unlicense | Example of the version 1 capability declaration format. |
-| [`Manifest v2 Example`](#manifest-v2-example) | `1.0.0` | Dispatcharr Team | Unlicense | Example of version 2 capability enforcement and durable plugin storage. |
 | [`Segmentarr`](#segmentarr) | `1.5.7` | Tw1zT3d2four7 | MIT | HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile. |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.2981400` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
@@ -469,40 +467,6 @@ Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dyi
 ---
 
 
-### [Manifest v1 Example](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/sample-manifest-v1/README.md)
-
-**Version:** `1.0.0` | **Author:** Dispatcharr Team | **Last Updated:** Oct 22 2026, 23:01 UTC
-
-Example of the version 1 capability declaration format.
-
-[![License: Unlicense](https://img.shields.io/badge/License-Unlicense-blue?style=flat-square)](https://spdx.org/licenses/Unlicense.html)
-
-**Downloads:**
-- [Latest Release (`1.0.0`)](https://github.com/Dispatcharr/Plugins/releases/download/sample-manifest-v1-1.0.0/sample-manifest-v1-1.0.0.zip)
-- [All Versions (1 available)](./metadata/sample-manifest-v1)
-
-**Maintainers:** sethwv | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/sample-manifest-v1) | **Last Change:** [`f01f575`](https://github.com/Dispatcharr/Plugins/commit/f01f575bc5179f37597415b9ad1e496307b845d1)
-
----
-
-
-### [Manifest v2 Example](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/sample-manifest-v2/README.md)
-
-**Version:** `1.0.0` | **Author:** Dispatcharr Team | **Last Updated:** Oct 22 2026, 23:01 UTC
-
-Example of version 2 capability enforcement and durable plugin storage.
-
-[![License: Unlicense](https://img.shields.io/badge/License-Unlicense-blue?style=flat-square)](https://spdx.org/licenses/Unlicense.html)
-
-**Downloads:**
-- [Latest Release (`1.0.0`)](https://github.com/Dispatcharr/Plugins/releases/download/sample-manifest-v2-1.0.0/sample-manifest-v2-1.0.0.zip)
-- [All Versions (1 available)](./metadata/sample-manifest-v2)
-
-**Maintainers:** sethwv | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/sample-manifest-v2) | **Last Change:** [`f01f575`](https://github.com/Dispatcharr/Plugins/commit/f01f575bc5179f37597415b9ad1e496307b845d1)
-
----
-
-
 ### [Segmentarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/segmentarr/README.md)
 
 **Version:** `1.5.7` | **Author:** Tw1zT3d2four7 | **Last Updated:** Oct 09 2026, 14:25 UTC
@@ -715,4 +679,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 25 2026, 23:27 UTC*
+*Last updated: Oct 26 2026, 14:14 UTC*

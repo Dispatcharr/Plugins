@@ -2,7 +2,7 @@
 
 # Manifest v1 Example
 
-**Version:** `1.0.0` | **Author:** Dispatcharr Team | **Last Updated:** Oct 22 2026, 23:01 UTC
+**Version:** `1.0.0` | **Author:** Dispatcharr Team | **Last Updated:** Oct 26 2026, 14:14 UTC
 
 Example of the version 1 capability declaration format.
 
