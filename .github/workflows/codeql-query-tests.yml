@@ -1,0 +1,33 @@
+name: CodeQL Query Tests
+
+on:
+  pull_request:
+    paths:
+      - .github/codeql/queries/**
+  push:
+    branches: [main]
+    paths:
+      - .github/codeql/queries/**
+
+permissions:
+  contents: read
+  security-events: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - id: init
+        uses: github/codeql-action/init@v4
+        with:
+          languages: python
+      - name: Install query test dependencies
+        run: ${{ steps.init.outputs.codeql-path }} pack install --additional-packs=..
+        working-directory: .github/codeql/queries/python/tests
+      - name: Run query tests
+        run: |
+          ! rg -n '^ERROR:' .github/codeql/queries/python/tests --glob '*.expected'
+          ${{ steps.init.outputs.codeql-path }} query compile --check-only .github/codeql/queries/python
+          ${{ steps.init.outputs.codeql-path }} test run --additional-packs=.github/codeql/queries/python .github/codeql/queries/python/tests

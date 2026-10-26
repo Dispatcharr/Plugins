@@ -1,0 +1,16 @@
+{
+  "name": "Audio Buffer Tuner",
+  "version": "0.3.5",
+  "description": "Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups.",
+  "author": "CtznSniiips",
+  "maintainers": [
+    "CtznSniiips"
+  ],
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v{version}/audio-buffer-tuner.zip",
+  "repo_url": "https://github.com/CtznSniiips/audio-buffer-tuner",
+  "help_url": "https://github.com/CtznSniiips/audio-buffer-tuner",
+  "min_dispatcharr_version": "v0.31.0",
+  "discord_thread": "https://discord.com/channels/1340492560220684331/1549510259775635536"
+}

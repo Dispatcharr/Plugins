@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Manifest v2 Example",
+  "version": "1.0.0",
+  "description": "Example of version 2 capability enforcement and durable plugin storage.",
+  "author": "Dispatcharr Team",
+  "maintainers": [
+    "sethwv"
+  ],
+  "help_url": "https://github.com/Dispatcharr/Plugins",
+  "capabilities": [
+    "background_tasks"
+  ],
+  "fields": [
+    {
+      "id": "message",
+      "label": "Message",
+      "type": "string",
+      "default": "Hello from Dispatcharr"
+    }
+  ],
+  "actions": [
+    {
+      "id": "write_status",
+      "label": "Write Status",
+      "description": "Writes a status file to the plugin data directory.",
+      "async": true
+    }
+  ],
+  "license": "Unlicense",
+  "unlisted": true
+}

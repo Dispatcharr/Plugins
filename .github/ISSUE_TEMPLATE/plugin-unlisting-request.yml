@@ -1,0 +1,41 @@
+name: Plugin Unlisting Request
+description: Request that a plugin be removed from registry discovery without removing its releases.
+title: "[Plugin Unlisting] "
+labels: ["Unlisting"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to request that a plugin be unlisted from the registry. Unlisting removes it from registry discovery and the releases README after a maintainer merges the resulting pull request. Existing releases remain available.
+
+        This request does not authorize an action by itself. Only a repository maintainer can dispatch the unlisting workflow, including for plugins they do not own or maintain.
+
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin slug
+      description: The plugin folder name (for example, `dispatcharr-exporter`).
+      placeholder: my-plugin
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Reason for unlisting
+      options:
+        - Unsupported or abandoned
+        - Security or trust concern
+        - Replaced by another plugin
+        - Author request
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Explain why the plugin should no longer be listed and include relevant links or context.
+    validations:
+      required: true

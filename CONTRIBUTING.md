@@ -1,83 +1,57 @@
-# Contributing to the Dispatcharr Plugin Repository
+> [!CAUTION]
+> The repository's workflows recently changed. Please bear with us while we work through expected issues and hiccups. [Report a workflow issue](https://github.com/Dispatcharr/Plugins/issues/new?template=repo-issue.yml).
 
-> **This is a listing and distribution repository, not a development environment.**
-> Build, test, and iterate on your plugin in your own repository. Pre-releases, work-in-progress versions, and experiments belong there too. Only submit a PR here when your plugin is stable and ready for public distribution.
+# Contributing
 
-## Before You Start
+This repository is a public plugin registry, not a plugin development environment. Build, test, and iterate in your own repository. Open a pull request here when a stable version is ready for distribution.
 
-- Build and test your plugin in your own repository first
-- Ensure your plugin is stable - this repo is for public releases, not pre-releases or experiments
-- You must own the rights to distribute it under an OSI-approved open source license
-- Each plugin lives in its own folder under `plugins/<plugin-name>/`
+## Before you begin
 
-## Folder Structure
+- Test the plugin with Dispatcharr.
+- Confirm you have the right to distribute it under an [OSI-approved open source license](https://opensource.org/licenses).
+- Decide whether the registry should package source here or retrieve a release ZIP from your own repository.
+- Confirm the submission meets the [Code of Conduct](CODE_OF_CONDUCT.md) contribution boundaries.
 
-### External plugin (recommended)
+## Choose a submission type
 
-If your plugin has its own GitHub repository, submit a directory with only a `plugin.json`. The registry fetches your ZIP on each version bump from your upstream release URL.
+| Choose this | When | What you add here |
+| --- | --- | --- |
+| **External plugin** | The plugin has its own public source repository and release ZIPs. Recommended. | `plugin.json`, plus an optional README and logo. |
+| **Standard plugin** | The plugin is small or has no separate release process. | `plugin.json` and all source files, plus an optional README and logo. |
 
-```
+Every plugin directory is `plugins/<plugin-slug>/`. The slug must use lowercase letters, numbers, and hyphens, such as `my-plugin`.
+
+### External plugin
+
+```text
 plugins/
-  your-plugin-name/
-    plugin.json       # required; includes source_type and source_url
-    README.md         # optional but recommended
-    logo.png          # optional; displayed in the plugin browser
+  my-plugin/
+    plugin.json
+    README.md          # optional
+    logo.png           # optional
 ```
 
-On merge, the registry downloads the ZIP from your `source_url`, computes its checksums independently, re-hosts it as a GitHub Release on this registry, and GPG-signs the manifest. Clients always download from the registry, never directly from your upstream URL.
+Set `source_type` to `"external"`. `source_url` must be an HTTPS URL for a downloadable ZIP and include `{version}`, which the registry replaces when it publishes. `repo_url` is required and should point to the public source repository.
 
-**Requirements for external plugins:**
+On merge, the registry downloads the release ZIP, calculates its checksums, scans it, publishes it as a release in this repository, and records the upstream source URL in signed metadata. Clients download from this registry, not directly from the upstream URL.
 
-- `source_url` must be an HTTPS URL pointing directly to a downloadable ZIP
-- `source_url` must contain a `{version}` placeholder that is substituted at publish time
-- `repo_url` is required (points to your source repository)
-- The source repository must be public and under an OSI-approved open source license
+### Standard plugin
 
-Each version bump requires a PR to this repository (updating `version` in `plugin.json`), which must be approved and merged before anything is published. How you automate or manage that is up to you.
-
-### Standard plugin (full source)
-
-For simple scripts or plugins without their own repository or build process.
-
-```
+```text
 plugins/
-  your-plugin-name/
-    plugin.json       # required
-    main.py           # your plugin's entry point
-    ...               # any other Python files, assets, or subdirectories
-    README.md         # optional but recommended
-    logo.png          # optional; displayed in the plugin browser
+  my-plugin/
+    plugin.json
+    main.py            # example entry point
+    helpers.py         # other source files and assets are allowed
+    README.md          # optional
+    logo.png           # optional
 ```
 
-Everything in your plugin folder (`main.py`, helper modules, assets, subdirectories) is automatically packaged into a ZIP on merge. No separate build step.
+The registry packages the entire plugin directory after merge. A standard plugin must include at least one source file in addition to metadata and the optional README or logo.
 
-Plugin folder names must be **lowercase-kebab-case** (e.g. `my-plugin-name`).
+## Create `plugin.json`
 
-## Submitting a Plugin
-
-1. Fork this repository and create a branch
-2. Create your plugin folder under `plugins/your-plugin-name/`
-3. Add a valid `plugin.json` (see spec below)
-4. Optionally add a `README.md` and `logo.png`
-5. Submit a pull request to `main`
-
-### PR Title Format
-
-PR titles must follow this format (the colon after `]` is optional):
-
-| Scenario | Format | Example |
-|----------|--------|---------|
-| Single plugin changed | `[plugin-slug] description` | `[my-plugin] Bump version to 1.2.0` |
-| Multiple plugins changed | `[your-github-username] description` | `[sethwv] Update my plugins to new manifest formatting` |
-| Repo/script changes (maintainers only) | `[repo] description` | `[repo] Add new validation rules for PRs` |
-
-The plugin slug is the folder name under `plugins/` (e.g. `my-plugin-name`). Validation checks the title automatically; renaming the PR triggers a re-run.
-
-For **updates**, increment the version in `plugin.json` - the validation workflow enforces this. Exception: some metadata-only fields (`description`, `repo_url`, `discord_thread`, `maintainers`, `min_dispatcharr_version`, `max_dispatcharr_version`, `deprecated`, `unlisted`) can be updated without a version bump.
-
-## `plugin.json` Spec
-
-### Required Fields
+Start with the required fields:
 
 ```json
 {
@@ -89,31 +63,26 @@ For **updates**, increment the version in `plugin.json` - the validation workflo
 }
 ```
 
-| Field | Description |
-|-------|-------------|
-| `name` | Display name of the plugin |
-| `version` | Semantic version (`MAJOR.MINOR.PATCH`) |
-| `description` | Short description shown in the plugin browser |
-| `author` | Your GitHub username. Used for PR permission checks - must match the GitHub account submitting the PR |
-| `license` | An [OSI-approved SPDX license identifier](https://spdx.org/licenses/) (e.g. `MIT`, `Apache-2.0`, `GPL-3.0-only`) |
+| Field | Required | Description |
+| --- | --- | --- |
+| `name` | Yes | Plugin display name. |
+| `version` | Yes | Three-segment version in `MAJOR.MINOR.PATCH` form. |
+| `description` | Yes | Short browser description. |
+| `author` | Yes, unless `maintainers` is supplied | GitHub username allowed to update the plugin. |
+| `license` | Yes | OSI-approved SPDX identifier, such as `MIT` or `Apache-2.0`. |
+| `maintainers` | No | Additional GitHub usernames allowed to update the plugin. |
+| `min_dispatcharr_version` | No | Minimum supported Dispatcharr version, with optional `v` prefix. |
+| `max_dispatcharr_version` | No | Maximum supported Dispatcharr version. It cannot be lower than `min_dispatcharr_version`. |
+| `repo_url` | No, except external plugins | Source repository URL beginning with `http://` or `https://`. |
+| `discord_thread` | No | Associated Discord thread URL beginning with `http://` or `https://`. |
+| `deprecated` | No | Boolean that marks the plugin as deprecated. Defaults to `false`. |
+| `unlisted` | No | Boolean that omits the plugin from the root manifest and releases README. Defaults to `false`. |
+| `source_type` | No | Use `"external"` for an external plugin. Omit it or use `"local"` for a standard plugin. |
+| `source_url` | Required for external plugins | HTTPS ZIP URL containing `{version}`. |
 
-At least one of `author` or `maintainers` must include your GitHub username. `author` is also part of the Dispatcharr plugin spec - it is used by this repository to determine who is permitted to submit PRs for a given plugin.
+At least one of `author` or `maintainers` must name the GitHub account opening the pull request. For an existing plugin, the account must already be listed in the version on the base branch unless it has repository write permission.
 
-### Optional Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `maintainers` | `string[]` | Additional GitHub usernames permitted to submit PRs for this plugin (in addition to `author`) |
-| `min_dispatcharr_version` | `string` | Minimum Dispatcharr version required (e.g. `v0.19.0` or `0.19.0`) |
-| `max_dispatcharr_version` | `string` | Maximum Dispatcharr version supported. Must be ≥ `min_dispatcharr_version` if both are set |
-| `repo_url` | `string` | URL to the plugin's source repository (must start with `http://` or `https://`). Required for external plugins |
-| `discord_thread` | `string` | URL to the associated Discord thread (must start with `http://` or `https://`) |
-| `deprecated` | `boolean` | Marks the plugin as deprecated. Default: `false` |
-| `unlisted` | `boolean` | Excludes the plugin from the root `manifest.json` (and the releases README) but still generates a per-plugin manifest. Default: `false` |
-| `source_type` | `string` | Set to `"external"` to declare this as an external plugin. Omit (or `"local"`) for standard plugins |
-| `source_url` | `string` | Required when `source_type` is `"external"`. Must be a GitHub Releases URL containing a `{version}` placeholder, e.g. `https://github.com/owner/repo/releases/download/v{version}/plugin.zip` |
-
-### Full Example (external plugin, recommended)
+### External example
 
 ```json
 {
@@ -124,85 +93,63 @@ At least one of `author` or `maintainers` must include your GitHub username. `au
   "license": "MIT",
   "source_type": "external",
   "source_url": "https://github.com/your-github-username/my-plugin/releases/download/v{version}/my-plugin.zip",
-  "repo_url": "https://github.com/your-github-username/my-plugin",
-  "discord_thread": "https://discord.com/channels/..."
+  "repo_url": "https://github.com/your-github-username/my-plugin"
 }
 ```
 
-### Full Example (standard plugin)
+## Issues and support
 
-```json
-{
-  "name": "My Plugin",
-  "version": "1.2.0",
-  "description": "Does something useful for Dispatcharr",
-  "author": "your-github-username",
-  "maintainers": ["collaborator-username"],
-  "license": "MIT",
-  "min_dispatcharr_version": "v0.19.0",
-  "repo_url": "https://github.com/your-github-username/my-plugin",
-  "discord_thread": "https://discord.com/channels/..."
-}
-```
+Use this repository's issue tracker for registry matters: validation or publishing workflow problems, submission-process issues, repository tooling, and documentation errors. [Report a repository issue](https://github.com/Dispatcharr/Plugins/issues/new?template=repo-issue.yml).
 
-## What Happens When You Open a PR
+Do not use it for bugs, compatibility problems, support requests, or feature requests for a specific plugin. Use the plugin's own source repository, linked in its `plugin.json`, or its thread in the [Dispatcharr Discord](https://discord.gg/Sp45V5BcxU).
 
-Automated validation runs on every PR and posts a comment with results. The following checks must all pass before a PR can merge:
+To remove a published plugin version from the registry, [submit a Version Removal Request](https://github.com/Dispatcharr/Plugins/issues/new?template=version-removal-request.yml).
 
-| Check | Details |
-|-------|---------|
-| Folder name | Must be lowercase-kebab-case |
-| `plugin.json` presence | File must exist |
-| JSON syntax | Must be valid JSON |
-| Required fields | `name`, `version`, `description`, `author` or `maintainers`, `license` |
-| Version format | Must be `MAJOR.MINOR.PATCH` (semver) |
-| Version bump | Must be greater than the current published version (see [metadata-only exceptions](#versioning)) |
-| Permission | PR author must be listed in `author` or `maintainers` |
-| License | Must be a valid OSI-approved SPDX identifier |
-| `min_dispatcharr_version` | Must be semver if provided |
-| `max_dispatcharr_version` | Must be semver and ≥ `min_dispatcharr_version` if both provided |
-| `repo_url` / `discord_thread` | Must start with `http://` or `https://` if provided |
-| CodeQL | Python code is scanned for security issues (blocking). For external plugins, the release ZIP is downloaded and its contents scanned |
-| ClamAV | All submitted files are scanned for malware (blocking). For external plugins, the release ZIP is downloaded and scanned |
-| `source_url` | For external plugins: must be an HTTPS URL with a `{version}` placeholder; artifact must be reachable |
-| `repo_url` | Required for external plugins |
-| `.github/` | Cannot be modified by non-maintainers of this repository |
+To remove a plugin from registry discovery without deleting its existing releases, [submit a Plugin Unlisting Request](https://github.com/Dispatcharr/Plugins/issues/new?template=plugin-unlisting-request.yml). A repository maintainer reviews the request and runs the unlisting workflow, which opens a pull request that sets `unlisted` to `true`.
 
-PRs where the author has no permission for any of the modified plugins are **automatically closed** with instructions. PRs from accounts or plugins on the repository blocklist are also automatically closed.
+## Submit the pull request
 
-## What Happens After Merge
+1. Fork this repository and create a branch.
+2. Add or update `plugins/<plugin-slug>/`.
+3. Confirm `plugin.json` is valid JSON and the source ZIP is publicly reachable if the plugin is external.
+4. Open a pull request against `main`.
+5. Read the validation comment and address any reported failures.
 
-Once your PR merges to `main`, the publish workflow runs automatically:
+Use one of these pull request title formats. A colon after `]` is optional.
 
-**External plugins:**
-1. The ZIP is downloaded from your `source_url` (with `{version}` substituted)
-2. MD5 and SHA256 checksums are computed by the registry's infrastructure (not trusted from upstream)
-3. The ZIP is published as a **GitHub Release** on this registry (tag: `your-plugin-1.0.0`); a `-latest` alias release is also maintained
-4. `manifest.json` is updated with checksums and download URLs pointing to the GitHub Release assets; `source_url` pointing to the upstream release is also recorded
-5. A per-plugin `README.md` is generated with download links and version history
-6. Up to 10 versioned releases are retained; older ones are pruned
+| Change | Title format | Example |
+| --- | --- | --- |
+| One plugin | `[plugin-slug] description` | `[my-plugin] Bump version to 1.2.0` |
+| Multiple plugins | `[github-username] description` | `[sethwv] Update my plugins` |
+| Registry changes, maintainers only | `[repo] description` | `[repo] Update validation rules` |
 
-**Standard plugins:**
-1. Your plugin is packaged into a versioned ZIP
-2. MD5 and SHA256 checksums are computed
-3. The ZIP is published as a **GitHub Release** on this registry (tag: `your-plugin-1.0.0`); a `-latest` alias release is also maintained
-4. `manifest.json` on the releases branch is updated with metadata and download URLs pointing to the GitHub Release assets
-5. A per-plugin `README.md` is generated with download links and version history
-6. Up to 10 versioned releases are retained; older ones are pruned
+Use of the pull request template is optional, but every pull request must include a meaningful description. A blank or materially incomplete description may result in auto-merge privileges being revoked. If you submit pull requests through automation, consider configuring it to include a link to the relevant changelog, release notes, or other change summary.
 
-Manifests and READMEs are committed to the [`releases` branch](https://github.com/Dispatcharr/Plugins/tree/releases). ZIP files are stored as [GitHub Release assets](https://github.com/Dispatcharr/Plugins/releases).
+### Automatic merging
 
-## Versioning
+Automatic merging is not guaranteed. It only considers cleanly mergeable, non-draft updates to existing plugins that change files only under `plugins/` and pass validation. New plugins, repository changes, mixed changes, validation failures, security findings, and pull requests marked for manual review require maintainer review.
 
-Plugins use [semantic versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`):
+By default, automatic merging is limited to four updates per author and four updates per plugin in a rolling 24-hour period. Maintainers may change these limits, exclude authors from automatic merging, or require review for any pull request. A successful automatic merge receives the `Auto Merged` label.
 
-- **PATCH** - bug fixes, minor tweaks
-- **MINOR** - new features, backwards compatible
-- **MAJOR** - breaking changes
+## What validation checks
 
-Version increments are enforced by the validation workflow. You cannot submit a PR with the same or lower version than the currently published plugin.
+The workflow verifies the folder name, `plugin.json` presence and syntax, required metadata, three-segment version format, author or maintainer permission, license, Dispatcharr version constraints, optional URL fields, and external-plugin requirements. It also verifies that an external ZIP can be reached.
 
-**Metadata-only updates** are an exception - the following fields can be changed without bumping the version:
+CodeQL scans submitted code for security findings. ClamAV scans submitted files and, for external plugins, the downloaded release ZIP. CodeQL capability and sandbox findings are reviewed by maintainers and prevent automatic merging. See [plugin security](docs/plugin-security.md) for checks and suppressions.
+
+Only repository maintainers may change `.github/`. Pull requests from blocked authors or for blocked plugins are closed automatically. A pull request whose author cannot modify any changed plugin is also closed automatically.
+
+## Disclaimer
+
+- All external tools, integrations, and services are **used at your own risk**.
+- Users are responsible for verifying the integrity and behavior of any code they choose to run.
+- The Dispatcharr team is **not liable** for any damage, data loss, or security issues resulting from the use of shared tools or services.
+
+## Versioning updates
+
+Use a three-segment version in `MAJOR.MINOR.PATCH` form. We recommend following [semantic versioning](https://semver.org/): increment PATCH for fixes, MINOR for backward-compatible features, and MAJOR for breaking changes.
+
+An existing plugin needs a higher version for source changes or most metadata changes. These fields may change without a version bump:
 
 - `description`
 - `repo_url`
@@ -213,25 +160,16 @@ Version increments are enforced by the validation workflow. You cannot submit a 
 - `deprecated`
 - `unlisted`
 
-All other fields - including `name`, `author`, `license`, `source_url`, `source_type`, and any code changes - require a version bump.
+Changing `name`, `author`, `license`, `source_type`, `source_url`, or any source file requires a version bump. A license change creates a new release under the new license. It does not alter rights already granted by earlier releases.
 
-> **Changing the license?** A version bump is required because the license you publish under is binding for that release. Users who installed the previous version hold rights under the old license and those cannot be revoked. The new version carries the new license going forward.
+## After merge
 
-## Licensing
+The registry publishes a versioned ZIP and a `-latest` alias GitHub Release, calculates MD5 and SHA256 checksums, updates signed manifests, and generates a plugin README on the [`releases` branch](https://github.com/Dispatcharr/Plugins/tree/releases). It keeps the ten newest versioned releases for each plugin.
 
-All plugins must be distributed under an [OSI-approved open source license](https://opensource.org/licenses). The `license` field is required in `plugin.json` and must be a valid [SPDX identifier](https://spdx.org/licenses/).
+## Remove a published version
 
-By submitting a PR you confirm that you have the rights to distribute the plugin under the license you specify. This is binding for the version being published. Users who downloaded a version hold rights under its license permanently - those rights are not affected if the version is later removed from the registry. To change the license going forward, bump the version. The old version stays under its original license.
+To request removal of a version, open a [Version Removal Request](https://github.com/Dispatcharr/Plugins/issues/new?template=version-removal-request.yml). A maintainer runs the yank workflow. If the removed version was latest, the prior version becomes latest. If it was the only version, the plugin is removed from the registry. Existing downloads are unaffected.
 
-## Version Removal
+## Unlist a plugin
 
-Plugin authors and maintainers can request that a specific version be removed from the registry. Reasons might include a critical bug, a security issue, a mistaken publish, or a license correction.
-
-To request a removal, [open an issue](../../issues/new/choose) using the **Version Removal Request** template. A maintainer will run the yank workflow on your behalf.
-
-What happens when a version is yanked:
-
-- The GitHub Release and its asset are deleted; the manifest entry is removed from the releases branch.
-- If it was the latest version, the previous version is automatically promoted to latest and a PR is opened against the source branch to roll back `plugin.json` to match.
-- If it was the only version, the plugin is fully removed from the registry and a PR is opened to remove its source folder.
-- Users who already downloaded the version are unaffected.
+To remove a plugin from registry discovery without removing its releases, open a [Plugin Unlisting Request](https://github.com/Dispatcharr/Plugins/issues/new?template=plugin-unlisting-request.yml). A repository maintainer can run the unlisting workflow for any plugin. It opens a pull request that sets `unlisted` to `true`; after that pull request merges and publishes, the plugin is omitted from the root manifest and releases README. Existing releases and per-plugin metadata remain available.

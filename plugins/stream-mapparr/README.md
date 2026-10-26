@@ -5,12 +5,9 @@
 A Dispatcharr plugin that automatically matches and assigns streams to channels
 using fuzzy matching, quality prioritization, and OTA callsign recognition.
 
-The "streams matched" badge counts stream-to-channel assignments this plugin has
-written on the maintainer's own installation, added up since the counter was
-added on 5 September 2026. It measures work done rather than distinct streams: a
-daily schedule matches the same library again and counts it again. Dry runs are
-not counted, and neither is sorting alternate streams, which reorders
-assignments that already exist.
+The Streams Matched and Active Installs badges add up figures sent by every install
+that keeps "Share anonymous usage counts" ticked; see
+[Anonymous usage counts](#anonymous-usage-counts).
 
 ## Backup Your Database
 
@@ -79,8 +76,8 @@ database. This plugin modifies channel and stream assignments.
 - **US OTA callsign matching**: US broadcast affiliates such as
   `ABC - TX Dallas (WFAA)` are matched by FCC callsign, using a bundled station
   table of around 1,900 stations
-- **Multi-country channel databases**: US, UK, CA, AU, BR, DE, ES, FR, IN, MX,
-  NL, NO
+- **Multi-country channel databases**: US, UK, CA, AU, BR, DE, DO, ES, FR, IN,
+  MX, NL, NO, PE, PL, PT
 - **Country-restricted matching** (opt-in): only match streams whose detected
   country matches the channel's
 - **Performance**: a normalization cache, C-accelerated Levenshtein through
@@ -125,7 +122,10 @@ database. This plugin modifies channel and stream assignments.
   global timezone. Safe across multiple worker processes, so a job runs once per
   slot rather than once per worker
 - **Auto-match after M3U refresh** (opt-in, Dispatcharr v0.27+): run Match and
-  Assign as soon as a refresh completes. Requires a Channel Profile
+  Assign as soon as a refresh completes successfully. Requires a Channel Profile
+- **Run after an IPTV Checker scan** (opt-in): run the scheduled steps the
+  moment the IPTV Checker plugin finishes a scheduled scan, so sorting sees the
+  fresh results instead of waiting for the next fixed time
 - **Rate limiting**: None, Low, Medium or High
 - **Operation lock**: prevents concurrent tasks, auto-expiring after 10 minutes
 - **Dry run mode**: preview results with a CSV export and no changes
@@ -165,13 +165,14 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Channel Groups Mode** | select | Only the groups listed | Whether the list names the groups to process or the groups to skip. Choosing to skip means a group you create later is processed automatically. Empty list means all groups either way |
 | **Stream Groups** | string | (all) | Stream groups to draw candidate streams from, comma-separated |
 | **Stream Groups Mode** | select | Only the groups listed | The same choice for stream groups, resolved separately from the channel-group list |
-| **M3U Sources** | string | (all) | M3U sources to use, comma-separated. Order sets priority |
+| **M3U Sources** | string | (all) | M3U sources to use, comma-separated. Order sets priority. Only listed sources are used unless the list contains `*`, which stands for every other source: `Free Provider, *` puts Free Provider first and keeps all the rest |
 | **Custom Aliases** | string | (none) | JSON object of extra `"channel": ["alias", ...]` mappings. Channel names and aliases are both matched case-insensitively, and whitespace around a channel name is ignored |
 | **Stream Name Regex Rules** | string | (none) | JSON list of `[find, replace]` pairs applied to stream names before matching. See [Regex pre-processing](https://github.com/PiratesIRC/Stream-Mapparr/blob/main/docs/regex-preprocessing.md) |
 | **Prioritize Quality** | boolean | False | Sort by quality first, then by M3U source priority |
 | **Custom Ignore Tags** | string | (none) | Tags to strip before matching, for example `[Dead], (Backup)` |
 | **Wait for IPTV Checker Completion** | boolean | False | Hold a scheduled run until IPTV Checker has finished, so matching sees fresh stats |
-| **IPTV Checker Max Wait (hours)** | number | 2 | How long to wait before running anyway |
+| **IPTV Checker Max Wait (hours)** | number | 6 | How long to wait before running anyway |
+| **Run After IPTV Checker Scan** | boolean | False | When IPTV Checker finishes a scheduled scan, run the scheduled steps (Fill Mirror Backups, Sort Alternate Streams and Match and Assign, whichever are ticked). IPTV Checker needs its own `Trigger Stream-Mapparr` setting on |
 | **Enable CSV Export** | boolean | True | Write a CSV on a scheduled Match and Assign run. A dry run always writes one |
 | **Delete CSV Exports Older Than (Days)** | number | 0 | Remove this plugin's older reports after each new one is written. 0, the default, keeps everything. Only files this plugin wrote are ever considered, because that directory is shared with other plugins. The newest report and the one just written always survive |
 | **Tag Handling** | select | Strip All | Strip All, Keep Regional, or Keep All |
@@ -192,7 +193,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Email A Report After** | select | Scheduled runs only | Which runs email a report: never, scheduled only, or every run |
 | **Email Report Format** | select | Both | Which file is emailed. One report sends ONE email carrying one attachment, because a notification can carry only one. Both writes both files and emails the HTML page; the email names the file it did not attach |
 | **Scheduled Run Times** | string | (none) | Times in HHMM, comma-separated, for example `0400,1600` |
-| **Auto-match after M3U refresh** | boolean | False | Run Match and Assign after each M3U refresh. Requires a Channel Profile. Dispatcharr v0.27+ |
+| **Auto-match after M3U refresh** | boolean | False | Run Match and Assign after each successful M3U refresh. A refresh that ends in an error does not trigger it. Requires a Channel Profile. Dispatcharr v0.27+ |
 | **Dry Run Mode** | boolean | False | Preview without making database changes |
 | **Enable Throughput-Based Sorting** | boolean | True | Add a measured-throughput tier to alternate-stream sorting, falling back to resolution when no probe data exists |
 | **Probe Duration (seconds)** | number | 8 | Length of each throughput probe |
@@ -203,6 +204,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Placeholder Bitrate Floor (kbps)** | number | 300 | The floor for the setting above. Standard definition is never checked. Where two bitrate figures disagree the higher is used, so a disagreement keeps the stream |
 | **Audio Channels Priority** | string | "" | Audio layouts, most preferred first, for example `7.1, 5.1, stereo`. Ranked before codec. Blank disables it |
 | **Audio Codec Priority** | string | "" | Audio codecs, most preferred first, for example `eac3, ac3, aac`. Ranked after layout. Blank disables it |
+| **Share anonymous usage counts** | boolean | True | Sends this plugin's Streams Matched total and a random id to the plugin author's counter. See [Anonymous usage counts](#anonymous-usage-counts). |
 
 ## Actions
 
@@ -218,6 +220,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Match US OTA Only** | Match US broadcast channels by callsign |
 | **Sort Alternate Streams** | Re-sort existing streams by quality, and by throughput tier where probe data exists |
 | **Probe Stream Throughput** | Measure sustained throughput for assigned streams. Run this before Sort Alternate Streams |
+| **Fill Mirror Backups** | For M3U accounts placed in one Dispatcharr server group that carry the same streams from different provider hosts, add to each channel the matching stream, found by provider stream id, from every other active account whose host the channel has no stream from yet. Two accounts on the same host count as one, and inactive accounts are skipped. New streams go after the existing provider streams and before any custom stream. Adds only and never removes. In live mode it first saves each changed channel's previous stream order to `/data/stream_mapparr_snapshots/`, and changes nothing if that save fails. Writes every addition to `/config/stream-mapparr/fill-mirror-backups.txt` |
 | **Manage Channel Visibility** | Enable or disable channels based on stream count |
 | **View Check Progress** | Show the running operation's percentage and estimated time |
 | **View Last Results** | Show a summary of the last completed operation |
@@ -230,8 +233,10 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 1. Set **Scheduled Run Times** in 24-hour format, for example `0400,1600`. Times
    use Dispatcharr's global timezone; there is no plugin timezone setting
 2. Choose which steps run: **Schedule: Match & Assign Streams**, on by default,
-   and **Schedule: Sort Streams**, off by default. They are independent, so a
-   schedule can sort only, match only, or both
+   **Schedule: Sort Streams**, off by default, and **Schedule: Fill Mirror
+   Backups**, off by default. They are independent, so a schedule can run any
+   of them alone or together. Fill Mirror Backups runs before Sort Streams, so
+   the mirrors it adds are sorted in the same run
 3. Enable **CSV Export** if you want one
 4. Click **Update Schedule**
 
@@ -240,11 +245,20 @@ restarts. Across multiple worker processes, a shared on-disk claim makes sure
 the job runs once per slot rather than once per worker.
 
 **Event-driven alternative** (Dispatcharr v0.27+): **Auto-match after M3U
-refresh** runs Match and Assign the moment a refresh finishes, instead of or as
+refresh** runs Match and Assign the moment a refresh finishes successfully, instead of or as
 well as fixed times. Because Dispatcharr fires that event once per M3U account,
 runs are coalesced under a lock and a follow-up pass catches any account that
 finishes mid-match. A multi-account refresh therefore produces one effective
 match rather than one per account.
+
+**After an IPTV Checker scan**: **Run After IPTV Checker Scan** runs the same
+steps the fixed times run (Fill Mirror Backups, Sort Alternate Streams and
+Match and Assign, whichever are ticked) when the IPTV Checker plugin finishes a scheduled scan
+that reached the end of its channel list. IPTV Checker calls this plugin
+directly, so its own **Trigger Stream-Mapparr After Scheduled Check** setting
+must be on as well. A run already in progress is left alone and the next scan
+tries again. The CSV header for such a run reads `Scheduled (after IPTV
+Checker scan)`.
 
 ## CSV Reports
 
@@ -264,6 +278,54 @@ because the exports contain your M3U source names.
 This plugin uses calver, `1.MAJOR.DDDHHMM`, being the UTC day of year plus the
 UTC time. Run `python scripts/bump_version.py` to bump `plugin.json` and
 `plugin.py` together.
+
+## Anonymous usage counts
+
+The Streams Matched and Active Installs badges count every install that leaves
+the "Share anonymous usage counts" setting (on by default) ticked and runs at
+least one action or scheduled run. Streams Matched counts the stream-to-channel
+assignments that Match & Assign Streams and Match US OTA Only write. With
+Overwrite Existing Streams on, which is the default, a daily schedule that
+re-matches the same streams counts them again; with it off, a stream already on
+a channel is not written or counted again. Sort Alternate Streams is not
+counted.
+
+When an action or a scheduled run finishes, the plugin sends this plugin's
+Streams Matched total and a random id for this plugin on this install to the
+plugin author's counter at plugin-stats.dpas.workers.dev. It sends at most once
+an hour, or ten minutes after the last successful send when a run has just
+assigned streams. A run that finishes inside that gap is not sent
+later: the total goes out with the first later run that is an hour past the last
+successful send, or with a later run that assigns streams once ten minutes have
+passed.
+
+The server stores that id with the total and the date of the last report, and
+keeps them until this install unticks the setting and the delete succeeds, or
+until the plugin author removes them by hand. An install that stops reporting
+still counts toward Streams Matched. The connection shows the server your public
+IP address; the server uses it only to limit abuse and does not store it in its
+database, though when an install first registers it keeps a salted one-way hash
+of it (of its /64 block for IPv6) for up to three days. Cloudflare, which hosts
+the server, keeps its own request logs. No names, channels, streams, URLs,
+providers or settings are sent. The figures are self-reported by installs and
+capped by the server, not verified.
+
+What counts as an active install: an install that sent at least one report in
+the last 30 UTC days. A badge changes after the server's hourly recount, which
+runs at the start of each UTC hour, and Shields may cache the badge for up to an
+hour more, so a new report can take up to about two hours to show.
+
+The setting is the last one in the settings form, in its own section. Unticking
+it takes effect when the next action or scheduled run finishes; the plugin then
+asks the server to delete this install's figures. Once the server confirms the
+delete, the plugin forgets its id, and ticking the setting again later starts a
+new one; if the delete could not reach the server, the plugin keeps the id and
+retries. The plugin keeps that id and the timing of its reports in
+/data/plugin_stats/stream-mapparr/ (install_id, sent, backoff, disabled,
+delete_backoff, lock). To start a new id, untick the setting and let a run
+finish so the delete succeeds; deleting that folder while the setting is ticked
+leaves the old figures on the server, and the new id then sends the full total
+again, so the badge counts those matches twice.
 
 ## Changelog
 

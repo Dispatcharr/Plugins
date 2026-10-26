@@ -1,0 +1,11 @@
+{
+  "name": "VOD Manager",
+  "version": "2.6.4",
+  "description": "Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default.",
+  "author": "oxios0x00",
+  "license": "MIT",
+  "help_url": "https://github.com/oxios0x00/dispatcharr-vod-manager",
+  "repo_url": "https://github.com/oxios0x00/dispatcharr-vod-manager",
+  "source_type": "external",
+  "source_url": "https://github.com/oxios0x00/dispatcharr-vod-manager/releases/download/v{version}/vod_manager.zip"
+}

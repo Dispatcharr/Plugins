@@ -1,0 +1,2 @@
+| bad.py:3:1:3:25 | Subscript | Changing this sys.modules entry can bypass Dispatcharr's plugin import wrappers. |
+| bad.py:4:1:4:25 | Attribute() | Changing this sys.modules entry can bypass Dispatcharr's plugin import wrappers. |

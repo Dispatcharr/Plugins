@@ -1,0 +1,3 @@
+| bad.py:1:1:1:20 | Subscript | Mutating __builtins__ can replace Dispatcharr's plugin-local guarded import or open hooks. |
+| bad.py:2:1:2:23 | Attribute | Mutating __builtins__ can replace Dispatcharr's plugin-local guarded import or open hooks. |
+| bad.py:3:1:3:59 | setattr() | Mutating __builtins__ can replace Dispatcharr's plugin-local guarded import or open hooks. |

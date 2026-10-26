@@ -1,0 +1,193 @@
+# Underfed
+
+A Dispatcharr plugin that moves a channel to its next source when the provider keeps
+delivering the stream, but at a fraction of the bitrate the content needs.
+
+Every failover in the chain waits for a source to *fail*. This one never does. The bytes
+keep arriving, just not enough of them: the picture needs 4.4 Mbps and 1.0 Mbps shows up.
+Nothing times out, nothing errors, nothing switches. The buffer drains, the player runs
+out of segments, and viewers sit there watching a stall that no log explains.
+
+Underfed reads the number that already exists and that nothing else acts on. It also reads
+the timestamp discontinuities ffmpeg logs when a source's sound drifts away from the
+picture, the share of the picture or the sound a source is missing while it arrives at
+full rate, and the corrupt-packet loops that make reservoarr reconnect again and again.
+
+## Requirements
+
+- Dispatcharr with the plugin system (the Plugins page)
+- [reservoarr](https://github.com/brko7/reservoarr) as the stream profile, which writes the
+  telemetry this plugin reads; the missing picture or sound rule needs the `vholes=` and
+  `aholes=` fields, proposed to reservoarr for 6.3.9 and not in a release yet
+- A Dispatcharr API key
+
+## Install
+
+From the Plugin Hub, or by unzipping the release into `/data/plugins`, which creates the
+`underfed` folder, and pressing refresh on the Plugins page. Enable the plugin, fill in the API key, press **Apply**.
+
+**Leave Observe only on for the first evening.** It records what it would have switched and
+changes nothing. Read the journal under Check status, then turn it off.
+
+## Settings
+
+| Setting | What it does |
+|---|---|
+| API key | A Dispatcharr API key, from Settings → Users. The watcher needs it to read channel status and to change source |
+| Observe only | Records what it would have done without doing it |
+| Trigger below | Share of the content rate under which a source counts as underfed. 70 is a sensible floor: a healthy source sits at 100 |
+| Confirm for | How long a shortfall must last before acting. Short dips recover on their own |
+| Switches per hour | Per channel, over the last hour, restarts of the watcher included. Stops it bouncing between two sources that are both weak |
+| Ignore first | Right after a channel opens the measured content rate is not trustworthy yet |
+| Stable after | A source that holds up this long is treated as recovered. A shorter recovery keeps the shortfall counting, so a source that flickers is still caught |
+| Timestamp discontinuities | Per minute, per source. A healthy source logs a handful, one whose sound drifts away from the picture hundreds. At this many, for Confirm discontinuities for, the source is switched. 0 turns it off |
+| Confirm discontinuities for | How long the discontinuities must last before acting, 15 s by default. A storm is unmistakable and the sound drifts further every second, so this is shorter than Confirm for |
+| Picture or sound missing | Share of each telemetry window a source's picture or sound is missing, as reservoarr reports it in `vholes=` and `aholes=`; the worse of the two counts. A healthy source reads 0. At this share, on every line for Confirm missing picture or sound for, the source is switched. 0 turns it off; with a reservoarr without `vholes=` and `aholes=`, as 6.3.8, there is nothing to read |
+| Confirm missing picture or sound for | How long the missing share must hold before acting, 30 s by default |
+| Corrupt-packet loops | How many `corrupt-loop detected` lines one source may log within Corrupt-packet loops within before it is switched, 3 by default. 0 turns it off |
+| Corrupt-packet loops within | The window those loops are counted over, 5 minutes by default |
+| Refused source held back | A source the provider answers 403 to, or that closes the connection without sending a byte, goes last in its chain, ahead of the fallback card, so the next tune-in does not start on it again; it climbs back after these minutes. 0 turns it off |
+| Excluded channels | One channel name per line |
+| reservoarr log | Where reservoarr writes `delaybuf.log`. Change it only if `RESV_LOG_DIR` was moved |
+| Dispatcharr URL | Reached from inside the container |
+
+## Actions
+
+| Action | What it does |
+|---|---|
+| Apply settings | Starts the watcher, or restarts it with the new settings. Saving a setting changes nothing until Apply runs |
+| Check status | Whether the watcher is running, and the journal of what it switched, skipped and failed |
+| Replay the log | Runs the current thresholds over the whole log and reports how many times each source would have triggered. Nothing is touched, so it is the safe way to try a threshold before it goes live. It counts triggers, not switches: viewers, exclusions, the slate and the hourly limit are not in the log |
+| Restart watcher | Starts it again if it is down, with the settings of the last Apply and the API key as saved now. Also runs by itself when a channel starts, at most once a minute |
+| Stop watcher | Stops it. Channels keep whatever source they are on |
+
+## How it works
+
+reservoarr holds a cushion of stream and prints a line every fifteen seconds for every feed
+it is pulling:
+
+```
+2026-09-08T20:18:57+0000 [202121.ts] cushion=0s(pcr) buf=0.1MB out=1.18Mbps
+in=1.00Mbps crate=4.44Mbps in_total=1589MB reconnects=2 ccerr=1 ...
+```
+
+`crate` is what the picture needs. `cushion` is how many seconds of stream are left in hand.
+What the provider is sending is read off `in_total`, the bytes the feed has taken in so far:
+the difference over the last 45 seconds. `in` says the same thing averaged over two minutes,
+so after a sudden drop it lags by a minute or more; it is used only until a feed has 30
+seconds of `in_total` behind it, and for lines without the counter. When the ingest sits well
+under `crate` and the cushion has reached zero, the source is being starved and the viewer is
+about to see it. A feed whose `crate` is under 0.5 Mbps is never judged: a content rate that
+low is not trustworthy.
+
+The watcher follows that file, and when a feed stays under the threshold for the
+confirmation window it calls `POST /proxy/ts/next_stream/<uuid>`, which is the same thing
+the Dispatcharr interface does when you change source by hand. The channel moves to the next
+entry in its chain and the viewer keeps watching.
+
+Some sources arrive with their audio and video timestamps minutes apart. ffmpeg keeps one
+offset for the whole input and flips it on every packet, so each packet gets the time ffmpeg
+expected: a gap in the video disappears instead of freezing the picture, and the sound falls
+behind by that much. Every gap adds to it, and reopening the channel only starts the count
+again. reservoarr's ffmpeg logs it in `delaybuf.log`, in pairs:
+
+```
+2026-09-14T17:35:25+0000 [542059.ts] ffmpeg: [vist#0:0/h264 @ …] timestamp discontinuity (stream id=256): 331826689, new offset= 0
+2026-09-14T17:35:25+0000 [542059.ts] ffmpeg: [aist#0:1/aac @ …] timestamp discontinuity (stream id=257): -331826689, new offset= 331826689
+```
+
+A healthy source logs a handful of these a minute; that one logged up to 1,836. When a source
+stays at Timestamp discontinuities or above for Confirm discontinuities for, counted over the
+last minute, the watcher moves the channel on the same way.
+
+A source can also arrive at full rate while whole stretches of it are missing: on 12 October
+2026 one dropped 4 s out of every 8, picture and sound, with `in` matching `crate`, no
+discontinuity and ffmpeg's `speed=` at 1.0. reservoarr, with the change proposed for 6.3.9,
+measures it on the timestamps of the incoming picture and sound and ends each telemetry line
+with `vholes=N% aholes=N%`, the share of that window each one is missing; sound that stops
+while the picture runs reads 100. It is measured before ffmpeg, so silence padded in later
+does not hide it.
+When every line of a source reads Picture or sound missing or more, for either of the two, for
+Confirm missing picture or sound for, after the warm-up, the watcher moves the channel on the
+same way. The journal says which one was missing: `what` is `video`, `audio` or `both`.
+
+When ffmpeg reports the same corrupt packet three times, reservoarr reconnects and flushes its
+buffer, and says so:
+
+```
+2026-10-21T20:30:51+0000 [198329.ts] corrupt-loop detected in stream (dts=1143489600 x3) - forcing upstream reconnect + buffer flush
+```
+
+Once is a glitch. A source that does it again and again, as a provider's looping "channel
+offline" card does, is a valid stream at full rate, so the rules above never see it. When one
+source logs Corrupt-packet loops of these within Corrupt-packet loops within, the watcher moves
+the channel on the same way.
+
+It refuses to act when any of these is true:
+
+- the channel is not streaming, or nobody is watching it
+- the channel is in Excluded channels
+- the watcher has seen the source for less than the warm-up window, where `crate` may still be settling: it counts from the first telemetry line it reads for that source, so it starts over after a gap of more than 45 seconds in the log or a watcher restart
+- the channel has already been switched too often this hour
+- the next entry in the chain is the fallback slate
+- there is no entry after the current one
+
+Everything it does, and everything it declines to do, goes to a journal with the numbers
+that justified it.
+
+## A source the provider refuses
+
+The other two failures are about a source that is delivering badly. This one is about a source
+that is not delivering at all: the provider answers `HTTP 403` and reservoarr retries, backs off
+and gives up, and the channel walks on to the next entry. That much Dispatcharr already does.
+
+What it does not do is remember. `tried_stream_ids` dies with the session, so the next tune-in
+starts again from the top of the chain — on the same refused source, paying the same wait. Over
+five days of one installation's logs: 192 episodes of refusal, 154 of them ending in a give-up,
+and 32 sources out of 53 refused in more than one episode; one of them eighteen times.
+
+So a refusal moves the source **last in its channel's chain**, ahead of the fallback card, which
+stays where it is. The chain is what the next tune-in reads, so the next viewer starts on a
+source that was not refusing a minute ago. After the configured minutes the source climbs back
+to the position it held, and the journal records both moves.
+
+One refusal is enough: an episode lasts 6 seconds at the median but 140 at the ninth decile, and
+a viewer who opens the channel in the meantime pays all of it. The wait before it climbs back is
+thirty minutes by default: of 135 returns on the same source, 43 came within ten minutes and 60
+within half an hour — while 49 came more than three hours later, and those are caught by the next
+refusal anyway.
+
+A channel whose chain has one source only, or whose refused source is already last, is left
+alone: there is nowhere lower to go.
+
+A source that **closes the connection without sending a byte** is treated the same way (0.7.0).
+Some edges accept the connection, hold it for about twenty seconds and then close it, and
+Dispatcharr retries the same source three times before it moves on: about 43 seconds, past the
+30 seconds after which some clients give up. On the evening of 10 October 2026 one such source
+cost six viewers in a row between 23 and 50 seconds each. The sign is reservoarr's `giving up`
+right after an `upstream EOF`. Other give-ups do not count: the provider's MP4 placeholder means
+the channel has nothing on air, so every source of the chain would answer with it, and a 407 or a
+520 is the provider or the VPN, not the source.
+
+## What this does not fix
+
+A chain whose sources all come from the same upstream. If `Sky Sport Uno FHD`, `HD`, `SD`
+and `HEVC` are four encodes of one feed, moving between them moves nothing. Underfed can
+only reach for what the chain offers, so put a genuinely different list second.
+
+It also cannot help a source that stops dead. That case already has a watchdog: reservoarr
+reconnects after `RESV_STALL_S`, and Dispatcharr walks the chain after three failed attempts.
+
+## Development
+
+```
+python -m venv .venv && .venv/bin/pip install -e ".[dev]"
+pytest && mypy . && ruff check . && python scripts/build_zip.py
+```
+
+The same four checks run in CI on every push. Decisions, traps and the release routine are in
+[docs/MEMORY.md](https://github.com/PilaScat/underfed/blob/master/docs/MEMORY.md).
+
+## License
+
+MIT

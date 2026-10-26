@@ -1,0 +1,1 @@
+| bad.py:1:1:1:13 | Import | ctypes can load native code outside Dispatcharr's plugin capability wrappers. |

@@ -28,6 +28,7 @@ from . import config as _mvconfig
 from . import dispatcharr as _dispatcharr
 from . import layouts as _layouts
 from .parameters import resolve_preset
+from .regex_order import regex_sort_key
 
 logger = logging.getLogger(__name__)
 
@@ -297,7 +298,7 @@ class MultiviewServer:
         return [b"Not Found\n"]
 
     def _serve_stream(self, layout_id: str, start_response):
-        logger.info(f"Stream request: layout {layout_id}")
+        logger.debug(f"Stream request: layout {layout_id}")
         try:
             tiles, layout, audio_source = self._resolve_layout(layout_id)
         except LookupError as e:
@@ -320,8 +321,8 @@ class MultiviewServer:
         settings = _settings()
         cfg = self._worker_config(tiles, layout, audio_source, settings)
         cmd = [_python_exe(), _WORKER, json.dumps(cfg)]
-        logger.info(f"Starting compositor worker: {len(tiles)} tiles, layout={layout}, "
-                    f"audio={audio_source}, {cfg['out_w']}x{cfg['out_h']}@{cfg['fps']}")
+        logger.debug(f"Starting compositor worker: {len(tiles)} tiles, layout={layout}, "
+                     f"audio={audio_source}, {cfg['out_w']}x{cfg['out_h']}@{cfg['fps']}")
 
         import gevent
         import gevent.subprocess as gsub
@@ -338,6 +339,7 @@ class MultiviewServer:
 
     def _worker_config(self, tiles, layout, audio_source, settings) -> dict:
         out_w, out_h = _parse_resolution(settings)
+        output_fps = fps_string(settings)
         custom_registry = settings.get("multiview_custom_layouts", {})
         rects = _layouts.tile_rects(layout, len(tiles), out_w, out_h, custom_registry)
         names = [t["name"] for t in tiles]
@@ -365,6 +367,7 @@ class MultiviewServer:
         # decode); every other tile (whole auto grid, or the small side/bottom
         # tiles) decodes at lower effort to save CPU.
         featured_layout = layout in ("featured", "top_featured")
+        encoder = settings.get("video_encoder") or "libx264"
         tile_cfg = []
         for i, (t, (x, y, w, h, valign, halign)) in enumerate(zip(tiles, rects)):
             tile_cfg.append({
@@ -374,13 +377,15 @@ class MultiviewServer:
                 "audio": i in audio_idx,
                 "lang": langs.get(i, "und"),
                 "featured": featured_layout and i == 0,
+                "output_fps": output_fps,
+                "hwaccel": {"h264_nvenc": "cuda", "h264_vaapi": "vaapi", "h264_qsv": "qsv"}.get(encoder),
+                "hwaccel_device": (settings.get("render_device") if settings.get("render_device") not in (None, "", "auto") and encoder in ("h264_vaapi", "h264_qsv") else None),
                 "valign": valign, "halign": halign,
             })
 
-        encoder = settings.get("video_encoder") or "libx264"
         preset = resolve_preset(encoder, settings.get("encoder_preset"))
         return {
-            "out_w": out_w, "out_h": out_h, "fps": fps_string(settings),
+            "out_w": out_w, "out_h": out_h, "fps": output_fps,
             "bitrate": int(settings.get("output_bitrate") or 8000),
             "preset": preset,
             "video_encoder": encoder,
@@ -456,14 +461,23 @@ class MultiviewServer:
                     stderr_gl.kill(block=False)
                 except Exception:
                     pass
-            logger.info(f"{label} ended, worker killed")
+            logger.debug(f"{label} ended, worker killed")
 
     def _drain_stderr(self, proc, label: str):
+        traceback_active = False
         try:
             for raw in proc.stderr:
                 line = raw.decode("utf-8", errors="replace").rstrip()
                 if line:
-                    logger.warning(f"{label}: {line}")
+                    message = f"{label}: {line}"
+                    lower = line.lower()
+                    traceback_active = traceback_active or "traceback" in lower or "exception in thread" in lower
+                    if traceback_active or any(marker in lower for marker in (
+                        "fatal", "traceback", "exception", " error", " failed", "giving up", " ended:",
+                    )):
+                        logger.warning(message)
+                    else:
+                        logger.debug(message)
         except Exception:
             pass
 
@@ -532,11 +546,15 @@ class MultiviewServer:
             if not pattern:
                 raise LookupError(f"Layout {n} is in regex mode but has no pattern configured")
             excluded = _mvconfig._get_multiview_channel_ids() | _mvconfig._get_streamless_channel_ids()
+            regex_sort = settings.get(f"multiview_{layout_id}_regex_sort", "channel_number")
             matched = list(
                 Channel.objects.select_related("logo").filter(name__iregex=pattern)
                 .exclude(id__in=excluded)
-                .order_by("channel_number")[:ch_count]
             )
+            matched.sort(key=lambda ch: regex_sort_key(
+                pattern, ch.name, ch.channel_number, regex_sort,
+            ))
+            matched = matched[:ch_count]
             for ch in matched:
                 tiles.append({"id": ch.id, "name": ch.name, "logo": _channel_logo(ch)})
             audio_source = settings.get(f"multiview_{layout_id}_audio_source", "0")
@@ -560,7 +578,7 @@ class MultiviewServer:
                 f"Layout {n} needs at least 2 configured channels (found {len(tiles)})"
             )
 
-        logger.info(f"Layout {n}: {len(tiles)} channels, layout={layout}, audio={audio_source}")
+        logger.debug(f"Layout {n}: {len(tiles)} channels, layout={layout}, audio={audio_source}")
         return tiles, layout, audio_source
 
     # ------------------------------------------------------------- lifecycle

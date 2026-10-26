@@ -23,6 +23,7 @@ from .fuzzy_matcher import (FuzzyMatcher, has_upgrade_quality, detect_category_c
 from .aliases import CHANNEL_ALIASES, COUNTRY_ALIASES
 from .progress_status import save_progress_atomic, load_progress, build_status_message
 from . import notify_bridge, report_count, reports
+from .usage_client import UsageReporter, jsonl_sum, load_plugin_settings, with_usage_field
 
 from apps.channels.models import Channel, ChannelGroup, ChannelProfile, ChannelProfileMembership, ChannelStream, Stream
 from apps.m3u.models import M3UAccount
@@ -148,13 +149,20 @@ def _clean_json_text(s):
 
 
 class PluginConfig:
-    PLUGIN_VERSION = "1.26.2561550"
+    PLUGIN_VERSION = "1.26.2901915"
 
     DEFAULT_FUZZY_MATCH_THRESHOLD = 80
     DEFAULT_PRIORITIZE_QUALITY = True
     DEFAULT_QUALITY_AWARE_STREAM_MATCHING = False
     DEFAULT_RATE_LIMITING = "none"
     DEFAULT_CHANNEL_NUMBERING = "lineup"
+
+    # Sentinel category key _apply_category_detail uses for "None - single
+    # group" (Category Detail = "none"): every channel is merged under this one
+    # key, and _make_group_name special-cases it to mean "prefix only, no
+    # category suffix". Shared here so the two places that must agree on the
+    # exact string cannot drift apart.
+    SINGLE_GROUP_CATEGORY = "All"
 
     RATE_LIMIT_NONE = 0.0
     RATE_LIMIT_LOW = 0.1
@@ -338,6 +346,20 @@ class SmartRateLimiter:
             time.sleep(self.delay)
 
 
+# Reports the Channels Created total and a random install id to the plugin-stats
+# Worker, so the README badges count every install (see docs/USER-GUIDE.md,
+# "Anonymous usage counts"). The total is read from the same append-only ledger the
+# tally test pins. report() returns at once and never raises; the network work runs
+# on a background thread.
+USAGE = UsageReporter(
+    plugin="lineuparr",
+    counter="channels_created",
+    label="Channels Created",
+    total_fn=lambda: jsonl_sum(PluginConfig.CHANNEL_COUNT_LEDGER_FILE + "*", key="channels"),
+    settings_fn=lambda: load_plugin_settings("lineuparr"),
+)
+
+
 class Plugin:
     name = "Lineuparr"
     version = PluginConfig.PLUGIN_VERSION
@@ -360,7 +382,14 @@ class Plugin:
             if self._thread and self._thread.is_alive():
                 return False
             self._stop_event.clear()
-            self._thread = threading.Thread(target=target, args=args, daemon=True)
+
+            def _run_then_report(*call_args):
+                try:
+                    target(*call_args)
+                finally:
+                    self._report_usage(None, LOGGER)
+
+            self._thread = threading.Thread(target=_run_then_report, args=args, daemon=True)
             self._thread.start()
             return True
 
@@ -432,7 +461,7 @@ class Plugin:
         # Alphabetize discovered profiles, keeping "None" pinned first
         profile_options[1:] = sorted(profile_options[1:], key=lambda o: o["label"].lower())
 
-        return [
+        return with_usage_field([
             # --- Section: Lineup & Sources ---
             {
                 "id": "_sec_sources",
@@ -637,7 +666,7 @@ class Plugin:
                 "id": "_sec_advanced",
                 "type": "info",
                 "label": "Advanced",
-                "help_text": "How fast a run is allowed to write to the database, and how long its CSV exports are kept. Most setups can leave both alone. Rate Limiting pauses between database writes rather than between network calls, so it helps when a large sync makes the rest of Dispatcharr sluggish and does nothing for a slow provider. The export cleanup only ever deletes this plugin's own lineuparr_*.csv files, because /data/exports is shared with several other plugins.",
+                "help_text": "How fast a run is allowed to write to the database, how long its CSV exports are kept, and whether this install shares its anonymous usage counts. Most setups can leave these alone. Rate Limiting pauses between database writes rather than between network calls, so it helps when a large sync makes the rest of Dispatcharr sluggish and does nothing for a slow provider. The export cleanup only ever deletes this plugin's own lineuparr_*.csv files, because /data/exports is shared with several other plugins. The usage counts setting is explained under Anonymous usage counts in the user guide.",
             },
             {
                 "id": "rate_limiting",
@@ -664,7 +693,14 @@ class Plugin:
                 "step": 1,
                 "help_text": "Housekeeping for the CSV files this plugin writes to /data/exports/. After each export, its own exports older than this many days are deleted. 0 keeps every file, which is the default, so nothing is removed unless you ask for it. The file just written is never deleted, and at least one file always survives. Only files named lineuparr_*.csv are touched, because that directory is shared with other plugins. A whole number of days is required; anything else keeps every file and says so in the container log. Note that an HTML report which had to drop rows names its full CSV by filename, so setting this shorter than the age of the reports people still open leaves those reports pointing at a deleted file. Clear CSV Exports still clears everything and ignores this setting.",
             },
-        ]
+        ], USAGE)
+
+    def _report_usage(self, settings, logger, force=False):
+        """Hand the usage total to the reporter; never lets anything escape."""
+        try:
+            USAGE.report(settings, logger, force=force)
+        except Exception:
+            pass
 
     def run(self, action, params, context):
         logger = context.get("logger", LOGGER)
@@ -716,6 +752,9 @@ class Plugin:
                     "type": "plugin", "plugin": "Lineuparr",
                     "message": f"{emoji} {notify_msg}"
                 })
+
+            if not is_bg:
+                self._report_usage(settings, logger)
 
             return result
 
@@ -845,7 +884,7 @@ class Plugin:
             all_channels = []
             for channels in original_cats.values():
                 all_channels.extend(channels)
-            result["categories"] = {"All": all_channels}
+            result["categories"] = {PluginConfig.SINGLE_GROUP_CATEGORY: all_channels}
             return result
 
         if detail in ("simple", "refined"):
@@ -1007,6 +1046,47 @@ class Plugin:
         assigner_state['next'] = n + 1
         return n
 
+    @staticmethod
+    def _override_pinned_numbers():
+        """Channel numbers held by ChannelOverride rows, as ints.
+
+        Dispatcharr 0.32.0 stores the number an operator assigns to an
+        auto-synced channel in ChannelOverride.channel_number and leaves
+        Channel.channel_number at the provider value, so the number the channel
+        shows is only in the override. Dispatcharr treats both columns as taken,
+        and so must the auto numbering here. A Dispatcharr without the model
+        has no such numbers. A failed query falls back to raw numbers only and
+        logs a warning, because this is a backstop and must not stop a sync.
+        """
+        try:
+            from apps.channels.models import ChannelOverride
+        except ImportError:
+            return set()
+        except Exception as e:
+            LOGGER.warning(
+                f"{LOG_PREFIX} Could not import ChannelOverride, "
+                f"numbering from Channel.channel_number only: {e}"
+            )
+            return set()
+        pinned = set()
+        try:
+            rows = ChannelOverride.objects.filter(
+                channel_number__isnull=False
+            ).values_list("channel_number", flat=True)
+            for n in rows:
+                if n is not None:
+                    try:
+                        pinned.add(int(n))
+                    except (ValueError, TypeError):
+                        pass
+        except Exception as e:
+            LOGGER.warning(
+                f"{LOG_PREFIX} Could not read ChannelOverride channel numbers, "
+                f"numbering from Channel.channel_number only: {e}"
+            )
+            return set()
+        return pinned
+
     @classmethod
     def _init_assigner_state(cls, settings):
         """Initialize the channel number assigner state based on settings."""
@@ -1020,6 +1100,7 @@ class Plugin:
                         used.add(int(n))
                     except (ValueError, TypeError):
                         pass
+            used |= cls._override_pinned_numbers()
 
         if mode == "auto_next":
             start = 1
@@ -1037,7 +1118,22 @@ class Plugin:
         """Build full group name from prefix and category.
         If prefix ends with a separator character, append category directly.
         Otherwise add ': ' between prefix and category.
-        Examples: 'DTV-' + 'News' = 'DTV-News', 'DIRECTV' + 'News' = 'DIRECTV: News'"""
+        Examples: 'DTV-' + 'News' = 'DTV-News', 'DIRECTV' + 'News' = 'DIRECTV: News'
+
+        Category Detail = "none" ("single group (prefix only, no categories)")
+        is the one exception: it merges every channel under the sentinel
+        category PluginConfig.SINGLE_GROUP_CATEGORY, and the resulting group
+        name must be the prefix ALONE, not "<prefix>: All" - the setting's own
+        description promises "no categories". Every caller reaches this
+        sentinel the same way (it flows out of _apply_category_detail via
+        lineup["categories"]), so handling it here is the single place that
+        keeps every one of this method's callers in agreement. A real lineup
+        category that happens to be named exactly "All" under Normal/Simple/
+        Refined detail collapses the same way; that is an accepted, harmless
+        edge case rather than something worth a second sentinel value."""
+        if category == PluginConfig.SINGLE_GROUP_CATEGORY:
+            stripped_prefix = prefix.rstrip(" :_-/") if prefix else ""
+            return stripped_prefix or PluginConfig.SINGLE_GROUP_CATEGORY
         if prefix:
             if prefix[-1] in ":_-/ ":
                 return f"{prefix}{category}"
@@ -2142,6 +2238,7 @@ class Plugin:
             with open(PluginConfig.CHANNEL_COUNT_LEDGER_FILE, "a",
                       encoding="utf-8") as handle:
                 handle.write(line + "\n")
+            self._report_usage(None, log, force=count > 0)
             return True
         except Exception as exc:
             log.warning(f"{LOG_PREFIX} Could not record the channel tally: {exc}")
@@ -2727,12 +2824,58 @@ class Plugin:
     # DESTRUCTIVE ACTIONS
     # ========================================================================
 
+    def _migrate_single_group_name(self, prefix, dry_run, logger):
+        """Rename a pre-fix "<prefix>: All" group to the new prefix-only name.
+
+        Before this fix, Category Detail = "none" built its group name the
+        same way every other category did, giving "<prefix>: All" instead of
+        the "prefix only" the setting promises. Someone already using this
+        mode has that old group in Dispatcharr; without this step, the next
+        sync would create a second, new "<prefix>" group under the fixed
+        name and leave the old one behind as an orphaned duplicate holding
+        their existing channels.
+
+        Renaming (not recreating) preserves the group's id, so every channel
+        already assigned to it stays assigned - only its name changes. If a
+        "<prefix>" group already exists too, merging the two would mean
+        moving channels between groups, which is a bigger and riskier
+        decision than this fix should make silently, so both are left alone
+        and a warning is logged instead.
+        """
+        old_name = f"{prefix}: All" if prefix and prefix[-1] not in ":_-/ " else f"{prefix}All" if prefix else "All"
+        new_name = self._make_group_name(prefix, PluginConfig.SINGLE_GROUP_CATEGORY)
+        if old_name == new_name:
+            return  # no prefix - "All" both before and after the fix
+
+        old_group = ChannelGroup.objects.filter(name=old_name).first()
+        if not old_group:
+            return  # nothing to migrate
+
+        if ChannelGroup.objects.filter(name=new_name).exists():
+            logger.warning(
+                f"{LOG_PREFIX} Both '{old_name}' and '{new_name}' channel groups exist; "
+                f"leaving both as-is. Merge them manually if '{old_name}' is a leftover "
+                f"from before this fix."
+            )
+            return
+
+        if dry_run:
+            logger.info(f"{LOG_PREFIX} [DRY RUN] Would rename group '{old_name}' to '{new_name}'")
+            return
+
+        old_group.name = new_name
+        old_group.save(update_fields=["name"])
+        logger.info(f"{LOG_PREFIX} Renamed group '{old_name}' to '{new_name}' (ID: {old_group.id})")
+
     def _sync_groups(self, settings, logger):
         """Create/update ChannelGroups from lineup categories."""
         dry_run = settings.get("dry_run_mode", False)
         lineup = self._load_lineup(settings, logger)
         prefix = self._get_group_prefix(settings, lineup)
         rate_limiter = SmartRateLimiter(settings.get("rate_limiting", PluginConfig.DEFAULT_RATE_LIMITING))
+
+        if PluginConfig.SINGLE_GROUP_CATEGORY in lineup["categories"]:
+            self._migrate_single_group_name(prefix, dry_run, logger)
 
         created = 0
         existed = 0
@@ -2816,6 +2959,16 @@ class Plugin:
         prefix = self._get_group_prefix(settings, lineup)
         rate_limiter = SmartRateLimiter(settings.get("rate_limiting", PluginConfig.DEFAULT_RATE_LIMITING))
         assigner = self._init_assigner_state(settings)
+
+        # Sync Channels builds its own group lookup below rather than going
+        # through _sync_groups, so it needs this same migration call: without
+        # it, a lineup using Category Detail = "none" whose only prior sync
+        # was ever via this button (there is no Sync Groups button in the
+        # UI) would never see its pre-fix "<prefix>: All" group renamed, and
+        # get_or_create just below would create a second "<prefix>" group
+        # instead, orphaning the channels already on the old one.
+        if PluginConfig.SINGLE_GROUP_CATEGORY in lineup["categories"]:
+            self._migrate_single_group_name(prefix, dry_run, logger)
 
         # Ensure groups exist
         existing_groups = {g['name']: g['id'] for g in ChannelGroup.objects.all().values('id', 'name')}

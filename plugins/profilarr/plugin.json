@@ -1,0 +1,11 @@
+{
+  "name": "Profilarr",
+  "version": "2.1.6",
+  "description": "Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity.",
+  "author": "Tw1zT3d2four7",
+  "maintainers": ["Tw1zT3d2four7"],
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v{version}/Profilarr.zip",
+  "repo_url": "https://github.com/Tw1zT3d2four7/Profilarr"
+}

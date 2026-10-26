@@ -103,6 +103,17 @@ def _save_settings(updates: dict):
     if updates.get("multiview_order") is not None:
         cfg.settings["multiview_count"] = len(cfg.settings.get("multiview_order") or [])
     cfg.save()
+    if updates.get("multiview_order") is not None:
+        return _generate_m3u()
+
+
+def _generate_m3u():
+    import sys
+
+    for mod in sys.modules.values():
+        if getattr(mod, "PLUGIN_DB_KEY", None) == _PLUGIN_KEY and hasattr(mod, "Plugin"):
+            return mod.Plugin.__new__(mod.Plugin)._generate_m3u()
+    raise RuntimeError("Plugin module not found")
 
 
 # ------------------------------------------------------------------
@@ -211,8 +222,8 @@ def handle_config(environ, start_response):
         if not isinstance(updates, dict):
             return _json_error(start_response, "400 Bad Request", "Expected JSON object")
         try:
-            _save_settings(updates)
-            return _json_ok(start_response, {"status": "ok"})
+            result = _save_settings(updates)
+            return _json_ok(start_response, {"status": "ok", "m3u": result})
         except Exception as e:
             logger.error(f"Config save failed: {e}", exc_info=True)
             return _json_error(start_response, "500 Internal Server Error", str(e))
@@ -274,15 +285,7 @@ def handle_refresh(environ, start_response):
         return _json_error(start_response, "405 Method Not Allowed", "POST only")
 
     try:
-        import sys
-        plugin_mod = None
-        for mod in sys.modules.values():
-            if getattr(mod, "PLUGIN_DB_KEY", None) == _PLUGIN_KEY and hasattr(mod, "Plugin"):
-                plugin_mod = mod
-                break
-        if plugin_mod is None:
-            return _json_error(start_response, "503 Service Unavailable", "Plugin module not found")
-        result = plugin_mod.Plugin.__new__(plugin_mod.Plugin)._generate_m3u()
+        result = _generate_m3u()
         return _json_ok(start_response, result)
     except Exception as e:
         logger.error(f"Refresh failed: {e}", exc_info=True)
