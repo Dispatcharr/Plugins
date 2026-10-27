@@ -1,0 +1,9 @@
+{
+  "name": "Automap Channelarr",
+  "version": "0.2.0",
+  "description": "Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper.",
+  "author": "Megamannen",
+  "license": "Artistic-2.0",
+  "min_dispatcharr_version": "0.20.0",
+  "repo_url": "https://github.com/Megamannen/dispatcharr-plugins/"
+}
