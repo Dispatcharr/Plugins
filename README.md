@@ -61,9 +61,9 @@ Speeds up channel startup for low-bitrate (usually audio only) streams by loweri
 
 **Downloads:**
 - [Latest Release (`0.3.5`)](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip)
-- [All Versions (1 available)](./metadata/audio-buffer-tuner)
+- [All Versions (2 available)](./metadata/audio-buffer-tuner)
 
-**Maintainers:** CtznSniiips | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/audio-buffer-tuner) | **Last Change:** [`3ceeddd`](https://github.com/Dispatcharr/Plugins/commit/3ceeddd53b4d49d5d14584768f69121e8094d6df)
+**Maintainers:** CtznSniiips | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/audio-buffer-tuner) | **Last Change:** [`1e2c810`](https://github.com/Dispatcharr/Plugins/commit/1e2c810e9854c54ef3ceb455ca47b40b7088ed99)
 
 ---
 
@@ -699,4 +699,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 28 2026, 19:30 UTC*
+*Last updated: Oct 28 2026, 20:38 UTC*

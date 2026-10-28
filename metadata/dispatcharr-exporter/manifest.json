@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T19:30:27Z",
+  "generated_at": "2026-10-28T20:38:01Z",
   "manifest": {
     "slug": "dispatcharr-exporter",
     "name": "Dispatcharr Exporter",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-07-18T13:29:39-04:00",
-    "download_count": 441,
+    "download_count": 442,
     "latest": {
       "version": "3.1.0",
       "commit_sha": "ddffa49420c5dd513a9a7876998a72ce295e2242",
@@ -28,7 +28,7 @@
       "latest_url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
       "url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
       "size": 143,
-      "download_count": 331
+      "download_count": 332
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "min_dispatcharr_version": "v0.22.0",
         "url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
         "size": 143,
-        "download_count": 331
+        "download_count": 332
       },
       {
         "version": "3.0.1",
@@ -93,7 +93,7 @@
         "commit_sha": "21844bbdf912cf7a31e04c6c5c2dabf7eafd9507",
         "commit_sha_short": "21844bb",
         "changelog": "497",
-        "build_timestamp": "2026-10-28T19:30:08Z",
+        "build_timestamp": "2026-10-28T20:37:37Z",
         "last_updated": "2026-10-28T19:29:49Z",
         "checksum_md5": "60ba2a25ff6a4015d1d83d4fac8ec9eb",
         "checksum_sha256": "68d6ddc6eaeb4c3dac868f50c72e80a5e952dccb804e699265ed2789c688729d",
@@ -105,5 +105,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJNWAAKCRB+wDprTCI0\nzpCXAQDxLuiZYzjCjC7caTjJkgGftSmo4VBhyjtBowu1O3PeVgEAwIV+2JbusAlr\nlptzf/Y70Dl2r8z0gYLN4zck4/+9zwo=\n=xAWv\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJdLgAKCRB+wDprTCI0\nzgCwAQDpOBpoMu7BI1q0Ves0Qyil1ThvWYYqVr4uSEU5G8JrxwEA92tlOWGb1xtV\njb/VmbA24Q95ZIcQfQWcLnD2UTcBwQw=\n=sEq+\n-----END PGP SIGNATURE-----"
 }
