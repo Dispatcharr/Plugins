@@ -88,10 +88,12 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
         if source_type == "external":
             source_url_resolved = str(raw.get("source_url") or "").replace("{version}", version)
             actions.log(f"  {plugin_name} v{version} - fetching external ZIP from {source_url_resolved}")
-            changed.append(f"{plugin_key}@{version}")
             if not _download(source_url_resolved, zip_path):
-                actions.error(f"Failed to download external ZIP from {source_url_resolved} after 3 attempts")
-                return 1
+                actions.warning(
+                    f"Skipping {plugin_name} v{version}: failed to download external ZIP from "
+                    f"{source_url_resolved} after 3 attempts")
+                continue
+            changed.append(f"{plugin_key}@{version}")
         else:
             actions.log(f"  {plugin_name} v{version} - building")
             changed.append(f"{plugin_key}@{version}")
