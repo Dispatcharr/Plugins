@@ -52,3 +52,27 @@ def test_run_writes_the_effective_manifest_minimum_to_build_metadata(tmp_path, m
 
     metadata = json.loads((build_meta / "demo" / "demo-1.0.0.json").read_text(encoding="utf-8"))
     assert metadata["min_dispatcharr_version"] == "v0.34.0"
+
+
+def test_run_skips_external_plugin_when_download_fails(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "external-demo"
+    plugin_dir.mkdir(parents=True)
+    plugin_dir.joinpath("plugin.json").write_text(json.dumps({
+        "name": "External Demo", "version": "1.0.0", "source_type": "external",
+        "source_url": "https://downloads.example/external-demo-{version}.zip",
+    }), encoding="utf-8")
+
+    warnings = []
+    monkeypatch.setattr(gh, "release_exists", lambda *args: False)
+    monkeypatch.setattr(zips, "_download", lambda *args: False)
+    monkeypatch.setattr(zips.actions, "warning", warnings.append)
+
+    build_meta = tmp_path / "build-meta"
+    assert zips.run("main", "org/repo", str(build_meta)) == 0
+    assert warnings == [
+        "Skipping external-demo v1.0.0: failed to download external ZIP from "
+        "https://downloads.example/external-demo-1.0.0.zip after 3 attempts"
+    ]
+    assert (tmp_path / "changed_plugins.txt").read_text(encoding="utf-8") == ""
+    assert not build_meta.exists()
