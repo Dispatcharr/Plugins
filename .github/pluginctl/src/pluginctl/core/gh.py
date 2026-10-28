@@ -128,6 +128,49 @@ def release_list_tags(repo: str, limit: int = 500) -> list[str]:
     return [entry.get("tagName", "") for entry in data if entry.get("tagName")]
 
 
+def release_download_counts(repo: str) -> dict[str, int]:
+    """Return GitHub Release asset download totals keyed by release tag.
+
+    ``gh api --paginate --slurp`` produces one JSON array containing all REST
+    response pages. Failures deliberately produce an empty mapping so manifest
+    generation retains the existing permissive GitHub API behavior.
+    """
+    proc = _run([
+        "api", f"repos/{repo}/releases?per_page=100", "--paginate", "--slurp",
+    ])
+    if proc.returncode != 0:
+        return {}
+    try:
+        pages = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        return {}
+    if not isinstance(pages, list):
+        return {}
+
+    counts: dict[str, int] = {}
+    for page in pages:
+        if not isinstance(page, list):
+            continue
+        for release in page:
+            if not isinstance(release, dict):
+                continue
+            tag = release.get("tag_name")
+            if not isinstance(tag, str) or not tag:
+                continue
+            total = 0
+            assets = release.get("assets")
+            if isinstance(assets, list):
+                for asset in assets:
+                    if not isinstance(asset, dict):
+                        continue
+                    try:
+                        total += max(0, int(asset.get("download_count", 0)))
+                    except (TypeError, ValueError):
+                        continue
+            counts[tag] = total
+    return counts
+
+
 def release_create(tag: str, repo: str, title: str, notes: str, asset: str) -> int:
     return _run(["release", "create", tag, "--repo", repo, "--title", title,
                  "--notes", notes, asset]).returncode

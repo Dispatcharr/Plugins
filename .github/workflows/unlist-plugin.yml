@@ -1,0 +1,71 @@
+name: Unlist Plugin
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  PYTHONPATH: .github/pluginctl/src
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: 'Plugin slug to unlist (for example, dispatcharr-exporter)'
+        type: string
+        required: true
+      issue_number:
+        description: 'Open Plugin Unlisting Request issue number that authorizes this action (for example, 42)'
+        type: string
+        required: true
+
+concurrency:
+  group: unlist-plugin-${{ inputs.plugin }}
+  cancel-in-progress: false
+
+jobs:
+  unlist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source branch
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: GitHub App token
+        id: token
+        uses: ./.github/actions/gh-app-token
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Open unlisting pull request
+        env:
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          APP_SLUG: ${{ steps.token.outputs.app-slug }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          UNLIST_PLUGIN: ${{ inputs.plugin }}
+          UNLIST_ISSUE: ${{ inputs.issue_number }}
+          SOURCE_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -o pipefail
+          python -m pluginctl unlist 2>&1 | tee unlist.log
+
+      - name: Generate job summary
+        if: always()
+        run: |
+          echo "## Plugin Unlisting Result" >> $GITHUB_STEP_SUMMARY
+          if [ -f unlist.log ]; then
+            if grep -q "Unlisting PR opened:" unlist.log; then
+              echo "✅ Unlisting pull request opened successfully" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ Unlisting failed. See logs for details." >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -20 unlist.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi

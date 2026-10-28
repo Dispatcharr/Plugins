@@ -1,5 +1,6 @@
 name: Version Removal Request
 description: Request that a specific published version of a plugin be removed from the registry.
+title: "[Version Removal] "
 labels: ["Rollback"]
 body:
   - type: markdown

@@ -85,7 +85,7 @@ This is the part worth reading before installing anything that watches what your
 
 ## Where things are written
 
-The report and the CSV land in `/config/dustarr/`. `/config` is Dispatcharr's existing bind mount, so that is a real folder on your host: open the report by double clicking it. The full list of paths is in the [user guide](https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md#where-the-files-are-written).
+The report and the CSV land in `/config/dustarr/`. `/config` is Dispatcharr's existing bind mount, so that is a real folder on your host: open the report by double clicking it. When `/config` cannot be written, they go to `/data/dustarr/reports/` instead. The full list of paths is in the [user guide](https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md#where-the-files-are-written).
 
 ## Anonymous usage counts
 

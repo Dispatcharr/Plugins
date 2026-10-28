@@ -19,6 +19,18 @@ def test_is_dispatcharr_version(s, ok):
     assert v.is_dispatcharr_version(s) is ok
 
 
+@pytest.mark.parametrize("first,second,expected", [
+    ("v0.34.0", "0.33.0", "v0.34.0"),
+    ("v0.34.0", "0.35.0", "0.35.0"),
+    ("0.34.0", "v0.34.0", "0.34.0"),
+    ("v0.34.0", "v0.34.0", "v0.34.0"),
+    ("v0.34.0", None, "v0.34.0"),
+    ("not-a-version", "v0.34.0", "v0.34.0"),
+])
+def test_higher_dispatcharr_version(first, second, expected):
+    assert v.higher_dispatcharr_version(first, second) == expected
+
+
 @pytest.mark.parametrize("new,old,gt", [
     ("1.0.1", "1.0.0", True),
     ("1.1.0", "1.0.9", True),

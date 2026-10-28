@@ -1,0 +1,31 @@
+{
+  "manifest_version": 1,
+  "name": "Manifest v1 Example",
+  "version": "1.0.0",
+  "description": "Example of the version 1 capability declaration format.",
+  "author": "Dispatcharr Team",
+  "maintainers": [
+    "sethwv"
+  ],
+  "help_url": "https://github.com/Dispatcharr/Plugins",
+  "capabilities": [
+    "outbound_network"
+  ],
+  "fields": [
+    {
+      "id": "endpoint",
+      "label": "Endpoint",
+      "type": "string",
+      "default": "https://example.com"
+    }
+  ],
+  "actions": [
+    {
+      "id": "check_endpoint",
+      "label": "Check Endpoint",
+      "description": "Shows the version 1 capability declaration pattern."
+    }
+  ],
+  "license": "Unlicense",
+  "unlisted": true
+}

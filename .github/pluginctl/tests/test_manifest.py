@@ -45,11 +45,75 @@ def test_version_entry_empty_metadata():
     assert entry == {"version": "1.2.0", "url": "u", "size": 5}
 
 
+def test_release_download_counts_sums_assets_across_pages(monkeypatch):
+    class Result:
+        returncode = 0
+        stdout = json.dumps([
+            [{"tag_name": "demo-1.2.0", "assets": [
+                {"download_count": 5}, {"download_count": "3"}, {"download_count": -1},
+            ]}],
+            [{"tag_name": "demo-1.1.0", "assets": []}],
+        ])
+
+    monkeypatch.setattr(gh, "_run", lambda args: Result())
+
+    assert gh.release_download_counts("org/repo") == {
+        "demo-1.2.0": 8,
+        "demo-1.1.0": 0,
+    }
+
+
+def test_release_download_counts_ignores_api_and_json_failures(monkeypatch):
+    class Failed:
+        returncode = 1
+        stdout = ""
+
+    monkeypatch.setattr(gh, "_run", lambda args: Failed())
+    assert gh.release_download_counts("org/repo") == {}
+
+    class Invalid:
+        returncode = 0
+        stdout = "not json"
+
+    monkeypatch.setattr(gh, "_run", lambda args: Invalid())
+    assert gh.release_download_counts("org/repo") == {}
+
+
 def test_override_current_min_max():
     zips = [{"version": "1.2.0", "url": "u", "size": 5}]
     out = m.override_current_min_max(zips, "1.2.0", "v0.9.0", "")
     assert out[0]["min_dispatcharr_version"] == "v0.9.0"
     assert "max_dispatcharr_version" not in out[0]  # "" -> None -> dropped
+
+
+def test_effective_minimum_uses_the_higher_catalog_or_manifest_floor(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "manifest_version": 1,
+    }) == "v0.34.0"
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "manifest_version": 2,
+        "min_dispatcharr_version": "0.35.0",
+    }) == "0.35.0"
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "manifest_version": 0,
+        "min_dispatcharr_version": "v0.20.0",
+    }) == "v0.20.0"
+
+
+def test_effective_minimum_uses_an_external_runtime_manifest_sidecar(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / ".dispatcharr-runtime-manifest.json").write_text(
+        json.dumps({"manifest_version": 2}), encoding="utf-8"
+    )
+
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "source_type": "external",
+        "min_dispatcharr_version": "v0.20.0",
+    }) == "v0.34.0"
 
 
 def test_plugin_entry_key_order():
@@ -95,6 +159,37 @@ def test_root_entry_key_order():
     ]  # max_dispatcharr_version "" -> dropped
 
 
+def test_manifest_emits_changelog_numbers_when_available():
+    metadata = {**META, "changelog": "42"}
+    version = m.build_version_entry(metadata, "u", 10, "1.2.0")
+    plugin = m.build_plugin_entry(
+        PLUGIN_RAW, "demo", "u", "registry", "registry", [version], metadata, 10)
+    root = m.build_root_entry(PLUGIN_RAW, "demo", metadata, 10, "", "", "u", "manifest")
+
+    assert version["changelog"] == "42"
+    assert plugin["latest"]["changelog"] == "42"
+    assert root["latest_changelog"] == "42"
+
+
+def test_manifest_download_counts_are_emitted_at_release_and_plugin_levels():
+    zips = [
+        m.build_version_entry(META, "demo-1.2.0/demo-1.2.0.zip", 10, "1.2.0", 8),
+        m.build_version_entry({"version": "1.1.0"}, "demo-1.1.0/demo-1.1.0.zip", 9, "1.1.0", 3),
+    ]
+    plugin = m.build_plugin_entry(
+        PLUGIN_RAW, "demo", "demo-1.2.0/demo-1.2.0.zip", "registry", "registry",
+        zips, META, 10, download_count=11, latest_download_count=8)
+    root = m.build_root_entry(
+        PLUGIN_RAW, "demo", META, 10, "", "", "u", "manifest", download_count=11)
+
+    assert [entry["download_count"] for entry in plugin["versions"]] == [8, 3]
+    assert plugin["latest"]["download_count"] == 8
+    assert plugin["download_count"] == 11
+    assert root["download_count"] == 11
+    assert list(plugin).index("download_count") == list(plugin).index("last_updated") + 1
+    assert list(root).index("download_count") == list(root).index("last_updated") + 1
+
+
 def test_trim_description():
     assert m.trim_description("x" * 200) == "x" * 200
     long = m.trim_description("x" * 250)
@@ -125,10 +220,25 @@ def test_root_manifest_split_base_urls_key_order():
         "https://org.github.io/repo")
     assert list(root) == [
         "registry_url", "registry_name", "download_base_url",
-        "metadata_base_url", "plugins",
+        "metadata_base_url", "messages", "plugins",
     ]
     assert "root_url" not in root
     assert root["plugins"][0]["manifest_url"] == "metadata/demo/manifest.json"
+
+
+def test_root_manifest_includes_registry_messages_only_at_root():
+    root = m.build_root_manifest(
+        "https://github.com/org/repo", "org/repo", "https://dl", [],
+        registry_messages=[{
+            "id": "123e4567-e89b-42d3-a456-426614174000",
+            "severity": "info", "body": "Hello",
+        }],
+    )
+
+    assert root["messages"] == [{
+        "id": "123e4567-e89b-42d3-a456-426614174000",
+        "severity": "info", "body": "Hello",
+    }]
 
 
 def test_write_manifest_uses_formatted_json_and_ignores_existing_whitespace(tmp_path):
@@ -144,6 +254,51 @@ def test_write_manifest_uses_formatted_json_and_ignores_existing_whitespace(tmp_
     dest.write_text(json.dumps({"manifest": payload}), encoding="utf-8")
     assert not m.write_manifest_if_changed(str(dest), payload, "2026-01-02T00:00:00Z")
     assert dest.read_text(encoding="utf-8") == json.dumps({"manifest": payload})
+
+
+def test_sign_manifest_uses_dispatcharr_verification_payload(tmp_path, monkeypatch):
+    path = tmp_path / "manifest.json"
+    manifest = {"registry_name": "démo", "plugins": []}
+    path.write_text(json.dumps({"manifest": manifest}), encoding="utf-8")
+    captured = {}
+
+    class Result:
+        returncode = 0
+        stdout = "signature\n"
+
+    def run(args, **kwargs):
+        captured["args"] = args
+        captured["input"] = kwargs["input"]
+        return Result()
+
+    monkeypatch.setattr(m.subprocess, "run", run)
+
+    assert m.sign_manifest(str(path), "0123456789ABCDEF", None)
+    assert captured["input"] == json.dumps(manifest, separators=(",", ":"), ensure_ascii=True) + "\n"
+    assert json.loads(path.read_text(encoding="utf-8"))["signature"] == "signature"
+
+
+def test_sig_is_current_rejects_signature_for_an_old_payload_format(tmp_path, monkeypatch):
+    path = tmp_path / "manifest.json"
+    manifest = {"registry_name": "démo", "plugins": []}
+    path.write_text(json.dumps({"manifest": manifest, "signature": "signature"}), encoding="utf-8")
+    captured = {}
+
+    class Result:
+        def __init__(self, returncode=0, stdout=""):
+            self.returncode = returncode
+            self.stdout = stdout
+
+    def run(args, **kwargs):
+        if "--list-packets" in args:
+            return Result(stdout="issuer key ID 0123456789ABCDEF")
+        captured["input"] = kwargs["input"]
+        return Result(returncode=1)
+
+    monkeypatch.setattr(m.subprocess, "run", run)
+
+    assert not m.sig_is_current(str(path), "0123456789ABCDEF")
+    assert captured["input"] == json.dumps(manifest, separators=(",", ":"), ensure_ascii=True) + "\n"
 
 
 def test_pages_url_returns_empty_string_when_pages_is_unavailable(monkeypatch):
@@ -180,7 +335,34 @@ def test_generate_uses_legacy_manifest_by_default(tmp_path, monkeypatch):
 
     root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
     assert root["root_url"] == "https://github.com/org/repo/releases/download"
+    assert root["messages"] == []
     assert root["plugins"][0]["manifest_url"].startswith("https://raw.githubusercontent.com/")
+
+
+def test_generate_writes_the_effective_minimum_to_all_manifest_entries(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(json.dumps({
+        "name": "Demo", "version": "1.0.0", "description": "d",
+        "manifest_version": 2, "min_dispatcharr_version": "v0.20.0",
+    }), encoding="utf-8")
+    build_meta = tmp_path / "build-meta" / "demo"
+    build_meta.mkdir(parents=True)
+    (build_meta / "demo-1.0.0.json").write_text(json.dumps({
+        **META, "version": "1.0.0",
+    }), encoding="utf-8")
+    monkeypatch.setattr(gh, "release_list_tags", lambda repo: ["demo-1.0.0"])
+
+    assert m.generate("main", "releases", "org/repo", str(tmp_path / "build-meta")) == 0
+
+    plugin_manifest = json.loads(
+        (tmp_path / "metadata" / "demo" / "manifest.json").read_text(encoding="utf-8")
+    )["manifest"]
+    root_manifest = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert plugin_manifest["latest"]["min_dispatcharr_version"] == "v0.34.0"
+    assert plugin_manifest["versions"][0]["min_dispatcharr_version"] == "v0.34.0"
+    assert root_manifest["plugins"][0]["min_dispatcharr_version"] == "v0.34.0"
 
 
 def test_generate_uses_split_manifest_and_copies_icon_when_enabled(tmp_path, monkeypatch):
@@ -224,6 +406,49 @@ def test_generate_emits_and_strips_ai_assisted_with_feature_flag(tmp_path, monke
     assert m.generate("main", "releases", "org/repo", "") == 0
     assert "ai_assisted" not in json.loads(plugin_manifest.read_text(encoding="utf-8"))["manifest"]
     assert "ai_assisted" not in json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]["plugins"][0]
+
+
+def test_generate_emits_and_removes_download_totals_with_feature_flag(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(
+        json.dumps({"name": "Demo", "version": "1.2.0", "description": "d"}),
+        encoding="utf-8")
+    build_meta_dir = tmp_path / "build-meta"
+    metadata_dir = build_meta_dir / "demo"
+    metadata_dir.mkdir(parents=True)
+    (metadata_dir / "demo-1.2.0.json").write_text(json.dumps(META), encoding="utf-8")
+    (metadata_dir / "demo-1.1.0.json").write_text(
+        json.dumps({**META, "version": "1.1.0"}), encoding="utf-8")
+    monkeypatch.setattr(gh, "release_list_tags", lambda repo: ["demo-1.2.0", "demo-1.1.0"])
+    monkeypatch.setattr(gh, "release_download_counts", lambda repo: {
+        "demo-1.2.0": 8,
+        "demo-1.1.0": 3,
+    })
+    monkeypatch.setattr(gh, "commit_pull_number", lambda repo, sha: ("42", "https://example.test/pr/42"))
+    monkeypatch.setattr(feature_flags, "MANIFEST_DOWNLOAD_TOTALS", True)
+
+    assert m.generate("main", "releases", "org/repo", str(build_meta_dir)) == 0
+    plugin = json.loads((tmp_path / "metadata/demo/manifest.json").read_text(encoding="utf-8"))["manifest"]
+    root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert plugin["download_count"] == 11
+    assert plugin["latest"]["download_count"] == 8
+    assert [entry["download_count"] for entry in plugin["versions"]] == [8, 3]
+    assert root["plugins"][0]["download_count"] == 11
+    assert [entry["changelog"] for entry in plugin["versions"]] == ["42", "42"]
+    assert plugin["latest"]["changelog"] == "42"
+    assert root["plugins"][0]["latest_changelog"] == "42"
+
+    monkeypatch.setattr(feature_flags, "MANIFEST_DOWNLOAD_TOTALS", False)
+    assert m.generate("main", "releases", "org/repo", str(build_meta_dir)) == 0
+    plugin = json.loads((tmp_path / "metadata/demo/manifest.json").read_text(encoding="utf-8"))["manifest"]
+    root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+    assert "download_count" not in plugin
+    assert "download_count" not in plugin["latest"]
+    assert all("download_count" not in entry for entry in plugin["versions"])
+    assert "download_count" not in root["plugins"][0]
+    assert root["plugins"][0]["latest_changelog"] == "42"
 
 
 def test_generate_emits_ai_assisted_for_history_evidence(tmp_path, monkeypatch):

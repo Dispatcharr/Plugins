@@ -1,8 +1,9 @@
 """Hardcoded rollout switches for trusted pluginctl automation."""
 
-CAPABILITY_CONTRACT_DETECTION = False
-SANDBOX_BYPASS_DETECTION = False
+CAPABILITY_CONTRACT_DETECTION = True
+SANDBOX_BYPASS_DETECTION = True
 SPLIT_MANIFEST_BASE_URLS = False
+MANIFEST_DOWNLOAD_TOTALS = True
 
 # Experimental disclosure support. Keep disabled until its long-term policy is
 # decided; this may be removed entirely in a future release.

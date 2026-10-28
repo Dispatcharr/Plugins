@@ -6,6 +6,10 @@ def test_repo_prefix_zero_plugins_ok():
     assert r.valid and r.feedback == ""
 
 
+def test_repo_prefix_zero_plugins_canonical_form():
+    assert check_title("[repo]: valid repository update", "alice", 0, []).valid
+
+
 def test_repo_prefix_zero_plugins_wrong():
     r = check_title("[alice]: fix workflow", "alice", 0, [])
     assert not r.valid

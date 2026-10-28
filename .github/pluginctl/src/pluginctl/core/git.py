@@ -30,6 +30,23 @@ def configure_identity(app_slug: str) -> None:
     run("config", "user.email", email)
 
 
+def push_branch_with_lease(remote: str, branch: str) -> None:
+    """Push ``HEAD`` to ``branch``, safely replacing a stale remote branch.
+
+    A fresh clone does not necessarily configure a tracking ref for a branch
+    created by prior automation. Resolve its remote SHA explicitly so the lease
+    still rejects a concurrent update.
+    """
+    existing = run("ls-remote", "--heads", remote, branch, check=False)
+    destination = f"HEAD:refs/heads/{branch}"
+    if existing.returncode == 0 and existing.stdout.strip():
+        expected_sha = existing.stdout.split()[0]
+        run("push", f"--force-with-lease=refs/heads/{branch}:{expected_sha}",
+            remote, destination)
+        return
+    run("push", remote, destination)
+
+
 def merge_base(a: str, b: str) -> str:
     return run("merge-base", a, b).stdout.strip()
 

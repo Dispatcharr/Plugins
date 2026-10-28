@@ -347,6 +347,11 @@ def cmd_yank(args) -> int:
     return yank.run()
 
 
+def cmd_unlist(args) -> int:
+    from .publish import unlist
+    return unlist.run()
+
+
 def cmd_automerge(args) -> int:
     from .integrations import automerge
     return automerge.run(head_sha=args.head_sha or _env("HEAD_SHA"), disabled_reason=args.disabled_reason)
@@ -360,6 +365,11 @@ def cmd_ensure_labels(args) -> int:
 def cmd_external_readme(args) -> int:
     from .integrations import external_readme
     return external_readme.run()
+
+
+def cmd_messages(args) -> int:
+    from . import messages
+    return messages.command(args)
 
 
 # --------------------------------------------------------------------------- #
@@ -454,6 +464,9 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("yank", help="Yank a plugin version (env-driven)")
     p.set_defaults(func=cmd_yank)
 
+    p = sub.add_parser("unlist", help="Open a PR to unlist a plugin (env-driven)")
+    p.set_defaults(func=cmd_unlist)
+
     p = sub.add_parser("automerge", help="Auto-merge a pure plugin-update PR")
     p.add_argument("--head-sha", default="")
     p.add_argument("--disabled-reason", default="")
@@ -465,6 +478,37 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("external-readme", help="Open/update the external README PR (env-driven)")
     p.set_defaults(func=cmd_external_readme)
+
+    p = sub.add_parser("messages", help="Manage signed registry messages")
+    message_sub = p.add_subparsers(dest="messages_command", required=True)
+    def message_parser(name: str, help_text: str):
+        child = message_sub.add_parser(name, help=help_text)
+        child.add_argument("--file", default=".github/pluginctl/registry-messages.json")
+        return child
+
+    message_parser("list", "List registry messages")
+    message_parser("check", "Validate canonical registry-message JSON")
+    p_add = message_parser("add", "Add a registry message")
+    for argument, destination in (("--severity", "severity"), ("--title", "title"),
+                                  ("--body", "body"), ("--link", "link"),
+                                  ("--starts-at", "starts_at"), ("--expires-at", "expires_at"),
+                                  ("--target", "target")):
+        p_add.add_argument(argument, dest=destination)
+    p_add.add_argument("--dev", choices=["true", "false"])
+    p_update = message_parser("update", "Update a registry message")
+    p_update.add_argument("--id")
+    for argument, destination in (("--severity", "severity"), ("--title", "title"),
+                                  ("--body", "body"), ("--link", "link"),
+                                  ("--starts-at", "starts_at"), ("--expires-at", "expires_at"),
+                                  ("--target", "target")):
+        p_update.add_argument(argument, dest=destination)
+    p_update.add_argument("--dev", action=argparse.BooleanOptionalAction, default=None)
+    for field in ("title", "link", "starts_at", "expires_at", "target", "dev"):
+        p_update.add_argument(f"--clear-{field.replace('_', '-')}",
+                              dest=f"clear_{field}", action="store_true")
+    p_remove = message_parser("remove", "Remove a registry message")
+    p_remove.add_argument("--id")
+    p.set_defaults(func=cmd_messages)
 
     return parser
 

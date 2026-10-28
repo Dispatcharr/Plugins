@@ -1,0 +1,13 @@
+{
+  "name": "Channel Name Cleaner",
+  "version": "0.2.0",
+  "description": "Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler.",
+  "author": "noodlemctwoodle",
+  "maintainers": ["noodlemctwoodle"],
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner/releases/download/v{version}/channel-name-cleaner.zip",
+  "repo_url": "https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner",
+  "help_url": "https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner",
+  "min_dispatcharr_version": "v0.20.0"
+}

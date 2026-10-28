@@ -17,11 +17,46 @@ import tempfile
 
 from .. import label_catalog
 from ..core import actions, gh
-from ..core.git import configure_identity, run as _git
+from ..core.git import configure_identity, push_branch_with_lease, run as _git
 from ..core.version import sort_versions_desc
 from . import manifest, readmes
 
 RELEASES_BRANCH = "releases"
+
+
+def _open_pr_for_branch(repository: str, branch: str) -> str:
+    owner, _, _ = repository.partition("/")
+    if not owner:
+        return ""
+    pulls = gh.loads(gh.api(
+        f"repos/{repository}/pulls?state=open&head={owner}:{branch}",
+    ))
+    if not isinstance(pulls, list) or not pulls:
+        return ""
+    first = pulls[0] if isinstance(pulls[0], dict) else {}
+    return str(first.get("html_url") or "")
+
+
+def _needs_rollback(release_exists: bool, is_latest: bool, source_version: str,
+                    yanked_version: str) -> bool:
+    """Return whether source still advertises a version removed from releases."""
+    return is_latest if release_exists else source_version == yanked_version
+
+
+def _is_recoverable_absent_release(manifest_has_version: bool, rollback_branch_exists: bool,
+                                   release_commit_exists: bool) -> bool:
+    """Require evidence that a missing release belongs to an interrupted yank."""
+    return manifest_has_version or rollback_branch_exists or release_commit_exists
+
+
+def _manifest_has_version(path: str, version: str) -> bool:
+    try:
+        with open(path, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, ValueError):
+        return False
+    versions = (data.get("manifest") or {}).get("versions") or []
+    return any(isinstance(entry, dict) and entry.get("version") == version for entry in versions)
 
 
 def run() -> int:
@@ -67,9 +102,24 @@ def run() -> int:
         release_tag = f"{plugin}-{version}"
         plugin_manifest = f"metadata/{plugin}/manifest.json"
 
-        if not gh.release_exists(release_tag, repository):
-            actions.error(f"GitHub Release {release_tag} not found. Nothing to yank.")
-            return 1
+        release_exists = gh.release_exists(release_tag, repository)
+        if not release_exists:
+            rollback_branch = f"yank/{plugin}-{version}"
+            rollback_branch_exists = _git(
+                "ls-remote", "--exit-code", "--heads", remote, rollback_branch,
+                check=False,
+            ).returncode == 0
+            release_commits = _git(
+                "log", "--fixed-strings", f"--grep=Yank {plugin} v{version}",
+                "--format=%H", RELEASES_BRANCH, check=False,
+            )
+            release_commit_exists = release_commits.returncode == 0 and bool(release_commits.stdout.strip())
+            if not _is_recoverable_absent_release(
+                    _manifest_has_version(plugin_manifest, version),
+                    rollback_branch_exists, release_commit_exists):
+                actions.error(f"GitHub Release {release_tag} not found. Nothing to yank.")
+                return 1
+            actions.warning(f"GitHub Release {release_tag} is already absent; resuming yank recovery.")
 
         prefix = f"{plugin}-"
         remaining = [t for t in gh.release_list_tags(repository)
@@ -94,23 +144,29 @@ def run() -> int:
         _git("fetch", "origin", source_branch)
         _git("checkout", f"origin/{source_branch}", "--", "plugins")
         source_type = "local"
+        source_version = ""
         pj = f"plugins/{plugin}/plugin.json"
         if os.path.isfile(pj):
             try:
                 with open(pj, encoding="utf-8") as fh:
-                    source_type = (json.load(fh).get("source_type") or "local")
+                    source_data = json.load(fh)
+                source_type = source_data.get("source_type") or "local"
+                source_version = str(source_data.get("version") or "")
             except ValueError:
                 source_type = "local"
 
+        needs_rollback = _needs_rollback(release_exists, is_latest, source_version, version)
         new_latest_version = ""
         if is_last_version:
-            actions.log(f"Last version - deleting all GitHub Releases for {plugin}.")
-            gh.release_delete(release_tag, repository)
+            if release_exists:
+                actions.log(f"Last version - deleting all GitHub Releases for {plugin}.")
+                gh.release_delete(release_tag, repository)
             subprocess.run(["rm", "-rf", f"metadata/{plugin}"], check=False)
-        else:
+        elif release_exists:
             actions.log(f"Deleting GitHub Release {release_tag}")
             gh.release_delete(release_tag, repository)
-            if is_latest:
+        if not is_last_version and needs_rollback:
+            if is_latest or not release_exists:
                 bare = [t[len(prefix):] for t in remaining]
                 ordered = sort_versions_desc(bare)
                 new_latest_version = ordered[0] if ordered else ""
@@ -131,13 +187,13 @@ def run() -> int:
 
         releases_commit = _commit_releases(remote, plugin, version, issue)
         rollback_pr_url = ""
-        if is_latest:
+        if needs_rollback:
             rollback_pr_url = _open_rollback_pr(
                 repository, source_branch, remote, plugin, version,
                 new_latest_version, is_last_version, source_type, issue)
 
         _finalize_issue(repository, plugin, version, issue, releases_commit,
-                        is_latest, rollback_pr_url)
+                        needs_rollback, rollback_pr_url)
         from ..integrations import webhooks
         webhooks.emit("plugin.yanked",
                       webhooks.plugin_yanked(plugin, version, issue, rollback_pr_url or None))
@@ -163,9 +219,13 @@ def _commit_releases(remote, plugin, version, issue) -> str:
 
 
 def _open_rollback_pr(repository, source_branch, remote, plugin, version,
-                      new_latest_version, is_last_version, source_type, issue) -> str:
+                       new_latest_version, is_last_version, source_type, issue) -> str:
     actions.log("\n=== Opening rollback PR ===")
     rollback_branch = f"yank/{plugin}-{version}"
+    existing_pr = _open_pr_for_branch(repository, rollback_branch)
+    if existing_pr:
+        actions.log(f"Rollback PR already open: {existing_pr}")
+        return existing_pr
     _git("fetch", "origin", source_branch)
     _git("checkout", "-b", rollback_branch, f"origin/{source_branch}")
 
@@ -187,7 +247,7 @@ def _open_rollback_pr(repository, source_branch, remote, plugin, version,
                    f"**Authorized by:** #{issue}\n\n{source_note}\n\nCloses #{issue}")
 
     _git("commit", "-m", pr_title)
-    _git("push", remote, rollback_branch)
+    push_branch_with_lease(remote, rollback_branch)
     url = gh.pr_create(repository, source_branch, rollback_branch, pr_title, pr_body,
                        labels=["Rollback"]) or ""
     actions.log(f"Rollback PR opened: {rollback_branch} -> {source_branch} ({url})")

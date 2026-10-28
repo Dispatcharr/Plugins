@@ -47,7 +47,8 @@ def run(source_branch: str) -> int:
             if os.path.exists(f):
                 os.remove(f)
         _git("fetch", "origin", source_branch)
-        _git("checkout", f"origin/{source_branch}", "--", "plugins")
+        _git("checkout", f"origin/{source_branch}", "--", "plugins",
+             ".github/pluginctl/registry-messages.json")
         os.makedirs("zips", exist_ok=True)
 
         if not force_rebuild:
@@ -131,6 +132,11 @@ def _commit_and_push(repository, source_branch, remote) -> int:
     actions.log("\n=== Committing ===")
     subprocess.run(["rm", "-rf", "plugins"], check=False)
     _git("rm", "-rf", "--cached", "plugins", check=False)
+    # The source-branch message feed is checked out only to build manifest.json.
+    # It must never become a release-branch artifact, including when a prior
+    # publisher accidentally staged or committed it.
+    _git("rm", "-r", "--cached", "--ignore-unmatch", ".github", check=False)
+    subprocess.run(["rm", "-rf", ".github"], check=False)
     with open("REPO_VER", "w", encoding="utf-8") as fh:
         fh.write(RELEASES_BRANCH_VERSION + "\n")
     _git("add", "metadata", "manifest.json", "README.md", "REPO_VER")

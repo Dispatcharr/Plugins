@@ -121,6 +121,49 @@ KNOWN_CAPABILITIES: dict[str, dict[str, Any]] = {
     },
 }
 
+SANDBOX_BYPASS_RULES: dict[str, dict[str, int | None]] = {
+    "plugin/sandbox-bypass/asyncio-process-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/builtins-mutation": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/ctypes-usage": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/direct-builtins-access": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/filesystem-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/importlib-wrapped-module": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/os-process-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/requests-session-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/socket-convenience-api": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+    "plugin/sandbox-bypass/sys-modules-tamper": {
+        "min_manifest_version": 2,
+        "max_manifest_version": None,
+    },
+}
+
 MANIFEST_SCHEMA_POLICIES: dict[int, dict[str, Any]] = {
     0: {
         "min_app_version": None,
@@ -129,13 +172,13 @@ MANIFEST_SCHEMA_POLICIES: dict[int, dict[str, Any]] = {
         "enforces_sandbox": False,
     },
     1: {
-        "min_app_version": None,
+        "min_app_version": "v0.34.0",
         "max_app_version": None,
         "parses_capabilities": True,
         "enforces_sandbox": False,
     },
     2: {
-        "min_app_version": None,
+        "min_app_version": "v0.34.0",
         "max_app_version": None,
         "parses_capabilities": True,
         "enforces_sandbox": True,
@@ -178,6 +221,10 @@ def manifest_version_enforces_sandbox(manifest_version: int) -> bool:
     return manifest_schema_policy(manifest_version)["enforces_sandbox"]
 
 
+def manifest_version_min_app_version(manifest_version: int) -> str | None:
+    return manifest_schema_policy(manifest_version)["min_app_version"]
+
+
 def first_enforcing_manifest_version() -> int:
     return min(
         version for version, policy in MANIFEST_SCHEMA_POLICIES.items()
@@ -185,16 +232,44 @@ def first_enforcing_manifest_version() -> int:
     )
 
 
+def rule_applies_to_manifest_version(policy: dict[str, Any], manifest_version: int) -> bool:
+    """Whether a versioned rule applies to this manifest schema version.
+
+    ``max_manifest_version`` is inclusive, so setting it to 2 retires a rule
+    beginning with manifest version 3.
+    """
+    minimum = policy.get("min_manifest_version")
+    maximum = policy.get("max_manifest_version")
+    return (minimum is None or manifest_version >= minimum) and (
+        maximum is None or manifest_version <= maximum
+    )
+
+
 def capability_supported_by_manifest_version(capability_id: str, manifest_version: int) -> bool:
     if not manifest_version_parses_capabilities(manifest_version):
         return False
     policy = KNOWN_CAPABILITIES.get(capability_id)
-    if policy is None:
-        return True
-    minimum = policy["min_manifest_version"]
-    maximum = policy["max_manifest_version"]
-    return (minimum is None or manifest_version >= minimum) and (
-        maximum is None or manifest_version <= maximum
+    return policy is None or rule_applies_to_manifest_version(policy, manifest_version)
+
+
+def capability_contract_rule_applies(rule_id: str, manifest_version: int) -> bool:
+    """Whether a CodeQL capability-contract rule applies to this schema version."""
+    for policy in KNOWN_CAPABILITIES.values():
+        if rule_id in policy.get("codeql_rules", []):
+            return (
+                manifest_version_enforces_sandbox(manifest_version)
+                and rule_applies_to_manifest_version(policy, manifest_version)
+            )
+    return False
+
+
+def sandbox_bypass_rule_applies(rule_id: str, manifest_version: int) -> bool:
+    """Whether a CodeQL sandbox-bypass rule applies to this schema version."""
+    policy = SANDBOX_BYPASS_RULES.get(rule_id)
+    return bool(
+        policy
+        and manifest_version_enforces_sandbox(manifest_version)
+        and rule_applies_to_manifest_version(policy, manifest_version)
     )
 
 

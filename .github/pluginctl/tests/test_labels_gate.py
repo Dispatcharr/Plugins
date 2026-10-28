@@ -54,8 +54,13 @@ def test_gate_detect_failure():
 
 
 def test_gate_skip_validation_passes():
-    r = gate.evaluate("success", "false", "true", "false", "", "", "", "", "", "", "")
+    r = gate.evaluate("success", "false", "true", "false", "success", "", "", "", "", "", "")
     assert r.ok
+
+
+def test_gate_skip_validation_fails_for_invalid_title():
+    r = gate.evaluate("success", "false", "true", "false", "failure", "", "", "", "", "", "")
+    assert not r.ok and "title" in r.message.lower()
 
 
 def test_gate_title_failure():
@@ -78,7 +83,7 @@ def test_gate_test_suite_failure_fails_even_when_skip_validation():
 
 
 def test_gate_test_suite_skipped_allows_skip_validation_pass():
-    r = gate.evaluate("success", "false", "true", "false", "", "", "", "", "", "", "",
+    r = gate.evaluate("success", "false", "true", "false", "success", "", "", "", "", "", "",
                       test_result="skipped")
     assert r.ok
 

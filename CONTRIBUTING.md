@@ -105,6 +105,8 @@ Do not use it for bugs, compatibility problems, support requests, or feature req
 
 To remove a published plugin version from the registry, [submit a Version Removal Request](https://github.com/Dispatcharr/Plugins/issues/new?template=version-removal-request.yml).
 
+To remove a plugin from registry discovery without deleting its existing releases, [submit a Plugin Unlisting Request](https://github.com/Dispatcharr/Plugins/issues/new?template=plugin-unlisting-request.yml). A repository maintainer reviews the request and runs the unlisting workflow, which opens a pull request that sets `unlisted` to `true`.
+
 ## Submit the pull request
 
 1. Fork this repository and create a branch.
@@ -137,6 +139,12 @@ CodeQL scans submitted code for security findings. ClamAV scans submitted files 
 
 Only repository maintainers may change `.github/`. Pull requests from blocked authors or for blocked plugins are closed automatically. A pull request whose author cannot modify any changed plugin is also closed automatically.
 
+## Disclaimer
+
+- All external tools, integrations, and services are **used at your own risk**.
+- Users are responsible for verifying the integrity and behavior of any code they choose to run.
+- The Dispatcharr team is **not liable** for any damage, data loss, or security issues resulting from the use of shared tools or services.
+
 ## Versioning updates
 
 Use a three-segment version in `MAJOR.MINOR.PATCH` form. We recommend following [semantic versioning](https://semver.org/): increment PATCH for fixes, MINOR for backward-compatible features, and MAJOR for breaking changes.
@@ -161,3 +169,7 @@ The registry publishes a versioned ZIP and a `-latest` alias GitHub Release, cal
 ## Remove a published version
 
 To request removal of a version, open a [Version Removal Request](https://github.com/Dispatcharr/Plugins/issues/new?template=version-removal-request.yml). A maintainer runs the yank workflow. If the removed version was latest, the prior version becomes latest. If it was the only version, the plugin is removed from the registry. Existing downloads are unaffected.
+
+## Unlist a plugin
+
+To remove a plugin from registry discovery without removing its releases, open a [Plugin Unlisting Request](https://github.com/Dispatcharr/Plugins/issues/new?template=plugin-unlisting-request.yml). A repository maintainer can run the unlisting workflow for any plugin. It opens a pull request that sets `unlisted` to `true`; after that pull request merges and publishes, the plugin is omitted from the root manifest and releases README. Existing releases and per-plugin metadata remain available.
