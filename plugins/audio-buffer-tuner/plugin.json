@@ -1,6 +1,6 @@
 {
   "name": "Audio Buffer Tuner",
-  "version": "0.3.5",
+  "version": "0.3.5-beta.1",
   "description": "Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups.",
   "author": "CtznSniiips",
   "maintainers": [
