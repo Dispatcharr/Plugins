@@ -57,6 +57,11 @@ def _g(data: Optional[dict], key: str, default: str = "") -> str:
     return default if val is None else str(val)
 
 
+def _stable_latest(manifest: Optional[dict]) -> dict:
+    """Return the manifest's stable latest entry, never source plugin metadata."""
+    return (manifest or {}).get("manifest", {}).get("latest") or {}
+
+
 # --------------------------------------------------------------------------- #
 # Per-plugin README (metadata/<plugin>/README.md)
 # --------------------------------------------------------------------------- #
@@ -73,10 +78,10 @@ def render_plugin_readme(plugin_name: str, plugin_raw: dict, manifest: dict,
     license_id = _g(plugin_raw, "license")
     min_da = _g(plugin_raw, "min_dispatcharr_version")
     max_da = _g(plugin_raw, "max_dispatcharr_version")
-    version = _g(plugin_raw, "version")
-
     manifest_body = manifest.get("manifest", {}) if manifest else {}
-    latest = manifest_body.get("latest") or {}
+    latest = _stable_latest(manifest)
+    version = _g(latest, "version", _g(plugin_raw, "version"))
+    last_updated = _g(latest, "last_updated", last_updated)
     latest_url_path = latest.get("latest_url") or ""
     latest_full_url = f"{download_base_url}/{latest_url_path}" if download_base_url and latest_url_path else ""
 
@@ -216,9 +221,9 @@ def anchor_for(name: str) -> str:
     return a
 
 
-def table_row(plugin_raw: dict, deprecated_pass: bool) -> str:
+def table_row(plugin_raw: dict, deprecated_pass: bool, manifest: Optional[dict] = None) -> str:
     name = _g(plugin_raw, "name")
-    version = _g(plugin_raw, "version")
+    version = _g(_stable_latest(manifest), "version", _g(plugin_raw, "version"))
     author = _g(plugin_raw, "author")
     description = _g(plugin_raw, "description")
     license_cell = _g(plugin_raw, "license", "-") or "-"
@@ -232,7 +237,8 @@ def render_plugin_block(*, is_deprecated: bool, plugin_name: str, plugin_raw: di
                         source_branch: str, releases_branch: str, download_base_url: str,
                         has_source_readme: bool) -> str:
     name = _g(plugin_raw, "name")
-    version = _g(plugin_raw, "version")
+    latest = _stable_latest(manifest)
+    version = _g(latest, "version", _g(plugin_raw, "version"))
     author = _g(plugin_raw, "author")
     description = _g(plugin_raw, "description")
     maintainers = ", ".join(str(m) for m in (plugin_raw.get("maintainers") or []))
@@ -242,9 +248,7 @@ def render_plugin_block(*, is_deprecated: bool, plugin_name: str, plugin_raw: di
     repo_url = _g(plugin_raw, "repo_url")
     discord_thread = _g(plugin_raw, "discord_thread")
 
-    latest_url_path = ""
-    if manifest:
-        latest_url_path = ((manifest.get("manifest") or {}).get("latest") or {}).get("latest_url") or ""
+    latest_url_path = latest.get("latest_url") or ""
     zip_url = f"{download_base_url}/{latest_url_path}" if download_base_url and latest_url_path else ""
 
     source_url = f"https://github.com/{repository}/tree/{source_branch}/plugins/{plugin_name}"
@@ -368,12 +372,12 @@ def generate_releases_readme(source_branch: str, releases_branch: str, repositor
     L.append("|--------|---------|-------|---------|-------------|")
 
     for deprecated_pass in (False, True):
-        for raw in raws.values():
+        for pname, raw in raws.items():
             if raw.get("unlisted") is True:
                 continue
             if (raw.get("deprecated") is True) is not deprecated_pass:
                 continue
-            L.append(table_row(raw, deprecated_pass))
+            L.append(table_row(raw, deprecated_pass, _load_json(f"metadata/{pname}/manifest.json")))
 
     L.append("")
     L.append("---")
@@ -383,6 +387,8 @@ def generate_releases_readme(source_branch: str, releases_branch: str, repositor
         pd = f"plugins/{pname}/"
         manifest = _load_json(f"metadata/{pname}/manifest.json")
         last_updated, commit_sha, commit_short = _plugin_commit(source_branch, pd)
+        latest = _stable_latest(manifest)
+        last_updated = _g(latest, "last_updated", last_updated)
         last_updated = last_updated or now_iso()
         commit_sha = commit_sha or "unknown"
         commit_short = commit_short or "unknown"

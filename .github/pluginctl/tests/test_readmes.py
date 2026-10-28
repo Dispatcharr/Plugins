@@ -34,6 +34,21 @@ def test_table_row_license_default_dash():
     assert "| - |" in r.table_row(raw, False)
 
 
+def test_readmes_display_stable_latest_when_source_is_prerelease():
+    raw = {"name": "Demo", "version": "1.0.0-beta.1", "author": "alice",
+           "description": "d", "license": "MIT"}
+    manifest = {"manifest": {"latest": {
+        "version": "1.0.0", "latest_url": "demo-1.0.0/demo.zip",
+        "last_updated": "2024-01-01T00:00:00Z",
+    }}}
+    assert "`1.0.0`" in r.table_row(raw, False, manifest)
+    assert "beta" not in r.table_row(raw, False, manifest)
+    content = r.render_plugin_readme(
+        "demo", raw, manifest, "https://downloads.example", "org/repo", "main", "", False)
+    assert "**Version:** `1.0.0`" in content
+    assert "**Version:** `1.0.0-beta.1`" not in content
+
+
 def test_version_count_fix(tmp_path):
     mf = tmp_path / "manifest.json"
     mf.write_text(json.dumps({"manifest": {"versions": [{"version": "1.0.0"},
