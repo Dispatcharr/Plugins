@@ -16,6 +16,7 @@ Dispatcharr welcomes contributions that help people manage content they are auth
 7. **No sandbox or capability-list circumvention:** Do not bypass the plugin sandbox or circumvent required capability declarations (for manifest versions where they are required).
 8. **No incomplete pull requests:** Do not submit a pull request with a blank or materially incomplete description. Doing so may result in auto-merge privileges being revoked.
 9. **Open source licensing required:** Every plugin must be released under an OSI-approved open source license.
+10. **Automated submissions must be deliberate and compliant:** Automation is acceptable when it follows every other repository rule, including ownership, licensing, security, validation, rate limits, and meaningful pull request descriptions. Do not use automation that opens or updates a registry pull request for every source push, commit, or branch update. Stable and prerelease submissions must be started deliberately by an author or maintainer, or by a workflow triggered from a deliberate release event or release-oriented workflow action.
 
 These rules may change at any time without notice, at the discretion of the Dispatcharr team.
 

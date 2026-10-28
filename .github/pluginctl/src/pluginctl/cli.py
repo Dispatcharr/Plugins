@@ -206,11 +206,35 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
     """Use a real, logo-bearing Dispatcharr/Plugins candidate for simulation."""
     import base64
     import random
-    from .core import gh
+    from .core import gh, release_links
 
     def logo_url(plugin: str, ref: str) -> str:
         path = logos.get(plugin)
         return f"https://raw.githubusercontent.com/{repo}/main/{path}" if path else ""
+
+    def plugin_at(plugin: str, ref: str) -> dict:
+        content = gh.loads(gh.api(
+            f"repos/{repo}/contents/plugins/{plugin}/plugin.json?ref={ref}"
+        )) or {}
+        try:
+            return json.loads(base64.b64decode(content["content"]).decode("utf-8"))
+        except (KeyError, ValueError, TypeError):
+            return {}
+
+    def source_links(plugin: str, ref: str):
+        """Resolve preview links from plugin history, never registry release order."""
+        history = gh.loads(gh.api(
+            f"repos/{repo}/commits?path=plugins/{plugin}&sha={ref}&per_page=2"
+        )) or []
+        if not history:
+            return release_links.Links()
+        current_commit = str(history[0].get("sha") or "")
+        previous_commit = str(history[1].get("sha") or "") if len(history) > 1 else ""
+        current = plugin_at(plugin, current_commit)
+        previous = plugin_at(plugin, previous_commit) if previous_commit else None
+        if current.get("source_type") == "external":
+            return release_links.external_links(current, previous)
+        return release_links.standard_links(repo, current_commit, previous_commit)
 
     tree = gh.loads(gh.api(f"repos/{repo}/git/trees/main?recursive=1")) or {}
     logos = {}
@@ -232,25 +256,11 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
         if not published:
             raise ValueError("No published releases found for logo-bearing plugins.")
         plugin, release_tags = random.choice(published)
-        manifest = gh.loads(gh.api(f"repos/{repo}/contents/plugins/{plugin}/plugin.json?ref=main")) or {}
-        raw = json.loads(base64.b64decode(manifest["content"]).decode("utf-8"))
+        raw = plugin_at(plugin, "main")
         tag = release_tags[0]
         version = tag[len(plugin) + 1:]
         asset_url = f"https://github.com/{repo}/releases/download/{tag}/{tag}.zip"
         links = []
-        upstream = str(raw.get("repo_url") or "").rstrip("/")
-        external_upstream = raw.get("source_type") == "external" and upstream.startswith("https://github.com/")
-        if not external_upstream:
-            upstream = f"https://github.com/{repo}"
-        source_tag = f"v{version}" if external_upstream else tag
-        if external_upstream:
-            links.append(f"[v{version}]({upstream}/releases/tag/{source_tag})")
-        previous = [entry for entry in release_tags if entry != tag]
-        if previous:
-            previous_tag = previous[0]
-            previous_version = previous_tag[len(plugin) + 1:]
-            if external_upstream:
-                links.append(f"[v{previous_version}...v{version}]({upstream}/compare/v{previous_version}...v{version})")
         release_manifest = gh.loads(gh.api(
             f"repos/{repo}/contents/metadata/{plugin}/manifest.json?ref=releases"
         )) or {}
@@ -259,8 +269,11 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
             versions = (release_data.get("manifest") or {}).get("versions") or []
             source_sha = next((str(entry.get("commit_sha") or "") for entry in versions
                                if str(entry.get("version")) == version), "")
-            if not external_upstream and source_sha:
-                links.append(f"[{source_sha[:7]}]({upstream}/commit/{source_sha})")
+            resolved_links = source_links(plugin, source_sha) if source_sha else release_links.Links()
+            if resolved_links.current_url:
+                links.append(f"[{resolved_links.current_label}]({resolved_links.current_url})")
+            if resolved_links.compare_url:
+                links.append(f"[{resolved_links.compare_label}]({resolved_links.compare_url})")
         except (KeyError, ValueError, TypeError):
             source_sha = ""
         pr_number, pr_url = gh.commit_pull_number(repo, source_sha) if source_sha else (None, None)
@@ -301,36 +314,13 @@ def _random_discord_fixture(event: str, repo: str) -> dict:
     if not candidates:
         raise ValueError(f"No {state} logo-bearing plugin PRs found in Dispatcharr/Plugins.")
     pr, plugin, logo = random.choice(candidates)
-    raw_plugin = gh.loads(gh.api(
-        f"repos/{repo}/contents/plugins/{plugin}/plugin.json?ref={pr.get('headRefOid', '')}"
-    )) or {}
-    try:
-        plugin_data = json.loads(base64.b64decode(raw_plugin["content"]).decode("utf-8"))
-    except (KeyError, ValueError, TypeError):
-        plugin_data = {}
-    upstream = str(plugin_data.get("repo_url") or "").rstrip("/")
-    current_version = str(plugin_data.get("version") or "")
+    plugin_data = plugin_at(plugin, pr.get("headRefOid", ""))
     links = []
-    if current_version:
-        external_upstream = plugin_data.get("source_type") == "external" and upstream.startswith("https://github.com/")
-        if not external_upstream:
-            upstream = f"https://github.com/{repo}"
-        current_tag = f"v{current_version}" if external_upstream else f"{plugin}-{current_version}"
-        if external_upstream:
-            links.append(f"[v{current_version}]({upstream}/releases/tag/{current_tag})")
-        pr_detail = gh.loads(gh.api(f"repos/{repo}/pulls/{pr['number']}")) or {}
-        base_sha = ((pr_detail.get("base") or {}).get("sha") or "")
-        base_plugin = gh.loads(gh.api(
-            f"repos/{repo}/contents/plugins/{plugin}/plugin.json?ref={base_sha}"
-        )) or {}
-        try:
-            base_data = json.loads(base64.b64decode(base_plugin["content"]).decode("utf-8"))
-            previous_version = str(base_data.get("version") or "")
-        except (KeyError, ValueError, TypeError):
-            previous_version = ""
-        if previous_version and previous_version != current_version:
-            previous_tag = f"v{previous_version}" if external_upstream else f"{plugin}-{previous_version}"
-            links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/{previous_tag}...{current_tag})")
+    resolved_links = source_links(plugin, pr.get("headRefOid", ""))
+    if resolved_links.current_url:
+        links.append(f"[{resolved_links.current_label}]({resolved_links.current_url})")
+    if resolved_links.compare_url:
+        links.append(f"[{resolved_links.compare_label}]({resolved_links.compare_url})")
     return {"pr": str(pr["number"]), "author": str(plugin_data.get("author") or "unknown"),
             "pr_url": pr.get("url", ""), "plugins": [plugin], "plugin_name": plugin_data.get("name") or plugin,
             "description": str(plugin_data.get("description") or ""),

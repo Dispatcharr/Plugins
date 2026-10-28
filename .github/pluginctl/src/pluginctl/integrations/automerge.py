@@ -15,7 +15,7 @@ import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
-from ..core import actions, gh
+from ..core import actions, gh, release_links
 from ..core.git import run as _git
 from .. import label_catalog
 
@@ -267,27 +267,12 @@ def _plugin_card_data(plugins: list[str], repository: str) -> dict[str, str]:
     result = {"plugin_name": str(current.get("name") or plugins[0]),
               "description": str(current.get("description") or ""),
               "author": str(current.get("author") or "unknown")}
-    upstream = str(current.get("repo_url") or "").rstrip("/")
-    current_version = str(current.get("version") or "")
-    if not current_version:
-        return result
-    external_upstream = current.get("source_type") == "external" and upstream.startswith("https://github.com/")
-    if not external_upstream:
-        upstream = f"https://github.com/{repository}"
-    current_tag = f"v{current_version}" if external_upstream else f"{plugins[0]}-{current_version}"
-    links = [f"[v{current_version}]({upstream}/releases/tag/{current_tag})"] if external_upstream else []
-    previous_text = _git("show", f"origin/main:plugins/{plugins[0]}/plugin.json", check=False).stdout
-    try:
-        previous_version = str(json.loads(previous_text).get("version") or "")
-    except json.JSONDecodeError:
-        previous_version = ""
-    if previous_version and previous_version != current_version:
-        if external_upstream:
-            links.append(f"[v{previous_version}...v{current_version}]({upstream}/compare/v{previous_version}...v{current_version})")
-        else:
-            previous_commit = _git("rev-parse", "origin/main", check=False).stdout.strip()
-            current_commit = _git("rev-parse", "HEAD", check=False).stdout.strip()
-            if previous_commit and current_commit:
-                links.append(f"[{previous_commit[:7]}...{current_commit[:7]}]({upstream}/compare/{previous_commit}...{current_commit})")
+    current_commit = release_links.latest_plugin_commit(plugins[0], "HEAD")
+    links_data = release_links.source_links(repository, plugins[0], current_commit)
+    links = []
+    if links_data.current_url:
+        links.append(f"[{links_data.current_label}]({links_data.current_url})")
+    if links_data.compare_url:
+        links.append(f"[{links_data.compare_label}]({links_data.compare_url})")
     result["source_links"] = "-# " + " · ".join(links)
     return result

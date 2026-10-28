@@ -175,8 +175,7 @@ def _emit_published(repository: str, changed: str, source_branch: str) -> None:
     from ..integrations import webhooks
     actor = os.environ.get("GITHUB_ACTOR", "")
     source_sha = _git("rev-parse", f"origin/{source_branch}", check=False).stdout.strip()
-    from ..core import gh, version as version_util
-    all_tags = gh.release_list_tags(repository)
+    from ..core import gh, release_links
     payloads = []
     for line in changed.splitlines():
         if "@" not in line:
@@ -197,28 +196,15 @@ def _emit_published(repository: str, changed: str, source_branch: str) -> None:
         tag = f"{plugin}-{version}"
         payload["release_url"] = f"https://github.com/{repository}/releases/tag/{tag}"
         asset_url = f"https://github.com/{repository}/releases/download/{tag}/{tag}.zip"
-        raw_manifest = _git("show", f"origin/{source_branch}:plugins/{plugin}/plugin.json", check=False).stdout
-        try:
-            plugin_manifest = json.loads(raw_manifest)
-        except json.JSONDecodeError:
-            plugin_manifest = {}
+        plugin_manifest = release_links.plugin_at(commit_sha, plugin) or {}
         payload["description"] = str(plugin_manifest.get("description") or "")
         payload["author"] = str(plugin_manifest.get("author") or "unknown")
-        upstream = str(plugin_manifest.get("repo_url") or "").rstrip("/")
-        external_upstream = plugin_manifest.get("source_type") == "external" and upstream.startswith("https://github.com/")
-        if not external_upstream:
-            upstream = f"https://github.com/{repository}"
         links = []
-        source_tag = f"v{version}" if external_upstream else tag
-        if external_upstream:
-            links.append(f"[v{version}]({upstream}/releases/tag/{source_tag})")
-            previous = [entry for entry in version_util.versioned_tags(all_tags, plugin) if entry != tag]
-            if previous:
-                previous_version = previous[0][len(plugin) + 1:]
-                links.append(f"[v{previous_version}...v{version}]({upstream}/compare/v{previous_version}...v{version})")
-        else:
-            if commit_sha:
-                links.append(f"[{commit_sha[:7]}]({upstream}/commit/{commit_sha})")
+        resolved_links = release_links.source_links(repository, plugin, commit_sha)
+        if resolved_links.current_url:
+            links.append(f"[{resolved_links.current_label}]({resolved_links.current_url})")
+        if resolved_links.compare_url:
+            links.append(f"[{resolved_links.compare_label}]({resolved_links.compare_url})")
         if pr_number and pr_url:
             links.append(f"[#{pr_number}]({pr_url})")
         payload["metadata"] = "-# " + " · ".join(links)

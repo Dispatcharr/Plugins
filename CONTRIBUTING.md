@@ -123,7 +123,9 @@ Use one of these pull request title formats. A colon after `]` is optional.
 | Multiple plugins | `[github-username] description` | `[sethwv] Update my plugins` |
 | Registry changes, maintainers only | `[repo] description` | `[repo] Update validation rules` |
 
-Use of the pull request template is optional, but every pull request must include a meaningful description. A blank or materially incomplete description may result in auto-merge privileges being revoked. If you submit pull requests through automation, consider configuring it to include a link to the relevant changelog, release notes, or other change summary.
+Use of the pull request template is optional, but every pull request must include a meaningful description. A blank or materially incomplete description may result in auto-merge privileges being revoked. Automated submissions are welcome when they follow the repository rules. Configure them to include a link to the relevant changelog, release notes, or other change summary.
+
+Automated stable and prerelease submissions must be deliberate. Do not configure an integration to open or update a registry pull request for every source push, commit, or branch update. Start it manually, or from a deliberate release event or release-oriented workflow action.
 
 ### Automatic merging
 

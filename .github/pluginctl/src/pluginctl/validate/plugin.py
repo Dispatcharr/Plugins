@@ -17,12 +17,10 @@ import urllib.error
 import urllib.request
 from typing import Optional
 
-from ..core import actions, gh, git
+from ..core import actions, gh, git, release_links
 from ..core.version import (is_prerelease_semver, is_semver, is_dispatcharr_version,
                             prerelease_base, version_greater_than)
 from .detect import METADATA_ONLY_FIELDS, author_in_plugin_json, changed_json_fields, is_safe_name
-
-_GH_DOWNLOAD_RE = re.compile(r"^https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/")
 
 SPDX_URL = "https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json"
 
@@ -191,12 +189,10 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
     base_json_text = git.show(f"origin/{base_ref}:{plugin_json_path}")
     base_raw = None
     old_version = ""
-    old_source_url_tmpl = ""
     if base_json_text is not None:
         try:
             base_raw = json.loads(base_json_text)
             old_version = jq_r(base_raw.get("version"), "")
-            old_source_url_tmpl = jq_r(base_raw.get("source_url"), "")
         except json.JSONDecodeError:
             base_raw = None
 
@@ -204,8 +200,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
     source_type = jq_r(raw.get("source_type"), "local")
     release_link = ""
     compare_link = ""
-    gh_tag = ""
-    old_gh_tag = ""
+    release_links_data = release_links.Links()
     if source_type != "external":
         if count_source_files(plugin_dir) == 0:
             rows.append(f"| Plugin files | ❌ | No source files found in "
@@ -232,17 +227,9 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
                 code = http_status(resolved_url)
                 if code == "200":
                     rows.append("| Release artifact | ✅ | Artifact reachable at resolved URL |")
-                    m = _GH_DOWNLOAD_RE.match(resolved_url)
-                    if m:
-                        gh_owner, gh_repo, gh_tag = m.group(1), m.group(2), m.group(3)
-                        release_link = f"https://github.com/{gh_owner}/{gh_repo}/releases/tag/{gh_tag}"
-                        if old_version and old_source_url_tmpl:
-                            old_resolved = old_source_url_tmpl.replace("{version}", old_version)
-                            om = _GH_DOWNLOAD_RE.match(old_resolved)
-                            if om:
-                                old_gh_tag = om.group(3)
-                                compare_link = (f"https://github.com/{gh_owner}/{gh_repo}"
-                                                f"/compare/{old_gh_tag}...{gh_tag}")
+                    release_links_data = release_links.external_links(raw, base_raw)
+                    release_link = release_links_data.current_url
+                    compare_link = release_links_data.compare_url
                 else:
                     rows.append(f"| Release artifact | ❌ | Could not reach `{resolved_url}` "
                                 f"(HTTP `{code}`) — ensure the release exists |")
@@ -386,9 +373,9 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
 
     # Release / compare links (after the table)
     if release_link:
-        link_line = f"[View release {gh_tag} on GitHub]({release_link})"
+        link_line = f"[View release {release_links_data.current_label} on GitHub]({release_link})"
         if compare_link:
-            link_line += f" · [Compare {old_gh_tag}...{gh_tag}]({compare_link})"
+            link_line += f" · [Compare {release_links_data.compare_label}]({compare_link})"
         post_lines.append(link_line)
         post_lines.append("")
 
