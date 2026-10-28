@@ -73,7 +73,7 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
         release_tag = f"{plugin_name}-{version}"
 
         release_exists = gh.release_exists(release_tag, repository)
-        if release_exists and not is_prerelease:
+        if release_exists:
             actions.log(f"  {plugin_name} v{version} - skipping (release already exists)")
             continue
 
@@ -126,12 +126,6 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
         with open(os.path.join(build_meta_dir, plugin_key, f"{plugin_key}-{version}.json"),
                   "w", encoding="utf-8") as fh:
                    fh.write(jsonio.dumps(meta))
-
-        if release_exists:
-            actions.log(f"  {plugin_name} v{version} - replacing existing prerelease")
-            if gh.release_delete(release_tag, repository) != 0:
-                actions.error(f"Could not delete existing prerelease {release_tag}; refusing to publish replacement")
-                return 1
 
         notes = _release_notes(
             repository, plugin_name, commit_sha, commit_sha_short,

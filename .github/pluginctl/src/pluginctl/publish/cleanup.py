@@ -11,7 +11,7 @@ import os
 import shutil
 
 from ..core import actions, gh
-from ..core.version import is_prerelease_semver, versioned_tags
+from ..core.version import versioned_tags
 
 
 def run(repository: str, max_versioned_zips: int = 10) -> int:
@@ -36,10 +36,12 @@ def run(repository: str, max_versioned_zips: int = 10) -> int:
         plugin_name = os.path.basename(plugin_dir.rstrip("/"))
         with open(os.path.join(plugin_dir, "plugin.json"), encoding="utf-8") as fh:
             source = json.load(fh)
-        candidate_tag = (
-            f"{plugin_name}-{source.get('version')}"
-            if is_prerelease_semver(str(source.get("version") or "")) else ""
-        )
+        candidate_tag = f"{plugin_name}-{source.get('version')}"
+        protect_releases = candidate_tag not in all_tags
+        if protect_releases:
+            actions.warning(
+                f"Preserving existing releases for {plugin_name}: "
+                f"{candidate_tag} was not published")
         prefix = f"{plugin_name}-"
         stable_tags = []
         for release in releases:
@@ -47,7 +49,7 @@ def run(repository: str, max_versioned_zips: int = 10) -> int:
             if not tag.startswith(prefix):
                 continue
             if release.get("prerelease"):
-                if tag != candidate_tag:
+                if not protect_releases and tag != candidate_tag:
                     actions.log(f"  Removing stale prerelease {tag}")
                     if gh.release_delete(tag, repository) != 0:
                         actions.error(f"Could not delete stale prerelease {tag}")
@@ -55,7 +57,7 @@ def run(repository: str, max_versioned_zips: int = 10) -> int:
             else:
                 stable_tags.append(tag)
         tags = versioned_tags(stable_tags, plugin_name)
-        if len(tags) <= max_versioned_zips:
+        if protect_releases or len(tags) <= max_versioned_zips:
             continue
         for old_tag in tags[max_versioned_zips:]:
             actions.log(f"  Removed release {old_tag} (over limit of {max_versioned_zips})")
