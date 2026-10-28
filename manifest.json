@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T20:47:30Z",
+  "generated_at": "2026-10-28T21:03:31Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -39,7 +39,7 @@
         "author": "Megamannen",
         "license": "Artistic-2.0",
         "last_updated": "2026-10-27T20:30:32-04:00",
-        "download_count": 24,
+        "download_count": 25,
         "latest_version": "0.2.0",
         "latest_changelog": "491",
         "latest_md5": "c599844a14e7afee1478ae38a4cdca08",
@@ -56,7 +56,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-24T15:39:07Z",
-        "download_count": 3907,
+        "download_count": 3908,
         "latest_version": "1.26.2971911",
         "latest_changelog": "477",
         "latest_md5": "77211ee6ccd7ab69867fdea305bf4636",
@@ -107,7 +107,7 @@
         "author": "PilaScat",
         "license": "MIT",
         "last_updated": "2026-10-25T00:10:46Z",
-        "download_count": 1432,
+        "download_count": 1433,
         "latest_version": "0.6.0",
         "latest_changelog": "482",
         "latest_md5": "c1834c471dc81cb08f40e710a486af24",
@@ -453,7 +453,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-25T14:09:20Z",
-        "download_count": 1832,
+        "download_count": 1833,
         "latest_version": "1.26.2981400",
         "latest_changelog": "484",
         "latest_md5": "9a6bee09934b90dc16f00442121dea57",
@@ -594,5 +594,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJfZwAKCRB+wDprTCI0\nztPlAP48eLNtvEhf4zrfH7sN1/2depApuolMJ1BteAcrg1zqfQEA4Tqmhe/2s+Cl\n06BEjKLID34CfJPRwkDFXUJBoXR09AY=\n=8/SY\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJjKAAKCRB+wDprTCI0\nzuoRAPwLxiSSs4UdKwLrhSMQF4essXVP7GdkoywmKbQ/oZpIrQD+J/L4El1O9lGA\nhNPsPIwBdo1L6FPUVtLMhCLeuygGMQk=\n=F6Jc\n-----END PGP SIGNATURE-----"
 }
