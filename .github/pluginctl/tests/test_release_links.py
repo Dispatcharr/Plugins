@@ -43,12 +43,8 @@ def test_external_links_omit_non_github_sources():
     assert links.external_links(current).current_url == ""
 
 
-def test_standard_links_compare_source_commits():
-    result = links.standard_links("org/registry", "b" * 40, "a" * 40)
-    assert result.current_label == "bbbbbbb"
-    assert result.current_url.endswith("/commit/" + "b" * 40)
-    assert result.compare_label == "aaaaaaa...bbbbbbb"
-    assert result.compare_url.endswith("/compare/" + "a" * 40 + "..." + "b" * 40)
+def test_standard_links_omit_repository_wide_links():
+    assert links.standard_links("org/registry", "b" * 40, "a" * 40) == links.Links()
 
 
 def test_standard_links_first_release_has_no_comparison():

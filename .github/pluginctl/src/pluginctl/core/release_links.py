@@ -61,16 +61,12 @@ def external_links(current: dict, previous: Optional[dict] = None) -> Links:
 
 
 def standard_links(repository: str, current_commit: str, previous_commit: str = "") -> Links:
-    """Create registry commit links for a standard plugin's source revisions."""
-    if not current_commit:
-        return Links()
-    current = current_commit[:7]
-    current_url = f"https://github.com/{repository}/commit/{current_commit}"
-    if not previous_commit or previous_commit == current_commit:
-        return Links(current, current_url)
-    previous = previous_commit[:7]
-    return Links(current, current_url, f"{previous}...{current}",
-                 f"https://github.com/{repository}/compare/{previous_commit}...{current_commit}")
+    """Return no links for a standard plugin.
+
+    The pull request is the scoped review surface. GitHub commit and comparison
+    links cover the entire registry repository, not just a plugin directory.
+    """
+    return Links()
 
 
 def plugin_at(ref: str, plugin: str) -> Optional[dict]:
@@ -101,8 +97,8 @@ def source_links(repository: str, plugin: str, current_commit: str) -> Links:
     current = plugin_at(current_commit, plugin)
     if current is None:
         return Links()
-    previous_commit = previous_plugin_commit(plugin, current_commit)
-    previous = plugin_at(previous_commit, plugin) if previous_commit else None
     if current.get("source_type") == "external":
+        previous_commit = previous_plugin_commit(plugin, current_commit)
+        previous = plugin_at(previous_commit, plugin) if previous_commit else None
         return external_links(current, previous)
-    return standard_links(repository, current_commit, previous_commit)
+    return standard_links(repository, current_commit)
