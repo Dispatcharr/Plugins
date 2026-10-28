@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T00:31:14Z",
+  "generated_at": "2026-10-28T14:57:44Z",
   "manifest": {
     "slug": "stream-dripper",
     "name": "Stream Dripper",
@@ -10,7 +10,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-09-15T16:02:35-04:00",
-    "download_count": 379,
+    "download_count": 380,
     "latest": {
       "version": "2.0.0",
       "commit_sha": "846d0fea839c1e3c2ebad8e8744c3cb4a0927eaf",
@@ -25,7 +25,7 @@
       "latest_url": "stream-dripper-2.0.0/stream-dripper-2.0.0.zip",
       "url": "stream-dripper-2.0.0/stream-dripper-2.0.0.zip",
       "size": 31,
-      "download_count": 150
+      "download_count": 151
     },
     "versions": [
       {
@@ -40,7 +40,7 @@
         "min_dispatcharr_version": "0.25.0",
         "url": "stream-dripper-2.0.0/stream-dripper-2.0.0.zip",
         "size": 31,
-        "download_count": 150
+        "download_count": 151
       },
       {
         "version": "1.0.0",
@@ -57,5 +57,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauFCXAAKCRB+wDprTCI0\nzpL3AP9hk5cQwPp1adOTZmdJ+gRKdAD9LNBFy8p7mKuv+7j/twEAs8LUygo7sBH3\n5dpDPBs6bsAdzYnrTcIOb8rjr+qfYgM=\n=Fg8l\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauINcgAKCRB+wDprTCI0\nzp3YAQC5t7QIouPsO9Ddh4pYQXr3J7TAbH9YIPJEhipZhUDdDAEAucFei6TqlndE\n7xGC6rsj1J2VNfXehlAvbZilqqpSYAM=\n=a685\n-----END PGP SIGNATURE-----"
 }

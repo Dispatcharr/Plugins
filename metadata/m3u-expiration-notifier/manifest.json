@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T00:31:14Z",
+  "generated_at": "2026-10-28T14:57:44Z",
   "manifest": {
     "slug": "m3u-expiration-notifier",
     "name": "M3U Expiration Notifier",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-07-16T20:26:29-04:00",
-    "download_count": 375,
+    "download_count": 376,
     "latest": {
       "version": "1.0.0",
       "commit_sha": "af83e5054bf456bbe78b841eabc3a3373abbbae1",
@@ -28,7 +28,7 @@
       "latest_url": "m3u-expiration-notifier-1.0.0/m3u-expiration-notifier-1.0.0.zip",
       "url": "m3u-expiration-notifier-1.0.0/m3u-expiration-notifier-1.0.0.zip",
       "size": 37,
-      "download_count": 375
+      "download_count": 376
     },
     "versions": [
       {
@@ -43,9 +43,9 @@
         "source_url": "https://github.com/barryanderson/dispatcharr-m3u-expiration-notifier/releases/download/v1.0.0/m3u_expiration_notifier-1.0.0.zip",
         "url": "m3u-expiration-notifier-1.0.0/m3u-expiration-notifier-1.0.0.zip",
         "size": 37,
-        "download_count": 375
+        "download_count": 376
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauFCWgAKCRB+wDprTCI0\nzn2zAQCBalIdq0skMilfM0EGiHHhSpZkM26LIvJ+PDjXRvxjugD/ZbLX/wx2MwYN\n1ICNfJ850O2hhaFibVGGH1feSymingY=\n=IkYc\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauINcAAKCRB+wDprTCI0\nzknnAP0RaCIP/XjpqMouAeOwR0fRO7WHLDuZPYeInDB1mt86cQEAomqckIRL3ZKt\nN84OQ28EXiCGV2vKbiROPjyYkXA/2wc=\n=m5gU\n-----END PGP SIGNATURE-----"
 }

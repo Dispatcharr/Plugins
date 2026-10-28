@@ -506,7 +506,7 @@ HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams in
 
 ### [Stream Dripper](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-dripper/README.md)
 
-**Version:** `2.0.0` | **Author:** Megamannen | **Last Updated:** Oct 28 2026, 00:30 UTC
+**Version:** `2.0.0` | **Author:** Megamannen | **Last Updated:** Sep 15 2026, 20:02 UTC
 
 Automatically drops all active streams once per day at a configured time, with a manual drop-now button.
 
@@ -699,4 +699,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 28 2026, 01:36 UTC*
+*Last updated: Oct 28 2026, 14:57 UTC*

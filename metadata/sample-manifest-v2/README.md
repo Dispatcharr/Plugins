@@ -2,7 +2,7 @@
 
 # Manifest v2 Example
 
-**Version:** `1.0.0` | **Author:** Dispatcharr Team | **Last Updated:** Oct 26 2026, 14:14 UTC
+**Version:** `1.0.0` | **Author:** Dispatcharr Team | **Last Updated:** Oct 22 2026, 23:01 UTC
 
 Example of version 2 capability enforcement and durable plugin storage.
 
