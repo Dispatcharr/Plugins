@@ -61,12 +61,14 @@ def external_links(current: dict, previous: Optional[dict] = None) -> Links:
 
 
 def standard_links(repository: str, current_commit: str, previous_commit: str = "") -> Links:
-    """Return no links for a standard plugin.
+    """Create a pinned source commit link for a standard plugin.
 
-    The pull request is the scoped review surface. GitHub commit and comparison
-    links cover the entire registry repository, not just a plugin directory.
+    The pull request is the scoped review surface. GitHub comparison links cover
+    the entire registry repository, not just a plugin directory, so omit them.
     """
-    return Links()
+    if not current_commit:
+        return Links()
+    return Links(current_commit[:7], f"https://github.com/{repository}/commit/{current_commit}")
 
 
 def plugin_at(ref: str, plugin: str) -> Optional[dict]:
