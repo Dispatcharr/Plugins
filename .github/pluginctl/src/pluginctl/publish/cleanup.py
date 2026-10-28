@@ -11,7 +11,7 @@ import os
 import shutil
 
 from ..core import actions, gh
-from ..core.version import versioned_tags
+from ..core.version import is_prerelease_semver, versioned_tags
 
 
 def run(repository: str, max_versioned_zips: int = 10) -> int:
@@ -38,7 +38,7 @@ def run(repository: str, max_versioned_zips: int = 10) -> int:
             source = json.load(fh)
         candidate_tag = (
             f"{plugin_name}-{source.get('version')}"
-            if source.get("prerelease") is True else ""
+            if is_prerelease_semver(str(source.get("version") or "")) else ""
         )
         prefix = f"{plugin_name}-"
         stable_tags = []

@@ -175,7 +175,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
     maintainers = [str(m) for m in (raw.get("maintainers") or []) if m is not None]
     maintainers_sp = " ".join(maintainers)
     version = jq_r(raw.get("version"))
-    prerelease = raw.get("prerelease", False)
+    is_prerelease = is_prerelease_semver(version)
 
     # Base branch plugin.json (for version bump + compare link)
     base_json_text = git.show(f"origin/{base_ref}:{plugin_json_path}")
@@ -217,7 +217,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
                         "(e.g. `.../v{version}/plugin.zip`) |")
             failed = True
         else:
-            if is_semver(version) or (prerelease is True and is_prerelease_semver(version)):
+            if is_semver(version) or is_prerelease:
                 resolved_url = ext_source_url.replace("{version}", version)
                 code = http_status(resolved_url)
                 if code == "200":
@@ -297,18 +297,11 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
             failed = True
 
     # Version format and prerelease contract
-    if prerelease is not True and prerelease is not False:
-        rows.append("| `prerelease` | ❌ | Must be a boolean when supplied |")
+    if "prerelease" in raw:
+        rows.append("| `prerelease` | ❌ | Do not set this field in `plugin.json`; prereleases are detected from `version` |")
         failed = True
-    if prerelease is True:
-        if is_prerelease_semver(version):
-            rows.append(f"| Prerelease | ✅ | `{version}` will be manually selectable beside the stable release |")
-        else:
-            rows.append(f"| Prerelease | ❌ | `{version}` must be `X.Y.Z` followed by a nonempty prerelease suffix |")
-            failed = True
-    elif is_prerelease_semver(version):
-        rows.append(f"| Version | ❌ | `{version}` is a prerelease; set `\"prerelease\": true` |")
-        failed = True
+    if is_prerelease:
+        rows.append(f"| Prerelease | ✅ | `{version}` will be manually selectable beside the stable release |")
     elif is_semver(version):
         rows.append(f"| Version | ✅ | `{version}` |")
     else:
@@ -316,7 +309,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         failed = True
 
     # Version bump
-    if prerelease is True:
+    if is_prerelease:
         stable_versions = []
         if repo:
             for release in gh.release_list(repo):
@@ -407,7 +400,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         repo_url,
         discord_thread,
         "fail" if failed else "pass",
-        "true" if prerelease is True else "false",
+        "true" if is_prerelease else "false",
     ]
     meta_row = f"<!--META_ROW:{tsv(meta_fields)}-->"
 

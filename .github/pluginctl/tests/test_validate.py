@@ -161,7 +161,7 @@ def test_prerelease_requires_current_stable_base(plugin_repo, monkeypatch):
     tmp_path, out = plugin_repo
     pj = tmp_path / "plugins" / "demo-plugin" / "plugin.json"
     data = json.loads(pj.read_text())
-    data.update({"version": "1.0.0-beta.1", "prerelease": True})
+    data["version"] = "1.0.0-beta.1"
     pj.write_text(json.dumps(data), encoding="utf-8")
     monkeypatch.setattr(gh, "release_list", lambda repo: [
         {"tag": "demo-plugin-1.0.0", "prerelease": False},
@@ -175,13 +175,13 @@ def test_prerelease_requires_current_stable_base(plugin_repo, monkeypatch):
     assert "\tpass\ttrue-->" in text
 
 
-def test_prerelease_without_flag_fails(plugin_repo):
+def test_source_prerelease_boolean_fails(plugin_repo):
     tmp_path, _ = plugin_repo
     pj = tmp_path / "plugins" / "demo-plugin" / "plugin.json"
     data = json.loads(pj.read_text())
-    data["version"] = "1.0.0-beta.1"
+    data["prerelease"] = True
     pj.write_text(json.dumps(data), encoding="utf-8")
 
     fragment = tmp_path / "frag.md"
     assert validate.run("demo-plugin", "alice", "main", str(fragment), repo="org/repo") == 1
-    assert 'set `"prerelease": true`' in fragment.read_text(encoding="utf-8")
+    assert "Do not set this field" in fragment.read_text(encoding="utf-8")

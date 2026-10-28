@@ -79,7 +79,6 @@ Start with the required fields:
 | `unlisted` | No | Boolean that omits the plugin from the root manifest and releases README. Defaults to `false`. |
 | `source_type` | No | Use `"external"` for an external plugin. Omit it or use `"local"` for a standard plugin. |
 | `source_url` | Required for external plugins | HTTPS ZIP URL containing `{version}`. |
-| `prerelease` | No | Set to `true` only when `version` is a SemVer prerelease such as `1.2.0-beta.1`. |
 
 At least one of `author` or `maintainers` must name the GitHub account opening the pull request. For an existing plugin, the account must already be listed in the version on the base branch unless it has repository write permission.
 
@@ -169,11 +168,11 @@ The registry publishes a versioned ZIP and a `-latest` alias GitHub Release, cal
 
 ## Prerelease candidates
 
-A plugin may keep one prerelease alongside its latest stable release. First publish a stable version. Then set `"prerelease": true` and use a version with a normal `MAJOR.MINOR.PATCH` base plus a nonempty SemVer suffix, such as `1.2.0-beta.1` or `1.2.0-rc.1`. The numeric base must match the current stable release.
+A plugin may keep one prerelease alongside its latest stable release. First publish a stable version. Then use a version with a normal `MAJOR.MINOR.PATCH` base plus a nonempty SemVer suffix, such as `1.2.0-beta.1` or `1.2.0-rc.1`. The numeric base must match the current stable release. Do not add a `prerelease` field to `plugin.json`; the registry derives it from the version.
 
 For external plugins, use that exact version in the upstream release tag. The existing `source_url` continues to substitute `{version}`, so no separate prerelease URL is needed. The registry marks the GitHub Release as a prerelease and exposes it only in the per-plugin version picker. It never replaces the stable `latest` shown in the registry.
 
-Publishing a different candidate version replaces the prior candidate after the new release is created. Reusing the same candidate version also replaces its registry artifact, which is useful when the source has changed. To promote a candidate, remove `prerelease` and submit a higher stable `MAJOR.MINOR.PATCH` version. That publishes the stable release and removes the candidate.
+Publishing a different candidate version replaces the prior candidate after the new release is created. Reusing the same candidate version also replaces its registry artifact, which is useful when the source has changed. To promote a candidate, submit a higher stable `MAJOR.MINOR.PATCH` version. That publishes the stable release and removes the candidate.
 
 ## Remove a published version
 

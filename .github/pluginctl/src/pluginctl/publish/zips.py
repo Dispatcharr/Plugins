@@ -23,6 +23,7 @@ from ..core import actions, gh, git, jsonio
 from ..core.hashing import file_digests
 from ..core.jsonio import drop_none
 from ..core.timeutil import now_iso
+from ..core.version import is_prerelease_semver
 from ..validate.detect import is_safe_name
 from .manifest import effective_min_dispatcharr_version
 
@@ -65,7 +66,7 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
         with open(os.path.join(plugin_dir, "plugin.json"), encoding="utf-8") as fh:
             raw = json.load(fh)
         version = str(raw.get("version"))
-        is_prerelease = raw.get("prerelease") is True
+        is_prerelease = is_prerelease_semver(version)
         os.makedirs(f"metadata/{plugin_name}", exist_ok=True)
 
         zip_path = f"/tmp/{plugin_name}-{version}.zip"

@@ -176,7 +176,7 @@ def test_generate_keeps_prerelease_out_of_stable_latest(tmp_path, monkeypatch):
     plugin_dir = tmp_path / "plugins" / "demo"
     plugin_dir.mkdir(parents=True)
     (plugin_dir / "plugin.json").write_text(json.dumps({
-        "name": "Demo", "version": "1.0.0-beta.1", "prerelease": True,
+        "name": "Demo", "version": "1.0.0-beta.1",
         "description": "d",
     }), encoding="utf-8")
     build_meta = tmp_path / "build-meta" / "demo"
