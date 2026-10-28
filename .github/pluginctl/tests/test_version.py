@@ -12,6 +12,19 @@ def test_is_semver(s, ok):
 
 
 @pytest.mark.parametrize("s,ok", [
+    ("1.0.0-beta.1", True), ("1.0.0-pre-a1b2c3d", True),
+    ("1.0.0-", False), ("1.0.0", False), ("v1.0.0-beta", False),
+])
+def test_is_prerelease_semver(s, ok):
+    assert v.is_prerelease_semver(s) is ok
+
+
+def test_prerelease_base():
+    assert v.prerelease_base("1.2.3-rc.1") == "1.2.3"
+    assert v.prerelease_base("1.2.3") is None
+
+
+@pytest.mark.parametrize("s,ok", [
     ("1.0.0", True), ("v1.0.0", True), ("v10.2.3", True),
     ("1.0", False), ("x1.0.0", False), ("", False),
 ])

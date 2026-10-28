@@ -33,6 +33,7 @@ def _metadata_fields(metadata: dict, min_da, max_da) -> dict:
     """
     return {
         "version": metadata.get("version"),
+        "prerelease": True if metadata.get("prerelease") is True else None,
         "commit_sha": metadata.get("commit_sha"),
         "commit_sha_short": metadata.get("commit_sha_short"),
         "changelog": metadata.get("changelog"),
@@ -373,7 +374,7 @@ def generate(source_branch: str, releases_branch: str, repository: str,
         elif key_id and not signing_failed and not sig_is_current(path, key_id):
             maybe_sign(path)
 
-    all_tags = gh.release_list_tags(repository)
+    releases = gh.release_list(repository)
     release_download_counts = (
         gh.release_download_counts(repository)
         if feature_flags.MANIFEST_DOWNLOAD_TOTALS else {}
@@ -414,7 +415,11 @@ def generate(source_branch: str, releases_branch: str, repository: str,
                 existing_manifest = None
 
         prefix = f"{plugin_name}-"
-        tags = versioned_tags(all_tags, plugin_name)
+        stable_tags = [str(release["tag"]) for release in releases
+                       if str(release["tag"]).startswith(prefix) and not release.get("prerelease")]
+        prerelease_tags = [str(release["tag"]) for release in releases
+                           if str(release["tag"]).startswith(prefix) and release.get("prerelease")]
+        tags = versioned_tags(stable_tags, plugin_name) + sorted(prerelease_tags)
 
         versioned_zips: list[dict] = []
         latest_metadata: dict = {}
@@ -446,6 +451,9 @@ def generate(source_branch: str, releases_branch: str, repository: str,
                         metadata = entry
                         break
 
+            if release_tag in prerelease_tags:
+                metadata = {**metadata, "prerelease": True}
+
             commit_sha = str(metadata.get("commit_sha") or "")
             if metadata and "changelog" not in metadata and commit_sha:
                 if commit_sha not in changelog_numbers:
@@ -457,13 +465,13 @@ def generate(source_branch: str, releases_branch: str, repository: str,
             zip_size_kb = 0
             if metadata:
                 zip_size_kb = metadata.get("size_kb", metadata.get("size", 0)) or 0
-            if not latest_size_set:
+            if release_tag not in prerelease_tags and not latest_size_set:
                 latest_size_kb = zip_size_kb
                 latest_size_set = True
 
             versioned_zips.append(build_version_entry(
                 metadata, zip_url, zip_size_kb, canonical_version, download_count))
-            if metadata and not latest_metadata:
+            if metadata and release_tag not in prerelease_tags and not latest_metadata:
                 latest_metadata = metadata
                 latest_zip_version = zip_version
                 latest_download_count = download_count

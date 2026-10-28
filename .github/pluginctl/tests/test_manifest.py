@@ -171,6 +171,35 @@ def test_manifest_emits_changelog_numbers_when_available():
     assert root["latest_changelog"] == "42"
 
 
+def test_generate_keeps_prerelease_out_of_stable_latest(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(json.dumps({
+        "name": "Demo", "version": "1.0.0-beta.1", "prerelease": True,
+        "description": "d",
+    }), encoding="utf-8")
+    build_meta = tmp_path / "build-meta" / "demo"
+    build_meta.mkdir(parents=True)
+    (build_meta / "demo-1.0.0.json").write_text(json.dumps({**META, "version": "1.0.0"}), encoding="utf-8")
+    (build_meta / "demo-1.0.0-beta.1.json").write_text(json.dumps({
+        **META, "version": "1.0.0-beta.1", "prerelease": True,
+    }), encoding="utf-8")
+    monkeypatch.setattr(gh, "release_list", lambda repo: [
+        {"tag": "demo-1.0.0", "prerelease": False},
+        {"tag": "demo-1.0.0-beta.1", "prerelease": True},
+    ])
+
+    assert m.generate("main", "releases", "org/repo", str(tmp_path / "build-meta")) == 0
+    plugin = json.loads((tmp_path / "metadata/demo/manifest.json").read_text(encoding="utf-8"))["manifest"]
+    root = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["manifest"]
+
+    assert plugin["latest"]["version"] == "1.0.0"
+    assert [entry["version"] for entry in plugin["versions"]] == ["1.0.0", "1.0.0-beta.1"]
+    assert plugin["versions"][1]["prerelease"] is True
+    assert root["plugins"][0]["latest_version"] == "1.0.0"
+
+
 def test_manifest_download_counts_are_emitted_at_release_and_plugin_levels():
     zips = [
         m.build_version_entry(META, "demo-1.2.0/demo-1.2.0.zip", 10, "1.2.0", 8),
@@ -352,7 +381,9 @@ def test_generate_writes_the_effective_minimum_to_all_manifest_entries(tmp_path,
     (build_meta / "demo-1.0.0.json").write_text(json.dumps({
         **META, "version": "1.0.0",
     }), encoding="utf-8")
-    monkeypatch.setattr(gh, "release_list_tags", lambda repo: ["demo-1.0.0"])
+    monkeypatch.setattr(gh, "release_list", lambda repo: [
+        {"tag": "demo-1.0.0", "prerelease": False},
+    ])
 
     assert m.generate("main", "releases", "org/repo", str(tmp_path / "build-meta")) == 0
 
@@ -421,7 +452,10 @@ def test_generate_emits_and_removes_download_totals_with_feature_flag(tmp_path, 
     (metadata_dir / "demo-1.2.0.json").write_text(json.dumps(META), encoding="utf-8")
     (metadata_dir / "demo-1.1.0.json").write_text(
         json.dumps({**META, "version": "1.1.0"}), encoding="utf-8")
-    monkeypatch.setattr(gh, "release_list_tags", lambda repo: ["demo-1.2.0", "demo-1.1.0"])
+    monkeypatch.setattr(gh, "release_list", lambda repo: [
+        {"tag": "demo-1.2.0", "prerelease": False},
+        {"tag": "demo-1.1.0", "prerelease": False},
+    ])
     monkeypatch.setattr(gh, "release_download_counts", lambda repo: {
         "demo-1.2.0": 8,
         "demo-1.1.0": 3,

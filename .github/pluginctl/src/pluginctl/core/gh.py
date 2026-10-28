@@ -118,14 +118,22 @@ def release_exists(tag: str, repo: str) -> bool:
 
 
 def release_list_tags(repo: str, limit: int = 500) -> list[str]:
-    proc = _run(["release", "list", "--repo", repo, "--json", "tagName", "--limit", str(limit)])
+    return [release["tag"] for release in release_list(repo, limit)]
+
+
+def release_list(repo: str, limit: int = 500) -> list[dict[str, object]]:
+    """Return release tags with GitHub's authoritative prerelease flag."""
+    proc = _run(["release", "list", "--repo", repo, "--json", "tagName,isPrerelease", "--limit", str(limit)])
     if proc.returncode != 0:
         return []
     try:
         data = json.loads(proc.stdout)
     except json.JSONDecodeError:
         return []
-    return [entry.get("tagName", "") for entry in data if entry.get("tagName")]
+    return [
+        {"tag": entry["tagName"], "prerelease": bool(entry.get("isPrerelease"))}
+        for entry in data if isinstance(entry, dict) and entry.get("tagName")
+    ]
 
 
 def release_download_counts(repo: str) -> dict[str, int]:
@@ -171,9 +179,13 @@ def release_download_counts(repo: str) -> dict[str, int]:
     return counts
 
 
-def release_create(tag: str, repo: str, title: str, notes: str, asset: str) -> int:
-    return _run(["release", "create", tag, "--repo", repo, "--title", title,
-                 "--notes", notes, asset]).returncode
+def release_create(tag: str, repo: str, title: str, notes: str, asset: str,
+                   prerelease: bool = False) -> int:
+    args = ["release", "create", tag, "--repo", repo, "--title", title, "--notes", notes]
+    if prerelease:
+        args.append("--prerelease")
+    args.append(asset)
+    return _run(args).returncode
 
 
 def pages_url(repo: str) -> str:

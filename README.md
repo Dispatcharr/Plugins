@@ -22,6 +22,8 @@ In Dispatcharr under **Plugins**, select **Find Plugins** to browse and install 
 
 Every accepted plugin is published as a GitHub Release in this repository. The registry computes MD5 and SHA256 checksums, updates signed manifests, maintains a `-latest` release, and retains the ten newest versioned releases for each plugin.
 
+Plugins may also publish one prerelease candidate alongside their latest stable release. Candidates are manually selectable in Dispatcharr and do not replace the stable latest version. See [Contributing](CONTRIBUTING.md#prerelease-candidates) for the version and submission rules.
+
 ## What's allowed
 
 Review the [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a plugin. It defines the repository's contribution boundaries, including requirements for freely usable plugins and clearly disclosed, opt-in phone-home behavior.

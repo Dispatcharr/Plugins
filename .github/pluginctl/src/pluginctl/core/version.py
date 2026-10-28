@@ -13,12 +13,27 @@ import re
 from functools import cmp_to_key
 
 _SEMVER_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
+_PRERELEASE_SEMVER_RE = re.compile(
+    r"^(?P<base>[0-9]+\.[0-9]+\.[0-9]+)-"
+    r"(?P<suffix>(?:[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))$"
+)
 _DA_VERSION_RE = re.compile(r"^v?[0-9]+\.[0-9]+\.[0-9]+$")
 
 
 def is_semver(version: str) -> bool:
     """True for strict ``X.Y.Z`` (matches validate_semver == 1)."""
     return bool(_SEMVER_RE.match(version or ""))
+
+
+def is_prerelease_semver(version: str) -> bool:
+    """True for a strict numeric SemVer base with a nonempty prerelease suffix."""
+    return bool(_PRERELEASE_SEMVER_RE.match(version or ""))
+
+
+def prerelease_base(version: str) -> str | None:
+    """Return the stable numeric base of a valid prerelease version."""
+    match = _PRERELEASE_SEMVER_RE.match(version or "")
+    return match.group("base") if match else None
 
 
 def is_dispatcharr_version(version: str) -> bool:

@@ -41,7 +41,7 @@ def test_run_writes_the_effective_manifest_minimum_to_build_metadata(tmp_path, m
     }), encoding="utf-8")
     monkeypatch.setattr(gh, "release_exists", lambda *args: False)
     monkeypatch.setattr(gh, "commit_pull_number", lambda *args: (None, None))
-    monkeypatch.setattr(gh, "release_create", lambda *args: None)
+    monkeypatch.setattr(gh, "release_create", lambda *args, **kwargs: 0)
     monkeypatch.setattr(zips, "_commit_info", lambda *args: ("", "", ""))
     monkeypatch.setattr(zips, "file_digests", lambda *args: ("md5", "sha256"))
     monkeypatch.setattr(zips.os.path, "getsize", lambda path: 1024)

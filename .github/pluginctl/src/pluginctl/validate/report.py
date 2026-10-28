@@ -33,6 +33,7 @@ class ParsedFragments:
     plugin_links: str = ""
     any_failed: bool = False
     pr_plugin_names: list[str] = field(default_factory=list)
+    prerelease_plugins: list[str] = field(default_factory=list)
 
 
 def _read(path: str) -> str:
@@ -62,8 +63,8 @@ def parse_fragments(fragments_dir: str) -> ParsedFragments:
             if meta.endswith("-->"):
                 meta = meta[:-3]
             fields = meta.split("\t")
-            fields += [""] * (8 - len(fields))
-            f_name, f_version, f_desc, f_author, f_maint, f_repo, f_discord, f_status = fields[:8]
+            fields += [""] * (9 - len(fields))
+            f_name, f_version, f_desc, f_author, f_maint, f_repo, f_discord, f_status, f_prerelease = fields[:9]
             if f_repo or f_discord:
                 result.plugin_links += f"**`{f_name}`:**\n"
                 if f_repo:
@@ -77,12 +78,14 @@ def parse_fragments(fragments_dir: str) -> ParsedFragments:
         # New fragments carry validator-owned status in their final metadata row.
         # Older or incomplete fragments fall back to the visible validation table.
         if meta_line is not None and f_status in ("pass", "fail"):
-            result.any_failed |= f_status == "fail"
+                result.any_failed |= f_status == "fail"
         elif "❌" in visible:
             result.any_failed = True
         result.combined_body += visible + "\n\n"
         base = os.path.basename(fragment)[: -len(".fragment.md")]
         result.pr_plugin_names.append(base)
+        if meta_line is not None and f_prerelease == "true":
+            result.prerelease_plugins.append(f_name or base)
     return result
 
 
@@ -97,9 +100,10 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
                    codeql_findings: str = "", codeql_medium_findings: str = "",
                    codeql_low_findings: str = "", clamav_findings: str = "",
                     other_plugins_section: str = "", codeql_suppressed: str = "",
-                    codeql_suppressed_findings: str = "", codeql_sandbox_bypass: str = "",
-                    codeql_sandbox_findings: str = "", codeql_capability_contract: str = "",
-                    codeql_capability_contract_findings: str = "") -> str:
+                     codeql_suppressed_findings: str = "", codeql_sandbox_bypass: str = "",
+                     codeql_sandbox_findings: str = "", codeql_capability_contract: str = "",
+                     codeql_capability_contract_findings: str = "",
+                     prerelease_plugins: Optional[list[str]] = None) -> str:
     L: list[str] = []
     overall_failed = fragment_failed
     if title_valid and title_valid != "true":
@@ -168,6 +172,15 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append(f"- [Dispatcharr Discord]({discord_url})")
     else:
         L.append(combined_body)
+
+        if prerelease_plugins:
+            L.append("")
+            L.append("### Prerelease submission")
+            L.append("")
+            L.append("The following plugin candidate(s) remain manually selectable beside their stable release: "
+                     + ", ".join(f"`{name}`" for name in prerelease_plugins) + ".")
+            L.append("A candidate does not replace the registry's stable latest release. Reusing its "
+                     "version replaces the existing candidate artifact after merge. See `CONTRIBUTING.md` for promotion guidance.")
 
         if outside_files and outside_violation:
             overall_failed = True
@@ -470,6 +483,7 @@ def run(pr_number: str, pr_author: str, plugin_count: str, close_pr: bool,
         codeql_capability_contract_findings=_read(
             "codeql-capability-contract-findings/codeql-capability-contract-findings.md"
         ),
+        prerelease_plugins=parsed.prerelease_plugins,
     )
 
     with open("pr_comment.txt", "w", encoding="utf-8") as fh:

@@ -154,6 +154,18 @@ def test_parse_fragments(tmp_path):
     assert "- [GitHub Repository](https://r)" in parsed.plugin_links
 
 
+def test_parse_prerelease_fragment_and_render_guidance(tmp_path):
+    f = tmp_path / "demo.fragment.md"
+    f.write_text("### Plugin: `demo`\n<!--META_ROW:Demo\t1.0.0-beta.1\td\talice\t\thttps://r\t\tpass\ttrue-->\n",
+                 encoding="utf-8")
+    parsed = report.parse_fragments(str(tmp_path))
+    assert parsed.prerelease_plugins == ["Demo"]
+    comment = report.build_comment(**_base_kwargs(
+        combined_body=parsed.combined_body, prerelease_plugins=parsed.prerelease_plugins))
+    assert "### Prerelease submission" in comment
+    assert "`Demo`" in comment
+
+
 def test_parse_fragments_ignores_forged_meta_row_before_the_real_one(tmp_path):
     """A free-text field (e.g. description) that smuggles in its own
     "<!--META_ROW:...-->"-prefixed line must not be able to spoof the

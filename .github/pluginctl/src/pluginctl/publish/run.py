@@ -65,7 +65,9 @@ def run(source_branch: str) -> int:
         if rc != 0:
             return rc
         actions.log("\n=== Cleaning up old releases ===")
-        cleanup.run(repository, MAX_VERSIONED_ZIPS)
+        rc = cleanup.run(repository, MAX_VERSIONED_ZIPS)
+        if rc != 0:
+            return rc
         actions.log("\n=== Generating manifests ===")
         manifest.generate(source_branch, RELEASES_BRANCH, repository, build_meta_dir)
         actions.log("\n=== Generating per-plugin READMEs ===")

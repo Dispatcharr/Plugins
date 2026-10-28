@@ -6,6 +6,7 @@ Runs from the releases-branch checkout directory.
 from __future__ import annotations
 
 import glob
+import json
 import os
 import shutil
 
@@ -14,7 +15,8 @@ from ..core.version import versioned_tags
 
 
 def run(repository: str, max_versioned_zips: int = 10) -> int:
-    all_tags = gh.release_list_tags(repository)
+    releases = gh.release_list(repository)
+    all_tags = [str(release["tag"]) for release in releases]
 
     # Remove releases for deleted plugins (guarded on zips/ existing, as in Bash).
     if os.path.isdir("zips"):
@@ -24,16 +26,40 @@ def run(repository: str, max_versioned_zips: int = 10) -> int:
                 actions.log(f"  Removing deleted plugin releases: {plugin_name}")
                 for tag in [t for t in all_tags if t.startswith(f"{plugin_name}-")]:
                     actions.log(f"    Deleting release {tag}")
-                    gh.release_delete(tag, repository)
+                    if gh.release_delete(tag, repository) != 0:
+                        actions.error(f"Could not delete release {tag}")
+                        return 1
                 shutil.rmtree(release_dir, ignore_errors=True)
 
     # Prune old versioned releases per plugin (keep the newest max_versioned_zips).
     for plugin_dir in sorted(glob.glob("plugins/*/")):
         plugin_name = os.path.basename(plugin_dir.rstrip("/"))
-        tags = versioned_tags(all_tags, plugin_name)
+        with open(os.path.join(plugin_dir, "plugin.json"), encoding="utf-8") as fh:
+            source = json.load(fh)
+        candidate_tag = (
+            f"{plugin_name}-{source.get('version')}"
+            if source.get("prerelease") is True else ""
+        )
+        prefix = f"{plugin_name}-"
+        stable_tags = []
+        for release in releases:
+            tag = str(release["tag"])
+            if not tag.startswith(prefix):
+                continue
+            if release.get("prerelease"):
+                if tag != candidate_tag:
+                    actions.log(f"  Removing stale prerelease {tag}")
+                    if gh.release_delete(tag, repository) != 0:
+                        actions.error(f"Could not delete stale prerelease {tag}")
+                        return 1
+            else:
+                stable_tags.append(tag)
+        tags = versioned_tags(stable_tags, plugin_name)
         if len(tags) <= max_versioned_zips:
             continue
         for old_tag in tags[max_versioned_zips:]:
             actions.log(f"  Removed release {old_tag} (over limit of {max_versioned_zips})")
-            gh.release_delete(old_tag, repository)
+            if gh.release_delete(old_tag, repository) != 0:
+                actions.error(f"Could not delete old release {old_tag}")
+                return 1
     return 0

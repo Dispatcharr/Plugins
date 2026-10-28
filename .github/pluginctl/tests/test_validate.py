@@ -69,7 +69,7 @@ def test_new_local_plugin_passes(plugin_repo):
         "| Version | ✅ | `1.0.0` |\n"
         "| Version bump | ✅ | New plugin |\n"
         "\n"
-        "<!--META_ROW:Demo Plugin\t1.0.0\tA demo plugin\talice\t\thttps://github.com/x/demo\t\tpass-->\n"
+        "<!--META_ROW:Demo Plugin\t1.0.0\tA demo plugin\talice\t\thttps://github.com/x/demo\t\tpass\tfalse-->\n"
     )
     assert frag.read_text(encoding="utf-8") == expected
 
@@ -155,3 +155,33 @@ def test_ai_assisted_non_positive_values_are_ignored(plugin_repo, value):
     assert validate.run("demo-plugin", "alice", "main", str(fragment), repo="org/repo") == 0
     assert _outputs(out)["result"] == "pass"
     assert "ai_assisted" not in fragment.read_text(encoding="utf-8")
+
+
+def test_prerelease_requires_current_stable_base(plugin_repo, monkeypatch):
+    tmp_path, out = plugin_repo
+    pj = tmp_path / "plugins" / "demo-plugin" / "plugin.json"
+    data = json.loads(pj.read_text())
+    data.update({"version": "1.0.0-beta.1", "prerelease": True})
+    pj.write_text(json.dumps(data), encoding="utf-8")
+    monkeypatch.setattr(gh, "release_list", lambda repo: [
+        {"tag": "demo-plugin-1.0.0", "prerelease": False},
+    ])
+
+    fragment = tmp_path / "frag.md"
+    assert validate.run("demo-plugin", "alice", "main", str(fragment), repo="org/repo") == 0
+    text = fragment.read_text(encoding="utf-8")
+    assert "| Prerelease | ✅ |" in text
+    assert "| Prerelease base | ✅ |" in text
+    assert "\tpass\ttrue-->" in text
+
+
+def test_prerelease_without_flag_fails(plugin_repo):
+    tmp_path, _ = plugin_repo
+    pj = tmp_path / "plugins" / "demo-plugin" / "plugin.json"
+    data = json.loads(pj.read_text())
+    data["version"] = "1.0.0-beta.1"
+    pj.write_text(json.dumps(data), encoding="utf-8")
+
+    fragment = tmp_path / "frag.md"
+    assert validate.run("demo-plugin", "alice", "main", str(fragment), repo="org/repo") == 1
+    assert 'set `"prerelease": true`' in fragment.read_text(encoding="utf-8")

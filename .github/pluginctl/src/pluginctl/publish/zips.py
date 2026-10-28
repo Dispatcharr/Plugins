@@ -65,12 +65,14 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
         with open(os.path.join(plugin_dir, "plugin.json"), encoding="utf-8") as fh:
             raw = json.load(fh)
         version = str(raw.get("version"))
+        is_prerelease = raw.get("prerelease") is True
         os.makedirs(f"metadata/{plugin_name}", exist_ok=True)
 
         zip_path = f"/tmp/{plugin_name}-{version}.zip"
         release_tag = f"{plugin_name}-{version}"
 
-        if gh.release_exists(release_tag, repository):
+        release_exists = gh.release_exists(release_tag, repository)
+        if release_exists and not is_prerelease:
             actions.log(f"  {plugin_name} v{version} - skipping (release already exists)")
             continue
 
@@ -104,6 +106,7 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
 
         meta = drop_none({
             "version": version,
+            "prerelease": True if is_prerelease else None,
             "commit_sha": commit_sha or None,
             "commit_sha_short": commit_sha_short or None,
             "changelog": pull_request_number,
@@ -119,13 +122,22 @@ def run(source_branch: str, repository: str, build_meta_dir: str) -> int:
         os.makedirs(os.path.join(build_meta_dir, plugin_key), exist_ok=True)
         with open(os.path.join(build_meta_dir, plugin_key, f"{plugin_key}-{version}.json"),
                   "w", encoding="utf-8") as fh:
-            fh.write(jsonio.dumps(meta))
+                   fh.write(jsonio.dumps(meta))
+
+        if release_exists:
+            actions.log(f"  {plugin_name} v{version} - replacing existing prerelease")
+            if gh.release_delete(release_tag, repository) != 0:
+                actions.error(f"Could not delete existing prerelease {release_tag}; refusing to publish replacement")
+                return 1
 
         notes = _release_notes(
             repository, plugin_name, commit_sha, commit_sha_short,
             pull_request_number, pull_request_url)
         actions.log(f"  {plugin_name} v{version} - uploading to GitHub Releases")
-        gh.release_create(release_tag, repository, f"{plugin_name} v{version}", notes, zip_path)
+        if gh.release_create(release_tag, repository, f"{plugin_name} v{version}", notes,
+                             zip_path, prerelease=is_prerelease) != 0:
+            actions.error(f"Could not create {'prerelease' if is_prerelease else 'release'} {release_tag}")
+            return 1
 
     with open("changed_plugins.txt", "w", encoding="utf-8") as fh:
         for line in changed:
