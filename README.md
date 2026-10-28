@@ -34,7 +34,7 @@ This branch contains all published plugin releases.
 | [`Packet Slapper`](#packet-slapper) | `1.1.0` | write-erase | MIT | Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.6.0` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
-| [`reservoarr`](#reservoarr) | `6.5.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
+| [`reservoarr`](#reservoarr) | `6.6.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Segmentarr`](#segmentarr) | `1.5.7` | Tw1zT3d2four7 | MIT | HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile. |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.2981400` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
@@ -470,7 +470,7 @@ Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directl
 
 ### [reservoarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/reservoarr/README.md)
 
-**Version:** `6.5.0` | **Author:** brko7 | **Last Updated:** Oct 25 2026, 10:13 UTC
+**Version:** `6.6.0` | **Author:** brko7 | **Last Updated:** Oct 28 2026, 23:56 UTC
 
 Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying
 
@@ -479,10 +479,10 @@ Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dyi
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.25.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`6.5.0`)](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.5.0/reservoarr-6.5.0.zip)
+- [Latest Release (`6.6.0`)](https://github.com/Dispatcharr/Plugins/releases/download/reservoarr-6.6.0/reservoarr-6.6.0.zip)
 - [All Versions (10 available)](./metadata/reservoarr)
 
-**Maintainers:** brko7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/reservoarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/reservoarr/README.md) | **Last Change:** [`1e7ee8e`](https://github.com/Dispatcharr/Plugins/commit/1e7ee8e75194316b1879059216526e8c96b60070)
+**Maintainers:** brko7 | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/reservoarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/reservoarr/README.md) | **Last Change:** [`5ae46a3`](https://github.com/Dispatcharr/Plugins/commit/5ae46a36306304b783f6bec15b3c88d9f35d8304)
 
 ---
 
@@ -699,4 +699,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 28 2026, 23:15 UTC*
+*Last updated: Oct 28 2026, 23:57 UTC*
