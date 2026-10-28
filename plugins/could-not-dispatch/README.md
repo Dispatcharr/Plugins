@@ -28,6 +28,8 @@ From the Plugin Hub, or by unzipping the release into `/data/plugins`, which cre
 |---|---|
 | Image or video | A path inside the data volume, such as `/data/offline.png`, or an `http(s)` link that is downloaded and cached |
 | Image or video when the provider is full | Optional, given the same way. Shown instead of the card above to a channel that reached the fallback because the provider had no free connection, see below. Needs the API key. Empty: one card for every channel |
+| Show the channels in use | Off by default. Writes on the card for a full provider the channels holding its connections, with the programme on now, see below |
+| Font for the channels in use | Optional: a `.ttf`, `.otf` or `.ttc` file inside the data volume. Empty: the container's sans-serif font |
 | Local port | Where the fallback listens inside the container. Change it only on a conflict |
 | Width, Height | Leave both at 0 to match the picture, up to 1920x1080. Set both to force a size; the picture is fitted inside and padded to keep its shape |
 | Frames per second | 25 by default. Jellyfin keeps the frame rate a session starts with, so a viewer who starts on the card at a lower rate keeps it after the channel is back. Upgrading from 0.3.3 or earlier keeps the value you saved, 5 unless you changed it: set 25 and press **Apply** |
@@ -150,6 +152,20 @@ read of the channel list, done every 15 minutes, gets the usual card. Only these
 can be told apart: Dispatcharr does not tell the plugin why each stream failed, so a broken
 link and a passing outage look the same. The second card is a second encoder, which runs
 only while someone watches it.
+
+With **Show the channels in use** on as well, that card tells the viewer which channels hold
+the connections: one line each, centred, the channel's name and, when Dispatcharr's guide
+has one, the programme on now (`DAZN | Web 4 · Genoa - Juventus`). A programme that only
+repeats the channel's name is left out. The lines start at 58.5% of the picture's height,
+50 px high on a 1080p card with 12 px between them, in grey `#606469`, so the picture should
+leave that part empty and carry its own heading above it. The list follows the same
+20-second memory as the choice of card and is rewritten after every check, so it lags by
+2 to 10 seconds; the encoder reads it again on every frame without restarting. The guide is
+asked only while an account is full, only for channels whose programme has not been read
+or has ended, and with a two-second timeout; when it does not answer the lines keep the
+names alone and it is asked again a minute later. The text needs an `ffmpeg` whose
+`drawtext` has `text_align`, which the Dispatcharr image has; with an older one the card
+shows no lines and the log says why.
 
 **One edge case in failover order.** Dispatcharr rotates the alternate list starting from
 the current stream and wraps around. If the first stream of a channel was unavailable
