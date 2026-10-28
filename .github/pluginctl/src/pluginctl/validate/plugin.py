@@ -19,7 +19,7 @@ from typing import Optional
 
 from ..core import actions, gh, git
 from ..core.version import (is_prerelease_semver, is_semver, is_dispatcharr_version,
-                            prerelease_base, sort_versions_desc, version_greater_than)
+                            prerelease_base, version_greater_than)
 from .detect import METADATA_ONLY_FIELDS, author_in_plugin_json, changed_json_fields, is_safe_name
 
 _GH_DOWNLOAD_RE = re.compile(r"^https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/")
@@ -90,6 +90,16 @@ def count_source_files(plugin_dir: str) -> int:
             if fn not in ignore:
                 count += 1
     return count
+
+
+def current_stable_base(base_raw: Optional[dict]) -> str:
+    """Return the stable base from the base branch's plugin metadata."""
+    if base_raw is None:
+        return ""
+    previous = str(base_raw.get("version") or "")
+    if is_semver(previous):
+        return previous
+    return prerelease_base(previous) or ""
 
 
 def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
@@ -310,15 +320,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
 
     # Version bump
     if is_prerelease:
-        stable_versions = []
-        if repo:
-            for release in gh.release_list(repo):
-                tag = str(release.get("tag", ""))
-                if tag.startswith(f"{plugin_name}-") and not release.get("prerelease"):
-                    candidate = tag[len(f"{plugin_name}-"):]
-                    if is_semver(candidate):
-                        stable_versions.append(candidate)
-        current_stable = sort_versions_desc(stable_versions)[0] if stable_versions else ""
+        current_stable = current_stable_base(base_raw)
         if not current_stable:
             rows.append("| Prerelease base | ❌ | Publish a stable release before submitting a prerelease |")
             failed = True

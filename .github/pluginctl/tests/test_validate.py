@@ -163,9 +163,10 @@ def test_prerelease_requires_current_stable_base(plugin_repo, monkeypatch):
     data = json.loads(pj.read_text())
     data["version"] = "1.0.0-beta.1"
     pj.write_text(json.dumps(data), encoding="utf-8")
-    monkeypatch.setattr(gh, "release_list", lambda repo: [
-        {"tag": "demo-plugin-1.0.0", "prerelease": False},
-    ])
+    monkeypatch.setattr(
+        git, "show",
+        lambda ref: json.dumps({"version": "1.0.0", "author": "alice"}) if ref == "origin/main:plugins/demo-plugin/plugin.json" else None,
+    )
 
     fragment = tmp_path / "frag.md"
     assert validate.run("demo-plugin", "alice", "main", str(fragment), repo="org/repo") == 0
