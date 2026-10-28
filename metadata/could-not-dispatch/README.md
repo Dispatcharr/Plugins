@@ -2,7 +2,7 @@
 
 # Could Not Dispatch
 
-**Version:** `0.7.0` | **Author:** PilaScat | **Last Updated:** Oct 28 2026, 22:09 UTC
+**Version:** `0.7.1` | **Author:** PilaScat | **Last Updated:** Oct 28 2026, 23:14 UTC
 
 Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.0/could-not-dispatch-0.7.0.zip)
-- **Built:** Oct 28 2026, 22:10 UTC
-- **Source Commit:** [`da05ca3`](https://github.com/Dispatcharr/Plugins/commit/da05ca3d3608fa3dffa00ca7f05268f0ba5793a7)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.1/could-not-dispatch-0.7.1.zip)
+- **Built:** Oct 28 2026, 23:15 UTC
+- **Source Commit:** [`6569e4d`](https://github.com/Dispatcharr/Plugins/commit/6569e4de4992a0129b185d8e56a3a314d9b4899e)
 
 **Checksums:**
 ```
-MD5:    e5a47ea1d5743ffd7cf7b1e16c6bafc8
-SHA256: 19fa6be55150c2fc24c6a72ef26db9e0dc2b18feedda699c936f1062a55be38e
+MD5:    cb41a9188f22d87e8327a76add103450
+SHA256: fe31200a07afdecbd2e4902a1faebf859399a39f16c27a24952dc81c978c52b6
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.7.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.1/could-not-dispatch-0.7.1.zip) | Oct 28 2026, 23:15 UTC | [`6569e4d`](https://github.com/Dispatcharr/Plugins/commit/6569e4de4992a0129b185d8e56a3a314d9b4899e) | cb41a9188f22d87e8327a76add103450 | fe31200a07afdecbd2e4902a1faebf859399a39f16c27a24952dc81c978c52b6 |
 | `0.7.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.0/could-not-dispatch-0.7.0.zip) | Oct 28 2026, 22:10 UTC | [`da05ca3`](https://github.com/Dispatcharr/Plugins/commit/da05ca3d3608fa3dffa00ca7f05268f0ba5793a7) | e5a47ea1d5743ffd7cf7b1e16c6bafc8 | 19fa6be55150c2fc24c6a72ef26db9e0dc2b18feedda699c936f1062a55be38e |
 | `0.6.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.6.0/could-not-dispatch-0.6.0.zip) | Oct 25 2026, 00:11 UTC | [`a137c8a`](https://github.com/Dispatcharr/Plugins/commit/a137c8a20c712352f11477ed6251fdfdbd025bee) | c1834c471dc81cb08f40e710a486af24 | 097a6a6337a556bea054c63608267b3f0d17ec7e3bfea88dbc0088f43de2d89b |
 | `0.5.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.1/could-not-dispatch-0.5.1.zip) | Oct 24 2026, 18:47 UTC | [`6a8a793`](https://github.com/Dispatcharr/Plugins/commit/6a8a793c03cc8709e3a02276d99494edd7739650) | 57207ad2fef6e6fc6371177179a9f674 | ab87ea90671fa95d70c547d2d035f60d2b3489d04fbb248131803ef525b9a0a4 |
@@ -77,6 +78,7 @@ From the Plugin Hub, or by unzipping the release into `/data/plugins`, which cre
 | Image or video | A path inside the data volume, such as `/data/offline.png`, or an `http(s)` link that is downloaded and cached |
 | Image or video when the provider is full | Optional, given the same way. Shown instead of the card above to a channel that reached the fallback because the provider had no free connection, see below. Needs the API key. Empty: one card for every channel |
 | Show the channels in use | Off by default. Writes on the card for a full provider the channels holding its connections, with the programme on now, see below |
+| Height of the channels in use (%) | Where the first line starts, from the top, as a share of the picture's height, 0 to 95. 58.5 by default: 632 px on a 1080p card |
 | Font for the channels in use | Optional: a `.ttf`, `.otf` or `.ttc` file inside the data volume. Empty: the container's sans-serif font |
 | Local port | Where the fallback listens inside the container. Change it only on a conflict |
 | Width, Height | Leave both at 0 to match the picture, up to 1920x1080. Set both to force a size; the picture is fitted inside and padded to keep its shape |
@@ -194,8 +196,12 @@ streams are failing after all, and it waits like any other.
 With **Image or video when the provider is full** set, such a channel gets that card instead,
 so the message can say that every connection is in use. The choice is made when the channel
 reaches the fallback: the second card goes to a channel whose every source belongs to a
-provider account seen at its connection limit in the last 20 seconds; any other channel gets
-the usual card, and keeps the card it got until it leaves. A channel created after the last
+provider account seen at its connection limit in the last 20 seconds, counting the other
+channels only, since a channel trying its dead sources holds a connection itself; any other
+channel gets the usual card, and keeps the card it got until it leaves. A channel back on the
+card within 30 seconds of being sent back to its first stream has tried its sources and they
+failed, so it gets the usual card even if the provider was full meanwhile. The log says
+`<channel> gets the card for a full provider` each time that card is given. A channel created after the last
 read of the channel list, done every 15 minutes, gets the usual card. Only these two cases
 can be told apart: Dispatcharr does not tell the plugin why each stream failed, so a broken
 link and a passing outage look the same. The second card is a second encoder, which runs
@@ -204,8 +210,8 @@ only while someone watches it.
 With **Show the channels in use** on as well, that card tells the viewer which channels hold
 the connections: one line each, centred, the channel's name and, when Dispatcharr's guide
 has one, the programme on now (`DAZN | Web 4 · Genoa - Juventus`). A programme that only
-repeats the channel's name is left out. The lines start at 58.5% of the picture's height,
-50 px high on a 1080p card with 12 px between them, in grey `#606469`, so the picture should
+repeats the channel's name is left out. The lines start at **Height of the channels in use**,
+58.5% of the picture's height by default, 50 px high on a 1080p card with 12 px between them, in grey `#606469`, so the picture should
 leave that part empty and carry its own heading above it. The list follows the same
 20-second memory as the choice of card and is rewritten after every check, so it lags by
 2 to 10 seconds; the encoder reads it again on every frame without restarting. The guide is
