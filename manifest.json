@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T20:38:01Z",
+  "generated_at": "2026-10-28T20:47:30Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -272,7 +272,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-17T17:57:27-04:00",
-        "download_count": 5625,
+        "download_count": 5626,
         "latest_version": "1.26.2901902",
         "latest_changelog": "454",
         "latest_md5": "faca88cf2cfb2ace4ed681e9bd75af80",
@@ -594,5 +594,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJdMQAKCRB+wDprTCI0\nzlQsAQDPWLVjNK0PODIIBblXr+R2xM0B9N3wPotDYKi1cCMqxQEAsrvtzYKiCZMy\n8Z2+bDDGHeSOQoObyuzub55dlwW4ygk=\n=UEJx\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJfZwAKCRB+wDprTCI0\nztPlAP48eLNtvEhf4zrfH7sN1/2depApuolMJ1BteAcrg1zqfQEA4Tqmhe/2s+Cl\n06BEjKLID34CfJPRwkDFXUJBoXR09AY=\n=8/SY\n-----END PGP SIGNATURE-----"
 }

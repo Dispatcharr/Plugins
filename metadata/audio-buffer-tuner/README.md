@@ -29,7 +29,7 @@ SHA256: 18b2f649282b8199290a10654868f194c4a3cf1cf02da86ed9b38e7c5115076e
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
 | `0.3.5` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip) | Sep 16 2026, 17:11 UTC | [`3ceeddd`](https://github.com/Dispatcharr/Plugins/commit/3ceeddd53b4d49d5d14584768f69121e8094d6df) | 5cf6208253d8f12c5f0d473211e21728 | 18b2f649282b8199290a10654868f194c4a3cf1cf02da86ed9b38e7c5115076e |
-| `0.3.5-beta.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.3.5-beta.1/audio-buffer-tuner-0.3.5-beta.1.zip) | Oct 28 2026, 20:37 UTC | [`1e2c810`](https://github.com/Dispatcharr/Plugins/commit/1e2c810e9854c54ef3ceb455ca47b40b7088ed99) | da4b0d67748fbe814899063e1d1b9268 | 1962fcc9b1d48a9106ffb6576cf47d7721776b47527bb9e87fae704becc9d904 |
+| `0.3.5-beta.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.3.5-beta.1/audio-buffer-tuner-0.3.5-beta.1.zip) | Oct 28 2026, 20:46 UTC | [`1e2c810`](https://github.com/Dispatcharr/Plugins/commit/1e2c810e9854c54ef3ceb455ca47b40b7088ed99) | da4b0d67748fbe814899063e1d1b9268 | 1962fcc9b1d48a9106ffb6576cf47d7721776b47527bb9e87fae704becc9d904 |
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T20:38:01Z",
+  "generated_at": "2026-10-28T20:47:30Z",
   "manifest": {
     "slug": "audio-buffer-tuner",
     "name": "Audio Buffer Tuner",
@@ -56,7 +56,7 @@
         "commit_sha": "1e2c810e9854c54ef3ceb455ca47b40b7088ed99",
         "commit_sha_short": "1e2c810",
         "changelog": "499",
-        "build_timestamp": "2026-10-28T20:37:31Z",
+        "build_timestamp": "2026-10-28T20:46:59Z",
         "last_updated": "2026-10-28T20:37:08Z",
         "checksum_md5": "da4b0d67748fbe814899063e1d1b9268",
         "checksum_sha256": "1962fcc9b1d48a9106ffb6576cf47d7721776b47527bb9e87fae704becc9d904",
@@ -68,5 +68,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJdLQAKCRB+wDprTCI0\nzlfxAQDHEETx6fA9g2VL2zcOAM7fwWS41GylM2idLC+W29YTLgD+O6WoeGv57KQH\n9aYVarQHrtrRpLOF0WAgw0wp2RLHiAo=\n=WgsS\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJfZQAKCRB+wDprTCI0\nzjYOAQCqzSlUoRzbJhKSwnH6wAT6mY8fAffX5yjjG/p7EB8MxgEAoWBVfOjOCqVo\nFP/tKXkVoKSxbY6hYENOtl6Vt7g41wI=\n=alVB\n-----END PGP SIGNATURE-----"
 }

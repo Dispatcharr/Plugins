@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T20:38:01Z",
+  "generated_at": "2026-10-28T20:47:30Z",
   "manifest": {
     "slug": "dispatcharr-exporter",
     "name": "Dispatcharr Exporter",
@@ -93,7 +93,7 @@
         "commit_sha": "21844bbdf912cf7a31e04c6c5c2dabf7eafd9507",
         "commit_sha_short": "21844bb",
         "changelog": "497",
-        "build_timestamp": "2026-10-28T20:37:37Z",
+        "build_timestamp": "2026-10-28T20:47:07Z",
         "last_updated": "2026-10-28T19:29:49Z",
         "checksum_md5": "60ba2a25ff6a4015d1d83d4fac8ec9eb",
         "checksum_sha256": "68d6ddc6eaeb4c3dac868f50c72e80a5e952dccb804e699265ed2789c688729d",
@@ -105,5 +105,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJdLgAKCRB+wDprTCI0\nzgCwAQDpOBpoMu7BI1q0Ves0Qyil1ThvWYYqVr4uSEU5G8JrxwEA92tlOWGb1xtV\njb/VmbA24Q95ZIcQfQWcLnD2UTcBwQw=\n=sEq+\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJfZgAKCRB+wDprTCI0\nzgtxAP46DGk8dnPsIentWRd7OydES5c9Z/Xj2+P+vmALYtkrOQD/fWq3OF300Zys\ndIETlN4lDCSd5ScBtP6UR4luaeGLrQs=\n=NzvI\n-----END PGP SIGNATURE-----"
 }
