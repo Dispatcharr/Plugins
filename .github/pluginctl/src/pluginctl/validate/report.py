@@ -177,10 +177,10 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append("")
             L.append("### Prerelease submission")
             L.append("")
-            L.append("The following plugin candidate(s) remain manually selectable beside their stable release: "
+            L.append("The following plugins include a prerelease: "
                      + ", ".join(f"`{name}`" for name in prerelease_plugins) + ".")
-            L.append("A candidate does not replace the registry's stable latest release. Reusing its "
-                     "version replaces the existing candidate artifact after merge. See `CONTRIBUTING.md` for promotion guidance.")
+            L.append("Prereleases are manually selectable and do not replace the registry's stable latest release. "
+                     "Reusing a prerelease version replaces its artifact after merge.")
 
         if outside_files and outside_violation:
             overall_failed = True

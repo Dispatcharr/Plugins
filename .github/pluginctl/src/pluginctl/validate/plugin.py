@@ -328,7 +328,7 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
             rows.append(f"| Prerelease base | ❌ | `{version}` must use current stable base `{current_stable}` |")
             failed = True
         else:
-            rows.append(f"| Prerelease base | ✅ | Targets stable `{current_stable}`; replaces the current candidate after publication |")
+            rows.append(f"| Prerelease base | ✅ | `{current_stable}` |")
     elif base_raw is not None:
         old_stable_version = prerelease_base(old_version) or old_version
         if version_greater_than(version, old_stable_version):

@@ -172,7 +172,7 @@ def test_prerelease_requires_current_stable_base(plugin_repo, monkeypatch):
     assert validate.run("demo-plugin", "alice", "main", str(fragment), repo="org/repo") == 0
     text = fragment.read_text(encoding="utf-8")
     assert "| Prerelease | ✅ |" in text
-    assert "| Prerelease base | ✅ |" in text
+    assert "| Prerelease base | ✅ | `1.0.0` |" in text
     assert "\tpass\ttrue-->" in text
 
 

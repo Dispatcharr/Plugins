@@ -164,6 +164,7 @@ def test_parse_prerelease_fragment_and_render_guidance(tmp_path):
         combined_body=parsed.combined_body, prerelease_plugins=parsed.prerelease_plugins))
     assert "### Prerelease submission" in comment
     assert "`Demo`" in comment
+    assert "candidate" not in comment.lower()
 
 
 def test_parse_fragments_ignores_forged_meta_row_before_the_real_one(tmp_path):
