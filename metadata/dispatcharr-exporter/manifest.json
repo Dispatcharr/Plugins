@@ -1,11 +1,13 @@
 {
-  "generated_at": "2026-10-28T14:57:44Z",
+  "generated_at": "2026-10-28T15:25:55Z",
   "manifest": {
     "slug": "dispatcharr-exporter",
     "name": "Dispatcharr Exporter",
     "description": "Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring",
     "author": "sethwv",
     "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/dev-latest/dispatcharr-exporter-dev-latest.zip?version={version}",
     "repo_url": "https://github.com/swvn-dispatch/dispatcharr-exporter",
     "discord_thread": "https://discord.com/channels/1340492560220684331/1451260201775923421",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
@@ -84,8 +86,24 @@
         "url": "dispatcharr-exporter-2.4.2/dispatcharr-exporter-2.4.2.zip",
         "size": 142,
         "download_count": 4
+      },
+      {
+        "version": "3.1.0-dev-1a726b75",
+        "prerelease": true,
+        "commit_sha": "2f5f05a5d7c9fd9bc02cd6711744896097e6b2f0",
+        "commit_sha_short": "2f5f05a",
+        "changelog": "495",
+        "build_timestamp": "2026-10-28T15:25:36Z",
+        "last_updated": "2026-10-28T15:25:16Z",
+        "checksum_md5": "5d0901a84aa690547b605bcdd92f5df1",
+        "checksum_sha256": "4ad138132f905ff6a66c822690d317817e93e5eaa16e03d748e73b962e6ca5d0",
+        "min_dispatcharr_version": "v0.22.0",
+        "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/dev-latest/dispatcharr-exporter-dev-latest.zip?version=3.1.0-dev-1a726b75",
+        "url": "dispatcharr-exporter-3.1.0-dev-1a726b75/dispatcharr-exporter-3.1.0-dev-1a726b75.zip",
+        "size": 156,
+        "download_count": 0
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauINbgAKCRB+wDprTCI0\nzgEMAQDXWlSPUebZx5UKILDflB6dSluOnNI89NnDC6bkLaEongD+JQlV8/Sx8eLF\n6RWtlFc6v6TocZ/svnELb142UaL3SQ0=\n=GaWL\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauIUCAAKCRB+wDprTCI0\nzgbKAP9Ezd+tXXT1ObkW02SjkGb2sG7Vu0Z/U6OdvpEWWl5OgAEAsdk5OW1EyZyJ\nYbk1PkTwSDilR3/qs8rJSt4di3hMggs=\n=dE3B\n-----END PGP SIGNATURE-----"
 }
