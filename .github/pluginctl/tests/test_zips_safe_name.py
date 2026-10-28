@@ -76,3 +76,21 @@ def test_run_skips_external_plugin_when_download_fails(tmp_path, monkeypatch):
     ]
     assert (tmp_path / "changed_plugins.txt").read_text(encoding="utf-8") == ""
     assert not build_meta.exists()
+
+
+def test_run_skips_existing_prerelease_without_republishing_or_webhook(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    plugin_dir.joinpath("plugin.json").write_text(json.dumps({
+        "name": "Demo", "version": "1.0.0-dev.1",
+    }), encoding="utf-8")
+
+    downloads = []
+    monkeypatch.setattr(gh, "release_exists", lambda *args: True)
+    monkeypatch.setattr(zips, "_download", lambda *args: downloads.append(args))
+    monkeypatch.setattr(zips, "subprocess", None)
+
+    assert zips.run("main", "org/repo", str(tmp_path / "build-meta")) == 0
+    assert downloads == []
+    assert (tmp_path / "changed_plugins.txt").read_text(encoding="utf-8") == ""
