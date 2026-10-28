@@ -29,47 +29,7 @@ concurrency:
 
 jobs:
   # --------------------------------------------------------------------------
-  # Job 1: Post a notice on draft PRs, no validation runs yet
-  # --------------------------------------------------------------------------
-  draft-notice:
-    if: github.event.pull_request.draft == true
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout config
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.pull_request.base.ref }}
-          fetch-depth: 1
-          sparse-checkout: .github
-          sparse-checkout-cone-mode: false
-
-      - name: GitHub App token
-        id: token
-        uses: ./.github/actions/gh-app-token
-        with:
-          app-id: ${{ vars.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
-      - name: Post draft notice
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          GH_TOKEN: ${{ steps.token.outputs.token }}
-          BOT_LOGIN: ${{ steps.token.outputs.bot-login }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          MARKER="<!--PLUGIN_VALIDATION_DRAFT_NOTICE-->"
-          COMMENT="$MARKER"$'\n'"This PR is currently a draft. Plugin validation will run once the PR is marked ready for review."
-          EXISTING=$(gh pr view $PR_NUMBER --json comments \
-            | jq -r --arg marker "$MARKER" --arg login "$BOT_LOGIN" '.comments[] | select(.author.login==$login) | select(.body | contains($marker)) | .id')
-          if [ -n "$EXISTING" ]; then
-            gh api "repos/${{ github.repository }}/issues/comments/$EXISTING" -X PATCH -f body="$COMMENT"
-          else
-            gh pr comment $PR_NUMBER --body "$COMMENT"
-          fi
-
-  # --------------------------------------------------------------------------
-  # Job 2: Reconcile labels before any PR automation uses them
+  # Job 1: Reconcile labels before any PR automation uses them
   # --------------------------------------------------------------------------
   ensure-labels:
     if: github.event.pull_request.draft == false
@@ -98,7 +58,7 @@ jobs:
         run: python -m pluginctl ensure-labels
 
   # --------------------------------------------------------------------------
-  # Job 3: Detect which plugins changed and build the matrix (+ blacklist)
+  # Job 2: Detect which plugins changed and build the matrix (+ blacklist)
   # --------------------------------------------------------------------------
   detect-changes:
     needs: [ensure-labels]
@@ -158,7 +118,7 @@ jobs:
             --head-ref "$HEAD_REF"
 
   # --------------------------------------------------------------------------
-  # Job 4: Apply PR labels based on change classification
+  # Job 3: Apply PR labels based on change classification
   # --------------------------------------------------------------------------
   label-pr:
     needs: [detect-changes]
@@ -195,7 +155,7 @@ jobs:
             --close-pr "${{ needs.detect-changes.outputs.close_pr }}"
 
   # --------------------------------------------------------------------------
-  # Job 5: Validate PR title format
+  # Job 4: Validate PR title format
   # --------------------------------------------------------------------------
   validate-title:
     needs: [detect-changes]
@@ -255,7 +215,7 @@ jobs:
       gh_app_private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
   # --------------------------------------------------------------------------
-  # Job 6b: Tooling test suite (reusable workflow) for authorized repo updates
+  # Job 7: Tooling test suite (reusable workflow) for authorized repo updates
   # --------------------------------------------------------------------------
   test-suite:
     needs: [detect-changes]
@@ -269,7 +229,7 @@ jobs:
       ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
   # --------------------------------------------------------------------------
-  # Job 7: Validate each plugin in parallel via matrix
+  # Job 8: Validate each plugin in parallel via matrix
   # --------------------------------------------------------------------------
   validate-plugin:
     needs: [detect-changes]
@@ -332,7 +292,7 @@ jobs:
         run: exit 1
 
   # --------------------------------------------------------------------------
-  # Job 8: Aggregate all fragments, post PR comment, set final status
+  # Job 9: Aggregate all fragments, post PR comment, set final status
   # --------------------------------------------------------------------------
   report:
     needs: [detect-changes, validate-plugin, codeql-analyze, clamav-scan, validate-title, test-suite]
@@ -463,7 +423,7 @@ jobs:
           exit 1
 
   # --------------------------------------------------------------------------
-  # Job 9: Auto-close unauthorized PRs
+  # Job 10: Auto-close unauthorized PRs
   # --------------------------------------------------------------------------
   close-unauthorized:
     needs: detect-changes
@@ -503,7 +463,7 @@ jobs:
             --fragments-dir /dev/null
 
   # --------------------------------------------------------------------------
-  # Job 10: Gate, single fixed status check for branch protection rules
+  # Job 11: Gate, single fixed status check for branch protection rules
   # --------------------------------------------------------------------------
   plugin-pr-check:
     name: Plugin PR Check
