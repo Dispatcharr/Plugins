@@ -192,7 +192,7 @@ Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitori
 - [Latest Release (`3.1.0`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip)
 - [All Versions (5 available)](./metadata/dispatcharr-exporter)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-exporter) | **Last Change:** [`2f5f05a`](https://github.com/Dispatcharr/Plugins/commit/2f5f05a5d7c9fd9bc02cd6711744896097e6b2f0)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-exporter) | **Last Change:** [`21844bb`](https://github.com/Dispatcharr/Plugins/commit/21844bbdf912cf7a31e04c6c5c2dabf7eafd9507)
 
 ---
 
@@ -391,9 +391,9 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
 **Downloads:**
 - [Latest Release (`0.5.0`)](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.5.0/multiview-0.5.0.zip)
-- [All Versions (10 available)](./metadata/multiview)
+- [All Versions (11 available)](./metadata/multiview)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`db79a9f`](https://github.com/Dispatcharr/Plugins/commit/db79a9f0d2accf70c4fc923bbdf5a6ef734427bb)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`0e90fcc`](https://github.com/Dispatcharr/Plugins/commit/0e90fcc9d57acafbb0dbb166cfbdf4574a7c2d59)
 
 ---
 
@@ -699,4 +699,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 28 2026, 15:26 UTC*
+*Last updated: Oct 28 2026, 19:30 UTC*

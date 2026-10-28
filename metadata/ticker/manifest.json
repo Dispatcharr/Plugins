@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T14:57:44Z",
+  "generated_at": "2026-10-28T19:30:27Z",
   "manifest": {
     "slug": "ticker",
     "name": "Ticker",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-22T23:29:00Z",
-    "download_count": 399,
+    "download_count": 400,
     "latest": {
       "version": "0.5.05",
       "commit_sha": "7685d8a0bc36087296f3ceff2e766e83fea5f6e6",
@@ -28,7 +28,7 @@
       "latest_url": "ticker-0.5.05/ticker-0.5.05.zip",
       "url": "ticker-0.5.05/ticker-0.5.05.zip",
       "size": 2142,
-      "download_count": 50
+      "download_count": 51
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.05/ticker-0.5.05.zip",
         "url": "ticker-0.5.05/ticker-0.5.05.zip",
         "size": 2142,
-        "download_count": 50
+        "download_count": 51
       },
       {
         "version": "0.5.04",
@@ -117,5 +117,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauINcgAKCRB+wDprTCI0\nzneWAQDryotrXnsJXjtU2w1lNxigwjrEk3v46087Zl8lokiBywD/agoIhiShToNH\nNKOTWbajhj2nX+fFUSiihXJm9ZLYzQc=\n=vtt9\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJNXAAKCRB+wDprTCI0\nzhoaAP96gid21bK2JTU52+lYwra/K69EBlS88mXLoA2C4CnTPgD8Dtq2uZx/ahRr\n7TWZxc86v+uSrKopOnTCflrpT0ydyA0=\n=NSga\n-----END PGP SIGNATURE-----"
 }

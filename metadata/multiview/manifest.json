@@ -1,11 +1,13 @@
 {
-  "generated_at": "2026-10-28T14:57:44Z",
+  "generated_at": "2026-10-28T19:30:27Z",
   "manifest": {
     "slug": "multiview",
     "name": "Multiview",
     "description": "Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg",
     "author": "sethwv",
     "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v{version}/multiview-{version}.zip",
     "repo_url": "https://github.com/swvn-dispatch/dispatcharr-multiview",
     "discord_thread": "https://discord.com/channels/1340492560220684331/1509200002407465001",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
@@ -168,8 +170,24 @@
         "url": "multiview-0.2.1/multiview-0.2.1.zip",
         "size": 57,
         "download_count": 27
+      },
+      {
+        "version": "0.5.0-dev-be18c70e",
+        "prerelease": true,
+        "commit_sha": "0e90fcc9d57acafbb0dbb166cfbdf4574a7c2d59",
+        "commit_sha_short": "0e90fcc",
+        "changelog": "496",
+        "build_timestamp": "2026-10-28T19:30:14Z",
+        "last_updated": "2026-10-28T19:24:56Z",
+        "checksum_md5": "116a9fb1f4ab907158864c0a75fc0aeb",
+        "checksum_sha256": "edc05fd16912078a45939661d8dc5302492a36cc70201b517e85ae6a6d13280e",
+        "min_dispatcharr_version": "v0.27.0",
+        "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.5.0-dev-be18c70e/multiview-0.5.0-dev-be18c70e.zip",
+        "url": "multiview-0.5.0-dev-be18c70e/multiview-0.5.0-dev-be18c70e.zip",
+        "size": 377,
+        "download_count": 0
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauINcAAKCRB+wDprTCI0\nziweAP4tCCv5M/aEqwiFOwerSeDLJQmHbKah7dLIbUePtOAphAEAnPSgYe2sp2nu\nzK1yWyEM2iQox+HkJiyxAYHp538lHQo=\n=fhAJ\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJNWgAKCRB+wDprTCI0\nzk1wAP0f6xc1M0+oHPH8+Xs5Vv8RsQcZ0xZWwExMzt/iNtGKJQEAlDdSPmFOsooN\n74C1HOWUsZmBjs8B6A+sp6+IVHXf5gQ=\n=zRam\n-----END PGP SIGNATURE-----"
 }

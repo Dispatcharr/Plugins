@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T15:25:55Z",
+  "generated_at": "2026-10-28T19:30:27Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-24T15:39:07Z",
-    "download_count": 3895,
+    "download_count": 3903,
     "latest": {
       "version": "1.26.2971911",
       "commit_sha": "b786c1415f1c629c25bb5c2356ad9d7c2e7e8377",
@@ -32,7 +32,7 @@
       "latest_url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
       "url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
       "size": 767,
-      "download_count": 217
+      "download_count": 223
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2971911/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
         "size": 767,
-        "download_count": 217
+        "download_count": 223
       },
       {
         "version": "1.26.2911354",
@@ -153,7 +153,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2481147/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2481147/channel-mapparr-1.26.2481147.zip",
         "size": 747,
-        "download_count": 1362
+        "download_count": 1364
       },
       {
         "version": "1.26.2291823",
@@ -187,5 +187,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauIUBwAKCRB+wDprTCI0\nzt4sAQCO/C20Q+1C9gHuZxY1PIsJ6UtG2e8WNR9HZQM4to1trQD/fQ1GsTlSN92Z\nvX8FBuE9nT/yA/WXI4q/RoCQRrPGIg4=\n=RRVf\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJNWAAKCRB+wDprTCI0\nzq0lAP0c7d7RXvMFbF4FXPy9pfwA9JBEVxfJVD01qjeZ/wVsowEAy9rYDLCB1CEI\nlLGGPhsRhQ7fak+h8g0c+rtpWj3g/AM=\n=8wCL\n-----END PGP SIGNATURE-----"
 }
