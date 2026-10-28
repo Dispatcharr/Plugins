@@ -2,7 +2,7 @@
 
 # Could Not Dispatch
 
-**Version:** `0.6.0` | **Author:** PilaScat | **Last Updated:** Oct 25 2026, 00:10 UTC
+**Version:** `0.7.0` | **Author:** PilaScat | **Last Updated:** Oct 28 2026, 22:09 UTC
 
 Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.6.0/could-not-dispatch-0.6.0.zip)
-- **Built:** Oct 25 2026, 00:11 UTC
-- **Source Commit:** [`a137c8a`](https://github.com/Dispatcharr/Plugins/commit/a137c8a20c712352f11477ed6251fdfdbd025bee)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.0/could-not-dispatch-0.7.0.zip)
+- **Built:** Oct 28 2026, 22:10 UTC
+- **Source Commit:** [`da05ca3`](https://github.com/Dispatcharr/Plugins/commit/da05ca3d3608fa3dffa00ca7f05268f0ba5793a7)
 
 **Checksums:**
 ```
-MD5:    c1834c471dc81cb08f40e710a486af24
-SHA256: 097a6a6337a556bea054c63608267b3f0d17ec7e3bfea88dbc0088f43de2d89b
+MD5:    e5a47ea1d5743ffd7cf7b1e16c6bafc8
+SHA256: 19fa6be55150c2fc24c6a72ef26db9e0dc2b18feedda699c936f1062a55be38e
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.7.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.0/could-not-dispatch-0.7.0.zip) | Oct 28 2026, 22:10 UTC | [`da05ca3`](https://github.com/Dispatcharr/Plugins/commit/da05ca3d3608fa3dffa00ca7f05268f0ba5793a7) | e5a47ea1d5743ffd7cf7b1e16c6bafc8 | 19fa6be55150c2fc24c6a72ef26db9e0dc2b18feedda699c936f1062a55be38e |
 | `0.6.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.6.0/could-not-dispatch-0.6.0.zip) | Oct 25 2026, 00:11 UTC | [`a137c8a`](https://github.com/Dispatcharr/Plugins/commit/a137c8a20c712352f11477ed6251fdfdbd025bee) | c1834c471dc81cb08f40e710a486af24 | 097a6a6337a556bea054c63608267b3f0d17ec7e3bfea88dbc0088f43de2d89b |
 | `0.5.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.1/could-not-dispatch-0.5.1.zip) | Oct 24 2026, 18:47 UTC | [`6a8a793`](https://github.com/Dispatcharr/Plugins/commit/6a8a793c03cc8709e3a02276d99494edd7739650) | 57207ad2fef6e6fc6371177179a9f674 | ab87ea90671fa95d70c547d2d035f60d2b3489d04fbb248131803ef525b9a0a4 |
 | `0.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip) | Oct 06 2026, 23:20 UTC | [`8e2b381`](https://github.com/Dispatcharr/Plugins/commit/8e2b381c3088d1899c334452f36bcb201678c319) | 82e6b5ae22f415dbf37b5a2204950451 | 59995d4a526216d2000b2dbe36a8dbb64aa0fb8b702685ad4c1844388e1b0ec4 |
@@ -75,6 +76,8 @@ From the Plugin Hub, or by unzipping the release into `/data/plugins`, which cre
 |---|---|
 | Image or video | A path inside the data volume, such as `/data/offline.png`, or an `http(s)` link that is downloaded and cached |
 | Image or video when the provider is full | Optional, given the same way. Shown instead of the card above to a channel that reached the fallback because the provider had no free connection, see below. Needs the API key. Empty: one card for every channel |
+| Show the channels in use | Off by default. Writes on the card for a full provider the channels holding its connections, with the programme on now, see below |
+| Font for the channels in use | Optional: a `.ttf`, `.otf` or `.ttc` file inside the data volume. Empty: the container's sans-serif font |
 | Local port | Where the fallback listens inside the container. Change it only on a conflict |
 | Width, Height | Leave both at 0 to match the picture, up to 1920x1080. Set both to force a size; the picture is fitted inside and padded to keep its shape |
 | Frames per second | 25 by default. Jellyfin keeps the frame rate a session starts with, so a viewer who starts on the card at a lower rate keeps it after the channel is back. Upgrading from 0.3.3 or earlier keeps the value you saved, 5 unless you changed it: set 25 and press **Apply** |
@@ -197,6 +200,20 @@ read of the channel list, done every 15 minutes, gets the usual card. Only these
 can be told apart: Dispatcharr does not tell the plugin why each stream failed, so a broken
 link and a passing outage look the same. The second card is a second encoder, which runs
 only while someone watches it.
+
+With **Show the channels in use** on as well, that card tells the viewer which channels hold
+the connections: one line each, centred, the channel's name and, when Dispatcharr's guide
+has one, the programme on now (`DAZN | Web 4 · Genoa - Juventus`). A programme that only
+repeats the channel's name is left out. The lines start at 58.5% of the picture's height,
+50 px high on a 1080p card with 12 px between them, in grey `#606469`, so the picture should
+leave that part empty and carry its own heading above it. The list follows the same
+20-second memory as the choice of card and is rewritten after every check, so it lags by
+2 to 10 seconds; the encoder reads it again on every frame without restarting. The guide is
+asked only while an account is full, only for channels whose programme has not been read
+or has ended, and with a two-second timeout; when it does not answer the lines keep the
+names alone and it is asked again a minute later. The text needs an `ffmpeg` whose
+`drawtext` has `text_align`, which the Dispatcharr image has; with an older one the card
+shows no lines and the log says why.
 
 **One edge case in failover order.** Dispatcharr rotates the alternate list starting from
 the current stream and wraps around. If the first stream of a channel was unavailable

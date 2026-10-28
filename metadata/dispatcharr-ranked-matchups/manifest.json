@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T19:30:27Z",
+  "generated_at": "2026-10-28T22:10:27Z",
   "manifest": {
     "slug": "dispatcharr-ranked-matchups",
     "name": "Ranked Matchups (Top Games)",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-16T14:29:09Z",
-    "download_count": 781,
+    "download_count": 782,
     "latest": {
       "version": "1.36.0",
       "commit_sha": "aaac7b46076be8379e4bc9a0adc97e51807401c5",
@@ -29,7 +29,7 @@
       "latest_url": "dispatcharr-ranked-matchups-1.36.0/dispatcharr-ranked-matchups-1.36.0.zip",
       "url": "dispatcharr-ranked-matchups-1.36.0/dispatcharr-ranked-matchups-1.36.0.zip",
       "size": 787,
-      "download_count": 242
+      "download_count": 243
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.36.0/plugin.zip",
         "url": "dispatcharr-ranked-matchups-1.36.0/dispatcharr-ranked-matchups-1.36.0.zip",
         "size": 787,
-        "download_count": 242
+        "download_count": 243
       },
       {
         "version": "1.35.0",
@@ -174,5 +174,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJNWQAKCRB+wDprTCI0\nzuBrAP4l54eXBmn9C+c4HxNK4uAKDVdivYwCE3d8HGmzm6kAsAEAwHXUrsuMqYZk\nZYRsoFJk5YyQY6dfQAsdWa49p+TrDAU=\n=B+ma\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJy2AAKCRB+wDprTCI0\nzkWeAP43t5IgPLDzRRzkisoTmdy1I2wmn5qLXlE6wH2RFWQJ+wEApN63FoCXMN4r\no6b2TpyHRkoBFeIosfLfUWJXRjDZag8=\n=ZC9K\n-----END PGP SIGNATURE-----"
 }
