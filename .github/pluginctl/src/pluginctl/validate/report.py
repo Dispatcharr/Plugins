@@ -180,7 +180,7 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append("The following plugins include a prerelease: "
                      + ", ".join(f"`{name}`" for name in prerelease_plugins) + ".")
             L.append("Prereleases are manually selectable and do not replace the registry's stable latest release. "
-                     "Reusing a prerelease version replaces its artifact after merge.")
+                     "Only one prerelease is retained per plugin.")
 
         if outside_files and outside_violation:
             overall_failed = True
