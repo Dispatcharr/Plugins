@@ -12,6 +12,7 @@ This branch contains all published plugin releases.
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.3.5` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
+| [`Automap Channelarr`](#automap-channelarr) | `0.2.0` | Megamannen | Artistic-2.0 | Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper. |
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2971911` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
 | [`Channel Name Cleaner`](#channel-name-cleaner) | `0.2.0` | noodlemctwoodle | MIT | Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
@@ -63,6 +64,25 @@ Speeds up channel startup for low-bitrate (usually audio only) streams by loweri
 - [All Versions (1 available)](./metadata/audio-buffer-tuner)
 
 **Maintainers:** CtznSniiips | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/audio-buffer-tuner) | **Last Change:** [`3ceeddd`](https://github.com/Dispatcharr/Plugins/commit/3ceeddd53b4d49d5d14584768f69121e8094d6df)
+
+---
+
+
+### [Automap Channelarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/automap-channelarr/README.md)
+
+**Version:** `0.2.0` | **Author:** Megamannen | **Last Updated:** Oct 28 2026, 00:30 UTC
+
+Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper.
+
+[![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic--2.0-blue?style=flat-square)](https://spdx.org/licenses/Artistic-2.0.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Megamannen/dispatcharr-plugins/)
+
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.20.0-brightgreen?style=flat-square)
+
+**Downloads:**
+- [Latest Release (`0.2.0`)](https://github.com/Dispatcharr/Plugins/releases/download/automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip)
+- [All Versions (1 available)](./metadata/automap-channelarr)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/automap-channelarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/automap-channelarr/README.md) | **Last Change:** [`11962f9`](https://github.com/Dispatcharr/Plugins/commit/11962f98d23be75084ab4c565f834e547c2ad0a3)
 
 ---
 
@@ -486,11 +506,11 @@ HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams in
 
 ### [Stream Dripper](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-dripper/README.md)
 
-**Version:** `2.0.0` | **Author:** Megamannen | **Last Updated:** Sep 15 2026, 20:02 UTC
+**Version:** `2.0.0` | **Author:** Megamannen | **Last Updated:** Oct 28 2026, 00:30 UTC
 
 Automatically drops all active streams once per day at a configured time, with a manual drop-now button.
 
-[![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic--2.0-blue?style=flat-square)](https://spdx.org/licenses/Artistic-2.0.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Megamannen/dispatcharr-plugin-stream-dripper/)
+[![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic--2.0-blue?style=flat-square)](https://spdx.org/licenses/Artistic-2.0.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Megamannen/dispatcharr-plugins/)
 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.25.0-brightgreen?style=flat-square)
 
@@ -498,7 +518,7 @@ Automatically drops all active streams once per day at a configured time, with a
 - [Latest Release (`2.0.0`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-dripper-2.0.0/stream-dripper-2.0.0.zip)
 - [All Versions (2 available)](./metadata/stream-dripper)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-dripper) | **Last Change:** [`846d0fe`](https://github.com/Dispatcharr/Plugins/commit/846d0fea839c1e3c2ebad8e8744c3cb4a0927eaf)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-dripper) | **Last Change:** [`11962f9`](https://github.com/Dispatcharr/Plugins/commit/11962f98d23be75084ab4c565f834e547c2ad0a3)
 
 ---
 
@@ -679,4 +699,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Oct 26 2026, 19:16 UTC*
+*Last updated: Oct 28 2026, 00:31 UTC*

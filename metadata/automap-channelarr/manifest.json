@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-10-28T00:31:14Z",
+  "manifest": {
+    "slug": "automap-channelarr",
+    "name": "Automap Channelarr",
+    "description": "Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper.",
+    "author": "Megamannen",
+    "license": "Artistic-2.0",
+    "repo_url": "https://github.com/Megamannen/dispatcharr-plugins/",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-10-27T20:30:32-04:00",
+    "download_count": 0,
+    "latest": {
+      "version": "0.2.0",
+      "commit_sha": "11962f98d23be75084ab4c565f834e547c2ad0a3",
+      "commit_sha_short": "11962f9",
+      "changelog": "491",
+      "build_timestamp": "2026-10-28T00:30:51Z",
+      "last_updated": "2026-10-27T20:30:32-04:00",
+      "checksum_md5": "c599844a14e7afee1478ae38a4cdca08",
+      "checksum_sha256": "2142383cf74331857055494896fb185310a86301000cb0c50b094adc8e13734e",
+      "min_dispatcharr_version": "0.20.0",
+      "max_dispatcharr_version": "",
+      "latest_url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
+      "url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
+      "size": 320,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "0.2.0",
+        "commit_sha": "11962f98d23be75084ab4c565f834e547c2ad0a3",
+        "commit_sha_short": "11962f9",
+        "changelog": "491",
+        "build_timestamp": "2026-10-28T00:30:51Z",
+        "last_updated": "2026-10-27T20:30:32-04:00",
+        "checksum_md5": "c599844a14e7afee1478ae38a4cdca08",
+        "checksum_sha256": "2142383cf74331857055494896fb185310a86301000cb0c50b094adc8e13734e",
+        "min_dispatcharr_version": "0.20.0",
+        "url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
+        "size": 320,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauFCVgAKCRB+wDprTCI0\nziB9AQCgJr0OOhaDag/t8qlZvEbSakU4cgtZiDBPoHCIShszLAD/XlW1TNy0+8nY\nHE4rVs6pG9X4vJC2tEqcuyKPS5zSPQo=\n=jtsU\n-----END PGP SIGNATURE-----"
+}
