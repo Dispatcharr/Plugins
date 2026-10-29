@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T23:56:54Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "could-not-dispatch",
     "name": "Could Not Dispatch",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-28T23:14:57Z",
-    "download_count": 1440,
+    "download_count": 1470,
     "latest": {
       "version": "0.7.1",
       "commit_sha": "6569e4de4992a0129b185d8e56a3a314d9b4899e",
@@ -28,7 +28,7 @@
       "latest_url": "could-not-dispatch-0.7.1/could-not-dispatch-0.7.1.zip",
       "url": "could-not-dispatch-0.7.1/could-not-dispatch-0.7.1.zip",
       "size": 70,
-      "download_count": 2
+      "download_count": 22
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.1/could-not-dispatch-0.7.1.zip",
         "url": "could-not-dispatch-0.7.1/could-not-dispatch-0.7.1.zip",
         "size": 70,
-        "download_count": 2
+        "download_count": 22
       },
       {
         "version": "0.7.0",
@@ -57,7 +57,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.0/could-not-dispatch-0.7.0.zip",
         "url": "could-not-dispatch-0.7.0/could-not-dispatch-0.7.0.zip",
         "size": 69,
-        "download_count": 2
+        "download_count": 4
       },
       {
         "version": "0.6.0",
@@ -71,7 +71,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.6.0/could-not-dispatch-0.6.0.zip",
         "url": "could-not-dispatch-0.6.0/could-not-dispatch-0.6.0.zip",
         "size": 65,
-        "download_count": 151
+        "download_count": 152
       },
       {
         "version": "0.5.1",
@@ -85,7 +85,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.5.1/could-not-dispatch-0.5.1.zip",
         "url": "could-not-dispatch-0.5.1/could-not-dispatch-0.5.1.zip",
         "size": 63,
-        "download_count": 15
+        "download_count": 16
       },
       {
         "version": "0.5.0",
@@ -99,7 +99,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.5.0/could-not-dispatch-0.5.0.zip",
         "url": "could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip",
         "size": 63,
-        "download_count": 320
+        "download_count": 321
       },
       {
         "version": "0.4.0",
@@ -113,7 +113,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.4.0/could-not-dispatch-0.4.0.zip",
         "url": "could-not-dispatch-0.4.0/could-not-dispatch-0.4.0.zip",
         "size": 63,
-        "download_count": 361
+        "download_count": 362
       },
       {
         "version": "0.3.3",
@@ -127,7 +127,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.3.3/could-not-dispatch-0.3.3.zip",
         "url": "could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip",
         "size": 61,
-        "download_count": 18
+        "download_count": 19
       },
       {
         "version": "0.3.1",
@@ -141,7 +141,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.3.1/could-not-dispatch-0.3.1.zip",
         "url": "could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip",
         "size": 61,
-        "download_count": 13
+        "download_count": 14
       },
       {
         "version": "0.2.1",
@@ -155,7 +155,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.2.1/could-not-dispatch-0.2.1.zip",
         "url": "could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip",
         "size": 60,
-        "download_count": 27
+        "download_count": 28
       },
       {
         "version": "0.1.0",
@@ -169,9 +169,9 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.1.0/could-not-dispatch-0.1.0.zip",
         "url": "could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip",
         "size": 57,
-        "download_count": 531
+        "download_count": 532
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauKLygAKCRB+wDprTCI0\nzm5IAQCF1ezD2YVEKQ5l0MbmkOonGwfwpu2EASzgdZv0i+JEqwEA+1LBg77kpV2v\n1UUZzb+KkzTDCnFRucf0HvSCAjRskw4=\n=OIz+\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM6gAKCRB+wDprTCI0\nzkNVAP9ODDQiwoMyRK/ve50z8o0DGbf8NN9OnBh8QYruNYetfAEAiHXy/ByiLKPo\nGwXWCnjdjAoMjFz+ZuuvN7P80F+Ojgs=\n=3S8Q\n-----END PGP SIGNATURE-----"
 }

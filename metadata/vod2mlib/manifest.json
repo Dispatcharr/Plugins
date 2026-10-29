@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T23:56:54Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "vod2mlib",
     "name": "VOD to Media Library",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-05T21:29:03Z",
-    "download_count": 3208,
+    "download_count": 3224,
     "latest": {
       "version": "1.18.1",
       "commit_sha": "5a85167a421f22ad9e0ec161b31662374deadc07",
@@ -29,7 +29,7 @@
       "latest_url": "vod2mlib-1.18.1/vod2mlib-1.18.1.zip",
       "url": "vod2mlib-1.18.1/vod2mlib-1.18.1.zip",
       "size": 168,
-      "download_count": 536
+      "download_count": 544
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.18.1/plugin-vod2mlib-v1.18.1.zip",
         "url": "vod2mlib-1.18.1/vod2mlib-1.18.1.zip",
         "size": 168,
-        "download_count": 536
+        "download_count": 544
       },
       {
         "version": "1.18.0",
@@ -60,7 +60,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.18.0/plugin-vod2mlib-v1.18.0.zip",
         "url": "vod2mlib-1.18.0/vod2mlib-1.18.0.zip",
         "size": 164,
-        "download_count": 1090
+        "download_count": 1091
       },
       {
         "version": "1.17.0",
@@ -75,7 +75,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.17.0/plugin-vod2mlib-v1.17.0.zip",
         "url": "vod2mlib-1.17.0/vod2mlib-1.17.0.zip",
         "size": 159,
-        "download_count": 6
+        "download_count": 7
       },
       {
         "version": "1.16.1",
@@ -90,7 +90,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.16.1/plugin-vod2mlib-v1.16.1.zip",
         "url": "vod2mlib-1.16.1/vod2mlib-1.16.1.zip",
         "size": 156,
-        "download_count": 0
+        "download_count": 1
       },
       {
         "version": "1.16.0",
@@ -105,7 +105,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.16.0/plugin-vod2mlib-v1.16.0.zip",
         "url": "vod2mlib-1.16.0/vod2mlib-1.16.0.zip",
         "size": 154,
-        "download_count": 966
+        "download_count": 967
       },
       {
         "version": "1.15.2",
@@ -117,7 +117,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.15.2/plugin-vod2mlib-v1.15.2.zip",
         "url": "vod2mlib-1.15.2/vod2mlib-1.15.2.zip",
         "size": 151,
-        "download_count": 466
+        "download_count": 467
       },
       {
         "version": "1.15.1",
@@ -129,7 +129,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.15.1/plugin-vod2mlib-v1.15.1.zip",
         "url": "vod2mlib-1.15.1/vod2mlib-1.15.1.zip",
         "size": 148,
-        "download_count": 139
+        "download_count": 140
       },
       {
         "version": "1.15.0",
@@ -141,7 +141,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.15.0/plugin-vod2mlib-v1.15.0.zip",
         "url": "vod2mlib-1.15.0/vod2mlib-1.15.0.zip",
         "size": 145,
-        "download_count": 3
+        "download_count": 4
       },
       {
         "version": "1.14.3",
@@ -153,9 +153,9 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.14.3/plugin-vod2mlib-v1.14.3.zip",
         "url": "vod2mlib-1.14.3/vod2mlib-1.14.3.zip",
         "size": 142,
-        "download_count": 2
+        "download_count": 3
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauKLzgAKCRB+wDprTCI0\nzoJ8AQDMhPqUj8GUZg8By6jAkfeEBcqWlmzlPbj+Gx3uQJmZZwD8CqRbtN/+cJwV\nHMsXU/WopwL1pdvKeK4r+grREd31wQU=\n=hmO6\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM8AAKCRB+wDprTCI0\nzhAoAP9iufOMrTbAgrcfjeAtNNrcrwv8qJuiWtQZ+fDTDrMTBQD9HfBYN5LYevVE\nntmTs0lkayuH8+MGmbA43Mj9fcYMpwc=\n=23e4\n-----END PGP SIGNATURE-----"
 }

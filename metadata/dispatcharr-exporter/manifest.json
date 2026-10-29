@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T20:47:30Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "dispatcharr-exporter",
     "name": "Dispatcharr Exporter",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-07-18T13:29:39-04:00",
-    "download_count": 442,
+    "download_count": 447,
     "latest": {
       "version": "3.1.0",
       "commit_sha": "ddffa49420c5dd513a9a7876998a72ce295e2242",
@@ -28,7 +28,7 @@
       "latest_url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
       "url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
       "size": 143,
-      "download_count": 332
+      "download_count": 333
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "min_dispatcharr_version": "v0.22.0",
         "url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
         "size": 143,
-        "download_count": 332
+        "download_count": 333
       },
       {
         "version": "3.0.1",
@@ -57,7 +57,7 @@
         "min_dispatcharr_version": "v0.22.0",
         "url": "dispatcharr-exporter-3.0.1/dispatcharr-exporter-3.0.1.zip",
         "size": 140,
-        "download_count": 101
+        "download_count": 102
       },
       {
         "version": "3.0.0",
@@ -71,7 +71,7 @@
         "min_dispatcharr_version": "v0.22.0",
         "url": "dispatcharr-exporter-3.0.0/dispatcharr-exporter-3.0.0.zip",
         "size": 139,
-        "download_count": 5
+        "download_count": 6
       },
       {
         "version": "2.4.2",
@@ -85,7 +85,7 @@
         "min_dispatcharr_version": "v0.19.0",
         "url": "dispatcharr-exporter-2.4.2/dispatcharr-exporter-2.4.2.zip",
         "size": 142,
-        "download_count": 4
+        "download_count": 5
       },
       {
         "version": "3.1.0-dev-3b0097e4",
@@ -101,9 +101,9 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.1.0-dev-3b0097e4/dispatcharr-exporter-3.1.0-dev-3b0097e4.zip",
         "url": "dispatcharr-exporter-3.1.0-dev-3b0097e4/dispatcharr-exporter-3.1.0-dev-3b0097e4.zip",
         "size": 156,
-        "download_count": 0
+        "download_count": 1
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJfZgAKCRB+wDprTCI0\nzgtxAP46DGk8dnPsIentWRd7OydES5c9Z/Xj2+P+vmALYtkrOQD/fWq3OF300Zys\ndIETlN4lDCSd5ScBtP6UR4luaeGLrQs=\n=NzvI\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM6gAKCRB+wDprTCI0\nzu42AQCjgjPWNgqlU35CR6jXdN9tNUGiIk2yX639JX6RiV52DwD/Q2X6ugNsabxx\nbcz/qNNjAm7qwlIaGYbZEySG0Uz/xA8=\n=yDtJ\n-----END PGP SIGNATURE-----"
 }

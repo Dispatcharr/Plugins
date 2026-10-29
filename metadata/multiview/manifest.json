@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T23:15:25Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "multiview",
     "name": "Multiview",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-15T19:58:49Z",
-    "download_count": 1503,
+    "download_count": 1518,
     "latest": {
       "version": "0.5.0",
       "commit_sha": "db79a9f0d2accf70c4fc923bbdf5a6ef734427bb",
@@ -28,7 +28,7 @@
       "latest_url": "multiview-0.5.0/multiview-0.5.0.zip",
       "url": "multiview-0.5.0/multiview-0.5.0.zip",
       "size": 377,
-      "download_count": 215
+      "download_count": 220
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.5.0/multiview-0.5.0.zip",
         "size": 377,
-        "download_count": 215
+        "download_count": 220
       },
       {
         "version": "0.4.3",
@@ -57,7 +57,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.4.3/multiview-0.4.3.zip",
         "size": 361,
-        "download_count": 478
+        "download_count": 479
       },
       {
         "version": "0.4.2",
@@ -71,7 +71,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.4.2/multiview-0.4.2.zip",
         "size": 360,
-        "download_count": 355
+        "download_count": 356
       },
       {
         "version": "0.4.1",
@@ -85,7 +85,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.4.1/multiview-0.4.1.zip",
         "size": 360,
-        "download_count": 61
+        "download_count": 62
       },
       {
         "version": "0.4.0",
@@ -99,7 +99,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.4.0/multiview-0.4.0.zip",
         "size": 359,
-        "download_count": 3
+        "download_count": 4
       },
       {
         "version": "0.3.1",
@@ -113,7 +113,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.3.1/multiview-0.3.1.zip",
         "size": 288,
-        "download_count": 139
+        "download_count": 140
       },
       {
         "version": "0.3.0",
@@ -127,7 +127,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.3.0/multiview-0.3.0.zip",
         "size": 288,
-        "download_count": 97
+        "download_count": 98
       },
       {
         "version": "0.2.3",
@@ -141,7 +141,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.2.3/multiview-0.2.3.zip",
         "size": 60,
-        "download_count": 106
+        "download_count": 107
       },
       {
         "version": "0.2.2",
@@ -155,7 +155,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.2.2/multiview-0.2.2.zip",
         "size": 58,
-        "download_count": 22
+        "download_count": 23
       },
       {
         "version": "0.2.1",
@@ -169,7 +169,7 @@
         "min_dispatcharr_version": "v0.27.0",
         "url": "multiview-0.2.1/multiview-0.2.1.zip",
         "size": 57,
-        "download_count": 27
+        "download_count": 28
       },
       {
         "version": "0.5.0-dev-be18c70e",
@@ -185,9 +185,9 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.5.0-dev-be18c70e/multiview-0.5.0-dev-be18c70e.zip",
         "url": "multiview-0.5.0-dev-be18c70e/multiview-0.5.0-dev-be18c70e.zip",
         "size": 377,
-        "download_count": 0
+        "download_count": 1
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauKCEwAKCRB+wDprTCI0\nziO0AP9hIOw1o57csR6hlUvBBcFS8ciBoxt564HZuukfVrhqdgD+PgSNI5jbPEYJ\nLTuZ4onYck1Gu3S13EJA3LlpaS6QfQk=\n=fnsc\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM7QAKCRB+wDprTCI0\nzg/oAP9koQnbWD3eH+mMrbQbKOvpKz0YqWvyzEYjvZX3RqdeagD/YDq/n4jmcl+L\nYQLAWTvM6thqdTycvU7VfFkmsd1rmgc=\n=PSRX\n-----END PGP SIGNATURE-----"
 }

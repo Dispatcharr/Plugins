@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T23:56:54Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "ticker",
     "name": "Ticker",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-22T23:29:00Z",
-    "download_count": 402,
+    "download_count": 411,
     "latest": {
       "version": "0.5.05",
       "commit_sha": "7685d8a0bc36087296f3ceff2e766e83fea5f6e6",
@@ -28,7 +28,7 @@
       "latest_url": "ticker-0.5.05/ticker-0.5.05.zip",
       "url": "ticker-0.5.05/ticker-0.5.05.zip",
       "size": 2142,
-      "download_count": 53
+      "download_count": 57
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.05/ticker-0.5.05.zip",
         "url": "ticker-0.5.05/ticker-0.5.05.zip",
         "size": 2142,
-        "download_count": 53
+        "download_count": 57
       },
       {
         "version": "0.5.04",
@@ -57,7 +57,7 @@
         "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.04/ticker-0.5.04.zip",
         "url": "ticker-0.5.04/ticker-0.5.04.zip",
         "size": 2142,
-        "download_count": 87
+        "download_count": 88
       },
       {
         "version": "0.5.03",
@@ -71,7 +71,7 @@
         "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.03/ticker-0.5.03.zip",
         "url": "ticker-0.5.03/ticker-0.5.03.zip",
         "size": 2142,
-        "download_count": 166
+        "download_count": 167
       },
       {
         "version": "0.5.02",
@@ -85,7 +85,7 @@
         "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.02/ticker-0.5.02.zip",
         "url": "ticker-0.5.02/ticker-0.5.02.zip",
         "size": 2140,
-        "download_count": 63
+        "download_count": 64
       },
       {
         "version": "0.5.01",
@@ -99,7 +99,7 @@
         "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.01/ticker-0.5.01.zip",
         "url": "ticker-0.5.01/ticker-0.5.01.zip",
         "size": 2136,
-        "download_count": 32
+        "download_count": 33
       },
       {
         "version": "0.5.00",
@@ -113,9 +113,9 @@
         "source_url": "https://github.com/jstevenscl/ticker/releases/download/v0.5.00/ticker-0.5.00.zip",
         "url": "ticker-0.5.00/ticker-0.5.00.zip",
         "size": 2134,
-        "download_count": 1
+        "download_count": 2
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauKLzgAKCRB+wDprTCI0\nzvnxAP9mXoD+FuvssYvBFRlNiHxjaDQCmbBrmbFohkxM4kK8TwEA6vo4FFb+6X4P\nGYemT3ZR+EoWDv6Gogl7DXoxB4S5eww=\n=DoAO\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM7wAKCRB+wDprTCI0\nzqDpAQDu+jTD0vZHIe4hooK1GZBCFFlmJoEUSpNoLYHfxssKyQEA/QNkY4a//LCA\neaLL5mz4uRJmNac37+obLWXW2MvipQY=\n=kLHH\n-----END PGP SIGNATURE-----"
 }

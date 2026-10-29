@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T22:10:27Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "profilarr",
     "name": "Profilarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-09-24T04:31:02Z",
-    "download_count": 575,
+    "download_count": 585,
     "latest": {
       "version": "2.1.6",
       "commit_sha": "f5a6a0bd3da24796156d458289cd813bf713e9d6",
@@ -31,7 +31,7 @@
       "latest_url": "profilarr-2.1.6/profilarr-2.1.6.zip",
       "url": "profilarr-2.1.6/profilarr-2.1.6.zip",
       "size": 471,
-      "download_count": 377
+      "download_count": 378
     },
     "versions": [
       {
@@ -46,7 +46,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.1.6/Profilarr.zip",
         "url": "profilarr-2.1.6/profilarr-2.1.6.zip",
         "size": 471,
-        "download_count": 377
+        "download_count": 378
       },
       {
         "version": "2.1.5",
@@ -60,7 +60,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.1.5/Profilarr.zip",
         "url": "profilarr-2.1.5/profilarr-2.1.5.zip",
         "size": 471,
-        "download_count": 15
+        "download_count": 16
       },
       {
         "version": "2.1.4",
@@ -74,7 +74,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.1.4/Profilarr.zip",
         "url": "profilarr-2.1.4/profilarr-2.1.4.zip",
         "size": 471,
-        "download_count": 3
+        "download_count": 4
       },
       {
         "version": "2.0.7",
@@ -88,7 +88,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.0.7/Profilarr.zip",
         "url": "profilarr-2.0.7/profilarr-2.0.7.zip",
         "size": 476,
-        "download_count": 114
+        "download_count": 115
       },
       {
         "version": "2.0.4",
@@ -102,7 +102,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.0.4/Profilarr.zip",
         "url": "profilarr-2.0.4/profilarr-2.0.4.zip",
         "size": 473,
-        "download_count": 12
+        "download_count": 13
       },
       {
         "version": "1.0.9",
@@ -116,7 +116,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.9/Profilarr.zip",
         "url": "profilarr-1.0.9/profilarr-1.0.9.zip",
         "size": 244,
-        "download_count": 14
+        "download_count": 15
       },
       {
         "version": "1.0.8",
@@ -130,7 +130,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.8/Profilarr.zip",
         "url": "profilarr-1.0.8/profilarr-1.0.8.zip",
         "size": 13,
-        "download_count": 6
+        "download_count": 7
       },
       {
         "version": "1.0.6",
@@ -144,7 +144,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.6/Profilarr.zip",
         "url": "profilarr-1.0.6/profilarr-1.0.6.zip",
         "size": 11,
-        "download_count": 5
+        "download_count": 6
       },
       {
         "version": "1.0.5",
@@ -158,7 +158,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.5/Profilarr.zip",
         "url": "profilarr-1.0.5/profilarr-1.0.5.zip",
         "size": 29,
-        "download_count": 18
+        "download_count": 19
       },
       {
         "version": "1.0.4",
@@ -172,9 +172,9 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v1.0.4/Profilarr.zip",
         "url": "profilarr-1.0.4/profilarr-1.0.4.zip",
         "size": 29,
-        "download_count": 11
+        "download_count": 12
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauJy2gAKCRB+wDprTCI0\nztctAQDYjLjwCUpgbtUgz6Gjz1gUQiwIOJ14h8AgDJVpujmcgAEA8qfyKY0UIorb\nU02o6GoEyDz4Dn06zXlOQqU6fcFGowo=\n=CMvW\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM7gAKCRB+wDprTCI0\nzpYBAQDTbOuugLuYkulDcDh/+ZUc4pXbts5AFyHGxEVtx+wqXAEAmDod2K7RQ8n8\n3+aG0wo9udzefdHhfXrKhrTUDdiwGww=\n=3JFF\n-----END PGP SIGNATURE-----"
 }

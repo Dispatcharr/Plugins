@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T23:56:54Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "lineuparr",
     "name": "Lineuparr",
@@ -10,7 +10,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-17T17:57:57-04:00",
-    "download_count": 3800,
+    "download_count": 3830,
     "latest": {
       "version": "1.26.2901915",
       "commit_sha": "0d24250ed3d41c58f7901674909f2b88042e892e",
@@ -24,7 +24,7 @@
       "latest_url": "lineuparr-1.26.2901915/lineuparr-1.26.2901915.zip",
       "url": "lineuparr-1.26.2901915/lineuparr-1.26.2901915.zip",
       "size": 457,
-      "download_count": 679
+      "download_count": 700
     },
     "versions": [
       {
@@ -38,7 +38,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2901915/lineuparr-1.26.2901915.zip",
         "size": 457,
-        "download_count": 679
+        "download_count": 700
       },
       {
         "version": "1.26.2881058",
@@ -52,7 +52,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2881058/lineuparr-1.26.2881058.zip",
         "size": 441,
-        "download_count": 240
+        "download_count": 241
       },
       {
         "version": "1.26.2880000",
@@ -66,7 +66,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2880000/lineuparr-1.26.2880000.zip",
         "size": 433,
-        "download_count": 47
+        "download_count": 48
       },
       {
         "version": "1.26.2831530",
@@ -80,7 +80,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2831530/lineuparr-1.26.2831530.zip",
         "size": 433,
-        "download_count": 579
+        "download_count": 580
       },
       {
         "version": "1.26.2821835",
@@ -94,7 +94,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2821835/lineuparr-1.26.2821835.zip",
         "size": 426,
-        "download_count": 51
+        "download_count": 52
       },
       {
         "version": "1.26.2561550",
@@ -108,7 +108,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2561550/lineuparr-1.26.2561550.zip",
         "size": 424,
-        "download_count": 890
+        "download_count": 891
       },
       {
         "version": "1.26.2481702",
@@ -122,7 +122,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2481702/lineuparr-1.26.2481702.zip",
         "size": 414,
-        "download_count": 427
+        "download_count": 428
       },
       {
         "version": "1.26.2421451",
@@ -136,7 +136,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2421451/lineuparr-1.26.2421451.zip",
         "size": 405,
-        "download_count": 283
+        "download_count": 284
       },
       {
         "version": "1.26.2291211",
@@ -150,7 +150,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2291211/lineuparr-1.26.2291211.zip",
         "size": 377,
-        "download_count": 499
+        "download_count": 500
       },
       {
         "version": "1.26.2271740",
@@ -164,9 +164,9 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2271740/lineuparr-1.26.2271740.zip",
         "size": 376,
-        "download_count": 105
+        "download_count": 106
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauKLzAAKCRB+wDprTCI0\nztDkAQDPizKG5GvYVXrEZo4DpobQ0nFzPEZwa3f1N29NKpBPSAD/UCB2Qd+ZHdcv\nEpWuVEQYlode33sjfAzNlSgTeLHKLAQ=\n=Kn5D\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM7AAKCRB+wDprTCI0\nzpSYAQCKGI6xa0GC3dThqK2zb37g2AtBz0v7JGCPp029SbXdhAEAqxrPXt2TPywS\nF9lYa+9h8Zl4MHgrUZWP8rGUy2hSYwY=\n=egAE\n-----END PGP SIGNATURE-----"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T13:17:59Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "sample-manifest-v1",
     "name": "Manifest v1 Example",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-22T19:01:08-04:00",
-    "download_count": 1,
+    "download_count": 3,
     "latest": {
       "version": "1.0.0",
       "commit_sha": "f01f575bc5179f37597415b9ad1e496307b845d1",
@@ -27,7 +27,7 @@
       "latest_url": "sample-manifest-v1-1.0.0/sample-manifest-v1-1.0.0.zip",
       "url": "sample-manifest-v1-1.0.0/sample-manifest-v1-1.0.0.zip",
       "size": 1,
-      "download_count": 1
+      "download_count": 3
     },
     "versions": [
       {
@@ -42,9 +42,9 @@
         "min_dispatcharr_version": "v0.34.0",
         "url": "sample-manifest-v1-1.0.0/sample-manifest-v1-1.0.0.zip",
         "size": 1,
-        "download_count": 1
+        "download_count": 3
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCatywDAAKCRB+wDprTCI0\nztzWAP99OmD0RdyFfFbfarh24dmGNJYSEvEcZmQJhxf7y7JBUwEAv4DRNvfo7MzL\nTAauFMLTjxCqfYMEHjgWTiDVSJE4yQ4=\n=tkmO\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM7gAKCRB+wDprTCI0\nzi+oAQC95tfbDYBlwgxv9UUL0clGKiNWsyFqHyiKRZRJEqiQXgEAz7IRUq/w70be\nlwEYpEIdDdibbvnf1HBvpPFhsOs0tQA=\n=U/90\n-----END PGP SIGNATURE-----"
 }

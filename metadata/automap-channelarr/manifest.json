@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T23:56:54Z",
+  "generated_at": "2026-10-29T13:40:52Z",
   "manifest": {
     "slug": "automap-channelarr",
     "name": "Automap Channelarr",
@@ -10,7 +10,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-27T20:30:32-04:00",
-    "download_count": 31,
+    "download_count": 48,
     "latest": {
       "version": "0.2.0",
       "commit_sha": "11962f98d23be75084ab4c565f834e547c2ad0a3",
@@ -25,7 +25,7 @@
       "latest_url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
       "url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
       "size": 320,
-      "download_count": 31
+      "download_count": 48
     },
     "versions": [
       {
@@ -40,9 +40,9 @@
         "min_dispatcharr_version": "0.20.0",
         "url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
         "size": 320,
-        "download_count": 31
+        "download_count": 48
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauKLyQAKCRB+wDprTCI0\nzn08AQDNgBT1A8Y906kClEcxmaljFvisPNVbbF6b3Z/r/lF5pAD7BQZtM31rBF/8\nbmEm0h2X9YmBHXm4+xgMrWmfQZWIPgQ=\n=l+0f\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauNM6QAKCRB+wDprTCI0\nzq2WAP9Cckk3Uvjk8c127ZB+KGN+DMrbMaOqxw9cwcQmotp87AEA6HS5VQIVewcT\nZfl7G2WEMbGkMowjnNogVEyN6UP+SQc=\n=NZx0\n-----END PGP SIGNATURE-----"
 }
