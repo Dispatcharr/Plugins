@@ -142,8 +142,7 @@ Measured in the Dispatcharr image limited to 1 CPU, on an i7-11700K with 16 thre
 | 8 s 1080p video, 1080p | 0.55 core | 287 MB | 2.08 s |
 
 On a slower CPU or a tight limit, a smaller **Width** and **Height** cost the least to give
-up. Keep the frame rate if Jellyfin plays your channels: see the 25 fps note in
-[the notes](docs/MEMORY.md).
+up. Keep the frame rate if Jellyfin plays your channels: see **Frames per second** above.
 
 ## What to expect
 
