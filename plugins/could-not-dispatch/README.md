@@ -91,8 +91,9 @@ does not wait: ffmpeg reads the first seconds of input as fast as it can
 and a viewer arriving while the encoder is already running is handed the last stretch of
 stream from a rolling buffer, starting at a keyframe.
 
-Measured inside the Dispatcharr image, the megabyte lands **0.29 s** after a cold
-connection and **0.01 s** for a viewer joining a running encoder. What remains is
+Measured inside the Dispatcharr image, the megabyte lands **0.27 s** after a cold
+connection at 720p, **0.52 s** at 1080p, and **0.02 s** for a viewer joining a running
+encoder. What remains is
 Dispatcharr's own failover — three connection attempts on the dead stream before it
 switches — which is roughly a second and a half and is not the plugin's to shorten.
 
@@ -121,6 +122,28 @@ not 4000: with the lookahead, 2000 beats 4000 without it, at half the bytes on t
 Lookahead costs startup latency, which is what `zerolatency` would have avoided. The
 initial burst pays for it instead: it is sized to cover the lookahead as well as the
 megabyte, so nothing is given up.
+
+### What the card costs
+
+The card is a live encode for as long as someone watches it, so it uses CPU like any
+transcode, whichever file it loops. That cost is steady and does not grow over time.
+
+A still picture is read and scaled five times a second, not at the card's full frame rate,
+and the threads are fixed rather than sized on the host's cores: a container limited to one
+CPU still sees every core of its host, and an encoder sized on them runs into the limit.
+
+Measured in the Dispatcharr image limited to 1 CPU, on an i7-11700K with 16 threads, at
+25 fps and 2000 kbit/s, from a 1920×1080 PNG:
+
+| Card | CPU | Memory | First megabyte |
+|---|---|---|---|
+| Picture, 720p | 0.18 core | 183 MB | 1.00 s |
+| Picture, 1080p | 0.37 core | 291 MB | 1.30 s |
+| 8 s 1080p video, 1080p | 0.55 core | 287 MB | 2.08 s |
+
+On a slower CPU or a tight limit, a smaller **Width** and **Height** cost the least to give
+up. Keep the frame rate if Jellyfin plays your channels: see the 25 fps note in
+[the notes](docs/MEMORY.md).
 
 ## What to expect
 
@@ -165,7 +188,7 @@ repeats the channel's name is left out. The lines start at **Height of the chann
 58.5% of the picture's height by default, 50 px high on a 1080p card with 12 px between them, in grey `#606469`, so the picture should
 leave that part empty and carry its own heading above it. The list follows the same
 20-second memory as the choice of card and is rewritten after every check, so it lags by
-2 to 10 seconds; the encoder reads it again on every frame without restarting. The guide is
+2 to 10 seconds; the encoder reads it again five times a second without restarting. The guide is
 asked only while an account is full, only for channels whose programme has not been read
 or has ended, and with a two-second timeout; when it does not answer the lines keep the
 names alone and it is asked again a minute later. The text needs an `ffmpeg` whose
