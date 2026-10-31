@@ -28,8 +28,21 @@ handles everything downstream.
 
 ## Requirements
 
-A reachable tablo-bridge instance (Docker, port 8050 by default). Tested against
-Dispatcharr 0.33.0.
+A reachable [tablo-bridge](https://github.com/jkoehler11/tablo-legacy-m3u)
+instance (Docker, port 8050 by default) and Dispatcharr 0.33.0 or newer.
+
+### Which hardware this works with
+
+The bridge needs the legacy local REST API on port 8885. `curl -s
+http://<tablo-ip>:8885/server/info` returning JSON with a `model` field means the
+unit is supported.
+
+| Hardware | Works | Notes |
+| --- | --- | --- |
+| Legacy network Tablo — 2-Tuner, 4-Tuner, DUAL LITE, QUAD (Nuvyyo era, firmware 2.2.x) | **Yes** | Written against a Tablo 2-Tuner on 2.2.60. No authentication on any endpoint. Set *Concurrent streams (tuners)* to the unit's real tuner count. |
+| 4th-generation Tablo (2023+, current models) | **No** | No local API; cloud-managed and cloud-authenticated only, so there is nothing for the bridge to connect to. |
+| Legacy HDMI-only models (DUAL HDMI, QUAD HDMI) | **No** (expected) | HDMI output to a TV rather than network streaming; different firmware branch. |
+| HDHomeRun and other network tuners | Not applicable | Already speak M3U/HDHomeRun or are natively supported by Dispatcharr — no bridge needed. |
 
 ## Notes
 
