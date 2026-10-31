@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T00:48:26Z",
+  "generated_at": "2026-10-31T11:12:46Z",
   "manifest": {
     "slug": "reservoarr",
     "name": "reservoarr",
@@ -14,26 +14,41 @@
     "repo_url": "https://github.com/brko7/reservoarr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-28T23:56:18Z",
-    "download_count": 1609,
+    "last_updated": "2026-10-31T11:12:17Z",
+    "download_count": 1425,
     "latest": {
-      "version": "6.6.0",
-      "commit_sha": "5ae46a36306304b783f6bec15b3c88d9f35d8304",
-      "commit_sha_short": "5ae46a3",
-      "changelog": "504",
-      "build_timestamp": "2026-10-28T23:56:42Z",
-      "last_updated": "2026-10-28T23:56:18Z",
-      "checksum_md5": "3955229d1c12d5d55cc1150273a69264",
-      "checksum_sha256": "dcbe51a3948ef0db0e9735bccfb06aca54890d9c7da0ace7ecbc27a644ee4151",
+      "version": "6.7.0",
+      "commit_sha": "7a3abafe4c0f1c30b3c3dda72e6113ab22d61e66",
+      "commit_sha_short": "7a3abaf",
+      "changelog": "508",
+      "build_timestamp": "2026-10-31T11:12:37Z",
+      "last_updated": "2026-10-31T11:12:17Z",
+      "checksum_md5": "20c15b9b8f14b046ca6d528b7ebcfec4",
+      "checksum_sha256": "bec6d538160c69f9623a9cb237a3b3136abeb3142f6884254ee5f91e1a12a98c",
       "min_dispatcharr_version": "v0.25.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.6.0/reservoarr-6.6.0.zip",
-      "latest_url": "reservoarr-6.6.0/reservoarr-6.6.0.zip",
-      "url": "reservoarr-6.6.0/reservoarr-6.6.0.zip",
-      "size": 49,
-      "download_count": 94
+      "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.7.0/reservoarr-6.7.0.zip",
+      "latest_url": "reservoarr-6.7.0/reservoarr-6.7.0.zip",
+      "url": "reservoarr-6.7.0/reservoarr-6.7.0.zip",
+      "size": 52,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "6.7.0",
+        "commit_sha": "7a3abafe4c0f1c30b3c3dda72e6113ab22d61e66",
+        "commit_sha_short": "7a3abaf",
+        "changelog": "508",
+        "build_timestamp": "2026-10-31T11:12:37Z",
+        "last_updated": "2026-10-31T11:12:17Z",
+        "checksum_md5": "20c15b9b8f14b046ca6d528b7ebcfec4",
+        "checksum_sha256": "bec6d538160c69f9623a9cb237a3b3136abeb3142f6884254ee5f91e1a12a98c",
+        "min_dispatcharr_version": "v0.25.0",
+        "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.7.0/reservoarr-6.7.0.zip",
+        "url": "reservoarr-6.7.0/reservoarr-6.7.0.zip",
+        "size": 52,
+        "download_count": 0
+      },
       {
         "version": "6.6.0",
         "commit_sha": "5ae46a36306304b783f6bec15b3c88d9f35d8304",
@@ -47,7 +62,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.6.0/reservoarr-6.6.0.zip",
         "url": "reservoarr-6.6.0/reservoarr-6.6.0.zip",
         "size": 49,
-        "download_count": 94
+        "download_count": 103
       },
       {
         "version": "6.5.0",
@@ -168,23 +183,8 @@
         "url": "reservoarr-6.3.7/reservoarr-6.3.7.zip",
         "size": 39,
         "download_count": 462
-      },
-      {
-        "version": "6.3.6",
-        "commit_sha": "3424828c52a1e524a7c460a453804de3ed3690e7",
-        "commit_sha_short": "3424828",
-        "changelog": "299",
-        "build_timestamp": "2026-09-14T15:53:19Z",
-        "last_updated": "2026-09-14T15:53:00Z",
-        "checksum_md5": "33f905a48c5e52468dfa2b2143b4d958",
-        "checksum_sha256": "8b8c234065d7504471b9f8d931875e9afebedd9496433b0819dc1178ea866247",
-        "min_dispatcharr_version": "v0.25.0",
-        "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.6/reservoarr-6.3.6.zip",
-        "url": "reservoarr-6.3.6/reservoarr-6.3.6.zip",
-        "size": 39,
-        "download_count": 193
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauU64gAKCRB+wDprTCI0\nzjvcAQCLEh+yb54u28Nadhb2FA2asvap9cUqlnSvpKJxSmXbTAD9GwNxOh422GoV\nsHI4v9pM+AVb2vrc38vDKfIbV77+UAI=\n=vRsw\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauXNNQAKCRB+wDprTCI0\nziDkAQC7U+o47HunsT/uVB3nRKQF7sw7s8e7/8SwXESYek9a5QEA5ygrOCObF7Nf\nBcGrfoEa13RmtcnWZWS1nZO2iqlSdwo=\n=sqrV\n-----END PGP SIGNATURE-----"
 }
