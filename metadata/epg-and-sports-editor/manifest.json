@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-30T17:33:59Z",
+  "generated_at": "2026-10-31T00:48:26Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-30T17:33:17Z",
-    "download_count": 880,
+    "download_count": 894,
     "latest": {
       "version": "0.5.15",
       "commit_sha": "8ea9ae6cdf6d81b5d24b8be55abbe6cff9db622a",
@@ -28,7 +28,7 @@
       "latest_url": "epg-and-sports-editor-0.5.15/epg-and-sports-editor-0.5.15.zip",
       "url": "epg-and-sports-editor-0.5.15/epg-and-sports-editor-0.5.15.zip",
       "size": 176,
-      "download_count": 0
+      "download_count": 10
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.15/epg-and-sports-editor-v0.5.15.zip",
         "url": "epg-and-sports-editor-0.5.15/epg-and-sports-editor-0.5.15.zip",
         "size": 176,
-        "download_count": 0
+        "download_count": 10
       },
       {
         "version": "0.5.14",
@@ -57,7 +57,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.14/epg-and-sports-editor-v0.5.14.zip",
         "url": "epg-and-sports-editor-0.5.14/epg-and-sports-editor-0.5.14.zip",
         "size": 174,
-        "download_count": 120
+        "download_count": 124
       },
       {
         "version": "0.5.13",
@@ -173,5 +173,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauTVDgAKCRB+wDprTCI0\nzp2nAQDaF0JAr11eFtrKSRMNI20AkRGVR9OehMy3X+OZ6yRCRAEAq5NOB9R9jRNG\nEOstPi9xnzf/U0jvb/SVSmZqa+y4/wc=\n=EZwx\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauU64AAKCRB+wDprTCI0\nzmgMAQDiCk/FVvvAPF4yq8mmzORV2TUsvjX7iwTF2NowvIWPWQD7BQpg05rTA179\nILN6iydDlIsjMW1uwbzyEsupG6+vrQg=\n=VPAk\n-----END PGP SIGNATURE-----"
 }

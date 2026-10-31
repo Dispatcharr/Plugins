@@ -2,7 +2,7 @@
 
 # Could Not Dispatch
 
-**Version:** `0.7.1` | **Author:** PilaScat | **Last Updated:** Oct 28 2026, 23:14 UTC
+**Version:** `0.7.2` | **Author:** PilaScat | **Last Updated:** Oct 31 2026, 00:47 UTC
 
 Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every real stream on a channel has failed, s
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.1/could-not-dispatch-0.7.1.zip)
-- **Built:** Oct 28 2026, 23:15 UTC
-- **Source Commit:** [`6569e4d`](https://github.com/Dispatcharr/Plugins/commit/6569e4de4992a0129b185d8e56a3a314d9b4899e)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.2/could-not-dispatch-0.7.2.zip)
+- **Built:** Oct 31 2026, 00:48 UTC
+- **Source Commit:** [`3ed9f94`](https://github.com/Dispatcharr/Plugins/commit/3ed9f944b785453651f815c0604d3d0856b9c9b8)
 
 **Checksums:**
 ```
-MD5:    cb41a9188f22d87e8327a76add103450
-SHA256: fe31200a07afdecbd2e4902a1faebf859399a39f16c27a24952dc81c978c52b6
+MD5:    d876f0f84c4dda79102f80a4998b3c09
+SHA256: bc5156f884ff328c94544d02e86b9efda054a9ac72047ddf102e21cfcd8f299d
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.7.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.2/could-not-dispatch-0.7.2.zip) | Oct 31 2026, 00:48 UTC | [`3ed9f94`](https://github.com/Dispatcharr/Plugins/commit/3ed9f944b785453651f815c0604d3d0856b9c9b8) | d876f0f84c4dda79102f80a4998b3c09 | bc5156f884ff328c94544d02e86b9efda054a9ac72047ddf102e21cfcd8f299d |
 | `0.7.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.1/could-not-dispatch-0.7.1.zip) | Oct 28 2026, 23:15 UTC | [`6569e4d`](https://github.com/Dispatcharr/Plugins/commit/6569e4de4992a0129b185d8e56a3a314d9b4899e) | cb41a9188f22d87e8327a76add103450 | fe31200a07afdecbd2e4902a1faebf859399a39f16c27a24952dc81c978c52b6 |
 | `0.7.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.0/could-not-dispatch-0.7.0.zip) | Oct 28 2026, 22:10 UTC | [`da05ca3`](https://github.com/Dispatcharr/Plugins/commit/da05ca3d3608fa3dffa00ca7f05268f0ba5793a7) | e5a47ea1d5743ffd7cf7b1e16c6bafc8 | 19fa6be55150c2fc24c6a72ef26db9e0dc2b18feedda699c936f1062a55be38e |
 | `0.6.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.6.0/could-not-dispatch-0.6.0.zip) | Oct 25 2026, 00:11 UTC | [`a137c8a`](https://github.com/Dispatcharr/Plugins/commit/a137c8a20c712352f11477ed6251fdfdbd025bee) | c1834c471dc81cb08f40e710a486af24 | 097a6a6337a556bea054c63608267b3f0d17ec7e3bfea88dbc0088f43de2d89b |
@@ -35,7 +36,6 @@ SHA256: fe31200a07afdecbd2e4902a1faebf859399a39f16c27a24952dc81c978c52b6
 | `0.3.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip) | Sep 14 2026, 08:03 UTC | [`37ccdd6`](https://github.com/Dispatcharr/Plugins/commit/37ccdd6b23115c565056cee99dc6496056e01afa) | be434828ca3eb55b7c7f52a9cc47aa81 | 37fa4ac3d14775486deb328933c5258dc4fae6846cada3852e4de2752adf3640 |
 | `0.3.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip) | Sep 14 2026, 00:20 UTC | [`ec416fc`](https://github.com/Dispatcharr/Plugins/commit/ec416fca9faab05bc7e357937bf6bbdb995b3703) | d2a9229422eff74452c1a556a564fdba | f4cd9d0d302f0eb040039a16af03cb5e6996298d6466d3e7d7b9b4590c30be82 |
 | `0.2.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.2.1/could-not-dispatch-0.2.1.zip) | Sep 13 2026, 15:39 UTC | [`16324c6`](https://github.com/Dispatcharr/Plugins/commit/16324c6a0bf775e171aa736586c74085a365909f) | 3ffbb0a9442059c1b045441e6f646081 | ddfc17667fd8704f31154f72a6faf2296df01e4cca1c1d41d79ac32bde3f0114 |
-| `0.1.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.1.0/could-not-dispatch-0.1.0.zip) | Aug 10 2026, 20:11 UTC | [`6753280`](https://github.com/Dispatcharr/Plugins/commit/67532805aec060ec4ae02d60d874ada54f64c63f) | 42c9dd34574a5fb1beafa5ab4cd3e56e | 3defff05b9233a1b1159bf0b00c8733327314ed01dc288f5ea241f9024c10886 |
 
 ---
 
@@ -140,8 +140,9 @@ does not wait: ffmpeg reads the first seconds of input as fast as it can
 and a viewer arriving while the encoder is already running is handed the last stretch of
 stream from a rolling buffer, starting at a keyframe.
 
-Measured inside the Dispatcharr image, the megabyte lands **0.29 s** after a cold
-connection and **0.01 s** for a viewer joining a running encoder. What remains is
+Measured inside the Dispatcharr image, the megabyte lands **0.27 s** after a cold
+connection at 720p, **0.52 s** at 1080p, and **0.02 s** for a viewer joining a running
+encoder. What remains is
 Dispatcharr's own failover — three connection attempts on the dead stream before it
 switches — which is roughly a second and a half and is not the plugin's to shorten.
 
@@ -170,6 +171,27 @@ not 4000: with the lookahead, 2000 beats 4000 without it, at half the bytes on t
 Lookahead costs startup latency, which is what `zerolatency` would have avoided. The
 initial burst pays for it instead: it is sized to cover the lookahead as well as the
 megabyte, so nothing is given up.
+
+### What the card costs
+
+The card is a live encode for as long as someone watches it, so it uses CPU like any
+transcode, whichever file it loops. That cost is steady and does not grow over time.
+
+A still picture is read and scaled five times a second, not at the card's full frame rate,
+and the threads are fixed rather than sized on the host's cores: a container limited to one
+CPU still sees every core of its host, and an encoder sized on them runs into the limit.
+
+Measured in the Dispatcharr image limited to 1 CPU, on an i7-11700K with 16 threads, at
+25 fps and 2000 kbit/s, from a 1920×1080 PNG:
+
+| Card | CPU | Memory | First megabyte |
+|---|---|---|---|
+| Picture, 720p | 0.18 core | 183 MB | 1.00 s |
+| Picture, 1080p | 0.37 core | 291 MB | 1.30 s |
+| 8 s 1080p video, 1080p | 0.55 core | 287 MB | 2.08 s |
+
+On a slower CPU or a tight limit, a smaller **Width** and **Height** cost the least to give
+up. Keep the frame rate if Jellyfin plays your channels: see **Frames per second** above.
 
 ## What to expect
 
@@ -214,7 +236,7 @@ repeats the channel's name is left out. The lines start at **Height of the chann
 58.5% of the picture's height by default, 50 px high on a 1080p card with 12 px between them, in grey `#606469`, so the picture should
 leave that part empty and carry its own heading above it. The list follows the same
 20-second memory as the choice of card and is rewritten after every check, so it lags by
-2 to 10 seconds; the encoder reads it again on every frame without restarting. The guide is
+2 to 10 seconds; the encoder reads it again five times a second without restarting. The guide is
 asked only while an account is full, only for channels whose programme has not been read
 or has ended, and with a two-second timeout; when it does not answer the lines keep the
 names alone and it is asked again a minute later. The text needs an `ffmpeg` whose
