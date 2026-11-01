@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-11-01T16:22:25Z",
+  "manifest": {
+    "slug": "tablo-tuner",
+    "name": "Tablo Tuner",
+    "description": "Connects a legacy Tablo through tablo-bridge: creates the M3U account, XMLTV source, channels and EPG mapping, and keeps them in sync.",
+    "author": "jkoehler11",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/jkoehler11/tablo-dispatcharr-plugin/releases/download/v{version}/tablo-tuner-{version}.zip",
+    "repo_url": "https://github.com/jkoehler11/tablo-dispatcharr-plugin",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-11-01T11:21:50-05:00",
+    "download_count": 0,
+    "latest": {
+      "version": "0.1.0",
+      "commit_sha": "7c61de324ad4d0db9ce863ebc2818277083277b3",
+      "commit_sha_short": "7c61de3",
+      "changelog": "509",
+      "build_timestamp": "2026-11-01T16:22:17Z",
+      "last_updated": "2026-11-01T11:21:50-05:00",
+      "checksum_md5": "7d3e4ad64e6039cdc6f0d499a10286f8",
+      "checksum_sha256": "97740df8e8fac980632a8d8d65014b2aa4b8edae73f60e7ddb52604e4aeb6640",
+      "min_dispatcharr_version": "",
+      "max_dispatcharr_version": "",
+      "source_url": "https://github.com/jkoehler11/tablo-dispatcharr-plugin/releases/download/v0.1.0/tablo-tuner-0.1.0.zip",
+      "latest_url": "tablo-tuner-0.1.0/tablo-tuner-0.1.0.zip",
+      "url": "tablo-tuner-0.1.0/tablo-tuner-0.1.0.zip",
+      "size": 8,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "0.1.0",
+        "commit_sha": "7c61de324ad4d0db9ce863ebc2818277083277b3",
+        "commit_sha_short": "7c61de3",
+        "changelog": "509",
+        "build_timestamp": "2026-11-01T16:22:17Z",
+        "last_updated": "2026-11-01T11:21:50-05:00",
+        "checksum_md5": "7d3e4ad64e6039cdc6f0d499a10286f8",
+        "checksum_sha256": "97740df8e8fac980632a8d8d65014b2aa4b8edae73f60e7ddb52604e4aeb6640",
+        "source_url": "https://github.com/jkoehler11/tablo-dispatcharr-plugin/releases/download/v0.1.0/tablo-tuner-0.1.0.zip",
+        "url": "tablo-tuner-0.1.0/tablo-tuner-0.1.0.zip",
+        "size": 8,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaudnRAAKCRB+wDprTCI0\nzlSUAQCSoF27AsL9020t2Se/rpqlhDqv9wTzB2Me6qSyJMaz9AEA5+2Af6+Bd12U\nGi2lIDdZyuvwUSL8/dNI7HS7GVvKagk=\n=jkYD\n-----END PGP SIGNATURE-----"
+}

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T16:21:26Z",
+  "generated_at": "2026-11-01T16:22:25Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -463,6 +463,22 @@
         "min_dispatcharr_version": "v0.20.0"
       },
       {
+        "slug": "tablo-tuner",
+        "name": "Tablo Tuner",
+        "description": "Connects a legacy Tablo through tablo-bridge: creates the M3U account, XMLTV source, channels and EPG mapping, and keeps them in sync.",
+        "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/tablo-tuner/manifest.json",
+        "author": "jkoehler11",
+        "license": "MIT",
+        "last_updated": "2026-11-01T11:21:50-05:00",
+        "download_count": 0,
+        "latest_version": "0.1.0",
+        "latest_changelog": "509",
+        "latest_md5": "7d3e4ad64e6039cdc6f0d499a10286f8",
+        "latest_sha256": "97740df8e8fac980632a8d8d65014b2aa4b8edae73f60e7ddb52604e4aeb6640",
+        "latest_url": "tablo-tuner-0.1.0/tablo-tuner-0.1.0.zip",
+        "latest_size": 8
+      },
+      {
         "slug": "telegram-alerts",
         "name": "Telegram Alerts",
         "description": "Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + ac...",
@@ -594,5 +610,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaudnEAAKCRB+wDprTCI0\nzhEZAQDVzn+E0EwOdXI7gwCw1pVCkSP2HuxLqUZEOqOFuZ0dDgD/USNRkTvYSeYr\nh3b8EdHt8fhBeJsA7uA9Ufuymi3SmQo=\n=UUPG\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaudnRQAKCRB+wDprTCI0\nzqXXAQCHOcyIu1vI2pNtObdRBjf4GfMT5TPBhOWAeCKWTY78+gEA+KC1E1wRr8ar\nJUhepT8xPHQ80ANYlXuuX38mQ7zAtgI=\n=GO/K\n-----END PGP SIGNATURE-----"
 }
