@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T03:01:56Z",
+  "generated_at": "2026-11-01T16:21:26Z",
   "manifest": {
     "slug": "dustarr",
     "name": "Dustarr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-17T17:57:40-04:00",
-    "download_count": 757,
+    "download_count": 760,
     "latest": {
       "version": "1.26.2901903",
       "commit_sha": "1b882f233078ff663758cc1ecdf82ff16afea84a",
@@ -32,7 +32,7 @@
       "latest_url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
       "url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
       "size": 132,
-      "download_count": 199
+      "download_count": 202
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.2901903/Dustarr-1.26.2901903.zip",
         "url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
         "size": 132,
-        "download_count": 199
+        "download_count": 202
       },
       {
         "version": "1.26.2832018",
@@ -112,5 +112,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauarqgAKCRB+wDprTCI0\nzln/AQCc1VAz+zeIMb/eEpOsewUmba8869R2Ga0rMGD68oxKCwEAvr3fRleVjuP+\nOWU1qkBDxCoonLhftp9QsIfU3yxWzQ0=\n=Eo+7\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaudnCwAKCRB+wDprTCI0\nzk9CAP94sPAMfdTIieFzNV2ErC+QHCIEOOtvM2vf7S6kgERvdAEAlzxMBF87SN1c\nP8t12kygmJDmWuPLzvi/67F7efIPEgQ=\n=xLsb\n-----END PGP SIGNATURE-----"
 }

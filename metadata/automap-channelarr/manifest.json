@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T03:01:56Z",
+  "generated_at": "2026-11-01T16:21:26Z",
   "manifest": {
     "slug": "automap-channelarr",
     "name": "Automap Channelarr",
@@ -9,25 +9,39 @@
     "repo_url": "https://github.com/Megamannen/dispatcharr-plugins/",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-27T20:30:32-04:00",
-    "download_count": 95,
+    "last_updated": "2026-11-01T16:20:51Z",
+    "download_count": 103,
     "latest": {
-      "version": "0.2.0",
-      "commit_sha": "11962f98d23be75084ab4c565f834e547c2ad0a3",
-      "commit_sha_short": "11962f9",
-      "changelog": "491",
-      "build_timestamp": "2026-10-28T00:30:51Z",
-      "last_updated": "2026-10-27T20:30:32-04:00",
-      "checksum_md5": "c599844a14e7afee1478ae38a4cdca08",
-      "checksum_sha256": "2142383cf74331857055494896fb185310a86301000cb0c50b094adc8e13734e",
+      "version": "0.4.2",
+      "commit_sha": "6ff35461444b88cf3890c91197b15b06ed449b8b",
+      "commit_sha_short": "6ff3546",
+      "changelog": "510",
+      "build_timestamp": "2026-11-01T16:21:09Z",
+      "last_updated": "2026-11-01T16:20:51Z",
+      "checksum_md5": "160e538613e7f0e25a4a4e885a618d4a",
+      "checksum_sha256": "f6b797f9f780e3225bb190f11d4f55202871d10449260c2548bdf2361091d793",
       "min_dispatcharr_version": "0.20.0",
       "max_dispatcharr_version": "",
-      "latest_url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
-      "url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
-      "size": 320,
-      "download_count": 95
+      "latest_url": "automap-channelarr-0.4.2/automap-channelarr-0.4.2.zip",
+      "url": "automap-channelarr-0.4.2/automap-channelarr-0.4.2.zip",
+      "size": 328,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "0.4.2",
+        "commit_sha": "6ff35461444b88cf3890c91197b15b06ed449b8b",
+        "commit_sha_short": "6ff3546",
+        "changelog": "510",
+        "build_timestamp": "2026-11-01T16:21:09Z",
+        "last_updated": "2026-11-01T16:20:51Z",
+        "checksum_md5": "160e538613e7f0e25a4a4e885a618d4a",
+        "checksum_sha256": "f6b797f9f780e3225bb190f11d4f55202871d10449260c2548bdf2361091d793",
+        "min_dispatcharr_version": "0.20.0",
+        "url": "automap-channelarr-0.4.2/automap-channelarr-0.4.2.zip",
+        "size": 328,
+        "download_count": 0
+      },
       {
         "version": "0.2.0",
         "commit_sha": "11962f98d23be75084ab4c565f834e547c2ad0a3",
@@ -40,9 +54,9 @@
         "min_dispatcharr_version": "0.20.0",
         "url": "automap-channelarr-0.2.0/automap-channelarr-0.2.0.zip",
         "size": 320,
-        "download_count": 95
+        "download_count": 103
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauarqAAKCRB+wDprTCI0\nzo+PAQC7WNaM0yec7qN/CWMHuOvNAd+T8tEF7w2/SgwKhZCNZAD9H3dbGZYFtOk7\nFhpxZRLYEvtfyKiyhgM0QC+Gtux4wQ8=\n=aV54\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaudnCQAKCRB+wDprTCI0\nzgiMAP4t4yjzU17THwE2b0ObKX2W2cfSNIQ1V57nlh0VF4/rvgD8DhW5CvG16upv\nk/ut/PNJLPLA4YRJC0kkg6efOp8VtQA=\n=ph8Z\n-----END PGP SIGNATURE-----"
 }
