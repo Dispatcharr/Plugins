@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T11:12:46Z",
+  "generated_at": "2026-11-01T03:01:56Z",
   "manifest": {
     "slug": "profilarr",
     "name": "Profilarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-09-24T04:31:02Z",
-    "download_count": 592,
+    "download_count": 597,
     "latest": {
       "version": "2.1.6",
       "commit_sha": "f5a6a0bd3da24796156d458289cd813bf713e9d6",
@@ -31,7 +31,7 @@
       "latest_url": "profilarr-2.1.6/profilarr-2.1.6.zip",
       "url": "profilarr-2.1.6/profilarr-2.1.6.zip",
       "size": 471,
-      "download_count": 385
+      "download_count": 390
     },
     "versions": [
       {
@@ -46,7 +46,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Profilarr/releases/download/v2.1.6/Profilarr.zip",
         "url": "profilarr-2.1.6/profilarr-2.1.6.zip",
         "size": 471,
-        "download_count": 385
+        "download_count": 390
       },
       {
         "version": "2.1.5",
@@ -176,5 +176,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauXNNQAKCRB+wDprTCI0\nzjfMAP0a2IRVORZR+IbhbnGrFcoqLVokDKQL2Gk3wFTqD9d+4AEAqPCMDCmI50nJ\n0gmxGTaaZTaa7HmtbN4nDS0DivVOCgI=\n=mQjt\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauarrAAKCRB+wDprTCI0\nzlvjAP9HjVEswmU3EGFd1HjTM77mUDiYZqooFyq+qxDiBxt7tAEA20t+b9QC9S9g\n/Sbm1pIsuKE72NwWXVzn8D2jQS2R4QI=\n=c7Nf\n-----END PGP SIGNATURE-----"
 }
