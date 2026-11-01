@@ -5,10 +5,10 @@ deterministic, rule-based logic. It replaces the built-in automapper
 (auto channel sync) for the groups you configure.
 
 No curated channel databases, no fuzzy matching, no network access: streams are
-pooled by a normalized name, and each normalized name becomes exactly one
-channel at a predictable number.
+pooled by a normalized name or a shared `tvg-id`, and each pool becomes exactly
+one channel at a predictable number.
 
-Groups of one-off events (`00:55 NFL: Cowboys - Eagles 27/10`) get their own
+Groups of one-off events (`20:30 Bundesliga: Bayern - Dortmund 27/10`) get their own
 rules: each event becomes a channel ordered by start time and is removed once
 it is over. See [Event rules](#event-rules).
 
@@ -17,24 +17,30 @@ it is over. See [Event rules](#event-rules).
 For each configured group, on every run:
 
 1. **Pools** all non-stale streams in the group - from every M3U account,
-   unless the rule is account-qualified. Two providers' `SVT1` streams become
+   unless the rule is account-qualified. Two providers' `ZDF` streams become
    one channel with both streams attached, ordered for failover.
 2. **Normalizes** each stream name into a grouping key: country prefix removed
-   (`SE:`, `SWE |`), trailing uppercase country code removed (`TV4 SE`,
-   `Kanal 5 | SWE`), quality and codec markers removed (4K, UHD, FHD, HD, SD,
-   HEVC, H265, 50FPS, plus your own tokens), lower-cased, punctuation and
-   whitespace stripped. `SE: SVT 1 FHD`, `SVT1 SE` and `svt1 hd` all become
-   `svt1`. See [Country codes](#country-codes) for what counts as a code.
+   (`DE:`, `DEU |`), trailing uppercase country code removed (`RTL DE`,
+   `Sat.1 | DEU`), quality and codec markers removed (4K, UHD, FHD, HD, SD,
+   2160p, 1080p/i, 720p, 576p/i, 480p/i, HEVC, H265, 50FPS, plus your own
+   tokens), numbered or lettered tags removed (`(1)`, `(B)`), empty brackets
+   removed, lower-cased, punctuation and whitespace stripped.
+   `DE: Pro 7 FHD`, `Pro7 DE (2)` and `pro7 hd` all become `pro7`. See
+   [Country codes](#country-codes) for what counts as a code.
+   Names whose streams share a `tvg-id` are merged into one key, so
+   `ZDF DE` and `ZDF Deutschland` with the same `tvg-id` become one channel.
+   A blank `tvg-id`, `null` or `undefined` is ignored.
 3. **Creates one channel per key**, numbered upward from the rule's start
    number in provider playlist order. The display name is the cleaned original
-   (`SVT 1`), picked as the most frequent variant among the pooled streams.
+   (`Pro 7`), picked as the most frequent variant among the pooled streams.
 4. **Keeps runs stable**: existing channels keep their number and identity
    forever. New names get the lowest free number in the block. Numbers held by
    channels the plugin does not own are skipped and reported, never stolen.
 5. **Syncs streams and EPG** on every run: the channel's stream list is made to
-   exactly match the pool, ordered 4K/UHD > FHD > HD > unmarked > SD; `tvg-id`
-   and EPG linkage follow the best stream. The display name, logo, and group
-   are set at creation and never overwritten, so manual edits stick.
+   exactly match the pool, ordered 4K/UHD/2160p > FHD/1080p > HD/720p >
+   unmarked > SD/576p/480p; `tvg-id` and EPG linkage follow the best stream.
+   The display name, logo, and group are set at creation and never
+   overwritten, so manual edits stick.
 6. **Deletes orphans carefully**: a channel whose streams disappear from the
    provider is deleted only after staying gone for the configured grace period
    (default 7 days). If the key reappears first, the timer resets.
@@ -45,10 +51,10 @@ One rule per line in the **Rules** setting:
 
 ```
 # comments and blank lines are ignored
-Sports; Sport HD = 100
-News = 200
-ProviderX/Kids = 300
-Movies = 400 -> My Movies
+Sport; Sport HD = 100
+Nachrichten = 200
+ProviderX/Kinder = 300
+Filme = 400 -> Meine Filme
 ```
 
 - `Group = start` - map one M3U group to a block starting at that number.
@@ -71,8 +77,8 @@ pooling, `Account/Group` and `-> Name`. A group or start number may be used in
 Rules or Event rules, not both.
 
 ```
-PPV Events = 5000
-NXT IPTV/Live Sports = 6000 -> Events
+PPV Events DE = 5000
+NXT IPTV/Live Sport DE = 6000 -> Events
 ```
 
 ### Start time and date
@@ -93,8 +99,8 @@ The start time and date are read from each stream name:
   on January 2nd is four days ago, not next December.
 - **No date**: today.
 - **No time**: the event has no start time. Its channel is named after the
-  title alone, sorts after timed events, and is removed only by the orphan
-  grace period.
+  title alone, sorts after timed events, and is removed when the provider
+  drops it.
 
 **Event regex** overrides the built-in detection. It must contain a
 named group `(?P<time>...)`; `(?P<date>...)` is optional (no date = today).
@@ -111,10 +117,12 @@ cleaned:
 
 - **Event strip tokens** are removed (`;`-separated, like Strip tokens).
   When the setting is empty, Strip tokens are used instead. Quality and
-  codec markers (4K, UHD, FHD, HD, SD, HEVC, H265, 50FPS) are always removed.
-- A trailing uppercase country code is removed (`... Jones USA`).
-- A leading prefix is **kept**: a league tag like `NFL:` looks the same as a
-  country prefix, so `NFL: Cowboys - Eagles` stays intact.
+  codec markers (4K, UHD, FHD, HD, SD, 2160p, 1080p/i, 720p, 576p/i,
+  480p/i, HEVC, H265, 50FPS) are always removed. `(1)` / `(B)` tags are kept:
+  in event groups they usually tell separate feeds apart.
+- A trailing uppercase country code is removed (`... Bayern - Dortmund DEU`).
+- A leading prefix is **kept**: a league tag like `Bundesliga:` looks the same as a
+  country prefix, so `Bundesliga: Bayern - Dortmund` stays intact.
 
 Two `;`-separated lists override this per stream. Each entry matches when the
 stream name contains it, ignoring case:
@@ -125,8 +133,8 @@ stream name contains it, ignoring case:
 - **Event not**: the stream is skipped. This wins over Event as is.
 
 ```
-Event as is:  RedZone; Big Fight Night
-Event not:    Replay; Highlights
+Event as is:  Konferenz; Sportschau
+Event not:    Wiederholung; Highlights
 ```
 
 Streams with the same normalized title and the same date are pooled into one
@@ -134,18 +142,18 @@ event channel, the same way regular channels pool by name. The same title on
 another date is a separate event.
 
 The channel name comes from **Event name template** (default
-`{date} {time} {title}`, giving `27/10 00:55 NFL: Cowboys - Eagles`):
+`{date} {time} {title}`, giving `27/10 20:30 Bundesliga: Bayern - Dortmund`):
 
 | Token | Example |
 |---|---|
-| `{title}` | `NFL: Cowboys - Eagles` |
-| `{time}` | `22:00` |
-| `{time12}` | `10:00 PM` |
+| `{title}` | `Bundesliga: Bayern - Dortmund` |
+| `{time}` | `20:30` |
+| `{time12}` | `8:30 PM` |
 | `{date}` | `27/10` |
 | `{usdate}` | `10/27` |
 | `{isodate}` | `2026-10-27` |
 | `{weekday}` | `Tue` |
-| `{weekday:Man,Tis,Ons,Tor,Fre,Lor,Son}` | `Tis` - your own 7 names, Monday first |
+| `{weekday:Mo,Di,Mi,Do,Fr,Sa,So}` | `Di` - your own 7 names, Monday first |
 
 Times are shown in server time. Unknown tokens are left as written and
 reported as a warning. Unlike regular channels, event channel names are
@@ -156,9 +164,11 @@ updated on every run to match the template.
 - **Created** at most **Event lead time** hours before the start time
   (default 36). `0` creates everything the provider lists.
 - **Removed** **Event removal** hours after the start time (default 6), even
-  if the provider still lists the event. If the event
-  disappears from the provider first, the orphan grace period applies.
-  Whichever comes first wins.
+  if the provider still lists the event. If the event disappears from the
+  provider first, it is removed on the next run - no grace period, since
+  event streams never come back. Whichever comes first wins. An event group
+  with no streams at all (a failed refresh, every stream flagged stale) is
+  skipped with a warning and nothing in its block is deleted that run.
 - **Renumbered** once a day: on the first run of each server-local day, every
   event block is renumbered from its start number in start-time order. Events
   added later that day take the lowest free number in the block until the
@@ -167,22 +177,22 @@ updated on every run to match the template.
 
 ## Sample configuration
 
-A working setup: one country block, one foreign-language block, and one event
+A working setup: one country block, one neighbouring-country block, and one event
 block pooling four provider groups. Auto-run is on; everything not listed keeps
 its default.
 
 **Rules**
 
 ```
-Finland = 1 -> Suomi
-Russia = 400 -> Россия
+Germany = 1 -> Deutschland
+Austria = 400 -> Österreich
 ```
 
 **Strip tokens** - provider tags that would otherwise split one channel into
 several:
 
 ```
-(B);(Multi);(Game Time Only);NXTFI
+(B);(Multi);(Game Time Only);NXTDE
 ```
 
 **Preferred max quality**: `FHD` - 4K/UHD streams are left out whenever a
@@ -193,15 +203,15 @@ a channel group named `Event`. The first group's name contains `|`, which is
 fine; `;` is the separator:
 
 ```
-Yle Areena | Urheilu | Ruutu;MTV Katsomo NXT FI;Viaplay NXT FI;Disney+ Suomi NXT FI = 1000 -> Event
+Sky Sport | Bundesliga | DAZN;MagentaSport NXT DE;Joyn NXT DE;Disney+ Deutschland NXT DE = 1000 -> Event
 ```
 
 **Event strip tokens** - the Strip tokens plus the provider names, so
-`Viaplay: NHL: Panthers - Oilers` and `MTV Katsomo NHL: Panthers - Oilers`
+`DAZN: Bundesliga: Bayern - Dortmund` and `Sky Bundesliga: Bayern - Dortmund`
 pool into one event:
 
 ```
-(B);(Multi);(Game Time Only);NXTFI;Disney;Viaplay;Katsomo
+(B);(Multi);(Game Time Only);NXTDE;Disney;DAZN;Sky
 ```
 
 **Event as is** - streams that are containers rather than single events keep
@@ -220,21 +230,25 @@ their raw name:
 **Event name template** - local weekday names:
 
 ```
-{weekday:ma,ti,ke,to,pe,la,su} {time} {title}
+{weekday:Mo,Di,Mi,Do,Fr,Sa,So} {time} {title}
 ```
 
-giving event channels like `ti 21:00 NHL: Panthers - Oilers`.
+giving event channels like `Di 20:30 Bundesliga: Bayern - Dortmund`.
 
 ## Country codes
 
 Only ISO 3166-1 codes count as country codes: the 2- and 3-letter codes
-(`SE`, `SWE`, `GB`, `GBR`), plus `UK`, which is not ISO but common in
+(`DE`, `DEU`, `AT`, `AUT`), plus `UK`, which is not ISO but common in
 playlists. `TV` (Tuvalu) is left out, because it is a common real suffix.
 
-- **Prefix**: a code followed by `:` or `|`, in any case (`SE:`, `swe |`).
-  Anything else stays part of the name (`NBA: League Pass`).
-- **Suffix**: an uppercase code at the end of the name (`TV4 SE`,
-  `BBC One UK`). `Nick JR`, `Disney XD` and `Axess TV` keep their endings.
+- **Prefix**: a code followed by `:` or `|`, in any case (`DE:`, `deu |`).
+  Anything else stays part of the name (`DFB: Pokal`).
+- **Suffix**: an uppercase code at the end of the name (`RTL DE`,
+  `ProSieben DEU`). `Nick JR`, `Disney XD` and `Bibel TV` keep their endings.
+  Some real codes double as abbreviations: `ID` (Indonesia) and `IT` (Italy)
+  are stripped, so `Investigation Discovery ID` becomes
+  `Investigation Discovery`. The grouping is unaffected, only the display
+  name.
 
 ## Config errors
 
@@ -255,7 +269,7 @@ A group that exists but currently matches no streams is skipped with a warning.
 | Rules | empty | The mapping rules described above |
 | Strip tokens | empty | Additional `;`-separated tokens removed before grouping |
 | Preferred max quality | Unlimited | Streams marked above this are left out of channels, unless they are all a channel has. Unmarked streams are never dropped. Applies to events too |
-| Orphan grace period (days) | 7 | Days a mapped channel must stay gone from the provider before deletion; 0 deletes immediately. Applies to events too |
+| Orphan grace period (days) | 7 | Days a mapped channel must stay gone from the provider before deletion; 0 deletes immediately. Events are deleted at once, regardless |
 | Event rules | empty | Rules for event groups, same syntax |
 | Event strip tokens | empty | `;`-separated tokens removed from event titles; empty uses Strip tokens |
 | Event as is | empty | `;`-separated texts; matching event streams keep their stream name as channel name |
@@ -272,6 +286,10 @@ A group that exists but currently matches no streams is skipped with a warning.
   anything. Check the Dispatcharr log for the line-by-line detail.
 - **Auto Run Hook** - fires by itself after each M3U refresh when the auto-run
   setting is on; clicking it manually behaves like Run Now.
+
+Only one run executes at a time. A run triggered while another is in progress
+(several M3U accounts refreshing back to back) is queued: the running instance
+goes again as soon as it finishes, so no refresh is left unmapped.
 
 Each real run posts a one-line summary notification in the UI; details go to
 the Dispatcharr log.
@@ -296,10 +314,12 @@ refresh completes, and the two will fight indefinitely.
 
 ## State
 
-The plugin keeps a small `state.json` in its data directory to track channel
-identity, orphan grace timers and the date of the last event renumbering.
-Removing a rule from the config stops the plugin managing those channels but
-never deletes them.
+The plugin keeps a small `state.json` to track channel identity, orphan grace
+timers and the date of the last event renumbering. It lives in the plugin's
+durable data directory (`/data/plugins/_data/automap-channelarr/`), which
+survives plugin upgrades; a `state.json` left in the plugin code directory by
+older versions is moved there on the first run. Removing a rule from the
+config stops the plugin managing those channels but never deletes them.
 
 ## License
 
