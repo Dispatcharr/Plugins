@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T21:51:23Z",
+  "generated_at": "2026-11-01T22:25:28Z",
   "manifest": {
     "slug": "iptv-checker",
     "name": "IPTV Checker",
@@ -11,26 +11,41 @@
     "repo_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-17T17:57:27-04:00",
-    "download_count": 5775,
+    "last_updated": "2026-11-01T22:24:54Z",
+    "download_count": 4440,
     "latest": {
-      "version": "1.26.2901902",
-      "commit_sha": "06c0d380e674e99b7fa98e5e0cf7b4914dd78eee",
-      "commit_sha_short": "06c0d38",
-      "changelog": "454",
-      "build_timestamp": "2026-10-17T21:58:10Z",
-      "last_updated": "2026-10-17T17:57:27-04:00",
-      "checksum_md5": "faca88cf2cfb2ace4ed681e9bd75af80",
-      "checksum_sha256": "dfa15b723017d12efcb0855ca15dffebaac6c2aa30bc286556c01fdc87b31c9e",
+      "version": "1.26.3052213",
+      "commit_sha": "2d96b87590ac06589f5a8dd0968132fa80ce8908",
+      "commit_sha_short": "2d96b87",
+      "changelog": "513",
+      "build_timestamp": "2026-11-01T22:25:14Z",
+      "last_updated": "2026-11-01T22:24:54Z",
+      "checksum_md5": "13890039175a7fbf13a9930d6dfcb380",
+      "checksum_sha256": "29d2b7cbbab7986cbb8ca3b8911147ee3612715f4e2dd806cbe564cdddb90f0f",
       "min_dispatcharr_version": "v0.20.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.2901902/iptv_checker-v1.26.2901902.zip",
-      "latest_url": "iptv-checker-1.26.2901902/iptv-checker-1.26.2901902.zip",
-      "url": "iptv-checker-1.26.2901902/iptv-checker-1.26.2901902.zip",
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3052213/iptv_checker-v1.26.3052213.zip",
+      "latest_url": "iptv-checker-1.26.3052213/iptv-checker-1.26.3052213.zip",
+      "url": "iptv-checker-1.26.3052213/iptv-checker-1.26.3052213.zip",
       "size": 414,
-      "download_count": 863
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.26.3052213",
+        "commit_sha": "2d96b87590ac06589f5a8dd0968132fa80ce8908",
+        "commit_sha_short": "2d96b87",
+        "changelog": "513",
+        "build_timestamp": "2026-11-01T22:25:14Z",
+        "last_updated": "2026-11-01T22:24:54Z",
+        "checksum_md5": "13890039175a7fbf13a9930d6dfcb380",
+        "checksum_sha256": "29d2b7cbbab7986cbb8ca3b8911147ee3612715f4e2dd806cbe564cdddb90f0f",
+        "min_dispatcharr_version": "v0.20.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3052213/iptv_checker-v1.26.3052213.zip",
+        "url": "iptv-checker-1.26.3052213/iptv-checker-1.26.3052213.zip",
+        "size": 414,
+        "download_count": 0
+      },
       {
         "version": "1.26.2901902",
         "commit_sha": "06c0d380e674e99b7fa98e5e0cf7b4914dd78eee",
@@ -44,7 +59,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.2901902/iptv_checker-v1.26.2901902.zip",
         "url": "iptv-checker-1.26.2901902/iptv-checker-1.26.2901902.zip",
         "size": 414,
-        "download_count": 863
+        "download_count": 865
       },
       {
         "version": "1.26.2831712",
@@ -165,22 +180,8 @@
         "url": "iptv-checker-1.26.2181303/iptv-checker-1.26.2181303.zip",
         "size": 388,
         "download_count": 6
-      },
-      {
-        "version": "1.26.1741204",
-        "commit_sha": "4de0eceafadffce2377d5de075af6dfa94ebead9",
-        "commit_sha_short": "4de0ece",
-        "changelog": "144",
-        "build_timestamp": "2026-06-23T22:27:18Z",
-        "last_updated": "2026-06-23T18:27:05-04:00",
-        "checksum_md5": "e16b4dc3bc9953f27fca31ce4f4569af",
-        "checksum_sha256": "f55095d46511ecf6f5a759b47d9738c76167690acc52240df14250f23ed53c4c",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "iptv-checker-1.26.1741204/iptv-checker-1.26.1741204.zip",
-        "size": 368,
-        "download_count": 1337
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaue0XwAKCRB+wDprTCI0\nzoUfAQCpD1pP1IG4slzI0UTF4yUDnLVrMgI6pfOJp5wUPLDXowEAj6espQcVBIP1\nAOmfwsYbj8stZHhPesh+0cZgHq4L7wo=\n=pscj\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaue8XgAKCRB+wDprTCI0\nzjjvAP428DMLAVRVGhMBIsk5/MJxESapZj53mMmxuaClKy7OrAD/YIXhXZj+HxvS\nk8iW1SXxptBuXbbDUpU4N2c1oYATgwY=\n=xaNW\n-----END PGP SIGNATURE-----"
 }
