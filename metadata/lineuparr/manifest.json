@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T22:25:28Z",
+  "generated_at": "2026-11-03T06:21:12Z",
   "manifest": {
     "slug": "lineuparr",
     "name": "Lineuparr",
@@ -10,7 +10,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-01T21:50:47Z",
-    "download_count": 3827,
+    "download_count": 3950,
     "latest": {
       "version": "1.26.3052143",
       "commit_sha": "19d1bece405d1567063fd0f3e69f393609b8bf5d",
@@ -25,7 +25,7 @@
       "latest_url": "lineuparr-1.26.3052143/lineuparr-1.26.3052143.zip",
       "url": "lineuparr-1.26.3052143/lineuparr-1.26.3052143.zip",
       "size": 457,
-      "download_count": 2
+      "download_count": 124
     },
     "versions": [
       {
@@ -40,7 +40,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.3052143/lineuparr-1.26.3052143.zip",
         "size": 457,
-        "download_count": 2
+        "download_count": 124
       },
       {
         "version": "1.26.2901915",
@@ -53,7 +53,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2901915/lineuparr-1.26.2901915.zip",
         "size": 457,
-        "download_count": 801
+        "download_count": 802
       },
       {
         "version": "1.26.2881058",
@@ -169,5 +169,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaue8XwAKCRB+wDprTCI0\nzoicAP0UfSw4sBdbdK/x3MF1lN/m4BYp3sXxIM5u2bfIowk90gEAxIAduanIOCLj\n0fEGQVkjWyIC87iqJkyBXkmGhZV5kA4=\n=c4Is\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaul9YAAKCRB+wDprTCI0\nzu+nAP93j1hdBm4jaBBf5knEMZZR3DENw0XZ3TunjaQ4ix61UQD/ZP/mcuw5xk2J\nLJfQr6pga6EI1URFO2AXfKIz6p3Bkgg=\n=TdU7\n-----END PGP SIGNATURE-----"
 }

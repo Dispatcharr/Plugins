@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T22:25:28Z",
+  "generated_at": "2026-11-03T06:21:12Z",
   "manifest": {
     "slug": "vod2mlib",
     "name": "VOD to Media Library",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-05T21:29:03Z",
-    "download_count": 3299,
+    "download_count": 3327,
     "latest": {
       "version": "1.18.1",
       "commit_sha": "5a85167a421f22ad9e0ec161b31662374deadc07",
@@ -29,7 +29,7 @@
       "latest_url": "vod2mlib-1.18.1/vod2mlib-1.18.1.zip",
       "url": "vod2mlib-1.18.1/vod2mlib-1.18.1.zip",
       "size": 168,
-      "download_count": 619
+      "download_count": 647
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/R3XCHRIS/VOD2MLIB/releases/download/v1.18.1/plugin-vod2mlib-v1.18.1.zip",
         "url": "vod2mlib-1.18.1/vod2mlib-1.18.1.zip",
         "size": 168,
-        "download_count": 619
+        "download_count": 647
       },
       {
         "version": "1.18.0",
@@ -157,5 +157,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaue8YAAKCRB+wDprTCI0\nzuToAPwKPa+LrymjUqBQUSMRz67ersArEcMX/ELadDYM+4uJWgD/emczNG5J2xGP\nM1+MUROJmuIM/AewfwG1Y2Ww7kiUAQY=\n=YljC\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaul9YwAKCRB+wDprTCI0\nztibAP4pn+JDkuioWEQIV7iaice2Ug38aGyCKKArvIWJ2+X0+gD/XxrILoEpoqgh\nWMjCZJH09uhOw8YxISoBkMoSX1SXRgg=\n=vbh2\n-----END PGP SIGNATURE-----"
 }
