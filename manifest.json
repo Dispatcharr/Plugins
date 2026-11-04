@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T00:26:32Z",
+  "generated_at": "2026-11-04T00:51:29Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -56,7 +56,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-24T15:39:07Z",
-        "download_count": 4091,
+        "download_count": 4092,
         "latest_version": "1.26.2971911",
         "latest_changelog": "477",
         "latest_md5": "77211ee6ccd7ab69867fdea305bf4636",
@@ -205,14 +205,14 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epg-and-sports-editor/manifest.json",
         "author": "jstevenscl",
         "license": "MIT",
-        "last_updated": "2026-11-03T06:20:35Z",
-        "download_count": 956,
-        "latest_version": "0.5.16",
-        "latest_changelog": "514",
-        "latest_md5": "547ec3d0cce2a24a933ddaad598c15e4",
-        "latest_sha256": "2d609d95f80fcf0d7cb673b7342dc37fa54ce8c4dd4551498487d6170953bf4a",
-        "latest_url": "epg-and-sports-editor-0.5.16/epg-and-sports-editor-0.5.16.zip",
-        "latest_size": 178
+        "last_updated": "2026-11-04T00:50:51Z",
+        "download_count": 823,
+        "latest_version": "0.5.17",
+        "latest_changelog": "518",
+        "latest_md5": "44c7f31be423154b7d5e299bb8a413d2",
+        "latest_sha256": "00b7453b81308cc6021102e61605d799ae75b12394eb35bab0b7f0ee8dcc741f",
+        "latest_url": "epg-and-sports-editor-0.5.17/epg-and-sports-editor-0.5.17.zip",
+        "latest_size": 180
       },
       {
         "slug": "epg-janitor",
@@ -239,7 +239,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-25T16:50:10Z",
-        "download_count": 1691,
+        "download_count": 1692,
         "latest_version": "1.26.2981641",
         "latest_changelog": "486",
         "latest_md5": "9c683c54b9455d047508472c364bf80a",
@@ -322,7 +322,7 @@
         "author": "sethwv",
         "license": "MIT",
         "last_updated": "2026-10-15T19:58:49Z",
-        "download_count": 1568,
+        "download_count": 1569,
         "latest_version": "0.5.0",
         "latest_changelog": "441",
         "latest_md5": "3985141e91a46edeea133e3e68be251e",
@@ -454,7 +454,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-01T21:37:32Z",
-        "download_count": 2215,
+        "download_count": 2216,
         "latest_version": "1.26.3052124",
         "latest_changelog": "511",
         "latest_md5": "ac97f20d0188c39426f1ad346af738c4",
@@ -600,7 +600,7 @@
         "author": "jeff-gooch",
         "license": "Unlicense",
         "last_updated": "2026-09-16T12:55:53Z",
-        "download_count": 1910,
+        "download_count": 1911,
         "latest_version": "1.40.1",
         "latest_changelog": "307",
         "latest_md5": "b55e865bef8184938cad616281e1895c",
@@ -611,5 +611,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaup7wgAKCRB+wDprTCI0\nzpKXAP9uGUhn0/1FYZFswY2wJJZN3ZOM0Si6nbzgulLtT3G7rgD/RYiE8TtB1lCa\n5rdoxhQWcJu3lkG7tfhVt7uD6hbdcw0=\n=ZmB8\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauqBlwAKCRB+wDprTCI0\nzs9XAP9uyXsLPwi9/yY7Ks8ax0C0tr20GMPORzn0BRMEE2nfUAD+N7WxR4J7pzxd\n4+T69FrJx0jTb4X9bFpZ9obU25EUYAU=\n=n+jA\n-----END PGP SIGNATURE-----"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T00:26:32Z",
+  "generated_at": "2026-11-04T00:51:29Z",
   "manifest": {
     "slug": "multiview",
     "name": "Multiview",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-15T19:58:49Z",
-    "download_count": 1568,
+    "download_count": 1569,
     "latest": {
       "version": "0.5.0",
       "commit_sha": "db79a9f0d2accf70c4fc923bbdf5a6ef734427bb",
@@ -185,9 +185,9 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.5.0-dev-a15bfce3/multiview-0.5.0-dev-a15bfce3.zip",
         "url": "multiview-0.5.0-dev-a15bfce3/multiview-0.5.0-dev-a15bfce3.zip",
         "size": 379,
-        "download_count": 0
+        "download_count": 1
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaup7vwAKCRB+wDprTCI0\nzlTwAQDZsLwwvoC5VNgLra4iaTj3PBIJ/9cpRIHxZXbYA1g8YgD/RapF1zgY2JSY\nmI7y4VqTMKgRCWUv9Iy+T4eC1hosowA=\n=cRLB\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauqBlgAKCRB+wDprTCI0\nzlNLAQCotp3bB+u6vw0OeC+0NDfnGc/qm4y6xvC9iaN/my5jlgEAunbem7Jyqf94\nv4Ijz9DFoSgehPYzQCpcQM8nehlZsQc=\n=kqga\n-----END PGP SIGNATURE-----"
 }
