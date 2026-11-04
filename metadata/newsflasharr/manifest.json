@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T14:23:52Z",
+  "generated_at": "2026-11-04T18:20:00Z",
   "manifest": {
     "slug": "newsflasharr",
     "name": "Newsflasharr",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-10T21:19:00Z",
-    "download_count": 500,
+    "download_count": 501,
     "latest": {
       "version": "1.26.2832058",
       "commit_sha": "13822829cdf4fed14bf51148eceb56804a0c57b8",
@@ -29,7 +29,7 @@
       "latest_url": "newsflasharr-1.26.2832058/newsflasharr-1.26.2832058.zip",
       "url": "newsflasharr-1.26.2832058/newsflasharr-1.26.2832058.zip",
       "size": 215,
-      "download_count": 171
+      "download_count": 172
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin/releases/download/1.26.2832058/Newsflasharr.zip",
         "url": "newsflasharr-1.26.2832058/newsflasharr-1.26.2832058.zip",
         "size": 215,
-        "download_count": 171
+        "download_count": 172
       },
       {
         "version": "1.26.2821932",
@@ -139,5 +139,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCautAAAAKCRB+wDprTCI0\nzgLZAP0WnOtcw1eag3xZvQyMmz6Q3ZZ2uxhpxAWnfPsWSqxC4AEA1wwfeFUr4Ebh\nEscp6jK7OqFto7qh1bQjnSUkJvRFEw8=\n=iIyB\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaut3WAAKCRB+wDprTCI0\nznHXAQCXO9MsC6PdVfzA2ZcsHMJOtCjFkqbnf/ObLitcg7U+GQEAiu2MjkYVZ/OY\nXLEAemO8w7ntPN+8ifL8DAgrzwMFTgA=\n=aawe\n-----END PGP SIGNATURE-----"
 }

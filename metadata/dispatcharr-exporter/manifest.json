@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T14:23:52Z",
+  "generated_at": "2026-11-04T18:20:00Z",
   "manifest": {
     "slug": "dispatcharr-exporter",
     "name": "Dispatcharr Exporter",
@@ -12,25 +12,41 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1451260201775923421",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-07-18T13:29:39-04:00",
-    "download_count": 468,
+    "last_updated": "2026-11-04T18:19:16Z",
+    "download_count": 467,
     "latest": {
-      "version": "3.1.0",
-      "commit_sha": "ddffa49420c5dd513a9a7876998a72ce295e2242",
-      "commit_sha_short": "ddffa49",
-      "changelog": "183",
-      "build_timestamp": "2026-07-18T17:29:52Z",
-      "last_updated": "2026-07-18T13:29:39-04:00",
-      "checksum_md5": "1ae1da155cefd2cac233d2bf9357825a",
-      "checksum_sha256": "f854184a48616b84763bdfb492496becb69dd60999fa23370eeaab7ec680264e",
+      "version": "3.2.0",
+      "commit_sha": "19d012811abedc11d1b81fadf135432de7dfa943",
+      "commit_sha_short": "19d0128",
+      "changelog": "520",
+      "build_timestamp": "2026-11-04T18:19:39Z",
+      "last_updated": "2026-11-04T18:19:16Z",
+      "checksum_md5": "1668db6474d6df958bef81d101481faf",
+      "checksum_sha256": "bd47c6029d109a1b745cfa56cb8c3c5aa20e0375c060fdeee589c827b174e4db",
       "min_dispatcharr_version": "v0.22.0",
       "max_dispatcharr_version": "",
-      "latest_url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
-      "url": "dispatcharr-exporter-3.1.0/dispatcharr-exporter-3.1.0.zip",
-      "size": 143,
-      "download_count": 354
+      "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.2.0/dispatcharr-exporter-3.2.0.zip",
+      "latest_url": "dispatcharr-exporter-3.2.0/dispatcharr-exporter-3.2.0.zip",
+      "url": "dispatcharr-exporter-3.2.0/dispatcharr-exporter-3.2.0.zip",
+      "size": 156,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "3.2.0",
+        "commit_sha": "19d012811abedc11d1b81fadf135432de7dfa943",
+        "commit_sha_short": "19d0128",
+        "changelog": "520",
+        "build_timestamp": "2026-11-04T18:19:39Z",
+        "last_updated": "2026-11-04T18:19:16Z",
+        "checksum_md5": "1668db6474d6df958bef81d101481faf",
+        "checksum_sha256": "bd47c6029d109a1b745cfa56cb8c3c5aa20e0375c060fdeee589c827b174e4db",
+        "min_dispatcharr_version": "v0.22.0",
+        "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.2.0/dispatcharr-exporter-3.2.0.zip",
+        "url": "dispatcharr-exporter-3.2.0/dispatcharr-exporter-3.2.0.zip",
+        "size": 156,
+        "download_count": 0
+      },
       {
         "version": "3.1.0",
         "commit_sha": "ddffa49420c5dd513a9a7876998a72ce295e2242",
@@ -86,24 +102,8 @@
         "url": "dispatcharr-exporter-2.4.2/dispatcharr-exporter-2.4.2.zip",
         "size": 142,
         "download_count": 5
-      },
-      {
-        "version": "3.1.0-dev-3b0097e4",
-        "prerelease": true,
-        "commit_sha": "21844bbdf912cf7a31e04c6c5c2dabf7eafd9507",
-        "commit_sha_short": "21844bb",
-        "changelog": "497",
-        "build_timestamp": "2026-10-28T20:47:07Z",
-        "last_updated": "2026-10-28T19:29:49Z",
-        "checksum_md5": "60ba2a25ff6a4015d1d83d4fac8ec9eb",
-        "checksum_sha256": "68d6ddc6eaeb4c3dac868f50c72e80a5e952dccb804e699265ed2789c688729d",
-        "min_dispatcharr_version": "v0.22.0",
-        "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.1.0-dev-3b0097e4/dispatcharr-exporter-3.1.0-dev-3b0097e4.zip",
-        "url": "dispatcharr-exporter-3.1.0-dev-3b0097e4/dispatcharr-exporter-3.1.0-dev-3b0097e4.zip",
-        "size": 156,
-        "download_count": 1
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaus//QAKCRB+wDprTCI0\nzqU7AQCNBMn/8X9xC3oD2DsyGUHlyV3B+OiVl6bmGedcgLaCAQEAvxFUBdXe65f5\nQqRsGb4xAoVn5ZVkcoRSXglXEw809wY=\n=8Khh\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaut3VgAKCRB+wDprTCI0\nznaFAQD92tjfNxBUiL9qGkiPtp2rVNv+Jr6zAvZhIu7FxPV3VgD/batQw/7uaKE9\nQ/QyNZE4iTE0YbcPiW99pCSNR1qPRg4=\n=mkvY\n-----END PGP SIGNATURE-----"
 }
