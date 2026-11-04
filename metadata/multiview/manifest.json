@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T18:20:00Z",
+  "generated_at": "2026-11-04T19:48:13Z",
   "manifest": {
     "slug": "multiview",
     "name": "Multiview",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-15T19:58:49Z",
-    "download_count": 1574,
+    "download_count": 1572,
     "latest": {
       "version": "0.5.0",
       "commit_sha": "db79a9f0d2accf70c4fc923bbdf5a6ef734427bb",
@@ -172,22 +172,22 @@
         "download_count": 28
       },
       {
-        "version": "0.5.0-dev-cc2d9f1d",
+        "version": "0.5.0-dev-222a0fb2",
         "prerelease": true,
-        "commit_sha": "7a51cc5b154ec43896b6c83b1883fd7c0f1f98d1",
-        "commit_sha_short": "7a51cc5",
-        "changelog": "519",
-        "build_timestamp": "2026-11-04T14:23:34Z",
-        "last_updated": "2026-11-04T14:23:06Z",
-        "checksum_md5": "700d7c840f629f948e1d56b119a6569a",
-        "checksum_sha256": "4bc0bcfb47f0a8e0d273c86293fe92fb16cc43e752c78b780d0565de36341442",
+        "commit_sha": "8702389122d3397214e8735b68c23ebcb36dfe02",
+        "commit_sha_short": "8702389",
+        "changelog": "521",
+        "build_timestamp": "2026-11-04T19:47:57Z",
+        "last_updated": "2026-11-04T19:47:33Z",
+        "checksum_md5": "a981aa6ef064c499a659402d4c3daaab",
+        "checksum_sha256": "3c87562be99e665a0000c85420cbb48aad95451311c381926e35a9a2b846c24c",
         "min_dispatcharr_version": "v0.27.0",
-        "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.5.0-dev-cc2d9f1d/multiview-0.5.0-dev-cc2d9f1d.zip",
-        "url": "multiview-0.5.0-dev-cc2d9f1d/multiview-0.5.0-dev-cc2d9f1d.zip",
-        "size": 379,
-        "download_count": 2
+        "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.5.0-dev-222a0fb2/multiview-0.5.0-dev-222a0fb2.zip",
+        "url": "multiview-0.5.0-dev-222a0fb2/multiview-0.5.0-dev-222a0fb2.zip",
+        "size": 383,
+        "download_count": 0
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaut3WAAKCRB+wDprTCI0\nzksfAQCl9Bo3QCVKoTmg4LECD4NMMwLJLiTVRWQDznvFytQJogD9Hqgr4Xo2GbXZ\nizFcWlZRUmdZYhk0pmSLjSP8P7Y4ugU=\n=ULvd\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauuMAwAKCRB+wDprTCI0\nztJaAQDGUvTgI+5dEgRWzXHpsTF45M3G3/L7BZvovlVSxLR0dwD/Z024Cxf0u0WN\ntiP2SFDXX6sF+/b8jocgfNfMavAZGgg=\n=7VqY\n-----END PGP SIGNATURE-----"
 }
