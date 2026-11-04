@@ -394,7 +394,7 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 - [Latest Release (`0.5.0`)](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.5.0/multiview-0.5.0.zip)
 - [All Versions (11 available)](./metadata/multiview)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`197453b`](https://github.com/Dispatcharr/Plugins/commit/197453be6db55401fa2d5f7a4d2dc2e35777d28f)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`e2cf0b4`](https://github.com/Dispatcharr/Plugins/commit/e2cf0b416afa361578b2e16e74d0c86e326f91e0)
 
 ---
 
@@ -717,4 +717,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 03 2026, 19:46 UTC*
+*Last updated: Nov 04 2026, 00:26 UTC*
