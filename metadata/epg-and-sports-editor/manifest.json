@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T19:48:13Z",
+  "generated_at": "2026-11-05T13:08:13Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-04T00:50:51Z",
-    "download_count": 842,
+    "download_count": 869,
     "latest": {
       "version": "0.5.17",
       "commit_sha": "a5ca6b126bc17d5a9550eca8237ee0f84dd53502",
@@ -28,7 +28,7 @@
       "latest_url": "epg-and-sports-editor-0.5.17/epg-and-sports-editor-0.5.17.zip",
       "url": "epg-and-sports-editor-0.5.17/epg-and-sports-editor-0.5.17.zip",
       "size": 180,
-      "download_count": 17
+      "download_count": 36
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.17/epg-and-sports-editor-v0.5.17.zip",
         "url": "epg-and-sports-editor-0.5.17/epg-and-sports-editor-0.5.17.zip",
         "size": 180,
-        "download_count": 17
+        "download_count": 36
       },
       {
         "version": "0.5.16",
@@ -57,7 +57,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.16/epg-and-sports-editor-v0.5.16.zip",
         "url": "epg-and-sports-editor-0.5.16/epg-and-sports-editor-0.5.16.zip",
         "size": 178,
-        "download_count": 29
+        "download_count": 31
       },
       {
         "version": "0.5.15",
@@ -71,7 +71,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.15/epg-and-sports-editor-v0.5.15.zip",
         "url": "epg-and-sports-editor-0.5.15/epg-and-sports-editor-0.5.15.zip",
         "size": 176,
-        "download_count": 98
+        "download_count": 99
       },
       {
         "version": "0.5.14",
@@ -85,7 +85,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.14/epg-and-sports-editor-v0.5.14.zip",
         "url": "epg-and-sports-editor-0.5.14/epg-and-sports-editor-0.5.14.zip",
         "size": 174,
-        "download_count": 124
+        "download_count": 125
       },
       {
         "version": "0.5.13",
@@ -99,7 +99,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.13/epg-and-sports-editor-v0.5.13.zip",
         "url": "epg-and-sports-editor-0.5.13/epg-and-sports-editor-0.5.13.zip",
         "size": 172,
-        "download_count": 81
+        "download_count": 82
       },
       {
         "version": "0.5.12",
@@ -113,7 +113,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.12/epg-and-sports-editor-v0.5.12.zip",
         "url": "epg-and-sports-editor-0.5.12/epg-and-sports-editor-0.5.12.zip",
         "size": 172,
-        "download_count": 24
+        "download_count": 25
       },
       {
         "version": "0.5.11",
@@ -127,7 +127,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.11/epg-and-sports-editor-v0.5.11.zip",
         "url": "epg-and-sports-editor-0.5.11/epg-and-sports-editor-0.5.11.zip",
         "size": 171,
-        "download_count": 6
+        "download_count": 7
       },
       {
         "version": "0.5.10",
@@ -141,7 +141,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.10/epg-and-sports-editor-v0.5.10.zip",
         "url": "epg-and-sports-editor-0.5.10/epg-and-sports-editor-0.5.10.zip",
         "size": 171,
-        "download_count": 70
+        "download_count": 71
       },
       {
         "version": "0.5.09",
@@ -173,5 +173,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCauuMAgAKCRB+wDprTCI0\nzuivAQCOUGn/sBm20dZnRjRQhSywu0PE/hcCtfpdIWqa07a0fQEAgmiYvxW2EnoA\nauw/rOuLVTgUxDtPevnxktumvreqowY=\n=oLE8\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaux/wgAKCRB+wDprTCI0\nzq7/AQD4Q7QD5Qa34JCevCvAfTHlvZaMP3psRq8tUVK4OpRWWQEAwBWwG6B2+SYK\n76Ia54W2m92DyKPXtDx7iFAkMfMbNwM=\n=pKiv\n-----END PGP SIGNATURE-----"
 }
