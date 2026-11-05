@@ -1,215 +1,71 @@
 # Could Not Dispatch
 
-A Dispatcharr plugin that plays a looping image or video when every real stream on a
-channel has failed, so viewers see a message instead of a black screen. With an API key,
-it later sends the channel back to its first stream.
+A Dispatcharr plugin that plays a looping image or video when every stream on a channel has
+failed, so viewers see a message instead of an error. It can show a second card when the
+provider is full, list the channels in use, and send channels back to their stream.
 
-When all of a channel's streams are down, Dispatcharr runs out of alternatives and drops
-the client with a 503. From the sofa that looks the same as a broken router. This plugin
-adds one more stream to the end of every channel — a stream that always works — so the
-failover lands on a card that explains what is going on.
+| Every stream failed | Provider full, with the channels in use |
+|---|---|
+| ![Card for a channel whose streams failed](https://raw.githubusercontent.com/PilaScat/could-not-dispatch/v0.7.3/docs/images/card-offline.png) | ![Card for a full provider, listing the channels in use](https://raw.githubusercontent.com/PilaScat/could-not-dispatch/v0.7.3/docs/images/card-full.png) |
 
-The message lives in the picture you supply. The plugin does not draw text.
+The message is part of your picture. The plugin writes only the channels in use.
 
 ## Requirements
 
-- Dispatcharr with the plugin system (the Plugins page)
-- `ffmpeg` and `ffprobe`, both already in the Dispatcharr image
+Dispatcharr with the Plugins page, and `ffmpeg` and `ffprobe`, already in its image.
 
 ## Install
 
-From the Plugin Hub, or by unzipping the release into `/data/plugins`, which creates the
-`could-not-dispatch` folder, and pressing refresh on the Plugins page. Enable the plugin, fill in the settings, press
-**Apply**.
+From the Plugin Hub, or unzip the release into `/data/plugins` and press refresh on the
+Plugins page. Enable the plugin, fill in the settings, press **Apply**.
 
 ## Settings
 
 | Setting | What it does |
 |---|---|
-| Image or video | A path inside the data volume, such as `/data/offline.png`, or an `http(s)` link that is downloaded and cached |
-| Image or video when the provider is full | Optional, given the same way. Shown instead of the card above to a channel that reached the fallback because the provider had no free connection, see below. Needs the API key. Empty: one card for every channel |
-| Show the channels in use | Off by default. Writes on the card for a full provider the channels holding its connections, with the programme on now, see below |
-| Height of the channels in use (%) | Where the first line starts, from the top, as a share of the picture's height, 0 to 95. 58.5 by default: 632 px on a 1080p card |
-| Font for the channels in use | Optional: a `.ttf`, `.otf` or `.ttc` file inside the data volume. Empty: the container's sans-serif font |
-| Local port | Where the fallback listens inside the container. Change it only on a conflict |
-| Width, Height | Leave both at 0 to match the picture, up to 1920x1080. Set both to force a size; the picture is fitted inside and padded to keep its shape |
-| Frames per second | 25 by default. Jellyfin keeps the frame rate a session starts with, so a viewer who starts on the card at a lower rate keeps it after the channel is back. Upgrading from 0.3.3 or earlier keeps the value you saved, 5 unless you changed it: set 25 and press **Apply** |
-| Stream bitrate | kbit/s, default 2000. Lower it only if bandwidth matters more than the picture |
-| Excluded groups | One channel group name per line |
-| Excluded channels | One channel number or channel name per line |
-| Cover new channels automatically | Attaches the fallback to channels added by an M3U refresh |
-| API key | A Dispatcharr API key. With it, channels left on the fallback are sent back to their first stream, see below. Empty keeps them on the card |
+| Image or video | A path in the data volume or an `http(s)` link |
+| Image or video when the provider is full | Optional second card, for channels that found no free connection. Needs the API key |
+| Show the channels in use | Writes them on the second card, with the programme on now |
+| Height of the channels in use (%) | Where the first line starts, from the top. 58.5 by default |
+| Font for the channels in use | Optional `.ttf`, `.otf` or `.ttc`. Empty: the container's sans-serif |
+| Local port | Change it only on a conflict |
+| Width, Height | Both at 0 to match the picture, up to 1920x1080 |
+| Frames per second | 25 by default. Keep your channels' rate: Jellyfin keeps a session's first one |
+| Stream bitrate | kbit/s, 2000 by default |
+| Excluded groups, Excluded channels | One group, or one channel number or name, per line |
+| Cover new channels automatically | Covers the channels an M3U refresh adds |
+| API key | A Dispatcharr API key, needed to send channels back |
 
 ## Actions
 
 | Action | What it does |
 |---|---|
-| Apply settings | Starts the fallback and attaches it, last in order, to every channel that is not excluded, and removes it from channels excluded since. Saving a setting changes nothing until Apply runs, and a viewer already watching the card keeps the old encode until they reopen the channel |
-| Check status | Reports whether the fallback is running and how many channels carry it |
-| Cover new channels | Attaches it to channels that do not carry it yet, removes it from excluded ones, and moves it back to the end where a stream was added after it. Also runs by itself after an M3U refresh |
-| Restart fallback | Starts it again if it is down. Also runs by itself when a channel starts, at most once a minute |
-| Remove fallback | Detaches it everywhere, stops it, deletes its streams |
-
-## How it works
-
-The plugin runs a small process next to Dispatcharr. That process keeps one `ffmpeg`
-alive, looping your file into MPEG-TS, and serves it over HTTP at
-`http://127.0.0.1:<port>/slate.ts`. Every viewer of the fallback shares that one encode.
-The encoder starts when the first viewer arrives and stops fifteen seconds after the last
-one leaves, so an idle server costs nothing.
-
-Each channel gets a Dispatcharr custom stream of its own with that URL, followed by
-`?channel=<uuid>` so the fallback knows which channel is asking, attached with the
-highest order number, which puts it last in the failover list. Dispatcharr's own failover
-does the rest: it walks the channel's streams in order, and the fallback is the only one
-that cannot fail. A stream added to a channel later lands after the fallback, where the
-failover would never reach it; Apply and Cover new channels move the fallback back to the
-end.
-
-The stream is one per channel, not one for all, because Dispatcharr records which M3U
-profile a session holds under the stream. Channels sharing one stream share that record,
-and a channel sent back from the card could then take a provider connection without
-counting it, or free one another channel still held.
-
-A custom stream belongs to the built-in `custom` M3U account, which has no connection
-limit, so the fallback never competes for a slot with your provider.
-
-### How long the card takes to appear
-
-Dispatcharr buffers four 256 KB chunks — one megabyte — before it sends a client
-anything. A still picture compresses to almost nothing, so an ordinary encode of it would
-trickle out at some 15 kbit/s and the viewer would wait about nine minutes.
-
-The fallback therefore encodes at a genuinely constant bitrate, padding each frame with
-H.264 filler data (`nal-hrd=cbr:filler=1`). The padding lives inside the video, so it
-survives the remux that Dispatcharr's default `ffmpeg` stream profile performs — transport
-stream stuffing would not, because `-c copy` discards null packets.
-
-Sending that megabyte at the stream's own rate would take two seconds, so the fallback
-does not wait: ffmpeg reads the first seconds of input as fast as it can
-(`-readrate_initial_burst`, sized from the bitrate so the burst always covers a megabyte),
-and a viewer arriving while the encoder is already running is handed the last stretch of
-stream from a rolling buffer, starting at a keyframe.
-
-Measured inside the Dispatcharr image, the megabyte lands **0.27 s** after a cold
-connection at 720p, **0.52 s** at 1080p, and **0.02 s** for a viewer joining a running
-encoder. What remains is
-Dispatcharr's own failover — three connection attempts on the dead stream before it
-switches — which is roughly a second and a half and is not the plugin's to shorten.
-
-### Dark backgrounds
-
-A card on a dark gradient is the hardest thing to encode here: flat near-black areas band
-and break into blocks long before anything else does. Two settings decide how bad it gets,
-and both are free.
-
-x264's `stillimage` tune weakens deblocking, which is the opposite of what a gradient
-needs, so the encoder does not use it. And the VBV buffer is four seconds rather than one,
-which lets a keyframe spend what it needs instead of being clipped to a single second of
-budget.
-
-Measured on the dark quadrant of a 1080p card, the two together are worth about as much as
-doubling the bitrate: 61.4 dB at 2000 kbit/s against 56.1 with the `stillimage` tune and a
-one-second buffer, and 65.5 against 61.8 at 4000.
-
-No `-tune` is set at all, which matters more than either. `zerolatency`, the obvious choice
-for a stream that has to start fast, switches off x264's lookahead: the rate control then
-works frame by frame and the picture visibly pulses between clear and banded. Keeping the
-lookahead flattens that — at 2000 kbit/s the spread across frames is 2.6 dB rather than
-8.2, and the worst frame 63.1 rather than 57.9 — which is why the default rate is 2000 and
-not 4000: with the lookahead, 2000 beats 4000 without it, at half the bytes on the wire.
-
-Lookahead costs startup latency, which is what `zerolatency` would have avoided. The
-initial burst pays for it instead: it is sized to cover the lookahead as well as the
-megabyte, so nothing is given up.
-
-### What the card costs
-
-The card is a live encode for as long as someone watches it, so it uses CPU like any
-transcode, whichever file it loops. That cost is steady and does not grow over time.
-
-A still picture is read and scaled five times a second, not at the card's full frame rate,
-and the threads are fixed rather than sized on the host's cores: a container limited to one
-CPU still sees every core of its host, and an encoder sized on them runs into the limit.
-
-Measured in the Dispatcharr image limited to 1 CPU, on an i7-11700K with 16 threads, at
-25 fps and 2000 kbit/s, from a 1920×1080 PNG:
-
-| Card | CPU | Memory | First megabyte |
-|---|---|---|---|
-| Picture, 720p | 0.18 core | 183 MB | 1.00 s |
-| Picture, 1080p | 0.37 core | 291 MB | 1.30 s |
-| 8 s 1080p video, 1080p | 0.55 core | 287 MB | 2.08 s |
-
-On a slower CPU or a tight limit, a smaller **Width** and **Height** cost the least to give
-up. Keep the frame rate if Jellyfin plays your channels: see **Frames per second** above.
+| Apply settings | Starts the card and adds it, last, to every channel not excluded |
+| Check status | Says whether the card runs and how many channels carry it |
+| Cover new channels | Covers channels that lack it. Runs after every M3U refresh |
+| Restart fallback | Restarts the card if it is down. Runs when a channel starts |
+| Remove fallback | Detaches the card and deletes its streams |
 
 ## What to expect
 
-**A channel carrying the fallback never reports as down.** The fallback is a healthy
-stream, so Dispatcharr considers the channel up. To spot real outages, watch the
-`channel_failover` system events rather than channel state.
-
-**Playback returns to the provider only with an API key.** Dispatcharr never leaves the
-fallback by itself: a channel stays on the card for as long as a client holds it, even
-after the provider is back. Without a key that stays true. With one, the fallback asks
-Dispatcharr every ten seconds which channels are playing it and how many connections each
-M3U profile is using, and switches a channel still on it after 30 seconds to its first
-stream. If that stream is still down, the failover walks the chain and lands on the card
-again, and the next try waits longer: 1, 2, then 5 minutes, and every 5 minutes after that.
-The wait starts over once the channel has stayed off the card for 15 minutes.
-
-A channel that reaches the card while the provider of its first stream is full, or was full
-in the 20 seconds before, is there for lack of a connection, not because its streams failed:
-a viewer switching channels with every connection in use lands on it. That channel goes back
-as soon as a connection frees up, checked every two seconds, and a refusal for capacity is
-not counted as a try. If it lands on the card again within 30 seconds of that return, its
-streams are failing after all, and it waits like any other.
-
-With **Image or video when the provider is full** set, such a channel gets that card instead,
-so the message can say that every connection is in use. The choice is made when the channel
-reaches the fallback: the second card goes to a channel whose every source belongs to a
-provider account seen at its connection limit in the last 20 seconds, counting the other
-channels only, since a channel trying its dead sources holds a connection itself; any other
-channel gets the usual card, and keeps the card it got until it leaves. A channel back on the
-card within 30 seconds of being sent back to its first stream has tried its sources and they
-failed, so it gets the usual card even if the provider was full meanwhile. The log says
-`<channel> gets the card for a full provider` each time that card is given. A channel created after the last
-read of the channel list, done every 15 minutes, gets the usual card. Only these two cases
-can be told apart: Dispatcharr does not tell the plugin why each stream failed, so a broken
-link and a passing outage look the same. The second card is a second encoder, which runs
-only while someone watches it.
-
-With **Show the channels in use** on as well, that card tells the viewer which channels hold
-the connections: one line each, centred, the channel's name and, when Dispatcharr's guide
-has one, the programme on now (`DAZN | Web 4 · Genoa - Juventus`). A programme that only
-repeats the channel's name is left out. The lines start at **Height of the channels in use**,
-58.5% of the picture's height by default, 50 px high on a 1080p card with 12 px between them, in grey `#606469`, so the picture should
-leave that part empty and carry its own heading above it. The list follows the same
-20-second memory as the choice of card and is rewritten after every check, so it lags by
-2 to 10 seconds; the encoder reads it again five times a second without restarting. The guide is
-asked only while an account is full, only for channels whose programme has not been read
-or has ended, and with a two-second timeout; when it does not answer the lines keep the
-names alone and it is asked again a minute later. The text needs an `ffmpeg` whose
-`drawtext` has `text_align`, which the Dispatcharr image has; with an older one the card
-shows no lines and the log says why.
-
-**One edge case in failover order.** Dispatcharr rotates the alternate list starting from
-the current stream and wraps around. If the first stream of a channel was unavailable
-when the viewer connected, the rotation can reach the fallback before retrying the
-streams that sit *before* the current one. It only happens when M3U profiles are at
-capacity, and it costs one retry.
-
-**The HDHomeRun tuner count grows by one per covered channel.** Dispatcharr adds custom
-streams to the number of tuners it advertises. The connection limit of your provider is
-unchanged.
-
-**Restarting Dispatcharr leaves the fallback down until it is needed.** The next channel
-start brings it back by itself; **Restart fallback** does it immediately.
-
-**The plugin keeps a small state file** at `.runtime/state.json` inside its own folder,
-holding the process it started. It cannot live in the plugin settings: saving those
-replaces the whole object, which would erase it.
+- **Each channel gets one more stream**, last in its failover list, which Dispatcharr counts
+  as an HDHomeRun tuner. Your provider's limit is unchanged.
+- **With an API key, channels go back.** After 30 seconds on the card, then after 1, 2 and
+  every 5 minutes, the plugin opens the channel's streams in order and switches it to the first
+  that sends data, so a dead stream does not interrupt the viewer. The check uses a free
+  connection, counted like any other, or waits for one.
+- **A full provider gets the second card**, for a channel whose streams are all on accounts at
+  their limit, and the channel goes back as soon as a connection frees up.
+- **The channels in use** are centred lines, 50 px high on a 1080p card, in grey `#606469`:
+  leave that part of the picture empty.
+- **Jellyfin can stall after a switch** with the `FFmpeg` stream profile, which starts the
+  timestamps again near zero
+  ([Dispatcharr#1946](https://github.com/Dispatcharr/Dispatcharr/issues/1946)). A
+  [Reservoarr](https://github.com/PilaScat/reservoarr) profile with
+  `RESV_TS_CHANNEL={channelId}` keeps them going forwards.
+- **A card costs CPU only while watched**: about 0.4 core for a 1080p picture and 0.55 for a
+  1080p video, under a 1 CPU limit.
+- **A channel on the card never reports as down**: watch the `channel_failover` events.
 
 ## Development
 
@@ -222,11 +78,8 @@ python3 -m venv .venv
 .venv/bin/python scripts/build_zip.py
 ```
 
-The same four checks run in CI on every push. Decisions, traps and the release routine are in
+Decisions, traps and the release routine are in
 [docs/MEMORY.md](https://github.com/PilaScat/could-not-dispatch/blob/master/docs/MEMORY.md).
-
-`build_zip.py` writes `dist/could-not-dispatch-<version>.zip`, laid out the way
-Dispatcharr expects an imported plugin.
 
 ## Licence
 
