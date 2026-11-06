@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-05T13:08:13Z",
+  "generated_at": "2026-11-06T02:37:43Z",
   "manifest": {
     "slug": "dustarr",
     "name": "Dustarr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-17T17:57:40-04:00",
-    "download_count": 796,
+    "download_count": 803,
     "latest": {
       "version": "1.26.2901903",
       "commit_sha": "1b882f233078ff663758cc1ecdf82ff16afea84a",
@@ -32,7 +32,7 @@
       "latest_url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
       "url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
       "size": 132,
-      "download_count": 238
+      "download_count": 244
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.2901903/Dustarr-1.26.2901903.zip",
         "url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
         "size": 132,
-        "download_count": 238
+        "download_count": 244
       },
       {
         "version": "1.26.2832018",
@@ -93,7 +93,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.2481620/Dustarr-1.26.2481620.zip",
         "url": "dustarr-1.26.2481620/dustarr-1.26.2481620.zip",
         "size": 125,
-        "download_count": 282
+        "download_count": 283
       },
       {
         "version": "1.26.2362242",
@@ -112,5 +112,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaux/wgAKCRB+wDprTCI0\nzqwFAQCD10l4orvFXjbXF4v0BQK4oWKiiDOVP8+U9q9ole61BgD/RcwfR/SACApq\nAQuuigo5bm8+ybcEYt6JHY8yeOkgHgk=\n=PVZM\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCau09fQAKCRB+wDprTCI0\nzom3AP9YZDs3AEHRNVJdXl1QElHQZFbQcdVUqfkcYjzjyEKDdwEAyjYdAWKc9Vgf\nX5BtMWPDgsqjZ54NtEoWe6U7usy6Mws=\n=ZTmF\n-----END PGP SIGNATURE-----"
 }

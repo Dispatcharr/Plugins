@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-05T13:08:13Z",
+  "generated_at": "2026-11-06T02:37:43Z",
   "manifest": {
     "slug": "youtubearr",
     "name": "YouTubearr",
@@ -10,7 +10,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-09-16T12:55:53Z",
-    "download_count": 1926,
+    "download_count": 1936,
     "latest": {
       "version": "1.40.1",
       "commit_sha": "e14ea92d80763c52784047f843aa76069b45c7c1",
@@ -25,7 +25,7 @@
       "latest_url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
       "url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
       "size": 5017,
-      "download_count": 598
+      "download_count": 605
     },
     "versions": [
       {
@@ -40,7 +40,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
         "size": 5017,
-        "download_count": 598
+        "download_count": 605
       },
       {
         "version": "1.40.0",
@@ -68,7 +68,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.30.1/youtubearr-1.30.1.zip",
         "size": 5011,
-        "download_count": 350
+        "download_count": 351
       },
       {
         "version": "1.30.0",
@@ -82,7 +82,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.30.0/youtubearr-1.30.0.zip",
         "size": 5007,
-        "download_count": 383
+        "download_count": 384
       },
       {
         "version": "1.20.0",
@@ -124,7 +124,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.18.0/youtubearr-1.18.0.zip",
         "size": 5001,
-        "download_count": 4
+        "download_count": 5
       },
       {
         "version": "1.17.7",
@@ -142,5 +142,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaux/xwAKCRB+wDprTCI0\nzuzfAP9oMM6WBipPGLSKJn7R2qkeOsvl79H7zSpkLnU6g6HMWwD/SleQYhLYNuLH\nMmOSoBMYL4l/mT8WWaDV/SQrnw1sxwE=\n=/tEn\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCau09gwAKCRB+wDprTCI0\nzqAgAP48Cv4Myyw1347E6V2V6gXMHURA9+F7kdgDo+hATp761AD8C6Cz7a0H5rch\nwVWrU3yZr0UpOeNk6XVxcg56EDQ7/gA=\n=00m8\n-----END PGP SIGNATURE-----"
 }

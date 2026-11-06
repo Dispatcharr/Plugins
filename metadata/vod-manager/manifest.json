@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-05T13:08:13Z",
+  "generated_at": "2026-11-06T02:37:43Z",
   "manifest": {
     "slug": "vod-manager",
     "name": "VOD Manager",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-10T10:00:22Z",
-    "download_count": 312,
+    "download_count": 320,
     "latest": {
       "version": "2.6.4",
       "commit_sha": "767c1346ef1c84136d45f08db69349b480fa8163",
@@ -28,7 +28,7 @@
       "latest_url": "vod-manager-2.6.4/vod-manager-2.6.4.zip",
       "url": "vod-manager-2.6.4/vod-manager-2.6.4.zip",
       "size": 570,
-      "download_count": 235
+      "download_count": 243
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/oxios0x00/dispatcharr-vod-manager/releases/download/v2.6.4/vod_manager.zip",
         "url": "vod-manager-2.6.4/vod-manager-2.6.4.zip",
         "size": 570,
-        "download_count": 235
+        "download_count": 243
       },
       {
         "version": "2.6.3",
@@ -61,5 +61,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaux/xgAKCRB+wDprTCI0\nzvtVAQDpra//eYZBOBP8WvbZxtrosdLf6N9JUVzgufRWr4/6yAEA+UXupbLJtujO\nqe7JCWIAWJjSMUAvRfYOx+ENnL6vEQM=\n=4dsy\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCau09ggAKCRB+wDprTCI0\nziYXAP0Vh1Np+SMGW2J/shJgBAjh0SmKy83/ebyHYI+dkMfY1gD9G+t9GXfN/W4O\nQQt2u2w5mX35EegjesdCrnRKRXmBDAQ=\n=kHNr\n-----END PGP SIGNATURE-----"
 }
