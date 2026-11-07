@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T01:24:49Z",
+  "generated_at": "2026-11-07T01:30:46Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -205,13 +205,13 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epg-and-sports-editor/manifest.json",
         "author": "jstevenscl",
         "license": "MIT",
-        "last_updated": "2026-11-07T01:24:11Z",
-        "download_count": 474,
-        "latest_version": "0.5.20",
-        "latest_changelog": "527",
-        "latest_md5": "4851957d80c7f97911a5352a5a43232f",
-        "latest_sha256": "8967990f19582b453d6ddee4dc054e7af9012218aef58374043a66ca3e73feef",
-        "latest_url": "epg-and-sports-editor-0.5.20/epg-and-sports-editor-0.5.20.zip",
+        "last_updated": "2026-11-07T01:30:09Z",
+        "download_count": 467,
+        "latest_version": "0.5.21",
+        "latest_changelog": "528",
+        "latest_md5": "f64956ac86a591c0e27099722a013eb0",
+        "latest_sha256": "6a90cc4f01b216f1ccf271011f85fedf82bf6e98ff9a3b4bfad7900dfc3b4b27",
+        "latest_url": "epg-and-sports-editor-0.5.21/epg-and-sports-editor-0.5.21.zip",
         "latest_size": 182
       },
       {
@@ -322,7 +322,7 @@
         "author": "sethwv",
         "license": "MIT",
         "last_updated": "2026-11-06T16:17:24Z",
-        "download_count": 1569,
+        "download_count": 1570,
         "latest_version": "0.6.0",
         "latest_changelog": "525",
         "latest_md5": "63c20bf003dee34a04d9ceba006bb3b1",
@@ -611,5 +611,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCau597AAKCRB+wDprTCI0\nzkXCAQDNicgLZ7cKJWH10fArXCFlJmn6O8o3j2JggtWjm0uyXQD+OaYz6M7ffFc1\nmFKFfyFhMnNhFTPdSa7uMo4X1V8dRgo=\n=AqzO\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCau5/SwAKCRB+wDprTCI0\nztMcAP9GbYqRwQTeaM523CvwVjIhfj98L13bWLdPJ4PorERGogEAgnaWolcFTrAR\nqlcHDuqVZWkxWvErAOgEzRc0/UzuLQw=\n=+Wc0\n-----END PGP SIGNATURE-----"
 }
