@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T03:09:43Z",
+  "generated_at": "2026-11-08T13:18:27Z",
   "manifest": {
     "slug": "reservoarr",
     "name": "reservoarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-08T02:28:52Z",
-    "download_count": 1263,
+    "download_count": 1299,
     "latest": {
       "version": "6.8.0",
       "commit_sha": "523fbc98ab92211c19c35f0f20b16f53ece9d6bc",
@@ -31,7 +31,7 @@
       "latest_url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
       "url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
       "size": 53,
-      "download_count": 3
+      "download_count": 26
     },
     "versions": [
       {
@@ -47,7 +47,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.8.0/reservoarr-6.8.0.zip",
         "url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
         "size": 53,
-        "download_count": 3
+        "download_count": 26
       },
       {
         "version": "6.7.0",
@@ -62,7 +62,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.7.0/reservoarr-6.7.0.zip",
         "url": "reservoarr-6.7.0/reservoarr-6.7.0.zip",
         "size": 52,
-        "download_count": 280
+        "download_count": 284
       },
       {
         "version": "6.6.0",
@@ -77,7 +77,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.6.0/reservoarr-6.6.0.zip",
         "url": "reservoarr-6.6.0/reservoarr-6.6.0.zip",
         "size": 49,
-        "download_count": 108
+        "download_count": 109
       },
       {
         "version": "6.5.0",
@@ -92,7 +92,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.5.0/reservoarr-6.5.0.zip",
         "url": "reservoarr-6.5.0/reservoarr-6.5.0.zip",
         "size": 48,
-        "download_count": 173
+        "download_count": 174
       },
       {
         "version": "6.4.0",
@@ -107,7 +107,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.4.0/reservoarr-6.4.0.zip",
         "url": "reservoarr-6.4.0/reservoarr-6.4.0.zip",
         "size": 46,
-        "download_count": 356
+        "download_count": 358
       },
       {
         "version": "6.3.12",
@@ -122,7 +122,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.12/reservoarr-6.3.12.zip",
         "url": "reservoarr-6.3.12/reservoarr-6.3.12.zip",
         "size": 43,
-        "download_count": 15
+        "download_count": 16
       },
       {
         "version": "6.3.11",
@@ -137,7 +137,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.11/reservoarr-6.3.11.zip",
         "url": "reservoarr-6.3.11/reservoarr-6.3.11.zip",
         "size": 41,
-        "download_count": 8
+        "download_count": 9
       },
       {
         "version": "6.3.10",
@@ -152,7 +152,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.10/reservoarr-6.3.10.zip",
         "url": "reservoarr-6.3.10/reservoarr-6.3.10.zip",
         "size": 41,
-        "download_count": 114
+        "download_count": 115
       },
       {
         "version": "6.3.9",
@@ -167,7 +167,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.9/reservoarr-6.3.9.zip",
         "url": "reservoarr-6.3.9/reservoarr-6.3.9.zip",
         "size": 40,
-        "download_count": 11
+        "download_count": 13
       },
       {
         "version": "6.3.8",
@@ -186,5 +186,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCau/n/AAKCRB+wDprTCI0\nzhaUAP0XMptrF68j4WS7A+lNDDdrtIJg56Ng+91PQ3GpQfSldgEA2xUhDtmx7kPj\n0EDEeCDlyTC5iNwH9v9GyaSQ20a6gAk=\n=9pBv\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavB2qwAKCRB+wDprTCI0\nzqyTAQDuXNxOVbKf8gsewBmuQe3fIuNT6lTQOo6s14dVm5UwsAD/YqpZbjJzdzpk\nfPJ35ofNQcbx8C+xNejDd5I3kEZjcQo=\n=w1f5\n-----END PGP SIGNATURE-----"
 }
