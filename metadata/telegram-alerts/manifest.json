@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T15:21:35Z",
+  "generated_at": "2026-11-08T22:07:06Z",
   "manifest": {
     "slug": "telegram-alerts",
     "name": "Telegram Alerts",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-06-01T20:07:46Z",
-    "download_count": 241,
+    "download_count": 243,
     "latest": {
       "version": "0.4.5",
       "build_timestamp": "2026-06-01T20:07:46Z",
@@ -25,7 +25,7 @@
       "latest_url": "telegram-alerts-0.4.5/telegram-alerts-0.4.5.zip",
       "url": "telegram-alerts-0.4.5/telegram-alerts-0.4.5.zip",
       "size": 510,
-      "download_count": 241
+      "download_count": 243
     },
     "versions": [
       {
@@ -38,9 +38,9 @@
         "source_url": "https://github.com/R3XCHRIS/telegram-alerts/releases/download/v0.4.5/plugin-telegram-alerts-v0.4.5.zip",
         "url": "telegram-alerts-0.4.5/telegram-alerts-0.4.5.zip",
         "size": 510,
-        "download_count": 241
+        "download_count": 243
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCau9CBwAKCRB+wDprTCI0\nzqlpAP97h7QAqhG6gP4DUvopbyvlL1jZ9KPftNw3V+1QF2K+fQEA0l2A5N7vLD3D\nA8sWAmBH4xI7PNfvPYF0vOk2XKMdwQQ=\n=WovJ\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavDykwAKCRB+wDprTCI0\nzmLoAQCcySY1nDhL8kFgPi3s2rud7g+H7rY9pSNsC5dZMA8ZhwEAlOedtxxw6L0v\n2vESw1jro5pIXBYlTmqFyzQn8/GPCg0=\n=xMz8\n-----END PGP SIGNATURE-----"
 }
