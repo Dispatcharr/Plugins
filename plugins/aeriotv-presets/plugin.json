@@ -1,8 +1,8 @@
 {
   "manifest_version": 1,
   "name": "AerioTV Presets",
-  "version": "0.0.2",
-  "description": "Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup.",
+  "version": "0.0.3",
+  "description": "Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer.",
   "author": "jonzey231",
   "license": "AGPL-3.0-or-later",
   "min_dispatcharr_version": "0.33.0",
