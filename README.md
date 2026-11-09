@@ -11,7 +11,7 @@ This branch contains all published plugin releases.
 
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
-| [`AerioTV Presets`](#aeriotv-presets) | `0.0.2` | jonzey231 | AGPL-3.0-or-later | Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup. |
+| [`AerioTV Presets`](#aeriotv-presets) | `0.0.3` | jonzey231 | AGPL-3.0-or-later | Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer. |
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.3.5` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
 | [`Automap Channelarr`](#automap-channelarr) | `0.4.2` | Megamannen | Artistic-2.0 | Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper. |
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2971911` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
@@ -53,19 +53,19 @@ This branch contains all published plugin releases.
 
 ### [AerioTV Presets](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/aeriotv-presets/README.md)
 
-**Version:** `0.0.2` | **Author:** jonzey231 | **Last Updated:** Nov 09 2026, 18:40 UTC
+**Version:** `0.0.3` | **Author:** jonzey231 | **Last Updated:** Nov 09 2026, 18:49 UTC
 
-Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup.
+Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer.
 
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue?style=flat-square)](https://spdx.org/licenses/AGPL-3.0-or-later.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jonzey231/AerioTVPresets)
 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.33.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`0.0.2`)](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.2/aeriotv-presets-0.0.2.zip)
-- [All Versions (1 available)](./metadata/aeriotv-presets)
+- [Latest Release (`0.0.3`)](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.3/aeriotv-presets-0.0.3.zip)
+- [All Versions (2 available)](./metadata/aeriotv-presets)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/aeriotv-presets) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/aeriotv-presets/README.md) | **Last Change:** [`9b465fd`](https://github.com/Dispatcharr/Plugins/commit/9b465fdf9a2166f6659a36c9522a21da0a257378)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/aeriotv-presets) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/aeriotv-presets/README.md) | **Last Change:** [`6dc6153`](https://github.com/Dispatcharr/Plugins/commit/6dc615387ce76f32d2f30d0fcf6bfb3a5df4063f)
 
 ---
 
@@ -737,4 +737,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 09 2026, 18:41 UTC*
+*Last updated: Nov 09 2026, 18:50 UTC*
