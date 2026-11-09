@@ -1,12 +1,42 @@
 {
   "manifest_version": 1,
   "name": "AerioTV Presets",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup.",
   "author": "jonzey231",
   "license": "AGPL-3.0-or-later",
   "min_dispatcharr_version": "0.33.0",
   "repo_url": "https://github.com/jonzey231/AerioTVPresets",
   "source_type": "external",
-  "source_url": "https://github.com/jonzey231/AerioTVPresets/releases/download/v{version}/aeriotv-presets-plugin-{version}.zip"
+  "source_url": "https://github.com/jonzey231/AerioTVPresets/releases/download/v{version}/aeriotv-presets-plugin-{version}.zip",
+  "capabilities": [],
+  "actions": [
+    {
+      "id": "load_lists",
+      "label": "Load",
+      "description": "Builds the channel and group lists for the chosen user. Save first, run this, then reload the page.",
+      "button_label": "Load",
+      "button_variant": "filled"
+    },
+    {
+      "id": "preview",
+      "label": "Preview",
+      "description": "Shows what Apply would change, without writing.",
+      "button_label": "Preview",
+      "button_variant": "outline"
+    },
+    {
+      "id": "apply",
+      "label": "Apply",
+      "description": "Writes the setup to the user's AerioTV record.",
+      "button_label": "Apply",
+      "button_variant": "filled",
+      "button_color": "blue",
+      "confirm": {
+        "required": true,
+        "title": "Apply AerioTV setup?",
+        "message": "This writes the user's AerioTV record. Replace mode overwrites what their devices saved for the sections you filled in."
+      }
+    }
+  ]
 }
