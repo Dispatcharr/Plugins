@@ -1,6 +1,6 @@
 {
   "name": "Could Not Dispatch",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Plays a looping image or video when every stream on a channel has failed, so viewers see a message instead of an error. It can show a second card when the provider is full, list the channels in use, and send channels back to their stream.",
   "author": "PilaScat",
   "license": "MIT",
