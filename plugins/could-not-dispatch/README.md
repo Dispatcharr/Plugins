@@ -23,7 +23,7 @@ Plugins page. Enable the plugin, fill in the settings, press **Apply**.
 
 | Setting | What it does |
 |---|---|
-| Image or video | A path in the data volume or an `http(s)` link |
+| Image or video | A path in the data volume, outside `/data/plugins/could_not_dispatch/`, which an update replaces, or an `http(s)` link |
 | Image or video when the provider is full | Optional second card, for channels that found no free connection. Needs the API key |
 | Show the channels in use | Writes them on the second card, with the programme on now |
 | Height of the channels in use (%) | Where the first line starts, from the top. 58.5 by default |
