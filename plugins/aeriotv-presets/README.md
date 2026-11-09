@@ -5,7 +5,7 @@ Live TV group order, hidden groups and categories, and app settings such as them
 plugin writes the user's AerioTV Dispatcharr Sync record; their AerioTV devices offer Dispatcharr
 Sync on first sign-in and start from that setup.
 
-Use: choose a user, Save, run Load, reload the page, make your choices, then run Preview and Apply
+Use: choose a user, Save, run Refresh Lists, reload the page, make your choices, then run Preview and Apply
 (Fill only adds what the record does not have yet; Replace overwrites what you set).
 
 Collapsible sections need a Dispatcharr build with plugin settings sections (dev branch, November
