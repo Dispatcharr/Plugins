@@ -1,0 +1,11 @@
+{
+  "name": "AerioTV Presets",
+  "version": "0.0.1",
+  "description": "Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup.",
+  "author": "jonzey231",
+  "license": "AGPL-3.0-or-later",
+  "min_dispatcharr_version": "0.33.0",
+  "repo_url": "https://github.com/jonzey231/AerioTVPresets",
+  "source_type": "external",
+  "source_url": "https://github.com/jonzey231/AerioTVPresets/releases/download/v{version}/aeriotv-presets-plugin-{version}.zip"
+}
