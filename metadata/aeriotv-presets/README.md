@@ -2,9 +2,9 @@
 
 # AerioTV Presets
 
-**Version:** `0.0.6` | **Author:** jonzey231 | **Last Updated:** Nov 09 2026, 19:13 UTC
+**Version:** `0.0.7` | **Author:** jonzey231 | **Last Updated:** Nov 09 2026, 21:15 UTC
 
-Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer.
+Preconfigure a user's AerioTV favorites, group order, hidden groups, and settings. Their AerioTV devices offer Dispatcharr Sync on first launch and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer.
 
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue?style=flat-square)](https://spdx.org/licenses/AGPL-3.0-or-later.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jonzey231/AerioTVPresets)
 
@@ -14,20 +14,21 @@ Preconfigure a user's AerioTV favorites, group order, hidden groups and categori
 
 ### Latest Release
 
-- **Download:** [`aeriotv-presets-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.6/aeriotv-presets-0.0.6.zip)
-- **Built:** Nov 09 2026, 19:14 UTC
-- **Source Commit:** [`c902725`](https://github.com/Dispatcharr/Plugins/commit/c902725c303267207d1b44a3a97b5b2e12773237)
+- **Download:** [`aeriotv-presets-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.7/aeriotv-presets-0.0.7.zip)
+- **Built:** Nov 09 2026, 21:15 UTC
+- **Source Commit:** [`87c45ef`](https://github.com/Dispatcharr/Plugins/commit/87c45efdc70a7dad3de92882de8afaf876b4cf5b)
 
 **Checksums:**
 ```
-MD5:    de359cb4d59e6c6e6fafdd2683ca2878
-SHA256: c7688e78601ea4b2281bb2ab6a63ee103e887daa6704718b782f00135d377dfc
+MD5:    9c4016ad744f1ae726b138f4f20bc18b
+SHA256: 38aada8e834ceb21b1b99ad3239ccca71852ea11679046a0e5d5cbd093b4bffe
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.0.7` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.7/aeriotv-presets-0.0.7.zip) | Nov 09 2026, 21:15 UTC | [`87c45ef`](https://github.com/Dispatcharr/Plugins/commit/87c45efdc70a7dad3de92882de8afaf876b4cf5b) | 9c4016ad744f1ae726b138f4f20bc18b | 38aada8e834ceb21b1b99ad3239ccca71852ea11679046a0e5d5cbd093b4bffe |
 | `0.0.6` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.6/aeriotv-presets-0.0.6.zip) | Nov 09 2026, 19:14 UTC | [`c902725`](https://github.com/Dispatcharr/Plugins/commit/c902725c303267207d1b44a3a97b5b2e12773237) | de359cb4d59e6c6e6fafdd2683ca2878 | c7688e78601ea4b2281bb2ab6a63ee103e887daa6704718b782f00135d377dfc |
 | `0.0.5` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.5/aeriotv-presets-0.0.5.zip) | Nov 09 2026, 19:05 UTC | [`2cb8b42`](https://github.com/Dispatcharr/Plugins/commit/2cb8b422d685c6aa87a7ec985432b945d0906705) | 5c9f0ad2eadf80bcfade59620e4c7685 | a02431ac212ad0a14d94018247833068c0a2d787237947f056960a03440f0327 |
 | `0.0.4` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.4/aeriotv-presets-0.0.4.zip) | Nov 09 2026, 18:55 UTC | [`d8da598`](https://github.com/Dispatcharr/Plugins/commit/d8da598a5da09939e403f1f842784366aba84dd7) | d1e6f172a134a771e9d094b6be07d399 | df299edd2316b52ce2e6f8ef43832b976b0854e8a926b8c033b8a5b5cb025d1f |

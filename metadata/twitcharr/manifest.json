@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T18:41:01Z",
+  "generated_at": "2026-11-09T21:15:54Z",
   "manifest": {
     "slug": "twitcharr",
     "name": "Twitcharr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-03T19:44:39Z",
-    "download_count": 928,
+    "download_count": 930,
     "latest": {
       "version": "1.3.3",
       "commit_sha": "dd6e1fa8b36604c630c2b6afdd6cd349283002ec",
@@ -31,7 +31,7 @@
       "latest_url": "twitcharr-1.3.3/twitcharr-1.3.3.zip",
       "url": "twitcharr-1.3.3/twitcharr-1.3.3.zip",
       "size": 76,
-      "download_count": 79
+      "download_count": 81
     },
     "versions": [
       {
@@ -46,7 +46,7 @@
         "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v1.3.3/twitcharr.zip",
         "url": "twitcharr-1.3.3/twitcharr-1.3.3.zip",
         "size": 76,
-        "download_count": 79
+        "download_count": 81
       },
       {
         "version": "1.3.2",
@@ -103,5 +103,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavITxQAKCRB+wDprTCI0\nziibAQDmgoxqYW+5hkxMwhYlNFLGk1ufJGAc1Z4tFU1koB2a2gD+OTni6Q87APy+\nKMPlKTZyiobhwulU1uB9ziwoV/vAlA4=\n=l87T\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavI4EgAKCRB+wDprTCI0\nzsFHAPwJQMqeKOF6Xdvprs5fpNX4LFwWzc+IHQLbwcegc71hWQD9F1pXfHE+Ji5M\n9yU7IxHY/Ro54V0DFhaAZ1KDBuHVmQE=\n=Un2u\n-----END PGP SIGNATURE-----"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T18:50:27Z",
+  "generated_at": "2026-11-09T21:15:54Z",
   "manifest": {
     "slug": "channel-name-cleaner",
     "name": "Channel Name Cleaner",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-25T19:26:53-04:00",
-    "download_count": 284,
+    "download_count": 285,
     "latest": {
       "version": "0.2.0",
       "commit_sha": "e59d4dc67585aa93c278f17bb7307f8cdd539dc8",
@@ -31,7 +31,7 @@
       "latest_url": "channel-name-cleaner-0.2.0/channel-name-cleaner-0.2.0.zip",
       "url": "channel-name-cleaner-0.2.0/channel-name-cleaner-0.2.0.zip",
       "size": 10,
-      "download_count": 284
+      "download_count": 285
     },
     "versions": [
       {
@@ -47,9 +47,9 @@
         "source_url": "https://github.com/noodlemctwoodle/dispatcharr-channel-name-cleaner/releases/download/v0.2.0/channel-name-cleaner.zip",
         "url": "channel-name-cleaner-0.2.0/channel-name-cleaner-0.2.0.zip",
         "size": 10,
-        "download_count": 284
+        "download_count": 285
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavIV+AAKCRB+wDprTCI0\nzgubAP4vQX/9/JzHaIk7aQcqXrO0GHvwiqss8hkXvZb0m9HHOgD/Zw8VI8WgMki4\n0+6xoJnuKLaGd/haZVRrf6BzoKj4HAU=\n=nz/d\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavI4DgAKCRB+wDprTCI0\nzkfdAQD4QhXkq4l2J0JkrEBuThK7WZ0FhVSmfpXwRhmLIUIZmgD+IyAN1hHhSwS/\nk2oapK2nels8h9VHiASFqKa/fFlk4AA=\n=yGwS\n-----END PGP SIGNATURE-----"
 }
