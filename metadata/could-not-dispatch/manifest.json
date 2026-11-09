@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T13:28:28Z",
+  "generated_at": "2026-11-09T18:41:01Z",
   "manifest": {
     "slug": "could-not-dispatch",
     "name": "Could Not Dispatch",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-09T13:27:55Z",
-    "download_count": 1195,
+    "download_count": 1212,
     "latest": {
       "version": "0.7.5",
       "commit_sha": "ae0d9547db04897d15f60bb617932f892d02b718",
@@ -28,7 +28,7 @@
       "latest_url": "could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip",
       "url": "could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip",
       "size": 70,
-      "download_count": 0
+      "download_count": 16
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.5/could-not-dispatch-0.7.5.zip",
         "url": "could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip",
         "size": 70,
-        "download_count": 0
+        "download_count": 16
       },
       {
         "version": "0.7.4",
@@ -71,7 +71,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.3/could-not-dispatch-0.7.3.zip",
         "url": "could-not-dispatch-0.7.3/could-not-dispatch-0.7.3.zip",
         "size": 69,
-        "download_count": 121
+        "download_count": 122
       },
       {
         "version": "0.7.2",
@@ -173,5 +173,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavHKfwAKCRB+wDprTCI0\nzhgWAQDps2HbCVrHDDNpjGSzm9Jy8oGDN0qGCKo8x67YEtOBtQEAj185E65F/qg0\nLUn98UCQwg0dV2tdmaH024dFEu1ejQs=\n=jMKq\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavITwgAKCRB+wDprTCI0\nzk2bAQCMMy7HvHlvxKOTFMEDuOmQ96Mb0i9h1+F/BWV9YnR9vgD/c0536khMheKD\nqwzaK2XNTXDF94cMt7/IRoqksOfQvgI=\n=TgXf\n-----END PGP SIGNATURE-----"
 }

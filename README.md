@@ -11,6 +11,7 @@ This branch contains all published plugin releases.
 
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
+| [`AerioTV Presets`](#aeriotv-presets) | `0.0.2` | jonzey231 | AGPL-3.0-or-later | Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup. |
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.3.5` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
 | [`Automap Channelarr`](#automap-channelarr) | `0.4.2` | Megamannen | Artistic-2.0 | Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper. |
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2971911` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
@@ -49,6 +50,25 @@ This branch contains all published plugin releases.
 | [`YouTubearr`](#youtubearr) | `1.40.1` | jeff-gooch | Unlicense | Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering |
 
 ---
+
+### [AerioTV Presets](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/aeriotv-presets/README.md)
+
+**Version:** `0.0.2` | **Author:** jonzey231 | **Last Updated:** Nov 09 2026, 18:40 UTC
+
+Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup.
+
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue?style=flat-square)](https://spdx.org/licenses/AGPL-3.0-or-later.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/jonzey231/AerioTVPresets)
+
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.33.0-brightgreen?style=flat-square)
+
+**Downloads:**
+- [Latest Release (`0.0.2`)](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.2/aeriotv-presets-0.0.2.zip)
+- [All Versions (1 available)](./metadata/aeriotv-presets)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/aeriotv-presets) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/aeriotv-presets/README.md) | **Last Change:** [`9b465fd`](https://github.com/Dispatcharr/Plugins/commit/9b465fdf9a2166f6659a36c9522a21da0a257378)
+
+---
+
 
 ### [Audio Buffer Tuner](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/audio-buffer-tuner/README.md)
 
@@ -717,4 +737,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 09 2026, 13:28 UTC*
+*Last updated: Nov 09 2026, 18:41 UTC*

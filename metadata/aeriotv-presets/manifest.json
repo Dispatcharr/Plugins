@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-11-09T18:41:01Z",
+  "manifest": {
+    "slug": "aeriotv-presets",
+    "name": "AerioTV Presets",
+    "description": "Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup.",
+    "author": "jonzey231",
+    "license": "AGPL-3.0-or-later",
+    "source_type": "external",
+    "source_url": "https://github.com/jonzey231/AerioTVPresets/releases/download/v{version}/aeriotv-presets-plugin-{version}.zip",
+    "repo_url": "https://github.com/jonzey231/AerioTVPresets",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-11-09T13:40:26-05:00",
+    "download_count": 0,
+    "latest": {
+      "version": "0.0.2",
+      "commit_sha": "9b465fdf9a2166f6659a36c9522a21da0a257378",
+      "commit_sha_short": "9b465fd",
+      "changelog": "540",
+      "build_timestamp": "2026-11-09T18:40:41Z",
+      "last_updated": "2026-11-09T13:40:26-05:00",
+      "checksum_md5": "b2faf122cff00332c1189a01811eba7f",
+      "checksum_sha256": "f00e221b0ebe8db0a60c7bb1f96d940e220f0f486f62b61d4da64d50a7e5d898",
+      "min_dispatcharr_version": "v0.34.0",
+      "max_dispatcharr_version": "",
+      "source_url": "https://github.com/jonzey231/AerioTVPresets/releases/download/v0.0.2/aeriotv-presets-plugin-0.0.2.zip",
+      "latest_url": "aeriotv-presets-0.0.2/aeriotv-presets-0.0.2.zip",
+      "url": "aeriotv-presets-0.0.2/aeriotv-presets-0.0.2.zip",
+      "size": 59,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "0.0.2",
+        "commit_sha": "9b465fdf9a2166f6659a36c9522a21da0a257378",
+        "commit_sha_short": "9b465fd",
+        "changelog": "540",
+        "build_timestamp": "2026-11-09T18:40:41Z",
+        "last_updated": "2026-11-09T13:40:26-05:00",
+        "checksum_md5": "b2faf122cff00332c1189a01811eba7f",
+        "checksum_sha256": "f00e221b0ebe8db0a60c7bb1f96d940e220f0f486f62b61d4da64d50a7e5d898",
+        "min_dispatcharr_version": "v0.34.0",
+        "source_url": "https://github.com/jonzey231/AerioTVPresets/releases/download/v0.0.2/aeriotv-presets-plugin-0.0.2.zip",
+        "url": "aeriotv-presets-0.0.2/aeriotv-presets-0.0.2.zip",
+        "size": 59,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavITwAAKCRB+wDprTCI0\nznO3AQDlEeLgaUv1elO2xzVjTTOROW6dP4dpA9eP6Rda9mSVBgEAhf1+hrZMSelp\ntJy/0J0pyiWVCZfexvo27zEXVWnpywY=\n=zD10\n-----END PGP SIGNATURE-----"
+}
