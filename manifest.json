@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T19:05:47Z",
+  "generated_at": "2026-11-09T19:14:29Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -21,13 +21,13 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/aeriotv-presets/manifest.json",
         "author": "jonzey231",
         "license": "AGPL-3.0-or-later",
-        "last_updated": "2026-11-09T19:05:06Z",
-        "download_count": 2,
-        "latest_version": "0.0.5",
-        "latest_changelog": "543",
-        "latest_md5": "5c9f0ad2eadf80bcfade59620e4c7685",
-        "latest_sha256": "a02431ac212ad0a14d94018247833068c0a2d787237947f056960a03440f0327",
-        "latest_url": "aeriotv-presets-0.0.5/aeriotv-presets-0.0.5.zip",
+        "last_updated": "2026-11-09T19:13:51Z",
+        "download_count": 4,
+        "latest_version": "0.0.6",
+        "latest_changelog": "544",
+        "latest_md5": "de359cb4d59e6c6e6fafdd2683ca2878",
+        "latest_sha256": "c7688e78601ea4b2281bb2ab6a63ee103e887daa6704718b782f00135d377dfc",
+        "latest_url": "aeriotv-presets-0.0.6/aeriotv-presets-0.0.6.zip",
         "latest_size": 61,
         "min_dispatcharr_version": "v0.34.0"
       },
@@ -124,7 +124,7 @@
         "author": "PilaScat",
         "license": "MIT",
         "last_updated": "2026-11-09T13:27:55Z",
-        "download_count": 1212,
+        "download_count": 1213,
         "latest_version": "0.7.5",
         "latest_changelog": "539",
         "latest_md5": "e7183971f9f7eb4a8f1560b566a4ff5a",
@@ -223,7 +223,7 @@
         "author": "jstevenscl",
         "license": "MIT",
         "last_updated": "2026-11-07T01:30:09Z",
-        "download_count": 566,
+        "download_count": 567,
         "latest_version": "0.5.21",
         "latest_changelog": "528",
         "latest_md5": "f64956ac86a591c0e27099722a013eb0",
@@ -617,7 +617,7 @@
         "author": "jeff-gooch",
         "license": "Unlicense",
         "last_updated": "2026-09-16T12:55:53Z",
-        "download_count": 1978,
+        "download_count": 1979,
         "latest_version": "1.40.1",
         "latest_changelog": "307",
         "latest_md5": "b55e865bef8184938cad616281e1895c",
@@ -628,5 +628,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavIZkAAKCRB+wDprTCI0\nzn/WAP9zkiOqoQVN4L4KOjXUI6C2YpkmxPjENRsUs7JYTYzVHgD9GatmgVCeviIU\npL0EMU7QpKe1yCHh/SvBUhR5X1zu6Aw=\n=ZyhP\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavIbmwAKCRB+wDprTCI0\nzjRYAQDPoI+xdIZVDaX+5bGajSNSS6pqx+O9SUxTkww1YC8LJgD+PWC61vIjFJGE\ncyDwlcxeI1cXOLNgeSTAb/PhL4iIRgY=\n=XibS\n-----END PGP SIGNATURE-----"
 }
