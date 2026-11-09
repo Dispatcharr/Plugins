@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T18:56:00Z",
+  "generated_at": "2026-11-09T19:05:47Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -21,13 +21,13 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/aeriotv-presets/manifest.json",
         "author": "jonzey231",
         "license": "AGPL-3.0-or-later",
-        "last_updated": "2026-11-09T18:55:25Z",
+        "last_updated": "2026-11-09T19:05:06Z",
         "download_count": 2,
-        "latest_version": "0.0.4",
-        "latest_changelog": "542",
-        "latest_md5": "d1e6f172a134a771e9d094b6be07d399",
-        "latest_sha256": "df299edd2316b52ce2e6f8ef43832b976b0854e8a926b8c033b8a5b5cb025d1f",
-        "latest_url": "aeriotv-presets-0.0.4/aeriotv-presets-0.0.4.zip",
+        "latest_version": "0.0.5",
+        "latest_changelog": "543",
+        "latest_md5": "5c9f0ad2eadf80bcfade59620e4c7685",
+        "latest_sha256": "a02431ac212ad0a14d94018247833068c0a2d787237947f056960a03440f0327",
+        "latest_url": "aeriotv-presets-0.0.5/aeriotv-presets-0.0.5.zip",
         "latest_size": 61,
         "min_dispatcharr_version": "v0.34.0"
       },
@@ -568,7 +568,7 @@
         "author": "oxios0x00",
         "license": "MIT",
         "last_updated": "2026-10-10T10:00:22Z",
-        "download_count": 346,
+        "download_count": 347,
         "latest_version": "2.6.4",
         "latest_changelog": "407",
         "latest_md5": "e7799ab16be8b6f197f1503f207da991",
@@ -584,7 +584,7 @@
         "author": "oxios0x00",
         "license": "MIT",
         "last_updated": "2026-10-24T07:02:13Z",
-        "download_count": 288,
+        "download_count": 289,
         "latest_version": "1.3.4",
         "latest_changelog": "472",
         "latest_md5": "49cbe14431df756e75bfa8b984e01f29",
@@ -628,5 +628,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavIXRwAKCRB+wDprTCI0\nznVUAPwNs5T4rbYnjFDMBslxSj/WW46wIOO//bhu3gRraXrabgEAk+b79DaxaW7z\n71S/mHDfHIfSoZrdRfrX3mhnuJVLOwo=\n=mP6Y\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavIZkAAKCRB+wDprTCI0\nzn/WAP9zkiOqoQVN4L4KOjXUI6C2YpkmxPjENRsUs7JYTYzVHgD9GatmgVCeviIU\npL0EMU7QpKe1yCHh/SvBUhR5X1zu6Aw=\n=ZyhP\n-----END PGP SIGNATURE-----"
 }
