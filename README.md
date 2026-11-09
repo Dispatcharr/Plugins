@@ -16,7 +16,7 @@ This branch contains all published plugin releases.
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2971911` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
 | [`Channel Name Cleaner`](#channel-name-cleaner) | `0.2.0` | noodlemctwoodle | MIT | Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
-| [`Could Not Dispatch`](#could-not-dispatch) | `0.7.3` | PilaScat | MIT | Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream. |
+| [`Could Not Dispatch`](#could-not-dispatch) | `0.7.4` | PilaScat | MIT | Plays a looping image or video when every stream on a channel has failed, so viewers see a message instead of an error. It can show a second card when the provider is full, list the channels in use, and send channels back to their stream. |
 | [`Decypharr VOD`](#decypharr-vod) | `1.0.7` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.2.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.36.2` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
@@ -147,17 +147,17 @@ The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and epis
 
 ### [Could Not Dispatch](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/could-not-dispatch/README.md)
 
-**Version:** `0.7.3` | **Author:** PilaScat | **Last Updated:** Nov 05 2026, 13:07 UTC
+**Version:** `0.7.4` | **Author:** PilaScat | **Last Updated:** Nov 09 2026, 12:08 UTC
 
-Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.
+Plays a looping image or video when every stream on a channel has failed, so viewers see a message instead of an error. It can show a second card when the provider is full, list the channels in use, and send channels back to their stream.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/could-not-dispatch)
 
 **Downloads:**
-- [Latest Release (`0.7.3`)](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.3/could-not-dispatch-0.7.3.zip)
+- [Latest Release (`0.7.4`)](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip)
 - [All Versions (10 available)](./metadata/could-not-dispatch)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/could-not-dispatch) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/could-not-dispatch/README.md) | **Last Change:** [`0c2323d`](https://github.com/Dispatcharr/Plugins/commit/0c2323d196d9131cc422a454ae0532ff0e708a64)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/could-not-dispatch) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/could-not-dispatch/README.md) | **Last Change:** [`deb9e18`](https://github.com/Dispatcharr/Plugins/commit/deb9e180ac36ea95ed127c3fb184ceeef191b57e)
 
 ---
 
@@ -717,4 +717,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 09 2026, 02:43 UTC*
+*Last updated: Nov 09 2026, 12:09 UTC*

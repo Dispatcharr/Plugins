@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T02:43:45Z",
+  "generated_at": "2026-11-09T12:09:21Z",
   "manifest": {
     "slug": "reservoarr",
     "name": "reservoarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-08T02:28:52Z",
-    "download_count": 1358,
+    "download_count": 1378,
     "latest": {
       "version": "6.8.0",
       "commit_sha": "523fbc98ab92211c19c35f0f20b16f53ece9d6bc",
@@ -31,7 +31,7 @@
       "latest_url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
       "url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
       "size": 53,
-      "download_count": 83
+      "download_count": 98
     },
     "versions": [
       {
@@ -47,7 +47,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.8.0/reservoarr-6.8.0.zip",
         "url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
         "size": 53,
-        "download_count": 83
+        "download_count": 98
       },
       {
         "version": "6.7.0",
@@ -137,7 +137,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.11/reservoarr-6.3.11.zip",
         "url": "reservoarr-6.3.11/reservoarr-6.3.11.zip",
         "size": 41,
-        "download_count": 9
+        "download_count": 10
       },
       {
         "version": "6.3.10",
@@ -152,7 +152,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.10/reservoarr-6.3.10.zip",
         "url": "reservoarr-6.3.10/reservoarr-6.3.10.zip",
         "size": 41,
-        "download_count": 115
+        "download_count": 116
       },
       {
         "version": "6.3.9",
@@ -167,7 +167,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.9/reservoarr-6.3.9.zip",
         "url": "reservoarr-6.3.9/reservoarr-6.3.9.zip",
         "size": 40,
-        "download_count": 13
+        "download_count": 15
       },
       {
         "version": "6.3.8",
@@ -182,9 +182,9 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.3.8/reservoarr-6.3.8.zip",
         "url": "reservoarr-6.3.8/reservoarr-6.3.8.zip",
         "size": 40,
-        "download_count": 195
+        "download_count": 196
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavEzaQAKCRB+wDprTCI0\nzqIgAQCm5AdLm0FUFiMRbbzNfLXritSO+N5p1uouczjrI1oVGQD6A8WrHiVfrntm\nxqnG0qV9xAVDVDKPSXiVd6DQIVoMnwU=\n=PRBF\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavG3+gAKCRB+wDprTCI0\nzvS3AQC85BmBxIFyCpBcPrUA7grMvTZLDsdRPbwIowEdePoM4AD/XO8vMbkmZR85\nfhMZw5oG9vjoiMcpQkgERbtcGMM5lQI=\n=qhmG\n-----END PGP SIGNATURE-----"
 }

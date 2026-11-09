@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T22:07:06Z",
+  "generated_at": "2026-11-09T12:09:21Z",
   "manifest": {
     "slug": "decypharr-vod",
     "name": "Decypharr VOD",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-02T18:22:22Z",
-    "download_count": 295,
+    "download_count": 296,
     "latest": {
       "version": "1.0.7",
       "commit_sha": "2055cc80f96ee26d0ebf3d5adfa2dd73c6bdf0d7",
@@ -31,7 +31,7 @@
       "latest_url": "decypharr-vod-1.0.7/decypharr-vod-1.0.7.zip",
       "url": "decypharr-vod-1.0.7/decypharr-vod-1.0.7.zip",
       "size": 1459,
-      "download_count": 132
+      "download_count": 133
     },
     "versions": [
       {
@@ -46,7 +46,7 @@
         "source_url": "https://github.com/Tw1zT3d2four7/Decypharr_vod/releases/download/v1.0.7/decypharr_vod.zip",
         "url": "decypharr-vod-1.0.7/decypharr-vod-1.0.7.zip",
         "size": 1459,
-        "download_count": 132
+        "download_count": 133
       },
       {
         "version": "1.0.1",
@@ -162,5 +162,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavDyjwAKCRB+wDprTCI0\nzjVMAP4+NHczWiqZKAR/R5y2pl1BvcjINglxuxS++Y+qcfu69gEAl78XCKH/Niwx\nrM9yMFy8490kjnzDNvcHsEdMdQHUzgU=\n=SQfE\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavG39gAKCRB+wDprTCI0\nzq9yAQCGrmX5+jXlO58kTwhmBeWZYuizjYnILTgAZ6arqr2VtgEApx1Bm07zUOCB\ncEf8+FGvsAwBHBJA4Mi7x0yaOsSFMgM=\n=ANBV\n-----END PGP SIGNATURE-----"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T02:43:45Z",
+  "generated_at": "2026-11-09T12:09:21Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-24T15:39:07Z",
-    "download_count": 4203,
+    "download_count": 4218,
     "latest": {
       "version": "1.26.2971911",
       "commit_sha": "b786c1415f1c629c25bb5c2356ad9d7c2e7e8377",
@@ -32,7 +32,7 @@
       "latest_url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
       "url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
       "size": 767,
-      "download_count": 510
+      "download_count": 524
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2971911/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
         "size": 767,
-        "download_count": 510
+        "download_count": 524
       },
       {
         "version": "1.26.2911354",
@@ -153,7 +153,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2481147/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2481147/channel-mapparr-1.26.2481147.zip",
         "size": 747,
-        "download_count": 1367
+        "download_count": 1368
       },
       {
         "version": "1.26.2291823",
@@ -187,5 +187,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavEzZQAKCRB+wDprTCI0\nzuQFAP9/QXL+AaGfgqoD7DzNgwegZbCSeWhxk/9CH+JOALdPRAD8D2f6Q9971czq\nEjNzw/Pe0RZ3MC77MHUTgNSy8ZramwE=\n=fMmh\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavG39QAKCRB+wDprTCI0\nzttLAQCGHFKNkdERWqXTpYWObFeIq0XPFKW01qK9WXlX+4yQPQD/XtDydrTOJ2GI\nIQhfYYr26WzxNu0FhughrbKAwQ9qng4=\n=GwVU\n-----END PGP SIGNATURE-----"
 }

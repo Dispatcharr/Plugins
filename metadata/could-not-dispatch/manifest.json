@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-09T02:43:45Z",
+  "generated_at": "2026-11-09T12:09:21Z",
   "manifest": {
     "slug": "could-not-dispatch",
     "name": "Could Not Dispatch",
-    "description": "Plays a looping image or video when every real stream on a channel has failed, so viewers see a message instead of a black screen. With an API key, it later sends the channel back to its first stream.",
+    "description": "Plays a looping image or video when every stream on a channel has failed, so viewers see a message instead of an error. It can show a second card when the provider is full, list the channels in use, and send channels back to their stream.",
     "author": "PilaScat",
     "license": "MIT",
     "source_type": "external",
@@ -11,26 +11,40 @@
     "repo_url": "https://github.com/PilaScat/could-not-dispatch",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-05T13:07:37Z",
-    "download_count": 1211,
+    "last_updated": "2026-11-09T12:08:48Z",
+    "download_count": 1208,
     "latest": {
-      "version": "0.7.3",
-      "commit_sha": "0c2323d196d9131cc422a454ae0532ff0e708a64",
-      "commit_sha_short": "0c2323d",
-      "changelog": "522",
-      "build_timestamp": "2026-11-05T13:07:55Z",
-      "last_updated": "2026-11-05T13:07:37Z",
-      "checksum_md5": "d918ce2fd117daac138bb1531b6d977e",
-      "checksum_sha256": "d0a4d1643c491cf2ae2db45521ca10a925e28788a3e2a09559224d8c326d19c8",
+      "version": "0.7.4",
+      "commit_sha": "deb9e180ac36ea95ed127c3fb184ceeef191b57e",
+      "commit_sha_short": "deb9e18",
+      "changelog": "534",
+      "build_timestamp": "2026-11-09T12:09:04Z",
+      "last_updated": "2026-11-09T12:08:48Z",
+      "checksum_md5": "018dfbd8f77c3e519c548204f2cdb930",
+      "checksum_sha256": "d13d10ca1c6a41d57824636a1b78bba31b1e97d3ca38dcba0fc9725f9f3508ba",
       "min_dispatcharr_version": "",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.3/could-not-dispatch-0.7.3.zip",
-      "latest_url": "could-not-dispatch-0.7.3/could-not-dispatch-0.7.3.zip",
-      "url": "could-not-dispatch-0.7.3/could-not-dispatch-0.7.3.zip",
+      "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.4/could-not-dispatch-0.7.4.zip",
+      "latest_url": "could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip",
+      "url": "could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip",
       "size": 69,
-      "download_count": 108
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "0.7.4",
+        "commit_sha": "deb9e180ac36ea95ed127c3fb184ceeef191b57e",
+        "commit_sha_short": "deb9e18",
+        "changelog": "534",
+        "build_timestamp": "2026-11-09T12:09:04Z",
+        "last_updated": "2026-11-09T12:08:48Z",
+        "checksum_md5": "018dfbd8f77c3e519c548204f2cdb930",
+        "checksum_sha256": "d13d10ca1c6a41d57824636a1b78bba31b1e97d3ca38dcba0fc9725f9f3508ba",
+        "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.4/could-not-dispatch-0.7.4.zip",
+        "url": "could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip",
+        "size": 69,
+        "download_count": 0
+      },
       {
         "version": "0.7.3",
         "commit_sha": "0c2323d196d9131cc422a454ae0532ff0e708a64",
@@ -43,7 +57,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.3/could-not-dispatch-0.7.3.zip",
         "url": "could-not-dispatch-0.7.3/could-not-dispatch-0.7.3.zip",
         "size": 69,
-        "download_count": 108
+        "download_count": 119
       },
       {
         "version": "0.7.2",
@@ -156,22 +170,8 @@
         "url": "could-not-dispatch-0.3.3/could-not-dispatch-0.3.3.zip",
         "size": 61,
         "download_count": 19
-      },
-      {
-        "version": "0.3.1",
-        "commit_sha": "ec416fca9faab05bc7e357937bf6bbdb995b3703",
-        "commit_sha_short": "ec416fc",
-        "changelog": "295",
-        "build_timestamp": "2026-09-14T00:20:12Z",
-        "last_updated": "2026-09-14T00:19:57Z",
-        "checksum_md5": "d2a9229422eff74452c1a556a564fdba",
-        "checksum_sha256": "f4cd9d0d302f0eb040039a16af03cb5e6996298d6466d3e7d7b9b4590c30be82",
-        "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.3.1/could-not-dispatch-0.3.1.zip",
-        "url": "could-not-dispatch-0.3.1/could-not-dispatch-0.3.1.zip",
-        "size": 61,
-        "download_count": 14
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavEzZgAKCRB+wDprTCI0\nzg1LAP9aI0C/qmBFWxPAV4PsLJk34dg+jF18tX5jAsjkCQNouAD9HPEwzFZ1ZX3N\nxL77py4Y3So9vIEta0WeJQcXR00xgwA=\n=ZHdq\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavG39gAKCRB+wDprTCI0\nzgUKAP9vUFf/LuNJWamnab6u05V6P+0oTNtPiwWTAFY8vI8nCgEAoi+Wrohfp+xr\nmL3xSo1VFZxZgkj6xNxu0zwmf9bcLAA=\n=PMYo\n-----END PGP SIGNATURE-----"
 }
