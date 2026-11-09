@@ -2,9 +2,9 @@
 
 # Underfed
 
-**Version:** `0.9.0` | **Author:** PilaScat | **Last Updated:** Oct 24 2026, 19:51 UTC
+**Version:** `0.9.2` | **Author:** PilaScat | **Last Updated:** Nov 09 2026, 13:16 UTC
 
-Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the back of the chain when the provider answers 403.
+Moves a channel off a source that is starving it, drifting its sound, missing whole stretches, looping on corrupt packets or refusing it: to the next source when the stream arrives at a fraction of its bitrate, with its timestamps apart, with holes in its picture or sound or forcing reconnect after reconnect, to the back of the chain when the provider answers 403 or closes the connection without sending a byte.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/underfed)
 
@@ -12,20 +12,21 @@ Moves a channel off a source that is starving it, drifting its sound or refusing
 
 ### Latest Release
 
-- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.9.0/underfed-0.9.0.zip)
-- **Built:** Oct 24 2026, 19:52 UTC
-- **Source Commit:** [`0cdd425`](https://github.com/Dispatcharr/Plugins/commit/0cdd425ef77581f371a78348c0a827cdcf8ea5a6)
+- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.9.2/underfed-0.9.2.zip)
+- **Built:** Nov 09 2026, 13:16 UTC
+- **Source Commit:** [`bc2f7ed`](https://github.com/Dispatcharr/Plugins/commit/bc2f7edaa36a01fee9a2d9c6ebdb5d77db5e4ded)
 
 **Checksums:**
 ```
-MD5:    198c02af1d06237f2a88a680a7e4c22d
-SHA256: a2083f7172109c18faabafed5c163334b46cc7209fc384a652fa1ffdc46d7ee1
+MD5:    f8e6e30de5a6ab1ecdca324d01ac4339
+SHA256: cf267fde1849cf341930fb6f978e81d824cbd98fbf2f24ed1226562f0838ef36
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.9.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.9.2/underfed-0.9.2.zip) | Nov 09 2026, 13:16 UTC | [`bc2f7ed`](https://github.com/Dispatcharr/Plugins/commit/bc2f7edaa36a01fee9a2d9c6ebdb5d77db5e4ded) | f8e6e30de5a6ab1ecdca324d01ac4339 | cf267fde1849cf341930fb6f978e81d824cbd98fbf2f24ed1226562f0838ef36 |
 | `0.9.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.9.0/underfed-0.9.0.zip) | Oct 24 2026, 19:52 UTC | [`0cdd425`](https://github.com/Dispatcharr/Plugins/commit/0cdd425ef77581f371a78348c0a827cdcf8ea5a6) | 198c02af1d06237f2a88a680a7e4c22d | a2083f7172109c18faabafed5c163334b46cc7209fc384a652fa1ffdc46d7ee1 |
 | `0.8.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.8.0/underfed-0.8.0.zip) | Oct 12 2026, 14:28 UTC | [`7caef90`](https://github.com/Dispatcharr/Plugins/commit/7caef90467b4318d946777387b150999cc4f35f5) | d5732d4b73981a1acb5732432c92816e | d77ddf45dd5b3a5a8659e771c034f02e11fcd4ba17a8b5a5ac50d46de25af912 |
 | `0.7.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.7.0/underfed-0.7.0.zip) | Oct 11 2026, 01:14 UTC | [`c8f48bf`](https://github.com/Dispatcharr/Plugins/commit/c8f48bf37641beb302532be7540cfc142d56eddf) | ddf9e852473a85d8b3fc1c09a176f5dd | c025430339e7f686290f6156b3d21ad272a8c16275666d38c258ef0305d4b5c4 |

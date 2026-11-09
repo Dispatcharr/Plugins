@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T13:06:54Z",
+  "generated_at": "2026-11-09T13:17:02Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -272,7 +272,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-08T13:17:51Z",
-        "download_count": 5058,
+        "download_count": 5059,
         "latest_version": "1.26.3121307",
         "latest_changelog": "531",
         "latest_md5": "4c78b0cb51428d968ca74dd84eaa3e9a",
@@ -530,18 +530,18 @@
       {
         "slug": "underfed",
         "name": "Underfed",
-        "description": "Moves a channel off a source that is starving it, drifting its sound or refusing it: to the next source when the stream arrives at a fraction of its bitrate or with its timestamps apart, to the bac...",
+        "description": "Moves a channel off a source that is starving it, drifting its sound, missing whole stretches, looping on corrupt packets or refusing it: to the next source when the stream arrives at a fraction of...",
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/underfed/manifest.json",
         "author": "PilaScat",
         "license": "MIT",
-        "last_updated": "2026-10-24T19:51:35Z",
+        "last_updated": "2026-11-09T13:16:30Z",
         "download_count": 704,
-        "latest_version": "0.9.0",
-        "latest_changelog": "480",
-        "latest_md5": "198c02af1d06237f2a88a680a7e4c22d",
-        "latest_sha256": "a2083f7172109c18faabafed5c163334b46cc7209fc384a652fa1ffdc46d7ee1",
-        "latest_url": "underfed-0.9.0/underfed-0.9.0.zip",
-        "latest_size": 55
+        "latest_version": "0.9.2",
+        "latest_changelog": "538",
+        "latest_md5": "f8e6e30de5a6ab1ecdca324d01ac4339",
+        "latest_sha256": "cf267fde1849cf341930fb6f978e81d824cbd98fbf2f24ed1226562f0838ef36",
+        "latest_url": "underfed-0.9.2/underfed-0.9.2.zip",
+        "latest_size": 56
       },
       {
         "slug": "vod-manager",
@@ -583,7 +583,7 @@
         "author": "R3XCHRIS",
         "license": "MIT",
         "last_updated": "2026-10-05T21:29:03Z",
-        "download_count": 3431,
+        "download_count": 3433,
         "latest_version": "1.18.1",
         "latest_changelog": "386",
         "latest_md5": "d8cbd43789c5bf36e450516c4f30ec6f",
@@ -611,5 +611,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavHFdgAKCRB+wDprTCI0\nzs5QAP97whQYNzgC/Z1Y+2oC7pIbuR1DKhq7ank6CPnFBN4P5AEAzPS7/ZQYqfN9\nGvJ4dMTrow/invfM4Yp+Pv2+b5cY1wE=\n=bGzG\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavHH1AAKCRB+wDprTCI0\nzs5xAP9LM7/g3tpTIP6aGju2AY92OsIUknw29WsSOHMaTQNWkAD/fpYMkA0yHUxo\nRK7KswHB0xP6B7nATU3dvkfvuW1X/QE=\n=fWmn\n-----END PGP SIGNATURE-----"
 }
