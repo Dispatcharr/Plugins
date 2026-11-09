@@ -2,7 +2,7 @@
 
 # Gluetun Rotate
 
-**Version:** `0.5.0` | **Author:** PilaScat | **Last Updated:** Nov 06 2026, 17:15 UTC
+**Version:** `0.5.2` | **Author:** PilaScat | **Last Updated:** Nov 09 2026, 13:06 UTC
 
 Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.
 
@@ -12,20 +12,21 @@ Moves Gluetun to another VPN server when the IPTV provider refuses the current e
 
 ### Latest Release
 
-- **Download:** [`gluetun-rotate-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.5.0/gluetun-rotate-0.5.0.zip)
-- **Built:** Nov 06 2026, 17:15 UTC
-- **Source Commit:** [`6d521ed`](https://github.com/Dispatcharr/Plugins/commit/6d521eda9f2ec507ecc158b27fd70a6a49cdc807)
+- **Download:** [`gluetun-rotate-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip)
+- **Built:** Nov 09 2026, 13:06 UTC
+- **Source Commit:** [`8b44e7e`](https://github.com/Dispatcharr/Plugins/commit/8b44e7ecbb56d5d0a5385079b3f709574dddbca2)
 
 **Checksums:**
 ```
-MD5:    a167b6c09e608c2cdbd59b14f0dbe70e
-SHA256: 931bc3be1a782ef7ba72d8400fdc6dde37027cf8a6c182fcf1283673017ba636
+MD5:    ecccd1eea5e94bf4229c1f702ad331a3
+SHA256: e81fca8da03d66d61db70e82daa7a53325244522cd438732039e26921395e7ef
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.5.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip) | Nov 09 2026, 13:06 UTC | [`8b44e7e`](https://github.com/Dispatcharr/Plugins/commit/8b44e7ecbb56d5d0a5385079b3f709574dddbca2) | ecccd1eea5e94bf4229c1f702ad331a3 | e81fca8da03d66d61db70e82daa7a53325244522cd438732039e26921395e7ef |
 | `0.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.5.0/gluetun-rotate-0.5.0.zip) | Nov 06 2026, 17:15 UTC | [`6d521ed`](https://github.com/Dispatcharr/Plugins/commit/6d521eda9f2ec507ecc158b27fd70a6a49cdc807) | a167b6c09e608c2cdbd59b14f0dbe70e | 931bc3be1a782ef7ba72d8400fdc6dde37027cf8a6c182fcf1283673017ba636 |
 | `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.4.0/gluetun-rotate-0.4.0.zip) | Oct 07 2026, 00:03 UTC | [`4b4e9db`](https://github.com/Dispatcharr/Plugins/commit/4b4e9db4f79245acaabfe246307e04da5de5dd57) | 83695e9fe933b7db232b53ccf02afdef | cf566a498f1be72ce5fff1e5a92871c9946e9b9895d97b4d43e94576444bf322 |
 | `0.3.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.3.0/gluetun-rotate-0.3.0.zip) | Sep 21 2026, 03:52 UTC | [`f8bf9f3`](https://github.com/Dispatcharr/Plugins/commit/f8bf9f3352c6144f68d1955b4b3f4b24e6a01fc6) | 96f2cf2a44a22388174227c206d505b4 | 74f213ab9fa9822c681e86a0158e9ccfa329ee1d1cbb5cc57c97f40ddd1c880b |

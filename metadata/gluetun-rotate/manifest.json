@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T12:09:21Z",
+  "generated_at": "2026-11-09T13:06:54Z",
   "manifest": {
     "slug": "gluetun-rotate",
     "name": "Gluetun Rotate",
@@ -11,26 +11,40 @@
     "repo_url": "https://github.com/PilaScat/gluetun-rotate",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-06T17:15:01Z",
-    "download_count": 498,
+    "last_updated": "2026-11-09T13:06:19Z",
+    "download_count": 500,
     "latest": {
-      "version": "0.5.0",
-      "commit_sha": "6d521eda9f2ec507ecc158b27fd70a6a49cdc807",
-      "commit_sha_short": "6d521ed",
-      "changelog": "526",
-      "build_timestamp": "2026-11-06T17:15:23Z",
-      "last_updated": "2026-11-06T17:15:01Z",
-      "checksum_md5": "a167b6c09e608c2cdbd59b14f0dbe70e",
-      "checksum_sha256": "931bc3be1a782ef7ba72d8400fdc6dde37027cf8a6c182fcf1283673017ba636",
+      "version": "0.5.2",
+      "commit_sha": "8b44e7ecbb56d5d0a5385079b3f709574dddbca2",
+      "commit_sha_short": "8b44e7e",
+      "changelog": "537",
+      "build_timestamp": "2026-11-09T13:06:40Z",
+      "last_updated": "2026-11-09T13:06:19Z",
+      "checksum_md5": "ecccd1eea5e94bf4229c1f702ad331a3",
+      "checksum_sha256": "e81fca8da03d66d61db70e82daa7a53325244522cd438732039e26921395e7ef",
       "min_dispatcharr_version": "",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/PilaScat/gluetun-rotate/releases/download/v0.5.0/gluetun-rotate-0.5.0.zip",
-      "latest_url": "gluetun-rotate-0.5.0/gluetun-rotate-0.5.0.zip",
-      "url": "gluetun-rotate-0.5.0/gluetun-rotate-0.5.0.zip",
-      "size": 57,
-      "download_count": 43
+      "source_url": "https://github.com/PilaScat/gluetun-rotate/releases/download/v0.5.2/gluetun-rotate-0.5.2.zip",
+      "latest_url": "gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip",
+      "url": "gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip",
+      "size": 58,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "0.5.2",
+        "commit_sha": "8b44e7ecbb56d5d0a5385079b3f709574dddbca2",
+        "commit_sha_short": "8b44e7e",
+        "changelog": "537",
+        "build_timestamp": "2026-11-09T13:06:40Z",
+        "last_updated": "2026-11-09T13:06:19Z",
+        "checksum_md5": "ecccd1eea5e94bf4229c1f702ad331a3",
+        "checksum_sha256": "e81fca8da03d66d61db70e82daa7a53325244522cd438732039e26921395e7ef",
+        "source_url": "https://github.com/PilaScat/gluetun-rotate/releases/download/v0.5.2/gluetun-rotate-0.5.2.zip",
+        "url": "gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip",
+        "size": 58,
+        "download_count": 0
+      },
       {
         "version": "0.5.0",
         "commit_sha": "6d521eda9f2ec507ecc158b27fd70a6a49cdc807",
@@ -43,7 +57,7 @@
         "source_url": "https://github.com/PilaScat/gluetun-rotate/releases/download/v0.5.0/gluetun-rotate-0.5.0.zip",
         "url": "gluetun-rotate-0.5.0/gluetun-rotate-0.5.0.zip",
         "size": 57,
-        "download_count": 43
+        "download_count": 45
       },
       {
         "version": "0.4.0",
@@ -89,5 +103,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavG3+AAKCRB+wDprTCI0\nzqS+AP9RTLI+PWXpMFLWEL+IedN9TJoF5G+uwQ2rT8B9dtdDEQEA4PxyHlKsNoxy\nu0Pphadae0z8pgetEPNal5NPb54sKws=\n=nSlk\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavHFcwAKCRB+wDprTCI0\nzmP/AP9rkFN4NzGB+pAS96/FIfqveZ67mHfWS88zBlihYlWC6wEAsoCeFFzzFmDo\nYI26N9YRgmwiS2i/qXQ7cO1L0VUtkww=\n=j1N6\n-----END PGP SIGNATURE-----"
 }

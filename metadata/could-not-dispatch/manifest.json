@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T12:09:21Z",
+  "generated_at": "2026-11-09T13:06:54Z",
   "manifest": {
     "slug": "could-not-dispatch",
     "name": "Could Not Dispatch",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-09T12:08:48Z",
-    "download_count": 1208,
+    "download_count": 1213,
     "latest": {
       "version": "0.7.4",
       "commit_sha": "deb9e180ac36ea95ed127c3fb184ceeef191b57e",
@@ -28,7 +28,7 @@
       "latest_url": "could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip",
       "url": "could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip",
       "size": 69,
-      "download_count": 0
+      "download_count": 3
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.4/could-not-dispatch-0.7.4.zip",
         "url": "could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip",
         "size": 69,
-        "download_count": 0
+        "download_count": 3
       },
       {
         "version": "0.7.3",
@@ -57,7 +57,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.3/could-not-dispatch-0.7.3.zip",
         "url": "could-not-dispatch-0.7.3/could-not-dispatch-0.7.3.zip",
         "size": 69,
-        "download_count": 119
+        "download_count": 121
       },
       {
         "version": "0.7.2",
@@ -173,5 +173,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavG39gAKCRB+wDprTCI0\nzgUKAP9vUFf/LuNJWamnab6u05V6P+0oTNtPiwWTAFY8vI8nCgEAoi+Wrohfp+xr\nmL3xSo1VFZxZgkj6xNxu0zwmf9bcLAA=\n=PMYo\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavHFcwAKCRB+wDprTCI0\nzusaAQD5htGrT5TY12+f1EJwF/HY2hyOoHD1fBVHZghFWVmEvAD8CXyf8+8doUO6\nmE613m6iI2ezfuVetM4ly4hwpyiKxAQ=\n=y+wk\n-----END PGP SIGNATURE-----"
 }
