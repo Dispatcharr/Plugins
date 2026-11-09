@@ -1,4 +1,5 @@
 {
+  "manifest_version": 1,
   "name": "AerioTV Presets",
   "version": "0.0.1",
   "description": "Preconfigure a user's AerioTV favorites, group order, hidden groups and categories, and app settings. Their AerioTV devices offer Dispatcharr Sync on first sign-in and start from this setup.",
