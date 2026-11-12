@@ -775,4 +775,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 12 2026, 17:47 UTC*
+*Last updated: Nov 12 2026, 23:48 UTC*
