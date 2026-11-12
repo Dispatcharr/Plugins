@@ -15,6 +15,19 @@ Your TV guide usually only reaches a week ahead. This fills the gap, so a player
 - Refreshes by itself after each EPG refresh. **Refresh listings now** refreshes by hand, and **Show status** lists the next few matches.
 - Never wipes good listings: if the page can't be fetched, or comes back in a layout it doesn't recognise, the previous listings are kept.
 
+## Club channels
+
+Many clubs stream their own matches on a club channel. In Scotland in particular, the home club streams the games UK TV doesn't show, such as the Saturday 3pm kick-offs.
+
+- **Which channels:** any channel named like `SPFL - CELTIC TV`, `SPFL - HEARTS TV` or `SERIE A - MILAN TV`. The league prefixes it recognises are SPFL, EPL, EFL, NIFL, WSL, SWPL, SERIE A, LALIGA, LIGUE 1 and BUNDESLIGA. MUTV and LFC TV are recognised by name.
+- **Which games:** each league game that isn't on UK TV goes on the **home** club's channel, if you have that channel. So Kilmarnock v Aberdeen goes on Kilmarnock TV. If the home club has no channel in your lineup, the game isn't added anywhere.
+- **Not Premier League games:** Premier League club channels can't show live Premier League games, so those are skipped.
+- **Fixtures:** they come from ESPN's public data, a request or two per club every 6 hours.
+- **Club channels with no guide** get one of the plugin's own: an EPG source called "UK Sport on TV", which only this plugin writes to.
+- **Off switch:** turn off **Club channels** to skip all of this.
+
+Whether a club actually streams a particular game depends on the club and where you are. The entries say "usually".
+
 ## Polite to the source
 
 - **One page**, fetched at most every 6 hours per Dispatcharr server, only after one of its own EPG refreshes.
@@ -43,10 +56,12 @@ The first value is the kick-off time in UTC milliseconds.
 | --- | --- | --- |
 | Days ahead | 30 | How many days of listings to keep. |
 | Add matches to channel guides | On | Puts each match on the channels showing it, where the guide has nothing then. |
+| Club channels | On | Adds league games that aren't on UK TV to the home club's channel. |
 
 ## Notes
 
 - Football only for now; that's what the source covers.
+- The `listings` field also includes the club-channel games, with the club channel as their only channel, for example `[…, "Celtic", "St Mirren", "Scottish Premiership", ["Celtic TV"]]`.
 - Only matches shown on UK TV or UK streaming services are listed. A Saturday 3pm Premier League or SPFL kick-off isn't there, because it isn't on UK TV.
 - No account or API key is needed. Standard library only.
 - After installing or updating, restart Dispatcharr so every worker loads the new version.
