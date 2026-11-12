@@ -221,6 +221,25 @@ def test_sandbox_bypass_rules_respect_schema_ranges(tmp_path, monkeypatch):
     assert not sarif.sandbox_result_requires_review(result(retired_rule))
 
 
+def test_filesystem_write_contract_respects_manifest_and_capability(tmp_path, monkeypatch):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    monkeypatch.chdir(tmp_path)
+    result = {
+        "ruleId": "plugin/capability-contract/filesystem-write",
+        "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/plugin.py"},
+                                               "region": {"startLine": 1}}}],
+    }
+    for version, declared, requires_review in (
+        (0, [], False), (1, [], False), (2, [], True),
+        (2, ["filesystem_write"], False),
+    ):
+        (plugin_dir / "plugin.json").write_text(json.dumps({
+            "manifest_version": version, "capabilities": declared,
+        }), encoding="utf-8")
+        assert sarif.contract_result_requires_review(result) == requires_review
+
+
 def test_capability_contract_accepts_declared_or_legacy_manifests(tmp_path, monkeypatch):
     plugin_dir = tmp_path / "plugins" / "demo"
     plugin_dir.mkdir(parents=True)
