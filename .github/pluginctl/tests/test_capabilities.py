@@ -70,6 +70,7 @@ def test_each_runtime_enforced_static_rule_maps_to_its_capability():
         "network_listener": "plugin/capability-contract/network-listener",
         "subprocess": "plugin/capability-contract/subprocess",
         "outbound_network": "plugin/capability-contract/outbound-network",
+        "filesystem_write": "plugin/capability-contract/filesystem-write",
         "celery_dispatch": "plugin/capability-contract/celery-dispatch",
     }
     for capability_id, rule_id in expected.items():

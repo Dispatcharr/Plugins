@@ -77,7 +77,7 @@ KNOWN_CAPABILITIES: dict[str, dict[str, Any]] = {
         "min_manifest_version": 1,
         "max_manifest_version": None,
         "runtime_enforced": True,
-        "codeql_rules": [],
+        "codeql_rules": ["plugin/capability-contract/filesystem-write"],
     },
     "celery_dispatch": {
         "group": "system",
