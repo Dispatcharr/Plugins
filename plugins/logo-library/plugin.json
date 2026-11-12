@@ -1,0 +1,50 @@
+{
+  "name": "Logo Library",
+  "version": "0.1.0",
+  "description": "Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching.",
+  "author": "sethwv",
+  "license": "MIT",
+  "manifest_version": 2,
+  "min_dispatcharr_version": "v0.34.0",
+  "capabilities": [
+    "background_tasks",
+    "persistent_service",
+    "outbound_network",
+    "filesystem_write"
+  ],
+  "actions": [
+    {
+      "id": "apply_changes",
+      "label": "Manual Match",
+      "description": "Apply saved channel mappings and replace existing channel logos.",
+      "button_label": "Manual Match",
+      "async": true
+    },
+    {
+      "id": "run_automatic",
+      "label": "Auto Match",
+      "description": "Match and assign logos for configured groups using saved settings.",
+      "button_label": "Auto Match",
+      "async": true
+    },
+    {
+      "id": "ignore_skipped",
+      "label": "Ignore skipped and failed channels",
+      "description": "Add skipped and failed channels from the latest Auto Match to the ignore list.",
+      "button_label": "Ignore"
+    },
+    {
+      "id": "update_catalog",
+      "label": "Refresh tv-logos downloaded catalog",
+      "description": "Download the latest tv-logos catalog.",
+      "button_label": "Refresh",
+      "button_color": "teal",
+      "async": true
+    }
+  ],
+  "discord_thread": "https://discord.com/channels/1340492560220684331/1570480168391282718",
+  "repo_url": "https://github.com/swvn-dispatch/logo-library",
+  "help_url": "https://github.com/swvn-dispatch/logo-library",
+  "source_type": "external",
+  "source_url": "https://github.com/swvn-dispatch/logo-library/releases/download/v{version}/logo-library-{version}.zip"
+}
