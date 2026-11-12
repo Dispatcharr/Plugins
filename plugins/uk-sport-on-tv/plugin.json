@@ -1,7 +1,7 @@
 {
   "name": "UK Sport on TV",
-  "version": "0.1.0",
-  "description": "Which UK channel shows each televised football match, weeks ahead (Sky Sports, TNT Sports, Premier Sports, BBC, ITV, Amazon…), from live-footballontv.com. Refreshed after each EPG refresh (at most every 6 hours) and kept in the plugin's settings for players such as Viewarr to read.",
+  "version": "0.2.0",
+  "description": "Which UK channel shows each televised football match, weeks ahead (Sky Sports, TNT Sports, Premier Sports, BBC, ITV, Amazon…), from live-footballontv.com: added to those channels' guides at each match's time (gaps only) and kept in the plugin's settings for players such as Viewarr. Polite: refreshed after EPG refreshes at most every 6 hours, 'only if changed' requests, backs off when asked.",
   "author": "petebutty",
   "license": "MIT",
   "source_type": "external",
