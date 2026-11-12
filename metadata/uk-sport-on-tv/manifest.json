@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-12T17:08:27Z",
+  "generated_at": "2026-11-12T17:35:03Z",
   "manifest": {
     "slug": "uk-sport-on-tv",
     "name": "UK Sport on TV",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-12T12:07:43-05:00",
-    "download_count": 0,
+    "download_count": 1,
     "latest": {
       "version": "0.3.0",
       "commit_sha": "b7fef30cae184337cd5ac0ea7337ed101c1c63e6",
@@ -28,7 +28,7 @@
       "latest_url": "uk-sport-on-tv-0.3.0/uk-sport-on-tv-0.3.0.zip",
       "url": "uk-sport-on-tv-0.3.0/uk-sport-on-tv-0.3.0.zip",
       "size": 12,
-      "download_count": 0
+      "download_count": 1
     },
     "versions": [
       {
@@ -43,9 +43,9 @@
         "source_url": "https://github.com/petebutty/uk-sport-on-tv/releases/download/v0.3.0/uk-sport-on-tv-0.3.0.zip",
         "url": "uk-sport-on-tv-0.3.0/uk-sport-on-tv-0.3.0.zip",
         "size": 12,
-        "download_count": 0
+        "download_count": 1
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavXylwAKCRB+wDprTCI0\nzl4+AQDyxYAmLfiSap81FvwTHJ/ftO17EzRqQYujV0AvKbQE7gEA3+BC3AQgIkI7\nVXP8LRrj/9tJfNW4HO0ttMaIGya8GQc=\n=rTKS\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavX4zQAKCRB+wDprTCI0\nzqd4AQC8XjhASYGe04HiJrXl3IbK0KqkrCPcdlsP9zCdWJyw+AD/StVNaDwpXHLk\n5DQcKkit1umTQIhoJTWMw61tveld4gg=\n=XiAr\n-----END PGP SIGNATURE-----"
 }
