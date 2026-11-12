@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T21:15:54Z",
+  "generated_at": "2026-11-12T17:08:27Z",
   "manifest": {
     "slug": "could-not-dispatch",
     "name": "Could Not Dispatch",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-09T13:27:55Z",
-    "download_count": 1218,
+    "download_count": 1296,
     "latest": {
       "version": "0.7.5",
       "commit_sha": "ae0d9547db04897d15f60bb617932f892d02b718",
@@ -28,7 +28,7 @@
       "latest_url": "could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip",
       "url": "could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip",
       "size": 70,
-      "download_count": 22
+      "download_count": 98
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.5/could-not-dispatch-0.7.5.zip",
         "url": "could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip",
         "size": 70,
-        "download_count": 22
+        "download_count": 98
       },
       {
         "version": "0.7.4",
@@ -57,7 +57,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.4/could-not-dispatch-0.7.4.zip",
         "url": "could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip",
         "size": 69,
-        "download_count": 4
+        "download_count": 5
       },
       {
         "version": "0.7.3",
@@ -71,7 +71,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.3/could-not-dispatch-0.7.3.zip",
         "url": "could-not-dispatch-0.7.3/could-not-dispatch-0.7.3.zip",
         "size": 69,
-        "download_count": 122
+        "download_count": 123
       },
       {
         "version": "0.7.2",
@@ -173,5 +173,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavI4DwAKCRB+wDprTCI0\nzg8ZAQDLAnbvt/f3LIVb2bg77NSRtsTHV6xUBdLn5bECYfTnXgEAqwLWaY7i+Sv7\n4OZpHEpSM7rKnQCpVDGagJ/37/QqbQ4=\n=R9UO\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavXykQAKCRB+wDprTCI0\nznjsAQDObVXJlwT66BdQW9OT58wUgTVW96ARZuVEEtegTmNYMgEAtzzl/2/YzLiw\nVuflg8rhvaX58LntjG6CkYTofRRSEgI=\n=JmCc\n-----END PGP SIGNATURE-----"
 }

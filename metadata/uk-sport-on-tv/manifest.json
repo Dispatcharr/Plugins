@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-11-12T17:08:27Z",
+  "manifest": {
+    "slug": "uk-sport-on-tv",
+    "name": "UK Sport on TV",
+    "description": "Which channel shows each UK football match, weeks ahead: UK TV (Sky Sports, TNT Sports, Premier Sports, BBC, ITV…, from live-footballontv.com), and club channels (Celtic TV, Hearts TV…) for the home club's games UK TV doesn't show. Added to those channels' guides at each match's time (gaps only) and kept for players such as Viewarr. Polite, cached fetching.",
+    "author": "petebutty",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/petebutty/uk-sport-on-tv/releases/download/v{version}/uk-sport-on-tv-{version}.zip",
+    "repo_url": "https://github.com/petebutty/uk-sport-on-tv",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-11-12T12:07:43-05:00",
+    "download_count": 0,
+    "latest": {
+      "version": "0.3.0",
+      "commit_sha": "b7fef30cae184337cd5ac0ea7337ed101c1c63e6",
+      "commit_sha_short": "b7fef30",
+      "changelog": "546",
+      "build_timestamp": "2026-11-12T17:08:19Z",
+      "last_updated": "2026-11-12T12:07:43-05:00",
+      "checksum_md5": "a8c350019d598034245d783b4ee3b18a",
+      "checksum_sha256": "62c3e97ffae7cda7a9e2844a115fd8271ccd06e3f5823d1d340b14f282e6fc75",
+      "min_dispatcharr_version": "",
+      "max_dispatcharr_version": "",
+      "source_url": "https://github.com/petebutty/uk-sport-on-tv/releases/download/v0.3.0/uk-sport-on-tv-0.3.0.zip",
+      "latest_url": "uk-sport-on-tv-0.3.0/uk-sport-on-tv-0.3.0.zip",
+      "url": "uk-sport-on-tv-0.3.0/uk-sport-on-tv-0.3.0.zip",
+      "size": 12,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "0.3.0",
+        "commit_sha": "b7fef30cae184337cd5ac0ea7337ed101c1c63e6",
+        "commit_sha_short": "b7fef30",
+        "changelog": "546",
+        "build_timestamp": "2026-11-12T17:08:19Z",
+        "last_updated": "2026-11-12T12:07:43-05:00",
+        "checksum_md5": "a8c350019d598034245d783b4ee3b18a",
+        "checksum_sha256": "62c3e97ffae7cda7a9e2844a115fd8271ccd06e3f5823d1d340b14f282e6fc75",
+        "source_url": "https://github.com/petebutty/uk-sport-on-tv/releases/download/v0.3.0/uk-sport-on-tv-0.3.0.zip",
+        "url": "uk-sport-on-tv-0.3.0/uk-sport-on-tv-0.3.0.zip",
+        "size": 12,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavXylwAKCRB+wDprTCI0\nzl4+AQDyxYAmLfiSap81FvwTHJ/ftO17EzRqQYujV0AvKbQE7gEA3+BC3AQgIkI7\nVXP8LRrj/9tJfNW4HO0ttMaIGya8GQc=\n=rTKS\n-----END PGP SIGNATURE-----"
+}
