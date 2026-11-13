@@ -2,7 +2,7 @@
 
 # Logo Library
 
-**Version:** `0.1.0` | **Author:** sethwv | **Last Updated:** Nov 12 2026, 17:46 UTC
+**Version:** `0.1.1` | **Author:** sethwv | **Last Updated:** Nov 13 2026, 18:12 UTC
 
 Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching.
 
@@ -14,20 +14,21 @@ Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manua
 
 ### Latest Release
 
-- **Download:** [`logo-library-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/logo-library-0.1.0/logo-library-0.1.0.zip)
-- **Built:** Nov 12 2026, 17:47 UTC
-- **Source Commit:** [`8962f24`](https://github.com/Dispatcharr/Plugins/commit/8962f24d7fad35ee16a421e655fd7863746fd1a2)
+- **Download:** [`logo-library-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/logo-library-0.1.1/logo-library-0.1.1.zip)
+- **Built:** Nov 13 2026, 18:12 UTC
+- **Source Commit:** [`91f1e31`](https://github.com/Dispatcharr/Plugins/commit/91f1e3125881eaf657048519158ff4316ac8bef7)
 
 **Checksums:**
 ```
-MD5:    0f711a0b09d342de9f47eeba168e4d71
-SHA256: e535f1ff94e7e24de6b20a46d3795b8a9dcad29e54508ae98f8a2754ebc884fc
+MD5:    dbb68eb9b55296e4fd84321ce6f1a4ff
+SHA256: 8571f53bb50758c485f1619333670ca20fb1c3cf8cfb9e808342f4c5969c85ba
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.1.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/logo-library-0.1.1/logo-library-0.1.1.zip) | Nov 13 2026, 18:12 UTC | [`91f1e31`](https://github.com/Dispatcharr/Plugins/commit/91f1e3125881eaf657048519158ff4316ac8bef7) | dbb68eb9b55296e4fd84321ce6f1a4ff | 8571f53bb50758c485f1619333670ca20fb1c3cf8cfb9e808342f4c5969c85ba |
 | `0.1.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/logo-library-0.1.0/logo-library-0.1.0.zip) | Nov 12 2026, 17:47 UTC | [`8962f24`](https://github.com/Dispatcharr/Plugins/commit/8962f24d7fad35ee16a421e655fd7863746fd1a2) | 0f711a0b09d342de9f47eeba168e4d71 | e535f1ff94e7e24de6b20a46d3795b8a9dcad29e54508ae98f8a2754ebc884fc |
 
 ---
