@@ -11,7 +11,7 @@ This branch contains all published plugin releases.
 
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
-| [`AerioTV Presets`](#aeriotv-presets) | `0.0.7` | jonzey231 | AGPL-3.0-or-later | Preconfigure a user's AerioTV favorites, group order, hidden groups, and settings. Their AerioTV devices offer Dispatcharr Sync on first launch and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer. |
+| [`AerioTV Presets`](#aeriotv-presets) | `0.0.8` | jonzey231 | AGPL-3.0-or-later | Preconfigure a user's AerioTV favorites, group order, hidden groups, and settings. Their AerioTV devices offer Dispatcharr Sync on first launch and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer. |
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.3.5` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
 | [`Automap Channelarr`](#automap-channelarr) | `0.4.2` | Megamannen | Artistic-2.0 | Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper. |
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2971911` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
@@ -55,7 +55,7 @@ This branch contains all published plugin releases.
 
 ### [AerioTV Presets](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/aeriotv-presets/README.md)
 
-**Version:** `0.0.7` | **Author:** jonzey231 | **Last Updated:** Nov 09 2026, 21:15 UTC
+**Version:** `0.0.8` | **Author:** jonzey231 | **Last Updated:** Nov 13 2026, 20:03 UTC
 
 Preconfigure a user's AerioTV favorites, group order, hidden groups, and settings. Their AerioTV devices offer Dispatcharr Sync on first launch and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer.
 
@@ -64,10 +64,10 @@ Preconfigure a user's AerioTV favorites, group order, hidden groups, and setting
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.33.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`0.0.7`)](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.7/aeriotv-presets-0.0.7.zip)
-- [All Versions (6 available)](./metadata/aeriotv-presets)
+- [Latest Release (`0.0.8`)](https://github.com/Dispatcharr/Plugins/releases/download/aeriotv-presets-0.0.8/aeriotv-presets-0.0.8.zip)
+- [All Versions (7 available)](./metadata/aeriotv-presets)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/aeriotv-presets) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/aeriotv-presets/README.md) | **Last Change:** [`87c45ef`](https://github.com/Dispatcharr/Plugins/commit/87c45efdc70a7dad3de92882de8afaf876b4cf5b)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/aeriotv-presets) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/aeriotv-presets/README.md) | **Last Change:** [`221dcd5`](https://github.com/Dispatcharr/Plugins/commit/221dcd559adc08adc8019630368a45cbcbfdf7e4)
 
 ---
 
@@ -775,4 +775,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 13 2026, 18:13 UTC*
+*Last updated: Nov 13 2026, 20:04 UTC*
