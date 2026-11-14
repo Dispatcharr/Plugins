@@ -1,6 +1,6 @@
 {
   "name": "Logo Library",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching.",
   "author": "sethwv",
   "license": "MIT",
