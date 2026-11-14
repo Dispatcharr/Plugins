@@ -29,7 +29,7 @@ This branch contains all published plugin releases.
 | [`Gluetun Rotate`](#gluetun-rotate) | `0.5.2` | PilaScat | MIT | Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.3121307` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.3052143` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
-| [`Logo Library`](#logo-library) | `0.1.1` | sethwv | MIT | Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching. |
+| [`Logo Library`](#logo-library) | `0.1.2` | sethwv | MIT | Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
 | [`Multiview`](#multiview) | `0.6.0` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2832058` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
@@ -387,7 +387,7 @@ Mirror real-world provider channel lineups by creating channel groups, channels,
 
 ### [Logo Library](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/logo-library/README.md)
 
-**Version:** `0.1.1` | **Author:** sethwv | **Last Updated:** Nov 13 2026, 18:12 UTC
+**Version:** `0.1.2` | **Author:** sethwv | **Last Updated:** Nov 14 2026, 16:59 UTC
 
 Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching.
 
@@ -396,10 +396,10 @@ Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manua
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`0.1.1`)](https://github.com/Dispatcharr/Plugins/releases/download/logo-library-0.1.1/logo-library-0.1.1.zip)
-- [All Versions (2 available)](./metadata/logo-library)
+- [Latest Release (`0.1.2`)](https://github.com/Dispatcharr/Plugins/releases/download/logo-library-0.1.2/logo-library-0.1.2.zip)
+- [All Versions (3 available)](./metadata/logo-library)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/logo-library) | **Last Change:** [`91f1e31`](https://github.com/Dispatcharr/Plugins/commit/91f1e3125881eaf657048519158ff4316ac8bef7)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/logo-library) | **Last Change:** [`4ceea55`](https://github.com/Dispatcharr/Plugins/commit/4ceea55c082335f9eb8e4d8b90eb58cfc7e24f54)
 
 ---
 
@@ -775,4 +775,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 13 2026, 20:04 UTC*
+*Last updated: Nov 14 2026, 17:00 UTC*

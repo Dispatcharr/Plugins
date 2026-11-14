@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-13T18:12:59Z",
+  "generated_at": "2026-11-14T17:00:27Z",
   "manifest": {
     "slug": "clapparr",
     "name": "Clapparr",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-08-22T18:50:11-04:00",
-    "download_count": 388,
+    "download_count": 392,
     "latest": {
       "version": "1.3.0",
       "commit_sha": "41752afd9a5678d2f7a9a49f2209331a620e119f",
@@ -28,7 +28,7 @@
       "latest_url": "clapparr-1.3.0/clapparr-1.3.0.zip",
       "url": "clapparr-1.3.0/clapparr-1.3.0.zip",
       "size": 43,
-      "download_count": 388
+      "download_count": 392
     },
     "versions": [
       {
@@ -44,9 +44,9 @@
         "source_url": "https://github.com/v8eta/clapparr/releases/download/v1.3.0/plugin-clapparr-v1.3.0.zip",
         "url": "clapparr-1.3.0/clapparr-1.3.0.zip",
         "size": 43,
-        "download_count": 388
+        "download_count": 392
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavdTLwAKCRB+wDprTCI0\nzhhhAPsFkNs459KHRKViYpU4evgubTLB6/Ax0juwnlYQ+o0JWAD/SF9unUH1NVgB\ndfAXIj3QOJtqySk2A+fuQWVTN7+YigA=\n=MU1C\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaviTsAAKCRB+wDprTCI0\nzsgwAQDLz0NRrYXHHZnZZcV1iwFaCesDRna4dMyAWHvuZvkVcgEA2kGPS/Ps/yge\nmOMUkKFmHQA3JQ7p2/Efciy3/mNqxwQ=\n=LXYu\n-----END PGP SIGNATURE-----"
 }

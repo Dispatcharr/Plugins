@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-13T20:04:09Z",
+  "generated_at": "2026-11-14T17:00:27Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-07T01:30:09Z",
-    "download_count": 651,
+    "download_count": 671,
     "latest": {
       "version": "0.5.21",
       "commit_sha": "012d7970a89a8e3db1fcf15b1e5bdd4afb60ea96",
@@ -28,7 +28,7 @@
       "latest_url": "epg-and-sports-editor-0.5.21/epg-and-sports-editor-0.5.21.zip",
       "url": "epg-and-sports-editor-0.5.21/epg-and-sports-editor-0.5.21.zip",
       "size": 182,
-      "download_count": 180
+      "download_count": 199
     },
     "versions": [
       {
@@ -43,7 +43,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.21/epg-and-sports-editor-v0.5.21.zip",
         "url": "epg-and-sports-editor-0.5.21/epg-and-sports-editor-0.5.21.zip",
         "size": 182,
-        "download_count": 180
+        "download_count": 199
       },
       {
         "version": "0.5.20",
@@ -71,7 +71,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.19/epg-and-sports-editor-v0.5.19.zip",
         "url": "epg-and-sports-editor-0.5.19/epg-and-sports-editor-0.5.19.zip",
         "size": 182,
-        "download_count": 32
+        "download_count": 33
       },
       {
         "version": "0.5.18",
@@ -173,5 +173,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavdtPwAKCRB+wDprTCI0\nzhkFAQDMBgpyTOecYAJW2p8jnP137vET6nNzZpSXxfjNfE63QwEArsNpXYElasO7\nNSc/54cAv8Tob/SAWtr7Ma2nYZZFagc=\n=z43/\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaviTsQAKCRB+wDprTCI0\nzuXcAP9LlCvgSmjuUk6I9x/6WkeOBdDPnN2hck/43Eulsg4ApwD/fvqx380MZzuQ\nVl4RHuKRdkY0Tcg2og8PhociX67JZQU=\n=aWvT\n-----END PGP SIGNATURE-----"
 }
