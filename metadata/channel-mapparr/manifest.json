@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-14T21:10:12Z",
+  "generated_at": "2026-11-15T03:39:50Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-10-24T15:39:07Z",
-    "download_count": 4356,
+    "download_count": 4359,
     "latest": {
       "version": "1.26.2971911",
       "commit_sha": "b786c1415f1c629c25bb5c2356ad9d7c2e7e8377",
@@ -32,7 +32,7 @@
       "latest_url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
       "url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
       "size": 767,
-      "download_count": 661
+      "download_count": 664
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.2971911/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip",
         "size": 767,
-        "download_count": 661
+        "download_count": 664
       },
       {
         "version": "1.26.2911354",
@@ -187,5 +187,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavjOOQAKCRB+wDprTCI0\nzrUMAP9ImHQEhfba1lCXqhvAChZXghw7ObyyIxgZJtqMF+HeRwEA3uuF/bPqIMtI\nzPz1qCgubnafukkAc9N8OawP/8TP9QA=\n=BZs1\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavkpigAKCRB+wDprTCI0\nzuiOAP4neYTilpN5hovlXHNmjpvWfNOALZd/j/3RRxXbsjUA6AD9GZHVGF1lqULR\nJdWmbCF7wH0pv0KKZR/7UcfX01YVygM=\n=O1S+\n-----END PGP SIGNATURE-----"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-14T23:51:02Z",
+  "generated_at": "2026-11-15T03:39:50Z",
   "manifest": {
     "slug": "dispatcharr-exporter",
     "name": "Dispatcharr Exporter",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-14T23:50:24Z",
-    "download_count": 556,
+    "download_count": 562,
     "latest": {
       "version": "3.3.0",
       "commit_sha": "b81375fdec3a389032fc82bb21508f5e5b31a69b",
@@ -29,7 +29,7 @@
       "latest_url": "dispatcharr-exporter-3.3.0/dispatcharr-exporter-3.3.0.zip",
       "url": "dispatcharr-exporter-3.3.0/dispatcharr-exporter-3.3.0.zip",
       "size": 156,
-      "download_count": 0
+      "download_count": 5
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.3.0/dispatcharr-exporter-3.3.0.zip",
         "url": "dispatcharr-exporter-3.3.0/dispatcharr-exporter-3.3.0.zip",
         "size": 156,
-        "download_count": 0
+        "download_count": 5
       },
       {
         "version": "3.2.0",
@@ -60,7 +60,7 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.2.0/dispatcharr-exporter-3.2.0.zip",
         "url": "dispatcharr-exporter-3.2.0/dispatcharr-exporter-3.2.0.zip",
         "size": 156,
-        "download_count": 88
+        "download_count": 89
       },
       {
         "version": "3.1.0",
@@ -120,5 +120,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavjz6wAKCRB+wDprTCI0\nzsV5AP9NMQDvG//a8/+zz8gWpvRPeuCi3bMI5EnL1OLGJFHI+wD+Ok8Zu4eG26R7\nX9w/gPOavJ1fXERyCCduDLw/Jiov4gA=\n=6RfD\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavkpiwAKCRB+wDprTCI0\nzsxpAQDiMQiUZTDuy5tQSpHoV3SUt4vaXnKOfPB9OQRIA0QTpQEA9ok8lXZR3SUR\n2U6CemukRhG4WqZ123XUceogSKtTtQ0=\n=zXMa\n-----END PGP SIGNATURE-----"
 }
