@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T20:17:45Z",
+  "generated_at": "2026-11-16T20:57:26Z",
   "manifest": {
     "slug": "multiview",
     "name": "Multiview",
@@ -29,7 +29,7 @@
       "latest_url": "multiview-0.6.0/multiview-0.6.0.zip",
       "url": "multiview-0.6.0/multiview-0.6.0.zip",
       "size": 383,
-      "download_count": 127
+      "download_count": 128
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.6.0/multiview-0.6.0.zip",
         "url": "multiview-0.6.0/multiview-0.6.0.zip",
         "size": 383,
-        "download_count": 127
+        "download_count": 128
       },
       {
         "version": "0.5.0",
@@ -174,22 +174,22 @@
         "download_count": 23
       },
       {
-        "version": "0.6.0-dev-53131bc6",
+        "version": "0.6.0-dev-eb16eec0",
         "prerelease": true,
-        "commit_sha": "e14fd827d8f72cf6036fe49d2d2698552968a472",
-        "commit_sha_short": "e14fd82",
-        "changelog": "561",
-        "build_timestamp": "2026-11-16T19:45:25Z",
-        "last_updated": "2026-11-16T19:45:04Z",
-        "checksum_md5": "74fb64cf4fbbf31badf2b735ee4ede90",
-        "checksum_sha256": "a7864ba1cc532d40164e25e1e607fc31a362669ebd3663ee3511381f3eeb6afe",
+        "commit_sha": "bc3e291d1fbacd3f5e72c35bfeb1b31d849136d9",
+        "commit_sha_short": "bc3e291",
+        "changelog": "564",
+        "build_timestamp": "2026-11-16T20:57:12Z",
+        "last_updated": "2026-11-16T20:56:47Z",
+        "checksum_md5": "5fadfaf065e71106aae2c5f1b6ed0bb6",
+        "checksum_sha256": "cfa472c30ae7ab50912b33d38d44d180e7573e37733e70d1d03fda8f161ab4d2",
         "min_dispatcharr_version": "v0.27.0",
-        "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.6.0-dev-53131bc6/multiview-0.6.0-dev-53131bc6.zip",
-        "url": "multiview-0.6.0-dev-53131bc6/multiview-0.6.0-dev-53131bc6.zip",
-        "size": 383,
-        "download_count": 1
+        "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.6.0-dev-eb16eec0/multiview-0.6.0-dev-eb16eec0.zip",
+        "url": "multiview-0.6.0-dev-eb16eec0/multiview-0.6.0-dev-eb16eec0.zip",
+        "size": 384,
+        "download_count": 0
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavtk7gAKCRB+wDprTCI0\nzltpAP9scpzySUcmph9lgcn6dNitgUaIugW7sl2ZxH9+NYHY/wEAuqGYP9LMgZjl\naVcDyRlFMTzPgiI+p78qFr9L2XOElg0=\n=nkh6\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavtuPAAKCRB+wDprTCI0\nzuxXAQCeKrZ7rEFWhKmwi9YFTR2Q3YacLzq2G0QEfSf+Sm4ijQEA6sktLEVqzT0w\nx+mGfCZkdYEQIpq5zisIGQHO2xiSuQk=\n=Wf7P\n-----END PGP SIGNATURE-----"
 }
