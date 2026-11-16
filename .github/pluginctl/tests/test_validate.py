@@ -73,19 +73,21 @@ def _external(plugin_repo, monkeypatch, catalog, artifact, status="200"):
     return rc, _outputs(out), fragment.read_text(), calls
 
 
+@pytest.mark.parametrize("prefix", ["", "demo/"])
 @pytest.mark.parametrize("version", ["1.0.0", "1.0.0-beta.1"])
-def test_external_matching_manifests(plugin_repo, monkeypatch, version):
+def test_external_matching_manifests(plugin_repo, monkeypatch, version, prefix):
     if "-" in version:
         monkeypatch.setattr(git, "show", lambda *args: json.dumps({"version": "1.0.0", "author": "alice"}))
     manifest = {"version": version, "manifest_version": 2}
     rc, outputs, text, calls = _external(plugin_repo, monkeypatch, manifest,
-                                         _zip([("plugin.json", json.dumps(manifest))]))
+                                         _zip([(prefix + "plugin.json", json.dumps(manifest)), (prefix + "plugin.py", "")]))
     assert rc == 0 and outputs["result"] == "pass"
     assert "| Release artifact | ✅" in text
     assert "| Release manifest" not in text and "| Release `manifest_version`" not in text
     assert calls == [f"https://example.com/{version}.zip"]
 
 
+@pytest.mark.parametrize("prefix", ["", "demo/"])
 @pytest.mark.parametrize("catalog,release,expected", [
     ({"manifest_version": 2}, {"version": "2.0.0", "manifest_version": 2}, "Release manifest `version`"),
     ({"manifest_version": 2}, {"manifest_version": 2}, "Release manifest `version`"),
@@ -98,9 +100,9 @@ def test_external_matching_manifests(plugin_repo, monkeypatch, version):
     ({"manifest_version": 2}, {"version": "1.0.0", "manifest_version": "2"}, "release `plugin.json`"),
     ({"manifest_version": 1}, {"version": "1.0.0", "manifest_version": 2}, "same `manifest_version`"),
 ])
-def test_external_manifest_field_failures(plugin_repo, monkeypatch, catalog, release, expected):
+def test_external_manifest_field_failures(plugin_repo, monkeypatch, catalog, release, expected, prefix):
     rc, outputs, text, calls = _external(plugin_repo, monkeypatch, catalog,
-                                         _zip([("plugin.json", json.dumps(release))]))
+                                         _zip([(prefix + "plugin.json", json.dumps(release)), (prefix + "plugin.py", "")]))
     assert rc == 1 and outputs["result"] == "fail"
     assert expected in text and len(calls) == 1
 
@@ -108,9 +110,12 @@ def test_external_manifest_field_failures(plugin_repo, monkeypatch, catalog, rel
 @pytest.mark.parametrize("artifact", [
     b"not a zip",
     _zip([]),
-    _zip([("nested/plugin.json", "{}")]),
-    _zip([("plugin.json", "bad json")]),
-    _zip([("plugin.json", "[]")]),
+    _zip([("nested/deeper/plugin.json", "{}")]),
+    _zip([("plugin.json", "bad json"), ("plugin.py", "")]),
+    _zip([("plugin.json", "[]"), ("plugin.py", "")]),
+    _zip([("plugin.json", "{}"), ("nested/plugin.json", "{}")]),
+    _zip([("a/plugin.json", "{}"), ("b/plugin.json", "{}")]),
+    _zip([("nested/plugin.json", "{}"), ("nested/__init__.py", ""), ("other/plugin.py", "")]),
 ])
 def test_external_invalid_artifacts_fail(plugin_repo, monkeypatch, artifact):
     rc, outputs, text, _ = _external(plugin_repo, monkeypatch, {"manifest_version": 2}, artifact)
@@ -123,7 +128,7 @@ def test_external_duplicate_manifest_fails(plugin_repo, monkeypatch):
         artifact = _zip([("plugin.json", "{}"), ("plugin.json", "{}")])
     rc, outputs, text, _ = _external(plugin_repo, monkeypatch, {"manifest_version": 2}, artifact)
     assert rc == 1 and outputs["result"] == "fail"
-    assert "exactly one root" in text
+    assert "duplicate" in text
 
 
 def test_external_download_failure(plugin_repo, monkeypatch):
@@ -134,7 +139,7 @@ def test_external_download_failure(plugin_repo, monkeypatch):
 
 def test_fetch_release_streams_and_reads_manifest(monkeypatch):
     manifest = {"version": "1.0.0", "manifest_version": 2}
-    data = _zip([("plugin.json", json.dumps(manifest))])
+    data = _zip([("plugin.json", json.dumps(manifest)), ("plugin.py", "")])
     class Response(io.BytesIO):
         status = 200
 

@@ -33,7 +33,9 @@ plugins/
 
 Set `source_type` to `"external"`. `source_url` must be an HTTPS URL for a downloadable ZIP and include `{version}`, which the registry replaces when it publishes. `repo_url` is required and should point to the public source repository.
 
-The ZIP must contain exactly one `plugin.json` at its root. Its `version` must exactly match the catalog `plugin.json`, including any prerelease suffix. Both files must explicitly declare the same `manifest_version` as a non-negative integer. Existing external entries missing that field must add it when submitted for validation.
+The ZIP must contain exactly one candidate `plugin.json`, either at the ZIP root or at the root of one enclosing plugin directory. Place `plugin.py` or `__init__.py` beside it. Dispatcharr chooses the install directory by entrypoint, preferring `plugin.py` over `__init__.py` and then shallower paths, so other entrypoints must not cause it to choose a different directory. The ZIP must not contain multiple candidate manifests or unsafe paths.
+
+The release manifest's `version` must exactly match the catalog `plugin.json`, including any prerelease suffix. Both files must explicitly declare the same `manifest_version` as a non-negative integer. Existing external entries missing that field must add it when submitted for validation.
 
 On merge, the registry downloads the release ZIP, calculates its checksums, scans it, publishes it as a release in this repository, and records the upstream source URL in signed metadata. Clients download from this registry, not directly from the upstream URL.
 
