@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T18:38:25Z",
+  "generated_at": "2026-11-16T19:45:35Z",
   "manifest": {
     "slug": "multiview",
     "name": "Multiview",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-06T16:17:24Z",
-    "download_count": 1692,
+    "download_count": 1693,
     "latest": {
       "version": "0.6.0",
       "commit_sha": "2e6aa54628f6581c86791d1b7dc0bacbad59e7b3",
@@ -29,7 +29,7 @@
       "latest_url": "multiview-0.6.0/multiview-0.6.0.zip",
       "url": "multiview-0.6.0/multiview-0.6.0.zip",
       "size": 383,
-      "download_count": 126
+      "download_count": 127
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.6.0/multiview-0.6.0.zip",
         "url": "multiview-0.6.0/multiview-0.6.0.zip",
         "size": 383,
-        "download_count": 126
+        "download_count": 127
       },
       {
         "version": "0.5.0",
@@ -172,8 +172,24 @@
         "url": "multiview-0.2.2/multiview-0.2.2.zip",
         "size": 58,
         "download_count": 23
+      },
+      {
+        "version": "0.6.0-dev-53131bc6",
+        "prerelease": true,
+        "commit_sha": "e14fd827d8f72cf6036fe49d2d2698552968a472",
+        "commit_sha_short": "e14fd82",
+        "changelog": "561",
+        "build_timestamp": "2026-11-16T19:45:25Z",
+        "last_updated": "2026-11-16T19:45:04Z",
+        "checksum_md5": "74fb64cf4fbbf31badf2b735ee4ede90",
+        "checksum_sha256": "a7864ba1cc532d40164e25e1e607fc31a362669ebd3663ee3511381f3eeb6afe",
+        "min_dispatcharr_version": "v0.27.0",
+        "source_url": "https://github.com/swvn-dispatch/dispatcharr-multiview/releases/download/v0.6.0-dev-53131bc6/multiview-0.6.0-dev-53131bc6.zip",
+        "url": "multiview-0.6.0-dev-53131bc6/multiview-0.6.0-dev-53131bc6.zip",
+        "size": 383,
+        "download_count": 0
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavtNqQAKCRB+wDprTCI0\nzi5QAP9J8tpRfdhb6sEu8NiTZZtEbnh1wFWuhH9brNMkS2XOQwEAxt9axe7mczTo\nvKxw88Sw6wt6F+CuqNOTyXQzhEk+8Qg=\n=rIdg\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavtdYwAKCRB+wDprTCI0\nzrrdAQCrSN7+lxzmEU5709hOlRguRoGAEDcqm4p82hssytgBNAD/fcb4dHwk3phh\nHbR+FGd5dgbGPwTFBgIxK0OHvycWCwg=\n=dnX+\n-----END PGP SIGNATURE-----"
 }
