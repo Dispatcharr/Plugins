@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T18:38:25Z",
+  "generated_at": "2026-11-16T19:29:12Z",
   "manifest": {
     "slug": "iptv-checker",
     "name": "IPTV Checker",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-08T13:17:51Z",
-    "download_count": 5511,
+    "download_count": 5513,
     "latest": {
       "version": "1.26.3121307",
       "commit_sha": "d28367c11c81c1972e20db28f0aa9ec371f00945",
@@ -28,7 +28,7 @@
       "latest_url": "iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip",
       "url": "iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip",
       "size": 415,
-      "download_count": 577
+      "download_count": 578
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3121307/iptv_checker-v1.26.3121307.zip",
         "url": "iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip",
         "size": 415,
-        "download_count": 577
+        "download_count": 578
       },
       {
         "version": "1.26.3052213",
@@ -119,7 +119,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.2481600/iptv_checker-v1.26.2481600.zip",
         "url": "iptv-checker-1.26.2481600/iptv-checker-1.26.2481600.zip",
         "size": 405,
-        "download_count": 719
+        "download_count": 720
       },
       {
         "version": "1.26.2402308",
@@ -183,5 +183,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavtNqAAKCRB+wDprTCI0\nzhHxAQCVnjSD9iSFYoTrGjXu1jNRaNlF92OAHLPNu9Gfw1J6UAD9G0D4UDMSP0Hb\nRA88/hD7pU2M8FlCAgTVFeNdSWHcwQI=\n=NaUJ\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavtZjgAKCRB+wDprTCI0\nzrN6AP9udrTDRd2M8AXKan8yVZeBkTQvv2tGZagiCemw2XukZgEA7UVD3ZyYjZ+0\nuGnTtCXXN47QuhESeFih1mqWm5pC6gY=\n=QaS+\n-----END PGP SIGNATURE-----"
 }
