@@ -2,7 +2,7 @@
 
 # EPG & Sports Editor
 
-**Version:** `0.5.21` | **Author:** jstevenscl | **Last Updated:** Nov 07 2026, 01:30 UTC
+**Version:** `0.5.22` | **Author:** jstevenscl | **Last Updated:** Nov 16 2026, 02:02 UTC
 
 Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). Renamed from EPGeditARR; existing installs carry their settings forward automatically.
 
@@ -12,20 +12,21 @@ Transform and clean your EPG data using regex and find/replace rules. Creates vi
 
 ### Latest Release
 
-- **Download:** [`epg-and-sports-editor-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.21/epg-and-sports-editor-0.5.21.zip)
-- **Built:** Nov 07 2026, 01:30 UTC
-- **Source Commit:** [`012d797`](https://github.com/Dispatcharr/Plugins/commit/012d7970a89a8e3db1fcf15b1e5bdd4afb60ea96)
+- **Download:** [`epg-and-sports-editor-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.22/epg-and-sports-editor-0.5.22.zip)
+- **Built:** Nov 16 2026, 02:02 UTC
+- **Source Commit:** [`c7915a1`](https://github.com/Dispatcharr/Plugins/commit/c7915a14a7cc3df9cda43e3ca311816aef334419)
 
 **Checksums:**
 ```
-MD5:    f64956ac86a591c0e27099722a013eb0
-SHA256: 6a90cc4f01b216f1ccf271011f85fedf82bf6e98ff9a3b4bfad7900dfc3b4b27
+MD5:    f36629a0a3c67f51ed022fb67d0a55ba
+SHA256: 2022b18c2fcbaf5650e71f0ec64e4786fa58a9f4b7caa985e4c11323f182bc7a
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.5.22` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.22/epg-and-sports-editor-0.5.22.zip) | Nov 16 2026, 02:02 UTC | [`c7915a1`](https://github.com/Dispatcharr/Plugins/commit/c7915a14a7cc3df9cda43e3ca311816aef334419) | f36629a0a3c67f51ed022fb67d0a55ba | 2022b18c2fcbaf5650e71f0ec64e4786fa58a9f4b7caa985e4c11323f182bc7a |
 | `0.5.21` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.21/epg-and-sports-editor-0.5.21.zip) | Nov 07 2026, 01:30 UTC | [`012d797`](https://github.com/Dispatcharr/Plugins/commit/012d7970a89a8e3db1fcf15b1e5bdd4afb60ea96) | f64956ac86a591c0e27099722a013eb0 | 6a90cc4f01b216f1ccf271011f85fedf82bf6e98ff9a3b4bfad7900dfc3b4b27 |
 | `0.5.20` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.20/epg-and-sports-editor-0.5.20.zip) | Nov 07 2026, 01:24 UTC | [`58ede8e`](https://github.com/Dispatcharr/Plugins/commit/58ede8e4d0ee5a6ee0addffceee663fe9d945a2f) | 4851957d80c7f97911a5352a5a43232f | 8967990f19582b453d6ddee4dc054e7af9012218aef58374043a66ca3e73feef |
 | `0.5.19` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.19/epg-and-sports-editor-0.5.19.zip) | Nov 06 2026, 02:37 UTC | [`ae5b3db`](https://github.com/Dispatcharr/Plugins/commit/ae5b3db0683bb7777c422308b532e83c596d9a68) | 2a0f3731fdca56b60d979644ae505a95 | 7f28926bf42caa2cb60fe806c5f98a617293cd554d3bde3a95529f319cb6410a |
@@ -35,7 +36,6 @@ SHA256: 6a90cc4f01b216f1ccf271011f85fedf82bf6e98ff9a3b4bfad7900dfc3b4b27
 | `0.5.15` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.15/epg-and-sports-editor-0.5.15.zip) | Oct 30 2026, 17:33 UTC | [`8ea9ae6`](https://github.com/Dispatcharr/Plugins/commit/8ea9ae6cdf6d81b5d24b8be55abbe6cff9db622a) | 78ac695cb39b77398b9a30812fb8cc51 | 65157fb0424e679cb0efb377824dfc5568c384b31ab09d5823fe9dbfeab6e90c |
 | `0.5.14` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.14/epg-and-sports-editor-0.5.14.zip) | Oct 26 2026, 19:16 UTC | [`252b220`](https://github.com/Dispatcharr/Plugins/commit/252b220511758c2794b5f27a35517d932d4e3cce) | 5766709ad3fcc549fcc4c2ea9150e631 | adfb07eecb75f11e62ffd6740d567f4d6f66dbcc65d62ebfd7aed7c02a61087a |
 | `0.5.13` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.13/epg-and-sports-editor-0.5.13.zip) | Oct 24 2026, 20:37 UTC | [`1d630df`](https://github.com/Dispatcharr/Plugins/commit/1d630dff11c0274a70d30a0a4ae3937122e4a155) | 83a52e2fd11841a233abe884177beca7 | 691697805a286fb1c862d2466bdacc61619d2b7920030966c4ac1cda2e0e9ec9 |
-| `0.5.12` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-and-sports-editor-0.5.12/epg-and-sports-editor-0.5.12.zip) | Oct 24 2026, 13:56 UTC | [`671c09c`](https://github.com/Dispatcharr/Plugins/commit/671c09c24d9392429192541609b8017503860349) | cc6e14023850518e17b454a4456919b2 | e33548f8348027ef065457c058d85f7658365feac332ce95f05aa6dd8fcd7028 |
 
 ---
 
