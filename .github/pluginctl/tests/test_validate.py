@@ -92,12 +92,14 @@ def test_external_matching_manifests(plugin_repo, monkeypatch, version, prefix):
     ({"manifest_version": 2}, {"version": "2.0.0", "manifest_version": 2}, "Release manifest `version`"),
     ({"manifest_version": 2}, {"manifest_version": 2}, "Release manifest `version`"),
     ({"manifest_version": 2}, {"version": 1, "manifest_version": 2}, "Release manifest `version`"),
-    ({}, {"version": "1.0.0", "manifest_version": 2}, "Catalog `plugin.json`"),
-    ({"manifest_version": 2}, {"version": "1.0.0"}, "release `plugin.json`"),
+    ({}, {"version": "1.0.0", "manifest_version": 2}, "same `manifest_version`"),
+    ({"manifest_version": 2}, {"version": "1.0.0"}, "same `manifest_version`"),
     ({"manifest_version": True}, {"version": "1.0.0", "manifest_version": 2}, "Catalog `plugin.json`"),
     ({"manifest_version": 2}, {"version": "1.0.0", "manifest_version": False}, "release `plugin.json`"),
     ({"manifest_version": -1}, {"version": "1.0.0", "manifest_version": 2}, "Catalog `plugin.json`"),
     ({"manifest_version": 2}, {"version": "1.0.0", "manifest_version": "2"}, "release `plugin.json`"),
+    ({"manifest_version": None}, {"version": "1.0.0", "manifest_version": 0}, "Catalog `plugin.json`"),
+    ({"manifest_version": 0}, {"version": "1.0.0", "manifest_version": None}, "release `plugin.json`"),
     ({"manifest_version": 1}, {"version": "1.0.0", "manifest_version": 2}, "same `manifest_version`"),
 ])
 def test_external_manifest_field_failures(plugin_repo, monkeypatch, catalog, release, expected, prefix):
@@ -105,6 +107,18 @@ def test_external_manifest_field_failures(plugin_repo, monkeypatch, catalog, rel
                                          _zip([(prefix + "plugin.json", json.dumps(release)), (prefix + "plugin.py", "")]))
     assert rc == 1 and outputs["result"] == "fail"
     assert expected in text and len(calls) == 1
+
+
+@pytest.mark.parametrize("prefix", ["", "demo/"])
+@pytest.mark.parametrize("catalog_version,release_version", [({}, {}), ({"manifest_version": 0}, {}),
+                                                               ({}, {"manifest_version": 0})])
+def test_external_omitted_manifest_version_defaults_to_zero(plugin_repo, monkeypatch, prefix,
+                                                                    catalog_version, release_version):
+    release = {"version": "1.0.0", **release_version}
+    rc, outputs, _, _ = _external(plugin_repo, monkeypatch, catalog_version,
+                                   _zip([(prefix + "plugin.json", json.dumps(release)),
+                                         (prefix + "plugin.py", "")]))
+    assert rc == 0 and outputs["result"] == "pass"
 
 
 @pytest.mark.parametrize("artifact", [

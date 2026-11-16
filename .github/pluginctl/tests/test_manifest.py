@@ -116,6 +116,15 @@ def test_effective_minimum_uses_an_external_runtime_manifest_sidecar(tmp_path):
     }) == "v0.34.0"
 
 
+def test_external_legacy_sidecar_does_not_inherit_catalog_schema(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / ".dispatcharr-runtime-manifest.json").write_text("{}", encoding="utf-8")
+    assert m.effective_min_dispatcharr_version(str(plugin_dir), {
+        "source_type": "external", "manifest_version": 2,
+    }) == ""
+
+
 def test_plugin_entry_key_order():
     zips = [m.build_version_entry(META, "demo-1.2.0/demo-1.2.0.zip", 10, "1.2.0")]
     entry = m.build_plugin_entry(

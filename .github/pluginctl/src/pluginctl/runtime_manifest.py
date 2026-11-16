@@ -8,12 +8,11 @@ from typing import Any
 
 
 def load(plugin_dir: str, catalog: dict[str, Any]) -> dict[str, Any] | None:
-    """Return the runtime manifest when it explicitly declares a schema version.
+    """Return the release sidecar or a catalog with an explicit schema version.
 
-    External plugin scans save the fetched release manifest in a sidecar. Local
-    plugins use their catalog file only when it also contains ``manifest_version``.
+    An external sidecar without a schema version represents legacy version 0.
+    Local plugins use their catalog only when it declares ``manifest_version``.
     """
-    manifests: list[dict[str, Any]] = [catalog]
     if catalog.get("source_type") == "external":
         sidecar = os.path.join(plugin_dir, ".dispatcharr-runtime-manifest.json")
         try:
@@ -22,9 +21,6 @@ def load(plugin_dir: str, catalog: dict[str, Any]) -> dict[str, Any] | None:
         except (OSError, json.JSONDecodeError):
             fetched = None
         if isinstance(fetched, dict):
-            manifests.insert(0, fetched)
+            return fetched
 
-    for manifest in manifests:
-        if "manifest_version" in manifest:
-            return manifest
-    return None
+    return catalog if "manifest_version" in catalog else None
