@@ -269,18 +269,17 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
                             rows.append("| Release manifest `version` | ❌ | Catalog and release "
                                         "`plugin.json` must declare the same version string |")
                             failed = True
-                        catalog_valid = ("manifest_version" in raw and manifest_version_is_valid(raw))
-                        release_valid = ("manifest_version" in manifest
-                                         and manifest_version_is_valid(manifest))
+                        catalog_valid = manifest_version_is_valid(raw)
+                        release_valid = manifest_version_is_valid(manifest)
                         if not catalog_valid or not release_valid:
                             sources = " and ".join(source for source, valid in (
                                 ("Catalog", catalog_valid), ("release", release_valid)) if not valid)
                             rows.append(f"| Release `manifest_version` | ❌ | {sources} `plugin.json` "
-                                        "must declare a non-negative integer `manifest_version` |")
+                                        "must use a non-negative integer for `manifest_version` when specified |")
                             failed = True
-                        elif raw["manifest_version"] != manifest["manifest_version"]:
+                        elif raw.get("manifest_version", 0) != manifest.get("manifest_version", 0):
                             rows.append("| Release `manifest_version` | ❌ | Catalog and release "
-                                        "`plugin.json` must declare the same `manifest_version` |")
+                                        "`plugin.json` must have the same `manifest_version` (default 0) |")
                             failed = True
                 else:
                     rows.append(f"| Release artifact | ❌ | Could not reach `{resolved_url}` "

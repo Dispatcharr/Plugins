@@ -337,6 +337,24 @@ def test_external_plugin_uses_the_release_manifest_sidecar(tmp_path, monkeypatch
     assert sarif.contract_result_requires_review(result)
 
 
+def test_external_legacy_sidecar_does_not_inherit_catalog_schema(tmp_path, monkeypatch):
+    plugin_dir = tmp_path / "plugins" / "demo"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "plugin.json").write_text(json.dumps({
+        "source_type": "external", "manifest_version": 2, "capabilities": [],
+    }), encoding="utf-8")
+    (plugin_dir / ".dispatcharr-runtime-manifest.json").write_text("{}", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    result = {
+        "ruleId": "plugin/capability-contract/subprocess",
+        "locations": [{"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/plugin.py"},
+                                             "region": {"startLine": 1}}}],
+    }
+    assert not sarif.contract_result_requires_review(result)
+    result["ruleId"] = "plugin/sandbox-bypass/filesystem-api"
+    assert not sarif.sandbox_result_requires_review(result)
+
+
 def test_capability_contract_accepts_background_tasks_implied_by_async_action(tmp_path, monkeypatch):
     plugin_dir = tmp_path / "plugins" / "demo"
     plugin_dir.mkdir(parents=True)
