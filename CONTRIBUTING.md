@@ -33,6 +33,8 @@ plugins/
 
 Set `source_type` to `"external"`. `source_url` must be an HTTPS URL for a downloadable ZIP and include `{version}`, which the registry replaces when it publishes. `repo_url` is required and should point to the public source repository.
 
+The ZIP must contain exactly one `plugin.json` at its root. Its `version` must exactly match the catalog `plugin.json`, including any prerelease suffix. Both files must explicitly declare the same `manifest_version` as a non-negative integer. Existing external entries missing that field must add it when submitted for validation.
+
 On merge, the registry downloads the release ZIP, calculates its checksums, scans it, publishes it as a release in this repository, and records the upstream source URL in signed metadata. Clients download from this registry, not directly from the upstream URL.
 
 ### Standard plugin
@@ -67,6 +69,7 @@ Start with the required fields:
 | --- | --- | --- |
 | `name` | Yes | Plugin display name. |
 | `version` | Yes | Three-segment version in `MAJOR.MINOR.PATCH` form. |
+| `manifest_version` | Required for external plugins | Non-negative integer matching the release manifest schema version. |
 | `description` | Yes | Short browser description. |
 | `author` | Yes, unless `maintainers` is supplied | GitHub username allowed to update the plugin. |
 | `license` | Yes | OSI-approved SPDX identifier, such as `MIT` or `Apache-2.0`. |
@@ -88,6 +91,7 @@ At least one of `author` or `maintainers` must name the GitHub account opening t
 {
   "name": "My Plugin",
   "version": "1.2.0",
+  "manifest_version": 2,
   "description": "Does something useful for Dispatcharr",
   "author": "your-github-username",
   "license": "MIT",
