@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T02:02:59Z",
+  "generated_at": "2026-11-16T18:38:25Z",
   "manifest": {
     "slug": "tablo-tuner",
     "name": "Tablo Tuner",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-01T11:21:50-05:00",
-    "download_count": 24,
+    "download_count": 25,
     "latest": {
       "version": "0.1.0",
       "commit_sha": "7c61de324ad4d0db9ce863ebc2818277083277b3",
@@ -28,7 +28,7 @@
       "latest_url": "tablo-tuner-0.1.0/tablo-tuner-0.1.0.zip",
       "url": "tablo-tuner-0.1.0/tablo-tuner-0.1.0.zip",
       "size": 8,
-      "download_count": 24
+      "download_count": 25
     },
     "versions": [
       {
@@ -43,9 +43,9 @@
         "source_url": "https://github.com/jkoehler11/tablo-dispatcharr-plugin/releases/download/v0.1.0/tablo-tuner-0.1.0.zip",
         "url": "tablo-tuner-0.1.0/tablo-tuner-0.1.0.zip",
         "size": 8,
-        "download_count": 24
+        "download_count": 25
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavpkXQAKCRB+wDprTCI0\nzqzFAP0dy7TWOxPzs4dl73MDuaI7a/KcTHDx9l8dUrl5rr2SxgD/f9aPD4uzQMaU\n1Q3F6I2fOVhP/4xwYc505buh0Wl5qAc=\n=Nm1K\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavtNqwAKCRB+wDprTCI0\nzuisAP45VE7vS9WidkiDhpsrziLXcG9F165prVD7PwBbN+Yg+QD9F/vWJdCho4y0\nnE0vSK0qSmZh65nXkHG9ApiMqBnoIwA=\n=WeYP\n-----END PGP SIGNATURE-----"
 }
