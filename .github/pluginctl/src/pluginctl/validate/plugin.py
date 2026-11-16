@@ -22,6 +22,7 @@ from typing import Optional
 
 from ..core import actions, gh, git, release_links
 from ..capabilities import manifest_version_is_valid
+from ..release_archive import inspect_archive
 from ..core.version import (is_prerelease_semver, is_semver, is_dispatcharr_version,
                             prerelease_base, version_greater_than)
 from .detect import METADATA_ONLY_FIELDS, author_in_plugin_json, changed_json_fields, is_safe_name
@@ -84,20 +85,18 @@ def fetch_release(url: str) -> tuple[str, dict | None, str | None]:
 
 
 def release_manifest(artifact) -> tuple[dict | None, str | None]:
-    """Read exactly one root plugin.json without extracting the archive."""
+    """Read the unique installable release manifest without extracting it."""
     try:
         with zipfile.ZipFile(artifact) as archive:
-            entries = [entry for entry in archive.infolist() if entry.filename == "plugin.json"]
-            if len(entries) != 1 or entries[0].is_dir():
-                return None, "Release ZIP must contain exactly one root `plugin.json`"
-            with archive.open(entries[0]) as manifest_file:
-                manifest = json.load(manifest_file)
-            if not isinstance(manifest, dict):
-                return None, "Release `plugin.json` must be a JSON object"
+            _, manifest, _ = inspect_archive(archive)
             return manifest, None
+    except json.JSONDecodeError:
+        return None, "Release ZIP or `plugin.json` is invalid or unreadable"
+    except ValueError as exc:
+        return None, str(exc)
     except (zipfile.BadZipFile, UnicodeDecodeError, json.JSONDecodeError, OSError,
-            RuntimeError, ValueError, NotImplementedError, EOFError, zlib.error):
-        return None, "Release ZIP or root `plugin.json` is invalid or unreadable"
+            RuntimeError, NotImplementedError, EOFError, zlib.error):
+        return None, "Release ZIP or `plugin.json` is invalid or unreadable"
 
 
 def fetch_spdx() -> Optional[dict]:
