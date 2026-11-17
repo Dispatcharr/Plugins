@@ -1,0 +1,57 @@
+{
+  "manifest_version": 1,
+  "name": "AerioTV Presets",
+  "version": "0.0.8",
+  "description": "Preconfigure a user's AerioTV favorites, group order, hidden groups, and settings. Their AerioTV devices offer Dispatcharr Sync on first launch and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer.",
+  "author": "jonzey231",
+  "license": "AGPL-3.0-or-later",
+  "min_dispatcharr_version": "0.33.0",
+  "repo_url": "https://github.com/jonzey231/AerioTVPresets",
+  "source_type": "external",
+  "source_url": "https://github.com/jonzey231/AerioTVPresets/releases/download/v{version}/aeriotv-presets-plugin-{version}.zip",
+  "capabilities": [
+    "user_data"
+  ],
+  "actions": [
+    {
+      "id": "load_lists",
+      "label": "Refresh Lists",
+      "description": "Rebuilds the lists for the chosen user. Save first, then reload the page.",
+      "button_label": "Refresh",
+      "button_variant": "filled"
+    },
+    {
+      "id": "preview",
+      "label": "Preview",
+      "description": "Shows what Apply would change, without writing.",
+      "button_label": "Preview",
+      "button_variant": "outline"
+    },
+    {
+      "id": "apply",
+      "label": "Apply",
+      "description": "Writes the setup to the user's AerioTV record.",
+      "button_label": "Apply",
+      "button_variant": "filled",
+      "button_color": "blue",
+      "confirm": {
+        "required": true,
+        "title": "Apply AerioTV setup?",
+        "message": "This writes the user's AerioTV record. Replace mode overwrites what their devices saved for the sections you filled in."
+      }
+    },
+    {
+      "id": "clear_record",
+      "label": "Clear Record",
+      "description": "Deletes the chosen User's AerioTV sync record on this server. It removes only that record; Dispatcharr data and the apps on devices are not touched.",
+      "button_label": "Clear",
+      "button_variant": "outline",
+      "button_color": "red",
+      "confirm": {
+        "required": true,
+        "title": "Clear the AerioTV record?",
+        "message": "This deletes the chosen User's AerioTV sync record on this server. It cannot be undone. Their devices keep what they have and write a new record on their next sync."
+      }
+    }
+  ]
+}

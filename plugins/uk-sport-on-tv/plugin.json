@@ -1,0 +1,10 @@
+{
+  "name": "UK Sport on TV",
+  "version": "0.3.0",
+  "description": "Which channel shows each UK football match, weeks ahead: UK TV (Sky Sports, TNT Sports, Premier Sports, BBC, ITV…, from live-footballontv.com), and club channels (Celtic TV, Hearts TV…) for the home club's games UK TV doesn't show. Added to those channels' guides at each match's time (gaps only) and kept for players such as Viewarr. Polite, cached fetching.",
+  "author": "petebutty",
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/petebutty/uk-sport-on-tv/releases/download/v{version}/uk-sport-on-tv-{version}.zip",
+  "repo_url": "https://github.com/petebutty/uk-sport-on-tv"
+}

@@ -1,0 +1,1 @@
+| bad.py:1:1:1:51 | Subscript() | Creating a watched directory requires the `filesystem_write` capability. |

@@ -105,15 +105,8 @@ jobs:
             source_url="${source_url_template//\{version\}/$version}"
             echo "Fetching release ZIP for CodeQL: $source_url"
             curl -fsSL "$source_url" -o "/tmp/${plugin_name}-release.zip"
-            mkdir -p "/tmp/${plugin_name}-src"
-            python3 -c "import zipfile,os; z=zipfile.ZipFile('/tmp/${plugin_name}-release.zip'); d='/tmp/${plugin_name}-src'; [z.extract((setattr(m,'filename',m.filename.replace(chr(92),'/')) or m),d) for m in z.infolist()]"
-            # Keep the release's runtime manifest separate from this repository's
-            # catalog plugin.json, which must not be used as capability policy.
-            if [[ -f "/tmp/${plugin_name}-src/plugin.json" ]]; then
-              cp "/tmp/${plugin_name}-src/plugin.json" "plugins/$plugin_name/.dispatcharr-runtime-manifest.json"
-            fi
-            cp -rn "/tmp/${plugin_name}-src/." "plugins/$plugin_name/"
-            rm -rf "/tmp/${plugin_name}-release.zip" "/tmp/${plugin_name}-src"
+            python -m pluginctl.release_archive "/tmp/${plugin_name}-release.zip" "plugins/$plugin_name"
+            rm -f "/tmp/${plugin_name}-release.zip"
           done < <(echo '${{ inputs.matrix }}' | jq -r '.[]')
 
       - name: Detect supported languages

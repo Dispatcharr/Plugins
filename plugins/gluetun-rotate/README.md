@@ -46,6 +46,7 @@ both keys, press **Apply**, and press **Ask** to see what the provider answers r
 | API key | A Dispatcharr API key of an **admin** user, from Settings → Users. The watcher reads the provider accounts with it, and Dispatcharr leaves the account password out for anyone else, so those accounts would be skipped as unusable |
 | Gluetun key | The `apikey` of the role above |
 | Gluetun URL | Gluetun's control server as Dispatcharr sees it. The default fits a shared network namespace |
+| Count a reset connection as a refusal | Off by default. On, a `player_api.php` that resets or refuses the connection counts as a refused round, like a 520. For a provider that is not behind Cloudflare and blocks an exit address that way |
 
 ## Actions
 
@@ -79,6 +80,13 @@ without waiting for a second round. The source is asked again every round, at mo
 sources a round, until it opens (`unblocked`); if it is still blocked after a rotation, the
 next round rotates again within the limits below. Any other 403 is only recorded.
 
+**A reset connection can count as a refusal** (opt-in). A provider that is not behind
+Cloudflare never answers 520, and some refuse an exit address by resetting the TCP connection
+instead, while another address is served as usual. With **Count a reset connection as a
+refusal** on, a `player_api.php` probe that is reset or refused counts as a refused round, and
+the same two rounds in a row, cooldown, hourly limit and wait for viewers apply. It is off by
+default, because a reset can also be a provider failing for everyone.
+
 Gluetun picks a server at random among those its filters allow each time the tunnel
 starts, which is what makes this work. A filter narrowed to one server leaves nowhere to go.
 
@@ -105,7 +113,8 @@ it again. A tunnel stopped by hand is left alone.
 A provider that is failing on its own. A 403, 507 or 509 means the provider is answering
 and saying no, to everyone; a new address would not change that, so those answers never
 trigger a rotation. Neither does a timeout: a tunnel that is down is Gluetun's own
-healthcheck to restart.
+healthcheck to restart. A reset or refused connection rotates only when you turn it on, and
+then a provider that resets everyone is rotated against too, up to the hourly limit.
 
 A 403 from an edge that is not Cloudflare's block page. From Dispatcharr 0.31.0, which writes
 its log to `/data/logs/dispatcharr.log`, the watcher counts the `HTTP 403` lines there every

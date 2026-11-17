@@ -1,0 +1,10 @@
+{
+  "name": "Tablo Tuner",
+  "version": "0.1.0",
+  "description": "Connects a legacy Tablo through tablo-bridge: creates the M3U account, XMLTV source, channels and EPG mapping, and keeps them in sync.",
+  "author": "jkoehler11",
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/jkoehler11/tablo-dispatcharr-plugin/releases/download/v{version}/tablo-tuner-{version}.zip",
+  "repo_url": "https://github.com/jkoehler11/tablo-dispatcharr-plugin"
+}

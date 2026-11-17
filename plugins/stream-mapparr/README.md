@@ -112,6 +112,9 @@ database. This plugin modifies channel and stream assignments.
 - **Audio priority sorting** (opt-in): rank by audio channel layout and codec,
   using two comma-separated preference lists. Applied after the video tier, with
   layout ranked before codec
+- **Bitrate tie-breaker**: when two streams match on resolution, frame rate and
+  audio, the one with the higher measured video bitrate goes first, rounded to
+  the Bitrate Sort Step so small swings do not reorder them
 - **M3U source prioritization**: prefer streams from specific providers
 - **Dead stream filtering**: skip streams with 0x0 resolution
 - **Auto-deduplication**: collapse duplicate stream names during assignment
@@ -159,6 +162,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | Setting | Type | Default | Description |
 |:---|:---|:---|:---|
 | **Overwrite Existing Streams** | boolean | True | Replace existing streams rather than appending. A run matching 0 streams never clears a channel |
+| **Keep Custom Streams Last** | boolean | True | Custom streams already on a channel (created in Dispatcharr, not from an M3U source, such as the fallback stream Could Not Dispatch adds) are kept when Overwrite replaces the list, and Sort keeps them after the provider streams. Off: Overwrite removes them like any other stream |
 | **Match Sensitivity** | select | Normal (80) | Relaxed (70), Normal (80), Strict (90), Exact (95) |
 | **Channel Profile** | select | - | Profile to process channels from |
 | **Channel Groups** | string | (all) | Groups to process, comma-separated. Empty means all groups |
@@ -204,6 +208,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Placeholder Bitrate Floor (kbps)** | number | 300 | The floor for the setting above. Standard definition is never checked. Where two bitrate figures disagree the higher is used, so a disagreement keeps the stream |
 | **Audio Channels Priority** | string | "" | Audio layouts, most preferred first, for example `7.1, 5.1, stereo`. Ranked before codec. Blank disables it |
 | **Audio Codec Priority** | string | "" | Audio codecs, most preferred first, for example `eac3, ac3, aac`. Ranked after layout. Blank disables it |
+| **Bitrate Sort Step (kbps)** | number | 500 | When streams match on resolution, frame rate and audio, the higher measured video bitrate is placed first. Bitrates are rounded down to this step before comparing, so streams within one step keep their order. A stream with no measured bitrate goes after one that has one. 0 turns it off |
 | **Share anonymous usage counts** | boolean | True | Sends this plugin's Streams Matched total and a random id to the plugin author's counter. See [Anonymous usage counts](#anonymous-usage-counts). |
 
 ## Actions

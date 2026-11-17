@@ -13,11 +13,16 @@ from __future__ import annotations
 import json
 import os
 import re
+import tempfile
 import urllib.error
 import urllib.request
+import zipfile
+import zlib
 from typing import Optional
 
 from ..core import actions, gh, git, release_links
+from ..capabilities import manifest_version_is_valid
+from ..release_archive import inspect_archive
 from ..core.version import (is_prerelease_semver, is_semver, is_dispatcharr_version,
                             prerelease_base, version_greater_than)
 from .detect import METADATA_ONLY_FIELDS, author_in_plugin_json, changed_json_fields, is_safe_name
@@ -59,16 +64,39 @@ def tsv(fields: list[str]) -> str:
 
 
 # ---- network (injectable for tests) -----------------------------------------
-def http_status(url: str) -> str:
-    """Follow redirects, return the numeric HTTP status as a string ("000" on error)."""
+def fetch_release(url: str) -> tuple[str, dict | None, str | None]:
+    """Download the release to temporary storage and inspect its manifest."""
     try:
         req = urllib.request.Request(url, method="GET")
         with urllib.request.urlopen(req, timeout=15) as resp:
-            return str(getattr(resp, "status", None) or resp.getcode())
-    except urllib.error.HTTPError as exc:  # type: ignore[attr-defined]
-        return str(exc.code)
-    except Exception:
-        return "000"
+            status = str(getattr(resp, "status", None) or resp.getcode())
+            if status != "200":
+                return status, None, None
+            with tempfile.TemporaryFile() as artifact:
+                while chunk := resp.read(1024 * 1024):
+                    artifact.write(chunk)
+                artifact.seek(0)
+                manifest, error = release_manifest(artifact)
+                return status, manifest, error
+    except urllib.error.HTTPError as exc:
+        return str(exc.code), None, None
+    except (OSError, ValueError):
+        return "000", None, None
+
+
+def release_manifest(artifact) -> tuple[dict | None, str | None]:
+    """Read the unique installable release manifest without extracting it."""
+    try:
+        with zipfile.ZipFile(artifact) as archive:
+            _, manifest, _ = inspect_archive(archive)
+            return manifest, None
+    except json.JSONDecodeError:
+        return None, "Release ZIP or `plugin.json` is invalid or unreadable"
+    except ValueError as exc:
+        return None, str(exc)
+    except (zipfile.BadZipFile, UnicodeDecodeError, json.JSONDecodeError, OSError,
+            RuntimeError, NotImplementedError, EOFError, zlib.error):
+        return None, "Release ZIP or `plugin.json` is invalid or unreadable"
 
 
 def fetch_spdx() -> Optional[dict]:
@@ -224,12 +252,35 @@ def run(plugin_name: str, pr_author: str, base_ref: str, output_file: str,
         else:
             if is_semver(version) or is_prerelease:
                 resolved_url = ext_source_url.replace("{version}", version)
-                code = http_status(resolved_url)
+                code, manifest, manifest_error = fetch_release(resolved_url)
                 if code == "200":
                     rows.append("| Release artifact | ✅ | Artifact reachable at resolved URL |")
                     release_links_data = release_links.external_links(raw, base_raw)
                     release_link = release_links_data.current_url
                     compare_link = release_links_data.compare_url
+                    if manifest_error or manifest is None:
+                        rows.append(f"| Release manifest | ❌ | {manifest_error or 'Release ZIP could not be read'} |")
+                        failed = True
+                    else:
+                        assert manifest is not None
+                        if (not isinstance(raw.get("version"), str)
+                                or not isinstance(manifest.get("version"), str)
+                                or raw["version"] != manifest["version"]):
+                            rows.append("| Release manifest `version` | ❌ | Catalog and release "
+                                        "`plugin.json` must declare the same version string |")
+                            failed = True
+                        catalog_valid = manifest_version_is_valid(raw)
+                        release_valid = manifest_version_is_valid(manifest)
+                        if not catalog_valid or not release_valid:
+                            sources = " and ".join(source for source, valid in (
+                                ("Catalog", catalog_valid), ("release", release_valid)) if not valid)
+                            rows.append(f"| Release `manifest_version` | ❌ | {sources} `plugin.json` "
+                                        "must use a non-negative integer for `manifest_version` when specified |")
+                            failed = True
+                        elif raw.get("manifest_version", 0) != manifest.get("manifest_version", 0):
+                            rows.append("| Release `manifest_version` | ❌ | Catalog and release "
+                                        "`plugin.json` must have the same `manifest_version` (default 0) |")
+                            failed = True
                 else:
                     rows.append(f"| Release artifact | ❌ | Could not reach `{resolved_url}` "
                                 f"(HTTP `{code}`) — ensure the release exists |")

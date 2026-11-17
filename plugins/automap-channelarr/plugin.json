@@ -1,6 +1,6 @@
 {
   "name": "Automap Channelarr",
-  "version": "0.2.0",
+  "version": "0.4.2",
   "description": "Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper.",
   "author": "Megamannen",
   "license": "Artistic-2.0",
