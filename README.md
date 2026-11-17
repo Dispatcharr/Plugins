@@ -431,13 +431,13 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1340492560220684331/1509200002407465001) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/swvn-dispatch/dispatcharr-multiview)
 
-![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.27.0-brightgreen?style=flat-square)
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
 - [Latest Release (`0.6.0`)](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.6.0/multiview-0.6.0.zip)
 - [All Versions (11 available)](./metadata/multiview)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`bc3e291`](https://github.com/Dispatcharr/Plugins/commit/bc3e291d1fbacd3f5e72c35bfeb1b31d849136d9)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`fef6574`](https://github.com/Dispatcharr/Plugins/commit/fef6574a5a30ed832d87bd93ac8dd87965a32456)
 
 ---
 
@@ -779,4 +779,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 17 2026, 20:57 UTC*
+*Last updated: Nov 17 2026, 21:02 UTC*

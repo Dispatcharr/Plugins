@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T20:57:13Z",
+  "generated_at": "2026-11-17T21:02:30Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -124,7 +124,7 @@
         "author": "PilaScat",
         "license": "MIT",
         "last_updated": "2026-11-17T19:41:30Z",
-        "download_count": 1074,
+        "download_count": 1075,
         "latest_version": "0.8.0",
         "latest_changelog": "569",
         "latest_md5": "ba3ba719bdafb211dd4dcbd5196b94f7",
@@ -258,7 +258,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-07T15:21:00Z",
-        "download_count": 1887,
+        "download_count": 1888,
         "latest_version": "1.26.3111512",
         "latest_changelog": "529",
         "latest_md5": "1b53a374f78b44e87282ef3f2a127918",
@@ -359,14 +359,14 @@
         "author": "sethwv",
         "license": "MIT",
         "last_updated": "2026-11-06T16:17:24Z",
-        "download_count": 1709,
+        "download_count": 1707,
         "latest_version": "0.6.0",
         "latest_changelog": "525",
         "latest_md5": "63c20bf003dee34a04d9ceba006bb3b1",
         "latest_sha256": "1be4fe1d79beae25c5d5d4f5c1b18c354ab045e82cdd6a87f6b713af46e600ff",
         "latest_url": "multiview-0.6.0/multiview-0.6.0.zip",
         "latest_size": 383,
-        "min_dispatcharr_version": "v0.27.0"
+        "min_dispatcharr_version": "v0.34.0"
       },
       {
         "slug": "newsflasharr",
@@ -540,7 +540,7 @@
         "author": "jstevenscl",
         "license": "MIT",
         "last_updated": "2026-11-17T19:46:20Z",
-        "download_count": 494,
+        "download_count": 495,
         "latest_version": "0.6.0",
         "latest_md5": "b2f51f0fef6434bf36df22caa88502fe",
         "latest_sha256": "9039dbb87f55ccd181f6a1d53eccec4b4d9bcf573c84b2594259cbbf2515c2b7",
@@ -665,5 +665,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavy/rwAKCRB+wDprTCI0\nzscOAP9c8V8mBmvL9j3RNbIAq8Ixf/VhMZIfwmLKzW/6FgDIpQEAtpG70CEC2bvV\naoWOyxFoHwDN8C4pYqPfiq8bYUXPAgA=\n=C0VE\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavzA7AAKCRB+wDprTCI0\nzjBfAPsFlN6DqfduSCsj9edPN4jBIoLrCbf7v9Yxzjb23BztUwD/Tr+s7Jl3JOdI\nz6SsjnxybPk2MOjHI/zPkA9hpRczSwo=\n=Hxew\n-----END PGP SIGNATURE-----"
 }
