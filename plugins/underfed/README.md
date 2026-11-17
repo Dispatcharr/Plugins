@@ -15,7 +15,7 @@ full rate, and the corrupt-packet loops that make reservoarr reconnect again and
 
 ## Requirements
 
-- Dispatcharr with the plugin system (the Plugins page)
+- Dispatcharr 0.34.0 or later. On older versions the Plugin Hub keeps offering 0.9.2
 - [reservoarr](https://github.com/brko7/reservoarr) as the stream profile, which writes the
   telemetry this plugin reads; the missing picture or sound rule needs the `vholes=` and
   `aholes=` fields, proposed to reservoarr for 6.3.9 and not in a release yet
@@ -25,6 +25,9 @@ full rate, and the corrupt-packet loops that make reservoarr reconnect again and
 
 From the Plugin Hub, or by unzipping the release into `/data/plugins`, which creates the
 `underfed` folder, and pressing refresh on the Plugins page. Enable the plugin, fill in the API key, press **Apply**.
+Dispatcharr first asks you to approve what the plugin does: a background service, a process of
+its own and HTTP calls. Declining disables it. Once applied, the watcher runs whenever
+Dispatcharr does: it comes back by itself within about half a minute of a restart or an update.
 
 **Leave Observe only on for the first evening.** It records what it would have switched and
 changes nothing. Read the journal under Check status, then turn it off.
@@ -58,7 +61,6 @@ changes nothing. Read the journal under Check status, then turn it off.
 | Apply settings | Starts the watcher, or restarts it with the new settings. Saving a setting changes nothing until Apply runs |
 | Check status | Whether the watcher is running, and the journal of what it switched, skipped and failed |
 | Replay the log | Runs the current thresholds over the whole log and reports how many times each source would have triggered. Nothing is touched, so it is the safe way to try a threshold before it goes live. It counts triggers, not switches: viewers, exclusions, the slate and the hourly limit are not in the log |
-| Restart watcher | Starts it again if it is down, with the settings of the last Apply and the API key as saved now. Also runs by itself when a channel starts, at most once a minute |
 | Stop watcher | Stops it. Channels keep whatever source they are on |
 
 ## How it works
