@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg",
   "author": "sethwv",
-  "version": "0.6.0-dev-776ff7d4",
+  "version": "0.6.0-dev-21b05b42",
   "min_dispatcharr_version": "v0.34.0",
   "capabilities": [
     "background_tasks",
