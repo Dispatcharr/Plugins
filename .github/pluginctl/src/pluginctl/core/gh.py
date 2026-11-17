@@ -227,6 +227,21 @@ def pr_merge_squash(pr: str, repo: str, delete_branch: bool = False) -> int:
                  f"--delete-branch={str(delete_branch).lower()}"]).returncode
 
 
+def issue_comments(repo: str, number: str) -> Optional[list[dict]]:
+    proc = _run(["api", "--paginate", "--slurp", f"repos/{repo}/issues/{number}/comments?per_page=100"])
+    if proc.returncode != 0:
+        return None
+    pages = loads(proc.stdout)
+    if not isinstance(pages, list) or not all(isinstance(page, list) for page in pages):
+        return None
+    return [comment for page in pages for comment in page if isinstance(comment, dict)]
+
+
+def update_issue_comment(repo: str, comment_id: str, body: str) -> bool:
+    return _run(["api", "--method", "PATCH", f"repos/{repo}/issues/comments/{comment_id}",
+                 "-f", f"body={body}"]).returncode == 0
+
+
 def issue_comment(issue: str, repo: str, body: str) -> int:
     return _run(["issue", "comment", str(issue), "--repo", repo, "--body", body]).returncode
 

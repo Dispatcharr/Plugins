@@ -393,6 +393,9 @@ jobs:
           CODEQL_SUPPRESSED: ${{ needs.codeql-analyze.outputs.codeql_suppressed }}
           CODEQL_SANDBOX_BYPASS: ${{ needs.codeql-analyze.outputs.codeql_sandbox_bypass }}
           CODEQL_CAPABILITY_CONTRACT: ${{ needs.codeql-analyze.outputs.codeql_capability_contract }}
+          CODEQL_SANDBOX_DETECTED: ${{ needs.codeql-analyze.outputs.codeql_sandbox_bypass_detected }}
+          CODEQL_CAPABILITY_DETECTED: ${{ needs.codeql-analyze.outputs.codeql_capability_contract_detected }}
+          HAS_NEW_PLUGIN: ${{ needs.detect-changes.outputs.has_new_plugin }}
           CODEQL_UNSCANNED_LANGS: ${{ needs.codeql-analyze.outputs.codeql_unscanned_langs }}
           CLAMAV_RESULT: ${{ needs.clamav-scan.outputs.clamav_status }}
           CLAMAV_INFECTED: ${{ needs.clamav-scan.outputs.clamav_infected }}

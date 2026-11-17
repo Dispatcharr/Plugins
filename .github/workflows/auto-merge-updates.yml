@@ -67,6 +67,7 @@ jobs:
           AUTO_MERGE_RATE_WINDOW_HOURS: ${{ vars.AUTO_MERGE_RATE_WINDOW_HOURS || '' }}
           AUTO_MERGE_ENABLED: ${{ vars.AUTO_MERGE_UPDATES == 'true' }}
           USE_APP: ${{ steps.token.outputs.use_app }}
+          BOT_LOGIN: ${{ steps.token.outputs.bot_login }}
         run: |
           if [[ "$AUTO_MERGE_ENABLED" != "true" ]]; then
             python -m pluginctl automerge --head-sha "$HEAD_SHA" \

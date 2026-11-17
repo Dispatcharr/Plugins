@@ -72,6 +72,17 @@ def test_discord_payload_uses_components_v2_and_optional_logo():
     assert section["accessory"]["type"] == 11
 
 
+def test_review_discord_card_includes_plugin_and_reason():
+    payload = webhooks.discord_payload("pr.review_required", {
+        "pr": "573", "plugins": ["epg-and-sports-editor"], "author": "alice",
+        "reason": "PR not cleanly mergeable (mergeable=UNKNOWN)",
+    }, "owner/repo")
+    text = json.dumps(payload)
+    assert "epg-and-sports-editor" in text
+    assert "mergeable=UNKNOWN" in text
+    assert "owner/repo/pull/573" in text
+
+
 def test_discord_routes_and_wildcard_delivery():
     captured = []
     class _Resp:

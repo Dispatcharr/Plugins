@@ -11,7 +11,9 @@ assumes it is invoked only in that case.
 from __future__ import annotations
 
 import json
+import math
 import os
+import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
@@ -103,19 +105,37 @@ def rate_limits_from_env(env: dict[str, str] | None = None) -> tuple[RateLimits 
 
 
 def rate_limit_decision(author: str, plugins: list[str], history: list[dict],
-                        files_by_pr: dict[str, list[str]], limits: RateLimits) -> LabelDecision:
+                        files_by_pr: dict[str, list[str]], limits: RateLimits,
+                        now: datetime | None = None) -> LabelDecision:
+    def reset_text(matches: list[dict], limit: int) -> str:
+        try:
+            times = sorted(datetime.fromisoformat(pr["mergedAt"].replace("Z", "+00:00"))
+                           for pr in matches)
+            reset = times[len(times) - limit] + timedelta(hours=limits.window_hours)
+            minutes = max(1, math.ceil((reset - (now or datetime.now(timezone.utc))).total_seconds() / 60))
+            if minutes < 60:
+                return f" At the time of this check, it lifts in approximately {minutes} minute{'s' if minutes != 1 else ''}."
+            hours = math.ceil(minutes / 60)
+            return f" At the time of this check, it lifts in approximately {hours} hour{'s' if hours != 1 else ''}."
+        except (KeyError, TypeError, ValueError):
+            return " The reset time could not be determined."
+
+    reasons = []
     if limits.author > 0:
-        author_count = sum(pr.get("author", {}).get("login", "").lower() == author.lower()
-                           for pr in history)
-        if author_count >= limits.author:
-            return LabelDecision(False, f"Author '{author}' reached the {limits.author} auto-merge limit")
+        matches = [pr for pr in history if pr.get("author", {}).get("login", "").lower() == author.lower()]
+        if len(matches) >= limits.author:
+            reasons.append(f"Author '{author}' reached the {limits.author} author auto-merge limit."
+                           + reset_text(matches, limits.author))
     if limits.plugin > 0:
         for plugin in plugins:
             prefix = f"plugins/{plugin}/"
-            count = sum(any(path.startswith(prefix) for path in files_by_pr.get(str(pr.get("number")), []))
-                        for pr in history)
-            if count >= limits.plugin:
-                return LabelDecision(False, f"Plugin '{plugin}' reached the {limits.plugin} auto-merge limit")
+            matches = [pr for pr in history if any(path.startswith(prefix)
+                       for path in files_by_pr.get(str(pr.get("number")), []))]
+            if len(matches) >= limits.plugin:
+                reasons.append(f"Plugin '{plugin}' reached the {limits.plugin} plugin auto-merge limit."
+                               + reset_text(matches, limits.plugin))
+    if reasons:
+        return LabelDecision(False, " ".join(reasons))
     return LabelDecision(True)
 
 
@@ -139,6 +159,11 @@ def run(head_sha: str, disabled_reason: str = "") -> int:
 
     info = gh.pr_view_json(pr_number, "author,labels,mergeable,mergeStateStatus", repo=repo)
     data = gh.loads(info) or {}
+    for _ in range(3):
+        if data.get("mergeable") != "UNKNOWN":
+            break
+        time.sleep(2)
+        data = gh.loads(gh.pr_view_json(pr_number, "author,labels,mergeable,mergeStateStatus", repo=repo)) or {}
     labels = [l.get("name") for l in (data.get("labels") or [])]
     mergeable = data.get("mergeable") or ""
     actions.log(f"Labels: {','.join(labels)}")
@@ -147,8 +172,11 @@ def run(head_sha: str, disabled_reason: str = "") -> int:
     decision = evaluate_labels(labels, mergeable)
     if not decision.ok:
         actions.notice(f"{decision.reason} - skipping.")
+        paths = gh.pr_files(pr_number, repo) or []
+        plugins = sorted({parts[1] for path in paths if len(parts := path.split("/")) >= 3
+                          and parts[0] == "plugins"})
         _request_manual_review(pr_number, author=(data.get("author") or {}).get("login", ""),
-                               plugins=[], labels=labels, reason=decision.reason, repo=repo)
+                               plugins=plugins, labels=labels, reason=decision.reason, repo=repo)
         return 0
 
     plugins = reverify_is_pure_update(pr_number)
@@ -175,7 +203,7 @@ def run(head_sha: str, disabled_reason: str = "") -> int:
         _request_manual_review(pr_number, author=author, plugins=plugins, labels=labels, reason=error, repo=repo)
         return 0
     cutoff = (datetime.now(timezone.utc) - timedelta(hours=limits.window_hours)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    history_json = gh.pr_list(repo, "merged", "number,author", search=f'label:"Auto Merged" merged:>={cutoff}',
+    history_json = gh.pr_list(repo, "merged", "number,author,mergedAt", search=f'label:"Auto Merged" merged:>={cutoff}',
                               limit=100)
     history = gh.loads(history_json)
     if not isinstance(history, list):
@@ -206,10 +234,19 @@ def run(head_sha: str, disabled_reason: str = "") -> int:
                                reason="Could not ensure automation labels.", repo=repo)
         return 0
     if gh.pr_merge_squash(pr_number, repo, delete_branch=False) != 0:
-        actions.notice(f"Could not merge PR #{pr_number} - skipping.")
-        _request_manual_review(pr_number, author=author, plugins=plugins, labels=labels,
-                               reason="GitHub could not complete the automatic merge.", repo=repo)
-        return 0
+        state = gh.loads(gh.pr_view_json(pr_number, "state,mergedBy,headRefOid", repo=repo)) or {}
+        if state.get("state") == "MERGED":
+            bot = os.environ.get("BOT_LOGIN", "")
+            merged_by = (state.get("mergedBy") or {}).get("login", "")
+            if not bot or merged_by.lower() != bot.lower() or state.get("headRefOid") != head_sha:
+                actions.notice(f"PR #{pr_number} was merged, but not confirmed as this bot's merge - skipping.")
+                return 0
+            actions.warning(f"Merge command failed, but PR #{pr_number} was merged by the bot.")
+        else:
+            actions.notice(f"Could not merge PR #{pr_number} - skipping.")
+            _request_manual_review(pr_number, author=author, plugins=plugins, labels=labels,
+                                   reason="GitHub could not complete the automatic merge.", repo=repo)
+            return 0
     if gh.pr_edit_label(pr_number, "Auto Merged", True) != 0:
         actions.error(f"PR #{pr_number} merged but could not receive the Auto Merged label.")
         return 1
@@ -219,6 +256,7 @@ def run(head_sha: str, disabled_reason: str = "") -> int:
     payload.update({"author": author, "pr_url": f"https://github.com/{repo}/pull/{pr_number}"})
     payload.update(_logo_data(repo, plugins))
     payload.update(_plugin_card_data(plugins, repo))
+    payload["author"] = author
     webhooks.emit("pr.auto_merged", payload)
     webhooks.emit_discord("pr.auto_merged", payload, repository=repo)
     return 0
@@ -232,12 +270,16 @@ def _request_manual_review(pr_number: str, *, author: str, plugins: list[str], l
     if gh.pr_edit_label(pr_number, "Manual Review Required", True) != 0:
         actions.warning(f"Could not add Manual Review Required to PR #{pr_number}.")
         return
+    from ..validate import report
+    if not report.append_auto_merge_reason(pr_number, repo, os.environ.get("BOT_LOGIN", ""), reason):
+        actions.warning(f"Could not update the validation report for PR #{pr_number}.")
     from . import webhooks
     reason_code = "new_plugin" if "New Plugin" in labels else "auto_merge_skipped"
     payload = {"pr": pr_number, "author": author, "plugins": plugins, "labels": labels + ["Manual Review Required"],
                "reason": reason, "reason_code": reason_code, "pr_url": f"https://github.com/{repo}/pull/{pr_number}"}
     payload.update(_logo_data(repo, plugins))
     payload.update(_plugin_card_data(plugins, repo))
+    payload["author"] = author
     webhooks.emit("pr.review_required", payload)
     webhooks.emit_discord("pr.review_required", payload, repository=repo)
 
