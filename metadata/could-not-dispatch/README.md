@@ -2,7 +2,7 @@
 
 # Could Not Dispatch
 
-**Version:** `0.7.5` | **Author:** PilaScat | **Last Updated:** Nov 09 2026, 13:27 UTC
+**Version:** `0.8.0` | **Author:** PilaScat | **Last Updated:** Nov 17 2026, 19:41 UTC
 
 Plays a looping image or video when every stream on a channel has failed, so viewers see a message instead of an error. It can show a second card when the provider is full, list the channels in use, and send channels back to their stream.
 
@@ -12,20 +12,21 @@ Plays a looping image or video when every stream on a channel has failed, so vie
 
 ### Latest Release
 
-- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip)
-- **Built:** Nov 09 2026, 13:28 UTC
-- **Source Commit:** [`ae0d954`](https://github.com/Dispatcharr/Plugins/commit/ae0d9547db04897d15f60bb617932f892d02b718)
+- **Download:** [`could-not-dispatch-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.8.0/could-not-dispatch-0.8.0.zip)
+- **Built:** Nov 17 2026, 19:41 UTC
+- **Source Commit:** [`ef58756`](https://github.com/Dispatcharr/Plugins/commit/ef58756d8de3605ffaeb134d0e1af0e3c75eb9a6)
 
 **Checksums:**
 ```
-MD5:    e7183971f9f7eb4a8f1560b566a4ff5a
-SHA256: 7d8569a8cf69caeccace92019e3965062b060bef8769aabea06f25e053947b6c
+MD5:    ba3ba719bdafb211dd4dcbd5196b94f7
+SHA256: bf2fad0454e17be56cf88ad8ba54bfde0994344a2fb6d2050f8c1e4d5e5e33ec
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.8.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.8.0/could-not-dispatch-0.8.0.zip) | Nov 17 2026, 19:41 UTC | [`ef58756`](https://github.com/Dispatcharr/Plugins/commit/ef58756d8de3605ffaeb134d0e1af0e3c75eb9a6) | ba3ba719bdafb211dd4dcbd5196b94f7 | bf2fad0454e17be56cf88ad8ba54bfde0994344a2fb6d2050f8c1e4d5e5e33ec |
 | `0.7.5` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip) | Nov 09 2026, 13:28 UTC | [`ae0d954`](https://github.com/Dispatcharr/Plugins/commit/ae0d9547db04897d15f60bb617932f892d02b718) | e7183971f9f7eb4a8f1560b566a4ff5a | 7d8569a8cf69caeccace92019e3965062b060bef8769aabea06f25e053947b6c |
 | `0.7.4` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.4/could-not-dispatch-0.7.4.zip) | Nov 09 2026, 12:09 UTC | [`deb9e18`](https://github.com/Dispatcharr/Plugins/commit/deb9e180ac36ea95ed127c3fb184ceeef191b57e) | 018dfbd8f77c3e519c548204f2cdb930 | d13d10ca1c6a41d57824636a1b78bba31b1e97d3ca38dcba0fc9725f9f3508ba |
 | `0.7.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.7.3/could-not-dispatch-0.7.3.zip) | Nov 05 2026, 13:07 UTC | [`0c2323d`](https://github.com/Dispatcharr/Plugins/commit/0c2323d196d9131cc422a454ae0532ff0e708a64) | d918ce2fd117daac138bb1531b6d977e | d0a4d1643c491cf2ae2db45521ca10a925e28788a3e2a09559224d8c326d19c8 |
@@ -35,7 +36,6 @@ SHA256: 7d8569a8cf69caeccace92019e3965062b060bef8769aabea06f25e053947b6c
 | `0.6.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.6.0/could-not-dispatch-0.6.0.zip) | Oct 25 2026, 00:11 UTC | [`a137c8a`](https://github.com/Dispatcharr/Plugins/commit/a137c8a20c712352f11477ed6251fdfdbd025bee) | c1834c471dc81cb08f40e710a486af24 | 097a6a6337a556bea054c63608267b3f0d17ec7e3bfea88dbc0088f43de2d89b |
 | `0.5.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.1/could-not-dispatch-0.5.1.zip) | Oct 24 2026, 18:47 UTC | [`6a8a793`](https://github.com/Dispatcharr/Plugins/commit/6a8a793c03cc8709e3a02276d99494edd7739650) | 57207ad2fef6e6fc6371177179a9f674 | ab87ea90671fa95d70c547d2d035f60d2b3489d04fbb248131803ef525b9a0a4 |
 | `0.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.5.0/could-not-dispatch-0.5.0.zip) | Oct 06 2026, 23:20 UTC | [`8e2b381`](https://github.com/Dispatcharr/Plugins/commit/8e2b381c3088d1899c334452f36bcb201678c319) | 82e6b5ae22f415dbf37b5a2204950451 | 59995d4a526216d2000b2dbe36a8dbb64aa0fb8b702685ad4c1844388e1b0ec4 |
-| `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/could-not-dispatch-0.4.0/could-not-dispatch-0.4.0.zip) | Sep 14 2026, 14:46 UTC | [`3ee82eb`](https://github.com/Dispatcharr/Plugins/commit/3ee82eb1a2a2abf598e570d617b944149cc019ad) | 534e882eaa7b4ac919695c672eac80d5 | f96552647275488771c74526dfb0780f1ce82e5065a0494dbfb694636bf97d29 |
 
 ---
 
@@ -61,12 +61,14 @@ The message is part of your picture. The plugin writes only the channels in use.
 
 ## Requirements
 
-Dispatcharr with the Plugins page, and `ffmpeg` and `ffprobe`, already in its image.
+Dispatcharr 0.34.0 or later (older versions keep 0.7.5), and `ffmpeg` and `ffprobe`, already
+in its image.
 
 ## Install
 
 From the Plugin Hub, or unzip the release into `/data/plugins` and press refresh on the
-Plugins page. Enable the plugin, fill in the settings, press **Apply**.
+Plugins page. Enable the plugin and approve what it asks for, fill in the settings, press
+**Apply**. The card then comes back by itself after a restart or an update.
 
 ## Settings
 
@@ -92,7 +94,6 @@ Plugins page. Enable the plugin, fill in the settings, press **Apply**.
 | Apply settings | Starts the card and adds it, last, to every channel not excluded |
 | Check status | Says whether the card runs and how many channels carry it |
 | Cover new channels | Covers channels that lack it. Runs after every M3U refresh |
-| Restart fallback | Restarts the card if it is down. Runs when a channel starts |
 | Remove fallback | Detaches the card and deletes its streams |
 
 ## What to expect
