@@ -1,6 +1,6 @@
 {
   "name": "Logo Library",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching.",
   "author": "sethwv",
   "license": "MIT",
@@ -31,7 +31,15 @@
       "id": "ignore_skipped",
       "label": "Ignore skipped and failed channels",
       "description": "Add skipped and failed channels from the latest Auto Match to the ignore list.",
-      "button_label": "Ignore"
+      "button_label": "Ignore",
+      "button_color": "violet"
+    },
+    {
+      "id": "map_skipped",
+      "label": "Create manual mappings for skipped and failed channels",
+      "description": "Add blank manual mapping rows for skipped and failed channels from the latest Auto Match.",
+      "button_label": "Create",
+      "button_color": "violet"
     },
     {
       "id": "update_catalog",
