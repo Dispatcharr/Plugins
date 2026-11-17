@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T01:32:21Z",
+  "generated_at": "2026-11-17T15:47:20Z",
   "manifest": {
     "slug": "audio-buffer-tuner",
     "name": "Audio Buffer Tuner",
@@ -15,26 +15,41 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1549510259775635536",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-09-16T13:11:15-04:00",
-    "download_count": 150,
+    "last_updated": "2026-11-17T15:46:36Z",
+    "download_count": 147,
     "latest": {
-      "version": "0.3.5",
-      "commit_sha": "3ceeddd53b4d49d5d14584768f69121e8094d6df",
-      "commit_sha_short": "3ceeddd",
-      "changelog": "308",
-      "build_timestamp": "2026-09-16T17:11:27Z",
-      "last_updated": "2026-09-16T13:11:15-04:00",
-      "checksum_md5": "5cf6208253d8f12c5f0d473211e21728",
-      "checksum_sha256": "18b2f649282b8199290a10654868f194c4a3cf1cf02da86ed9b38e7c5115076e",
+      "version": "0.4.0",
+      "commit_sha": "dd11247915891f5035b8479bcc4127ca6a9ec087",
+      "commit_sha_short": "dd11247",
+      "changelog": "566",
+      "build_timestamp": "2026-11-17T15:46:54Z",
+      "last_updated": "2026-11-17T15:46:36Z",
+      "checksum_md5": "748e7b438d6feeb01d27f70e7e6c3443",
+      "checksum_sha256": "f16c56e0eb832ea6ce46eb7e98bbfbc863e211a567034053f547020f8438051e",
       "min_dispatcharr_version": "v0.31.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v0.3.5/audio-buffer-tuner.zip",
-      "latest_url": "audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip",
-      "url": "audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip",
+      "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v0.4.0/audio-buffer-tuner.zip",
+      "latest_url": "audio-buffer-tuner-0.4.0/audio-buffer-tuner-0.4.0.zip",
+      "url": "audio-buffer-tuner-0.4.0/audio-buffer-tuner-0.4.0.zip",
       "size": 95,
-      "download_count": 146
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "0.4.0",
+        "commit_sha": "dd11247915891f5035b8479bcc4127ca6a9ec087",
+        "commit_sha_short": "dd11247",
+        "changelog": "566",
+        "build_timestamp": "2026-11-17T15:46:54Z",
+        "last_updated": "2026-11-17T15:46:36Z",
+        "checksum_md5": "748e7b438d6feeb01d27f70e7e6c3443",
+        "checksum_sha256": "f16c56e0eb832ea6ce46eb7e98bbfbc863e211a567034053f547020f8438051e",
+        "min_dispatcharr_version": "v0.31.0",
+        "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v0.4.0/audio-buffer-tuner.zip",
+        "url": "audio-buffer-tuner-0.4.0/audio-buffer-tuner-0.4.0.zip",
+        "size": 95,
+        "download_count": 0
+      },
       {
         "version": "0.3.5",
         "commit_sha": "3ceeddd53b4d49d5d14584768f69121e8094d6df",
@@ -48,25 +63,9 @@
         "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v0.3.5/audio-buffer-tuner.zip",
         "url": "audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip",
         "size": 95,
-        "download_count": 146
-      },
-      {
-        "version": "0.3.5-beta.1",
-        "prerelease": true,
-        "commit_sha": "1e2c810e9854c54ef3ceb455ca47b40b7088ed99",
-        "commit_sha_short": "1e2c810",
-        "changelog": "499",
-        "build_timestamp": "2026-10-28T20:46:59Z",
-        "last_updated": "2026-10-28T20:37:08Z",
-        "checksum_md5": "da4b0d67748fbe814899063e1d1b9268",
-        "checksum_sha256": "1962fcc9b1d48a9106ffb6576cf47d7721776b47527bb9e87fae704becc9d904",
-        "min_dispatcharr_version": "v0.31.0",
-        "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v0.3.5-beta.1/audio-buffer-tuner.zip",
-        "url": "audio-buffer-tuner-0.3.5-beta.1/audio-buffer-tuner-0.3.5-beta.1.zip",
-        "size": 97,
-        "download_count": 4
+        "download_count": 147
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavuuqQAKCRB+wDprTCI0\nzrx5AP9kZwnbHZv/WmJemy1CiMw26lvJ3x7grZ2+1nibr3W9eAEAuF0p/HUc6C9c\netjkyr+69RWeNxOE4NrgMK7b7w4zIAM=\n=4uzr\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavx3DQAKCRB+wDprTCI0\nziceAQDSnQJlVhMHDVEfSjrb4CAy3Ii3hHl0+y+88p6nhkTNuQD+NWCCef669F3n\nRk676TsRno14SXwbsScFcrCa1kIAawA=\n=Fp7H\n-----END PGP SIGNATURE-----"
 }

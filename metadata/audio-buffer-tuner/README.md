@@ -2,7 +2,7 @@
 
 # Audio Buffer Tuner
 
-**Version:** `0.3.5` | **Author:** CtznSniiips | **Last Updated:** Sep 16 2026, 17:11 UTC
+**Version:** `0.4.0` | **Author:** CtznSniiips | **Last Updated:** Nov 17 2026, 15:46 UTC
 
 Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups.
 
@@ -14,22 +14,22 @@ Speeds up channel startup for low-bitrate (usually audio only) streams by loweri
 
 ### Latest Release
 
-- **Download:** [`audio-buffer-tuner-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip)
-- **Built:** Sep 16 2026, 17:11 UTC
-- **Source Commit:** [`3ceeddd`](https://github.com/Dispatcharr/Plugins/commit/3ceeddd53b4d49d5d14584768f69121e8094d6df)
+- **Download:** [`audio-buffer-tuner-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.4.0/audio-buffer-tuner-0.4.0.zip)
+- **Built:** Nov 17 2026, 15:46 UTC
+- **Source Commit:** [`dd11247`](https://github.com/Dispatcharr/Plugins/commit/dd11247915891f5035b8479bcc4127ca6a9ec087)
 
 **Checksums:**
 ```
-MD5:    5cf6208253d8f12c5f0d473211e21728
-SHA256: 18b2f649282b8199290a10654868f194c4a3cf1cf02da86ed9b38e7c5115076e
+MD5:    748e7b438d6feeb01d27f70e7e6c3443
+SHA256: f16c56e0eb832ea6ce46eb7e98bbfbc863e211a567034053f547020f8438051e
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.4.0/audio-buffer-tuner-0.4.0.zip) | Nov 17 2026, 15:46 UTC | [`dd11247`](https://github.com/Dispatcharr/Plugins/commit/dd11247915891f5035b8479bcc4127ca6a9ec087) | 748e7b438d6feeb01d27f70e7e6c3443 | f16c56e0eb832ea6ce46eb7e98bbfbc863e211a567034053f547020f8438051e |
 | `0.3.5` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.3.5/audio-buffer-tuner-0.3.5.zip) | Sep 16 2026, 17:11 UTC | [`3ceeddd`](https://github.com/Dispatcharr/Plugins/commit/3ceeddd53b4d49d5d14584768f69121e8094d6df) | 5cf6208253d8f12c5f0d473211e21728 | 18b2f649282b8199290a10654868f194c4a3cf1cf02da86ed9b38e7c5115076e |
-| `0.3.5-beta.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.3.5-beta.1/audio-buffer-tuner-0.3.5-beta.1.zip) | Oct 28 2026, 20:46 UTC | [`1e2c810`](https://github.com/Dispatcharr/Plugins/commit/1e2c810e9854c54ef3ceb455ca47b40b7088ed99) | da4b0d67748fbe814899063e1d1b9268 | 1962fcc9b1d48a9106ffb6576cf47d7721776b47527bb9e87fae704becc9d904 |
 
 ---
 
