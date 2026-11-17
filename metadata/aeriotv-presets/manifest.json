@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T01:32:21Z",
+  "generated_at": "2026-11-17T13:20:05Z",
   "manifest": {
     "slug": "aeriotv-presets",
     "name": "AerioTV Presets",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-13T20:03:24Z",
-    "download_count": 32,
+    "download_count": 41,
     "latest": {
       "version": "0.0.8",
       "commit_sha": "221dcd559adc08adc8019630368a45cbcbfdf7e4",
@@ -28,7 +28,7 @@
       "latest_url": "aeriotv-presets-0.0.8/aeriotv-presets-0.0.8.zip",
       "url": "aeriotv-presets-0.0.8/aeriotv-presets-0.0.8.zip",
       "size": 71,
-      "download_count": 9
+      "download_count": 18
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/jonzey231/AerioTVPresets/releases/download/v0.0.8/aeriotv-presets-plugin-0.0.8.zip",
         "url": "aeriotv-presets-0.0.8/aeriotv-presets-0.0.8.zip",
         "size": 71,
-        "download_count": 9
+        "download_count": 18
       },
       {
         "version": "0.0.7",
@@ -138,5 +138,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavuuqAAKCRB+wDprTCI0\nzt+0AQD83nv3uR9dH7GxXwsuVfoZ7huLyr1zvnLqRcEi8uwHaQEAnotkAaNS0K+r\nA6frTRyV+7miN095m/vROvPWKQhOjA4=\n=I6nn\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavxUiAAKCRB+wDprTCI0\nziKtAQCWs5lEvKycdKdVWa5+lOmsHUO9so68N1heDL3HSQwamAD8CwnHmBGKNxxK\nMAW8Mdsmr/ol0TNEnVZUfTEUA42Ljgc=\n=aRCH\n-----END PGP SIGNATURE-----"
 }
