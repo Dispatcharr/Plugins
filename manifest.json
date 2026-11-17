@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T19:42:14Z",
+  "generated_at": "2026-11-17T19:47:13Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -73,7 +73,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-10-24T15:39:07Z",
-        "download_count": 4419,
+        "download_count": 4420,
         "latest_version": "1.26.2971911",
         "latest_changelog": "477",
         "latest_md5": "77211ee6ccd7ab69867fdea305bf4636",
@@ -124,7 +124,7 @@
         "author": "PilaScat",
         "license": "MIT",
         "last_updated": "2026-11-17T19:41:30Z",
-        "download_count": 1069,
+        "download_count": 1070,
         "latest_version": "0.8.0",
         "latest_changelog": "569",
         "latest_md5": "ba3ba719bdafb211dd4dcbd5196b94f7",
@@ -290,7 +290,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-08T13:17:51Z",
-        "download_count": 5580,
+        "download_count": 5581,
         "latest_version": "1.26.3121307",
         "latest_changelog": "531",
         "latest_md5": "4c78b0cb51428d968ca74dd84eaa3e9a",
@@ -391,7 +391,7 @@
         "author": "write-erase",
         "license": "MIT",
         "last_updated": "2026-11-14T21:09:39Z",
-        "download_count": 351,
+        "download_count": 352,
         "latest_version": "1.3.0",
         "latest_changelog": "555",
         "latest_md5": "375776049f0fe8b893eaf581796b94cf",
@@ -439,7 +439,7 @@
         "author": "brko7",
         "license": "MIT",
         "last_updated": "2026-11-08T02:28:52Z",
-        "download_count": 1617,
+        "download_count": 1618,
         "latest_version": "6.8.0",
         "latest_changelog": "530",
         "latest_md5": "df146465205796e0cbdf00556513a577",
@@ -456,7 +456,7 @@
         "author": "Tw1zT3d2four7",
         "license": "MIT",
         "last_updated": "2026-10-09T14:25:33Z",
-        "download_count": 271,
+        "download_count": 272,
         "latest_version": "1.5.7",
         "latest_changelog": "402",
         "latest_md5": "b80879859cbc0098a1e6088e75a98574",
@@ -489,7 +489,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-01T21:37:32Z",
-        "download_count": 2818,
+        "download_count": 2819,
         "latest_version": "1.26.3052124",
         "latest_changelog": "511",
         "latest_md5": "ac97f20d0188c39426f1ad346af738c4",
@@ -537,14 +537,14 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/ticker/manifest.json",
         "author": "jstevenscl",
         "license": "MIT",
-        "last_updated": "2026-11-16T20:17:07Z",
+        "last_updated": "2026-11-17T19:46:20Z",
         "download_count": 491,
-        "latest_version": "0.5.06",
-        "latest_changelog": "563",
-        "latest_md5": "cf78c96f6d978f246fdf95ac01d152cc",
-        "latest_sha256": "ae8b5fcd0996f63797e57f04821f2f30eba8b1ff1e89bae2ca4b22bdf7ecd84d",
-        "latest_url": "ticker-0.5.06/ticker-0.5.06.zip",
-        "latest_size": 2142
+        "latest_version": "0.6.0",
+        "latest_md5": "b2f51f0fef6434bf36df22caa88502fe",
+        "latest_sha256": "9039dbb87f55ccd181f6a1d53eccec4b4d9bcf573c84b2594259cbbf2515c2b7",
+        "latest_url": "ticker-0.6.0/ticker-0.6.0.zip",
+        "latest_size": 2143,
+        "min_dispatcharr_version": "0.34.0"
       },
       {
         "slug": "twitcharr",
@@ -662,5 +662,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavyuIAAKCRB+wDprTCI0\nzrzCAP9nnlVz52c+nsKf/s9n1fyw1Lp4mcGgtMePjzqwPfNAZgEAk82+UlizXsqX\nmK3vUyKhdbvsfHTN+8FDkgMstypvLw0=\n=cSxS\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavyvSAAKCRB+wDprTCI0\nzmfyAP9b1LjylSbUtxXebA40jUJXsk3J+VZzXfqbrQklyR2uJAEA3Ir1uXpmz1mV\ni/lxER+HR/5AHBlWcK9p60zs1tF7bAU=\n=41WW\n-----END PGP SIGNATURE-----"
 }

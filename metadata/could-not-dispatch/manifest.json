@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T19:42:14Z",
+  "generated_at": "2026-11-17T19:47:13Z",
   "manifest": {
     "slug": "could-not-dispatch",
     "name": "Could Not Dispatch",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-17T19:41:30Z",
-    "download_count": 1069,
+    "download_count": 1070,
     "latest": {
       "version": "0.8.0",
       "commit_sha": "ef58756d8de3605ffaeb134d0e1af0e3c75eb9a6",
@@ -58,7 +58,7 @@
         "source_url": "https://github.com/PilaScat/could-not-dispatch/releases/download/v0.7.5/could-not-dispatch-0.7.5.zip",
         "url": "could-not-dispatch-0.7.5/could-not-dispatch-0.7.5.zip",
         "size": 70,
-        "download_count": 232
+        "download_count": 233
       },
       {
         "version": "0.7.4",
@@ -174,5 +174,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavyuGwAKCRB+wDprTCI0\nzuLyAP4tPWdWMdRZmTV6wJQ7kGjrBAIzZSDkamRDjNOElHXpmQD/bHuUl0yZZfMG\nHszn/z403Z/BoLBFeElelvZSm3gOJAg=\n=muWk\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavyvRgAKCRB+wDprTCI0\nzir8AQDl/iIgqRAVyxouJttqiVx34bVrarg3cKB+IPuNrZQSMgEA1JEVWrzQV3Ds\nOXT8fxrg/JU/b+I2pR6bn8vmpssJogc=\n=6V3X\n-----END PGP SIGNATURE-----"
 }
