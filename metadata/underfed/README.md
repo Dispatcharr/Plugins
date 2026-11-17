@@ -2,7 +2,7 @@
 
 # Underfed
 
-**Version:** `0.9.2` | **Author:** PilaScat | **Last Updated:** Nov 09 2026, 13:16 UTC
+**Version:** `0.10.0` | **Author:** PilaScat | **Last Updated:** Nov 17 2026, 19:51 UTC
 
 Moves a channel off a source that is starving it, drifting its sound, missing whole stretches, looping on corrupt packets or refusing it: to the next source when the stream arrives at a fraction of its bitrate, with its timestamps apart, with holes in its picture or sound or forcing reconnect after reconnect, to the back of the chain when the provider answers 403 or closes the connection without sending a byte.
 
@@ -12,20 +12,21 @@ Moves a channel off a source that is starving it, drifting its sound, missing wh
 
 ### Latest Release
 
-- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.9.2/underfed-0.9.2.zip)
-- **Built:** Nov 09 2026, 13:16 UTC
-- **Source Commit:** [`bc2f7ed`](https://github.com/Dispatcharr/Plugins/commit/bc2f7edaa36a01fee9a2d9c6ebdb5d77db5e4ded)
+- **Download:** [`underfed-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.10.0/underfed-0.10.0.zip)
+- **Built:** Nov 17 2026, 19:52 UTC
+- **Source Commit:** [`79d5fe6`](https://github.com/Dispatcharr/Plugins/commit/79d5fe6ebf7513d439210eba40de51767d9ed52d)
 
 **Checksums:**
 ```
-MD5:    f8e6e30de5a6ab1ecdca324d01ac4339
-SHA256: cf267fde1849cf341930fb6f978e81d824cbd98fbf2f24ed1226562f0838ef36
+MD5:    13fff0c0884e1915aec9a76fe5a584af
+SHA256: 773cb299d8e87290063b54eb45c4d48f515085288f4be05d353cf1e2dd52e3b3
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.10.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.10.0/underfed-0.10.0.zip) | Nov 17 2026, 19:52 UTC | [`79d5fe6`](https://github.com/Dispatcharr/Plugins/commit/79d5fe6ebf7513d439210eba40de51767d9ed52d) | 13fff0c0884e1915aec9a76fe5a584af | 773cb299d8e87290063b54eb45c4d48f515085288f4be05d353cf1e2dd52e3b3 |
 | `0.9.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.9.2/underfed-0.9.2.zip) | Nov 09 2026, 13:16 UTC | [`bc2f7ed`](https://github.com/Dispatcharr/Plugins/commit/bc2f7edaa36a01fee9a2d9c6ebdb5d77db5e4ded) | f8e6e30de5a6ab1ecdca324d01ac4339 | cf267fde1849cf341930fb6f978e81d824cbd98fbf2f24ed1226562f0838ef36 |
 | `0.9.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.9.0/underfed-0.9.0.zip) | Oct 24 2026, 19:52 UTC | [`0cdd425`](https://github.com/Dispatcharr/Plugins/commit/0cdd425ef77581f371a78348c0a827cdcf8ea5a6) | 198c02af1d06237f2a88a680a7e4c22d | a2083f7172109c18faabafed5c163334b46cc7209fc384a652fa1ffdc46d7ee1 |
 | `0.8.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/underfed-0.8.0/underfed-0.8.0.zip) | Oct 12 2026, 14:28 UTC | [`7caef90`](https://github.com/Dispatcharr/Plugins/commit/7caef90467b4318d946777387b150999cc4f35f5) | d5732d4b73981a1acb5732432c92816e | d77ddf45dd5b3a5a8659e771c034f02e11fcd4ba17a8b5a5ac50d46de25af912 |
@@ -62,7 +63,7 @@ full rate, and the corrupt-packet loops that make reservoarr reconnect again and
 
 ## Requirements
 
-- Dispatcharr with the plugin system (the Plugins page)
+- Dispatcharr 0.34.0 or later. On older versions the Plugin Hub keeps offering 0.9.2
 - [reservoarr](https://github.com/brko7/reservoarr) as the stream profile, which writes the
   telemetry this plugin reads; the missing picture or sound rule needs the `vholes=` and
   `aholes=` fields, proposed to reservoarr for 6.3.9 and not in a release yet
@@ -72,6 +73,9 @@ full rate, and the corrupt-packet loops that make reservoarr reconnect again and
 
 From the Plugin Hub, or by unzipping the release into `/data/plugins`, which creates the
 `underfed` folder, and pressing refresh on the Plugins page. Enable the plugin, fill in the API key, press **Apply**.
+Dispatcharr first asks you to approve what the plugin does: a background service, a process of
+its own and HTTP calls. Declining disables it. Once applied, the watcher runs whenever
+Dispatcharr does: it comes back by itself within about half a minute of a restart or an update.
 
 **Leave Observe only on for the first evening.** It records what it would have switched and
 changes nothing. Read the journal under Check status, then turn it off.
@@ -105,7 +109,6 @@ changes nothing. Read the journal under Check status, then turn it off.
 | Apply settings | Starts the watcher, or restarts it with the new settings. Saving a setting changes nothing until Apply runs |
 | Check status | Whether the watcher is running, and the journal of what it switched, skipped and failed |
 | Replay the log | Runs the current thresholds over the whole log and reports how many times each source would have triggered. Nothing is touched, so it is the safe way to try a threshold before it goes live. It counts triggers, not switches: viewers, exclusions, the slate and the hourly limit are not in the log |
-| Restart watcher | Starts it again if it is down, with the settings of the last Apply and the API key as saved now. Also runs by itself when a channel starts, at most once a minute |
 | Stop watcher | Stops it. Channels keep whatever source they are on |
 
 ## How it works
