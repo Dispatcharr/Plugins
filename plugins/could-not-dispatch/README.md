@@ -12,12 +12,14 @@ The message is part of your picture. The plugin writes only the channels in use.
 
 ## Requirements
 
-Dispatcharr with the Plugins page, and `ffmpeg` and `ffprobe`, already in its image.
+Dispatcharr 0.34.0 or later (older versions keep 0.7.5), and `ffmpeg` and `ffprobe`, already
+in its image.
 
 ## Install
 
 From the Plugin Hub, or unzip the release into `/data/plugins` and press refresh on the
-Plugins page. Enable the plugin, fill in the settings, press **Apply**.
+Plugins page. Enable the plugin and approve what it asks for, fill in the settings, press
+**Apply**. The card then comes back by itself after a restart or an update.
 
 ## Settings
 
@@ -43,7 +45,6 @@ Plugins page. Enable the plugin, fill in the settings, press **Apply**.
 | Apply settings | Starts the card and adds it, last, to every channel not excluded |
 | Check status | Says whether the card runs and how many channels carry it |
 | Cover new channels | Covers channels that lack it. Runs after every M3U refresh |
-| Restart fallback | Restarts the card if it is down. Runs when a channel starts |
 | Remove fallback | Detaches the card and deletes its streams |
 
 ## What to expect
