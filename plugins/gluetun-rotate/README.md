@@ -15,8 +15,8 @@ either container.
 
 ## Requirements
 
-- Dispatcharr with the plugin system (the Plugins page), sharing Gluetun's network
-  (`network_mode: container:gluetun` or `service:gluetun`)
+- Dispatcharr 0.34.0 or later. On older versions the Plugin Hub keeps offering 0.5.2
+- Dispatcharr sharing Gluetun's network (`network_mode: container:gluetun` or `service:gluetun`)
 - At least one active Xtream Codes account in Dispatcharr, which is what the plugin asks
 - Gluetun's control server, with a role for this plugin (below)
 - A Dispatcharr API key
@@ -38,6 +38,9 @@ Then install the plugin from the Plugin Hub, or by unzipping the release into
 `/data/plugins`, which creates the `gluetun-rotate` folder, and pressing refresh on the
 Plugins page. Enable it, fill in
 both keys, press **Apply**, and press **Ask** to see what the provider answers right now.
+Dispatcharr first asks you to approve what the plugin does: a background service, a process of
+its own and HTTP calls. Declining disables it. Once applied, the watcher runs whenever
+Dispatcharr does: it comes back by itself within about half a minute of a restart or an update.
 
 ## Settings
 
@@ -55,7 +58,6 @@ both keys, press **Apply**, and press **Ask** to see what the provider answers r
 | Apply settings | Starts the watcher, or restarts it with the new settings |
 | Check status | The current exit address, the last rotation, and the journal |
 | Ask the provider | Asks every account now and reports what each answered. Nothing is moved |
-| Restart watcher | Starts it again if it is down. Also runs by itself when a channel starts, at most once a minute |
 | Stop watcher | Stops it. The tunnel stays on whatever server it is on |
 
 ## How it works
