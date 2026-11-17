@@ -23,6 +23,46 @@ def test_pass_comment_has_marker_and_success():
     assert "This PR modifies **1** plugin(s) and all checks have passed." in c
 
 
+def test_manual_review_summary_includes_validation_reasons():
+    c = report.build_comment(**_base_kwargs(
+        has_new_plugin=True, codeql_result="success", codeql_suppressed="1",
+        codeql_sandbox_detected="2", codeql_capability_detected="1"))
+    assert "<sub>Manual review required:" in c
+    assert "New plugins require maintainer review." in c
+    assert "suppressed findings" in c
+    assert "sandbox-bypass findings" in c
+    assert "capability-contract findings" in c
+    assert "All validation checks passed" in c
+
+
+def test_manual_review_summary_omits_skipped_codeql():
+    c = report.build_comment(**_base_kwargs(
+        codeql_result="skipped", codeql_sandbox_detected="1"))
+    assert "<sub>Manual review required:" not in c
+
+
+def test_auto_merge_review_updates_latest_bot_report(monkeypatch):
+    comments = [
+        {"id": 1, "body": report.MARKER + "\nold", "user": {"login": "bot[bot]"}},
+        {"id": 2, "body": report.MARKER + "\nforged", "user": {"login": "attacker"}},
+        {"id": 3, "body": (report.MARKER + "\nreport\n" + report.REVIEW_FOOTER_MARKER
+                            + "\n<sub>Manual review required:<br>\n• New plugin<br>\n"
+                            + report.AUTO_MERGE_MARKER + "• stale</sub>\n" + report.REVIEW_FOOTER_END),
+         "user": {"login": "bot[bot]"}},
+    ]
+    monkeypatch.setattr(report.gh, "issue_comments", lambda *a: comments)
+    updates = []
+    monkeypatch.setattr(report.gh, "update_issue_comment", lambda *a: updates.append(a) or True)
+    assert report.append_auto_merge_reason("573", "org/repo", "bot[bot]", "Author reached the limit")
+    assert updates[0][1] == "3"
+    assert "Author reached the limit" in updates[0][2]
+    assert "• New plugin" in updates[0][2]
+    assert "• Author reached the limit" in updates[0][2]
+    assert updates[0][2].count("<sub>") == 1
+    assert "stale" not in updates[0][2]
+    assert not report.append_auto_merge_reason("573", "org/repo", "", "reason")
+
+
 def test_fragment_failure_shows_failed():
     c = report.build_comment(**_base_kwargs(fragment_failed=True))
     assert "## ❌ Validation failed" in c

@@ -1,3 +1,6 @@
+import json
+from datetime import datetime, timezone
+
 from pluginctl.core import version
 from pluginctl.integrations import automerge, external_readme
 
@@ -89,6 +92,71 @@ def test_automerge_rate_limit_allows_unexhausted_author_and_plugins():
     decision = automerge.rate_limit_decision("alice", ["demo"], history,
                                              {"1": ["plugins/demo/plugin.json"]}, limits)
     assert decision.ok
+
+
+def test_rate_limit_reason_includes_kind_and_relative_reset():
+    now = datetime(2026, 11, 17, 12, tzinfo=timezone.utc)
+    history = [
+        {"number": 1, "author": {"login": "alice"}, "mergedAt": "2026-11-16T20:00:00Z"},
+        {"number": 2, "author": {"login": "alice"}, "mergedAt": "2026-11-16T21:00:00Z"},
+    ]
+    files = {"1": ["plugins/demo/plugin.json"], "2": ["plugins/demo/plugin.json"]}
+    author = automerge.rate_limit_decision("alice", ["demo"], history, files,
+                                           automerge.RateLimits(2, 2, 24), now)
+    assert "author auto-merge limit" in author.reason
+    assert "8 hours" in author.reason
+    plugin = automerge.rate_limit_decision("bob", ["demo"], history, files,
+                                           automerge.RateLimits(2, 2, 24), now)
+    assert "plugin auto-merge limit" in plugin.reason
+    assert "8 hours" in plugin.reason
+
+
+def test_unknown_mergeability_retries_and_includes_changed_plugin(monkeypatch):
+    monkeypatch.setenv("GH_REPO", "owner/repo")
+    monkeypatch.setattr(automerge.gh, "pr_list", lambda *a, **k: json.dumps([
+        {"number": 573, "headRefOid": "sha", "isDraft": False}]))
+    info = {"author": {"login": "alice"}, "labels": [{"name": "Plugin Update"}],
+            "mergeable": "UNKNOWN"}
+    calls = []
+    monkeypatch.setattr(automerge.gh, "pr_view_json", lambda *a, **k: calls.append(1) or json.dumps(info))
+    monkeypatch.setattr(automerge.time, "sleep", lambda _: None)
+    monkeypatch.setattr(automerge.gh, "pr_files", lambda *a: ["plugins/demo/plugin.json"])
+    reviews = []
+    monkeypatch.setattr(automerge, "_request_manual_review", lambda *a, **k: reviews.append(k))
+    assert automerge.run("sha") == 0
+    assert len(calls) == 4
+    assert reviews[0]["plugins"] == ["demo"]
+    assert "UNKNOWN" in reviews[0]["reason"]
+
+
+def test_merge_command_failure_after_bot_merge_is_recorded(monkeypatch):
+    monkeypatch.setenv("GH_REPO", "owner/repo")
+    monkeypatch.setenv("BOT_LOGIN", "bot[bot]")
+    monkeypatch.setattr(automerge.gh, "pr_list", lambda repo, state, *a, **k: json.dumps(
+        [{"number": 570, "headRefOid": "sha"}] if state == "open" else []))
+    def view(pr, fields, **kwargs):
+        if "mergedBy" in fields:
+            return json.dumps({"state": "MERGED", "mergedBy": {"login": "bot[bot]"}, "headRefOid": "sha"})
+        return json.dumps({"author": {"login": "alice"}, "labels": [{"name": "Plugin Update"}],
+                           "mergeable": "MERGEABLE"})
+    monkeypatch.setattr(automerge.gh, "pr_view_json", view)
+    monkeypatch.setattr(automerge, "reverify_is_pure_update", lambda _: ["demo"])
+    monkeypatch.setattr(automerge.label_catalog, "ensure", lambda _: True)
+    monkeypatch.setattr(automerge.gh, "pr_merge_squash", lambda *a, **k: 1)
+    labels = []
+    monkeypatch.setattr(automerge.gh, "pr_edit_label", lambda pr, label, add: labels.append(label) or 0)
+    monkeypatch.setattr(automerge, "_logo_data", lambda *a: {})
+    monkeypatch.setattr(automerge, "_plugin_card_data", lambda *a: {})
+    from pluginctl.integrations import webhooks
+    monkeypatch.setattr(webhooks, "emit", lambda *a, **k: None)
+    monkeypatch.setattr(webhooks, "emit_discord", lambda *a, **k: None)
+    assert automerge.run("sha") == 0
+    assert labels == ["Auto Merged"]
+
+    labels.clear()
+    monkeypatch.setenv("BOT_LOGIN", "other[bot]")
+    assert automerge.run("sha") == 0
+    assert labels == []
 
 
 # ---- external readme transforms ----

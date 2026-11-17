@@ -10,6 +10,7 @@ text is unit-testable; ``run`` performs the IO around it.
 from __future__ import annotations
 
 import glob
+import html
 import os
 from dataclasses import dataclass, field
 from typing import Optional
@@ -18,6 +19,35 @@ from .. import capabilities
 from ..core import actions, gh, git
 
 MARKER = "<!--PLUGIN_VALIDATION_COMMENT-->"
+AUTO_MERGE_MARKER = "<!--PLUGIN_AUTO_MERGE_REVIEW-->"
+REVIEW_FOOTER_MARKER = "<!--PLUGIN_REVIEW_FOOTER-->"
+REVIEW_FOOTER_END = "<!--PLUGIN_REVIEW_FOOTER_END-->"
+
+
+def append_auto_merge_reason(pr_number: str, repository: str, bot_login: str, reason: str) -> bool:
+    """Update the latest bot-authored validation report with a later decision."""
+    if not bot_login:
+        return False
+    comments = gh.issue_comments(repository, pr_number)
+    if comments is None:
+        return False
+    for comment in reversed(comments):
+        body = comment.get("body") or ""
+        user = comment.get("user") or {}
+        if MARKER not in body or user.get("login", "").lower() != bot_login.lower():
+            continue
+        if REVIEW_FOOTER_MARKER in body and REVIEW_FOOTER_END in body:
+            prefix, footer = body.split(REVIEW_FOOTER_MARKER, 1)
+            content, suffix = footer.split(REVIEW_FOOTER_END, 1)
+            content = content.split(AUTO_MERGE_MARKER, 1)[0].removesuffix("</sub>\n").rstrip()
+            content = content.removesuffix("<br>").rstrip()
+        else:
+            prefix, content, suffix = body.rstrip() + "\n\n", "\n<sub>Manual review required:", "\n"
+        body = (f"{prefix}{REVIEW_FOOTER_MARKER}{content}<br>\n"
+                f"{AUTO_MERGE_MARKER}• {html.escape(reason)}"
+                f"</sub>\n{REVIEW_FOOTER_END}{suffix}")
+        return gh.update_issue_comment(repository, str(comment["id"]), body)
+    return False
 
 # close_reason values for which the PR itself is closed (vs. merely reported on).
 CLOSING_REASONS = ("unauthorized", "author-blacklisted", "plugin-blacklisted")
@@ -103,7 +133,9 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
                      codeql_suppressed_findings: str = "", codeql_sandbox_bypass: str = "",
                      codeql_sandbox_findings: str = "", codeql_capability_contract: str = "",
                      codeql_capability_contract_findings: str = "",
-                     prerelease_plugins: Optional[list[str]] = None) -> str:
+                      prerelease_plugins: Optional[list[str]] = None,
+                      has_new_plugin: bool = False, codeql_sandbox_detected: str = "",
+                      codeql_capability_detected: str = "") -> str:
     L: list[str] = []
     overall_failed = fragment_failed
     if title_valid and title_valid != "true":
@@ -172,6 +204,17 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append(f"- [Dispatcharr Discord]({discord_url})")
     else:
         L.append(combined_body)
+
+        review_reasons = []
+        if has_new_plugin:
+            review_reasons.append("New plugins require maintainer review.")
+        if codeql_result != "skipped":
+            if codeql_suppressed and codeql_suppressed != "0":
+                review_reasons.append("CodeQL reported suppressed findings.")
+            if codeql_sandbox_detected and codeql_sandbox_detected != "0":
+                review_reasons.append("CodeQL detected sandbox-bypass findings.")
+            if codeql_capability_detected and codeql_capability_detected != "0":
+                review_reasons.append("CodeQL detected capability-contract findings.")
 
         if prerelease_plugins:
             L.append("")
@@ -346,6 +389,11 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append("")
             L.append(other_plugins_section)
 
+        if review_reasons:
+            L.extend(["", REVIEW_FOOTER_MARKER,
+                      "<sub>Manual review required:<br>\n" + "<br>\n".join(f"• {reason}" for reason in review_reasons)
+                      + "</sub>", REVIEW_FOOTER_END])
+
     return "\n".join(L) + "\n"
 
 
@@ -484,6 +532,9 @@ def run(pr_number: str, pr_author: str, plugin_count: str, close_pr: bool,
             "codeql-capability-contract-findings/codeql-capability-contract-findings.md"
         ),
         prerelease_plugins=parsed.prerelease_plugins,
+        has_new_plugin=os.environ.get("HAS_NEW_PLUGIN") == "true",
+        codeql_sandbox_detected=os.environ.get("CODEQL_SANDBOX_DETECTED", ""),
+        codeql_capability_detected=os.environ.get("CODEQL_CAPABILITY_DETECTED", ""),
     )
 
     with open("pr_comment.txt", "w", encoding="utf-8") as fh:

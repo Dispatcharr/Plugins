@@ -206,6 +206,8 @@ def discord_payload(event: str, data: dict, repository: str = "") -> dict:
     ]
     if metadata:
         components.append({"type": 10, "content": metadata})
+    if event == "pr.review_required" and data.get("reason"):
+        components.append({"type": 10, "content": f"**Reason:** {str(data['reason'])[:1800]}"})
     attachment = data.get("attachment_filename")
     if attachment:
         components.append({"type": 13, "file": {"url": f"attachment://{attachment}"}})
