@@ -1,10 +1,57 @@
 {
+  "manifest_version": 2,
   "name": "Multiview",
   "license": "MIT",
   "description": "Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg",
   "author": "sethwv",
-  "version": "0.6.0-dev-eb16eec0",
-  "min_dispatcharr_version": "v0.27.0",
+  "version": "0.6.0-dev-776ff7d4",
+  "min_dispatcharr_version": "v0.34.0",
+  "capabilities": [
+    "background_tasks",
+    "persistent_service",
+    "network_listener",
+    "subprocess",
+    "outbound_network",
+    "celery_dispatch",
+    "proxy_internals",
+    "user_data",
+    "external_dependencies"
+  ],
+  "actions": [
+    {
+      "id": "refresh_ui",
+      "label": "Refresh Settings",
+      "description": "Refresh the displayed plugin settings without restarting the plugin or active streams.",
+      "button_label": "Refresh Settings",
+      "button_variant": "filled",
+      "button_color": "blue"
+    },
+    {
+      "id": "generate_m3u",
+      "label": "Regenerate M3U & EPG",
+      "description": "Write multiview.m3u and multiview_epg.xml, then refresh the M3U account and EPG source in Dispatcharr",
+      "button_label": "Regenerate M3U & EPG",
+      "button_variant": "filled",
+      "button_color": "green"
+    },
+    {
+      "id": "reload_active_multiviews",
+      "label": "Reload All Active Multiviews",
+      "description": "Stop every active multiview compositor so Dispatcharr reconnects each stream with its current configuration. Players may briefly buffer or need to reconnect.",
+      "button_label": "Reload All Active Multiviews",
+      "button_variant": "filled",
+      "button_color": "orange"
+    },
+    {
+      "id": "install_pyav",
+      "label": "Install / Update PyAV",
+      "description": "Install PyAV for this host and allow automatic repairs.",
+      "button_label": "Install PyAV",
+      "button_variant": "filled",
+      "button_color": "blue",
+      "async": true
+    }
+  ],
   "discord_thread": "https://discord.com/channels/1340492560220684331/1509200002407465001",
   "repo_url": "https://github.com/swvn-dispatch/dispatcharr-multiview",
   "help_url": "https://github.com/swvn-dispatch/dispatcharr-multiview",
