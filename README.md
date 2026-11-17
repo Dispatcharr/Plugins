@@ -12,7 +12,7 @@ This branch contains all published plugin releases.
 | Plugin | Version | Author | License | Description |
 |--------|---------|-------|---------|-------------|
 | [`AerioTV Presets`](#aeriotv-presets) | `0.0.8` | jonzey231 | AGPL-3.0-or-later | Preconfigure a user's AerioTV favorites, group order, hidden groups, and settings. Their AerioTV devices offer Dispatcharr Sync on first launch and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer. |
-| [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.4.1` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
+| [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.4.2` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
 | [`Automap Channelarr`](#automap-channelarr) | `0.4.2` | Megamannen | Artistic-2.0 | Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper. |
 | [`Channel Mapparr`](#channel-mapparr) | `1.26.2971911` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
 | [`Channel Name Cleaner`](#channel-name-cleaner) | `0.2.0` | noodlemctwoodle | MIT | Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler. |
@@ -74,7 +74,7 @@ Preconfigure a user's AerioTV favorites, group order, hidden groups, and setting
 
 ### [Audio Buffer Tuner](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/audio-buffer-tuner/README.md)
 
-**Version:** `0.4.1` | **Author:** CtznSniiips | **Last Updated:** Nov 17 2026, 16:47 UTC
+**Version:** `0.4.2` | **Author:** CtznSniiips | **Last Updated:** Nov 17 2026, 17:06 UTC
 
 Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups.
 
@@ -83,10 +83,10 @@ Speeds up channel startup for low-bitrate (usually audio only) streams by loweri
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.31.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`0.4.1`)](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.4.1/audio-buffer-tuner-0.4.1.zip)
-- [All Versions (3 available)](./metadata/audio-buffer-tuner)
+- [Latest Release (`0.4.2`)](https://github.com/Dispatcharr/Plugins/releases/download/audio-buffer-tuner-0.4.2/audio-buffer-tuner-0.4.2.zip)
+- [All Versions (4 available)](./metadata/audio-buffer-tuner)
 
-**Maintainers:** CtznSniiips | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/audio-buffer-tuner) | **Last Change:** [`2a2afc6`](https://github.com/Dispatcharr/Plugins/commit/2a2afc6fd90ad8af8d3d0720ca82a21c3e32c03a)
+**Maintainers:** CtznSniiips | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/audio-buffer-tuner) | **Last Change:** [`ad0311f`](https://github.com/Dispatcharr/Plugins/commit/ad0311fab4809bffbecf73e442fe4ab800442691)
 
 ---
 
@@ -775,4 +775,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 17 2026, 16:48 UTC*
+*Last updated: Nov 17 2026, 17:07 UTC*
