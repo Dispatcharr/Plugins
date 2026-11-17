@@ -26,7 +26,7 @@ This branch contains all published plugin releases.
 | [`EPG & Sports Editor`](#epg-sports-editor) | `0.5.23` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). Renamed from EPGeditARR; existing installs carry their settings forward automatically. |
 | [`EPG Janitor`](#epg-janitor) | `1.26.2971931` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.3111512` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
-| [`Gluetun Rotate`](#gluetun-rotate) | `0.5.2` | PilaScat | MIT | Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address. |
+| [`Gluetun Rotate`](#gluetun-rotate) | `0.6.0` | PilaScat | MIT | Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.3121307` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.3052143` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`Logo Library`](#logo-library) | `0.2.0` | sethwv | MIT | Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching. |
@@ -332,17 +332,17 @@ Automates channel visibility by hiding channels without events and showing those
 
 ### [Gluetun Rotate](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/gluetun-rotate/README.md)
 
-**Version:** `0.5.2` | **Author:** PilaScat | **Last Updated:** Nov 09 2026, 13:06 UTC
+**Version:** `0.6.0` | **Author:** PilaScat | **Last Updated:** Nov 17 2026, 20:01 UTC
 
 Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PilaScat/gluetun-rotate)
 
 **Downloads:**
-- [Latest Release (`0.5.2`)](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip)
-- [All Versions (5 available)](./metadata/gluetun-rotate)
+- [Latest Release (`0.6.0`)](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.6.0/gluetun-rotate-0.6.0.zip)
+- [All Versions (6 available)](./metadata/gluetun-rotate)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/gluetun-rotate) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/gluetun-rotate/README.md) | **Last Change:** [`8b44e7e`](https://github.com/Dispatcharr/Plugins/commit/8b44e7ecbb56d5d0a5385079b3f709574dddbca2)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/gluetun-rotate) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/gluetun-rotate/README.md) | **Last Change:** [`09c9303`](https://github.com/Dispatcharr/Plugins/commit/09c9303d5caea451d515a0af4af18b6f136b819d)
 
 ---
 
@@ -777,4 +777,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 17 2026, 19:52 UTC*
+*Last updated: Nov 17 2026, 20:02 UTC*

@@ -2,7 +2,7 @@
 
 # Gluetun Rotate
 
-**Version:** `0.5.2` | **Author:** PilaScat | **Last Updated:** Nov 09 2026, 13:06 UTC
+**Version:** `0.6.0` | **Author:** PilaScat | **Last Updated:** Nov 17 2026, 20:01 UTC
 
 Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address.
 
@@ -12,20 +12,21 @@ Moves Gluetun to another VPN server when the IPTV provider refuses the current e
 
 ### Latest Release
 
-- **Download:** [`gluetun-rotate-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip)
-- **Built:** Nov 09 2026, 13:06 UTC
-- **Source Commit:** [`8b44e7e`](https://github.com/Dispatcharr/Plugins/commit/8b44e7ecbb56d5d0a5385079b3f709574dddbca2)
+- **Download:** [`gluetun-rotate-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.6.0/gluetun-rotate-0.6.0.zip)
+- **Built:** Nov 17 2026, 20:02 UTC
+- **Source Commit:** [`09c9303`](https://github.com/Dispatcharr/Plugins/commit/09c9303d5caea451d515a0af4af18b6f136b819d)
 
 **Checksums:**
 ```
-MD5:    ecccd1eea5e94bf4229c1f702ad331a3
-SHA256: e81fca8da03d66d61db70e82daa7a53325244522cd438732039e26921395e7ef
+MD5:    b62a686d41b3ae3f0d397274901f1cd8
+SHA256: 8f2521bf4f1a82765f33e84e210fdf454ff606dbfad73cd0e399e2509a7c1472
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.6.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.6.0/gluetun-rotate-0.6.0.zip) | Nov 17 2026, 20:02 UTC | [`09c9303`](https://github.com/Dispatcharr/Plugins/commit/09c9303d5caea451d515a0af4af18b6f136b819d) | b62a686d41b3ae3f0d397274901f1cd8 | 8f2521bf4f1a82765f33e84e210fdf454ff606dbfad73cd0e399e2509a7c1472 |
 | `0.5.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip) | Nov 09 2026, 13:06 UTC | [`8b44e7e`](https://github.com/Dispatcharr/Plugins/commit/8b44e7ecbb56d5d0a5385079b3f709574dddbca2) | ecccd1eea5e94bf4229c1f702ad331a3 | e81fca8da03d66d61db70e82daa7a53325244522cd438732039e26921395e7ef |
 | `0.5.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.5.0/gluetun-rotate-0.5.0.zip) | Nov 06 2026, 17:15 UTC | [`6d521ed`](https://github.com/Dispatcharr/Plugins/commit/6d521eda9f2ec507ecc158b27fd70a6a49cdc807) | a167b6c09e608c2cdbd59b14f0dbe70e | 931bc3be1a782ef7ba72d8400fdc6dde37027cf8a6c182fcf1283673017ba636 |
 | `0.4.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/gluetun-rotate-0.4.0/gluetun-rotate-0.4.0.zip) | Oct 07 2026, 00:03 UTC | [`4b4e9db`](https://github.com/Dispatcharr/Plugins/commit/4b4e9db4f79245acaabfe246307e04da5de5dd57) | 83695e9fe933b7db232b53ccf02afdef | cf566a498f1be72ce5fff1e5a92871c9946e9b9895d97b4d43e94576444bf322 |
@@ -59,8 +60,8 @@ either container.
 
 ## Requirements
 
-- Dispatcharr with the plugin system (the Plugins page), sharing Gluetun's network
-  (`network_mode: container:gluetun` or `service:gluetun`)
+- Dispatcharr 0.34.0 or later. On older versions the Plugin Hub keeps offering 0.5.2
+- Dispatcharr sharing Gluetun's network (`network_mode: container:gluetun` or `service:gluetun`)
 - At least one active Xtream Codes account in Dispatcharr, which is what the plugin asks
 - Gluetun's control server, with a role for this plugin (below)
 - A Dispatcharr API key
@@ -82,6 +83,9 @@ Then install the plugin from the Plugin Hub, or by unzipping the release into
 `/data/plugins`, which creates the `gluetun-rotate` folder, and pressing refresh on the
 Plugins page. Enable it, fill in
 both keys, press **Apply**, and press **Ask** to see what the provider answers right now.
+Dispatcharr first asks you to approve what the plugin does: a background service, a process of
+its own and HTTP calls. Declining disables it. Once applied, the watcher runs whenever
+Dispatcharr does: it comes back by itself within about half a minute of a restart or an update.
 
 ## Settings
 
@@ -99,7 +103,6 @@ both keys, press **Apply**, and press **Ask** to see what the provider answers r
 | Apply settings | Starts the watcher, or restarts it with the new settings |
 | Check status | The current exit address, the last rotation, and the journal |
 | Ask the provider | Asks every account now and reports what each answered. Nothing is moved |
-| Restart watcher | Starts it again if it is down. Also runs by itself when a channel starts, at most once a minute |
 | Stop watcher | Stops it. The tunnel stays on whatever server it is on |
 
 ## How it works

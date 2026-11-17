@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T19:52:33Z",
+  "generated_at": "2026-11-17T20:02:40Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -124,7 +124,7 @@
         "author": "PilaScat",
         "license": "MIT",
         "last_updated": "2026-11-17T19:41:30Z",
-        "download_count": 1070,
+        "download_count": 1072,
         "latest_version": "0.8.0",
         "latest_changelog": "569",
         "latest_md5": "ba3ba719bdafb211dd4dcbd5196b94f7",
@@ -224,7 +224,7 @@
         "author": "jstevenscl",
         "license": "MIT",
         "last_updated": "2026-11-16T03:01:09Z",
-        "download_count": 650,
+        "download_count": 651,
         "latest_version": "0.5.23",
         "latest_changelog": "558",
         "latest_md5": "d49e3d29b71f98e20e1f7d8e95d95411",
@@ -273,14 +273,15 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/gluetun-rotate/manifest.json",
         "author": "PilaScat",
         "license": "MIT",
-        "last_updated": "2026-11-09T13:06:19Z",
+        "last_updated": "2026-11-17T20:01:54Z",
         "download_count": 594,
-        "latest_version": "0.5.2",
-        "latest_changelog": "537",
-        "latest_md5": "ecccd1eea5e94bf4229c1f702ad331a3",
-        "latest_sha256": "e81fca8da03d66d61db70e82daa7a53325244522cd438732039e26921395e7ef",
-        "latest_url": "gluetun-rotate-0.5.2/gluetun-rotate-0.5.2.zip",
-        "latest_size": 58
+        "latest_version": "0.6.0",
+        "latest_changelog": "572",
+        "latest_md5": "b62a686d41b3ae3f0d397274901f1cd8",
+        "latest_sha256": "8f2521bf4f1a82765f33e84e210fdf454ff606dbfad73cd0e399e2509a7c1472",
+        "latest_url": "gluetun-rotate-0.6.0/gluetun-rotate-0.6.0.zip",
+        "latest_size": 59,
+        "min_dispatcharr_version": "v0.34.0"
       },
       {
         "slug": "iptv-checker",
@@ -307,7 +308,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-01T21:50:47Z",
-        "download_count": 4550,
+        "download_count": 4551,
         "latest_version": "1.26.3052143",
         "latest_changelog": "512",
         "latest_md5": "6e4435ed9141d5e281e525120ebfd022",
@@ -357,7 +358,7 @@
         "author": "sethwv",
         "license": "MIT",
         "last_updated": "2026-11-06T16:17:24Z",
-        "download_count": 1707,
+        "download_count": 1708,
         "latest_version": "0.6.0",
         "latest_changelog": "525",
         "latest_md5": "63c20bf003dee34a04d9ceba006bb3b1",
@@ -489,7 +490,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-01T21:37:32Z",
-        "download_count": 2819,
+        "download_count": 2820,
         "latest_version": "1.26.3052124",
         "latest_changelog": "511",
         "latest_md5": "ac97f20d0188c39426f1ad346af738c4",
@@ -538,7 +539,7 @@
         "author": "jstevenscl",
         "license": "MIT",
         "last_updated": "2026-11-17T19:46:20Z",
-        "download_count": 491,
+        "download_count": 492,
         "latest_version": "0.6.0",
         "latest_md5": "b2f51f0fef6434bf36df22caa88502fe",
         "latest_sha256": "9039dbb87f55ccd181f6a1d53eccec4b4d9bcf573c84b2594259cbbf2515c2b7",
@@ -570,7 +571,7 @@
         "author": "petebutty",
         "license": "MIT",
         "last_updated": "2026-11-12T12:07:43-05:00",
-        "download_count": 51,
+        "download_count": 52,
         "latest_version": "0.3.0",
         "latest_changelog": "546",
         "latest_md5": "a8c350019d598034245d783b4ee3b18a",
@@ -663,5 +664,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavywhgAKCRB+wDprTCI0\nzo/OAQDkTmOju4GMXGICn8q8ig40uF4yaF0YY0wlrl4naHnG9AEAh7aNZrYgEc+2\nHVwy/Dv7i6kjzsByZyhGsR8vImXEfwo=\n=Ot86\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavyy5gAKCRB+wDprTCI0\nzmggAQCStu6XpAud9HHk7QJbDROT3CqttMkeKK0qNCEHmN+ItwD9FFEBJPtw7gov\nyZhcphbkwpHys40I0fxxBjM7ZR/tvQk=\n=+E3Y\n-----END PGP SIGNATURE-----"
 }
