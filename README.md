@@ -31,7 +31,7 @@ This branch contains all published plugin releases.
 | [`Lineuparr`](#lineuparr) | `1.26.3052143` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`Logo Library`](#logo-library) | `0.2.0` | sethwv | MIT | Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
-| [`Multiview`](#multiview) | `0.6.0` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
+| [`Multiview`](#multiview) | `0.7.0` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2832058` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
 | [`Packet Slapper`](#packet-slapper) | `2.0.0` | write-erase | MIT | Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.6.0` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel. |
@@ -425,7 +425,7 @@ Checks your M3U account expiration dates on a schedule and emails you before (an
 
 ### [Multiview](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/multiview/README.md)
 
-**Version:** `0.6.0` | **Author:** sethwv | **Last Updated:** Nov 06 2026, 16:17 UTC
+**Version:** `0.7.0` | **Author:** sethwv | **Last Updated:** Nov 18 2026, 18:51 UTC
 
 Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 
@@ -434,10 +434,10 @@ Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`0.6.0`)](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.6.0/multiview-0.6.0.zip)
-- [All Versions (11 available)](./metadata/multiview)
+- [Latest Release (`0.7.0`)](https://github.com/Dispatcharr/Plugins/releases/download/multiview-0.7.0/multiview-0.7.0.zip)
+- [All Versions (10 available)](./metadata/multiview)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`279409f`](https://github.com/Dispatcharr/Plugins/commit/279409fd90fa4a2e2adba15e1884f15d7aa94477)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/multiview) | **Last Change:** [`eab5162`](https://github.com/Dispatcharr/Plugins/commit/eab5162c0f4ef513dcc73b1cd6d5932504274722)
 
 ---
 
@@ -781,4 +781,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 18 2026, 17:03 UTC*
+*Last updated: Nov 18 2026, 18:52 UTC*
