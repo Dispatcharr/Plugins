@@ -1,0 +1,19 @@
+{
+  "name": "Stream Usage",
+  "version": "0.2.0",
+  "manifest_version": 2,
+  "description": "Track sampled streaming traffic by user and channel.",
+  "author": "funkasaur",
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.34.0",
+  "capabilities": [
+    "background_tasks",
+    "proxy_internals",
+    "user_data",
+    "filesystem_write",
+    "subprocess"
+  ],
+  "repo_url": "https://github.com/funkasaur/dispatcharr-stream-usage",
+  "source_type": "external",
+  "source_url": "https://github.com/funkasaur/dispatcharr-stream-usage/releases/download/v{version}/stream_usage-{version}.zip"
+}
