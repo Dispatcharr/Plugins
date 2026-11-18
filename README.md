@@ -19,7 +19,7 @@ This branch contains all published plugin releases.
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.8.0` | PilaScat | MIT | Plays a looping image or video when every stream on a channel has failed, so viewers see a message instead of an error. It can show a second card when the provider is full, list the channels in use, and send channels back to their stream. |
 | [`Decypharr VOD`](#decypharr-vod) | `1.0.7` | Tw1zT3d2four7 | MIT | Native Dispatcharr VOD integration for Decypharr media, providing automatic scanning and organization of movies, series, seasons, and episodes. |
-| [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.3.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
+| [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.4.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `1.36.2` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.8` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
 | [`Dustarr`](#dustarr) | `1.26.2901903` | PiratesIRC | MIT | Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider. |
@@ -203,19 +203,19 @@ Native Dispatcharr VOD integration for Decypharr media, providing automatic scan
 
 ### [Dispatcharr Exporter](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dispatcharr-exporter/README.md)
 
-**Version:** `3.3.0` | **Author:** sethwv | **Last Updated:** Nov 14 2026, 23:50 UTC
+**Version:** `3.4.0` | **Author:** sethwv | **Last Updated:** Nov 18 2026, 20:00 UTC
 
 Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1340492560220684331/1451260201775923421) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/swvn-dispatch/dispatcharr-exporter)
 
-![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.22.0-brightgreen?style=flat-square)
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`3.3.0`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-exporter-3.3.0/dispatcharr-exporter-3.3.0.zip)
-- [All Versions (6 available)](./metadata/dispatcharr-exporter)
+- [Latest Release (`3.4.0`)](https://github.com/Dispatcharr/Plugins/releases/download/dispatcharr-exporter-3.4.0/dispatcharr-exporter-3.4.0.zip)
+- [All Versions (7 available)](./metadata/dispatcharr-exporter)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-exporter) | **Last Change:** [`b81375f`](https://github.com/Dispatcharr/Plugins/commit/b81375fdec3a389032fc82bb21508f5e5b31a69b)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dispatcharr-exporter) | **Last Change:** [`c3d4ed9`](https://github.com/Dispatcharr/Plugins/commit/c3d4ed9e9bf785af4032a09c00768b23061c4d43)
 
 ---
 
@@ -781,4 +781,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 18 2026, 18:52 UTC*
+*Last updated: Nov 18 2026, 20:01 UTC*
