@@ -1,6 +1,6 @@
 {
   "name": "Stream Usage",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "manifest_version": 2,
   "description": "Track sampled streaming traffic by user and channel.",
   "author": "funkasaur",
