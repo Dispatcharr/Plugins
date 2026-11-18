@@ -296,7 +296,7 @@ jobs:
   # --------------------------------------------------------------------------
   report:
     needs: [detect-changes, validate-plugin, codeql-analyze, clamav-scan, validate-title, test-suite]
-    if: always() && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false' && (needs.detect-changes.outputs.skip_validation != 'true' || needs.detect-changes.outputs.pub_key_changed == 'true' || needs.validate-title.outputs.title_valid == 'false' || needs.test-suite.result == 'failure')
+    if: ${{ !cancelled() && needs.detect-changes.result == 'success' && needs.detect-changes.outputs.close_pr == 'false' && (needs.detect-changes.outputs.skip_validation != 'true' || needs.detect-changes.outputs.pub_key_changed == 'true' || needs.validate-title.outputs.title_valid == 'false' || needs.test-suite.result == 'failure') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -385,7 +385,7 @@ jobs:
           GH_TOKEN: ${{ steps.token.outputs.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           DISCORD_URL: ${{ vars.DISCORD_URL }}
-          CODEQL_RESULT: ${{ needs.codeql-analyze.outputs.codeql_status }}
+          CODEQL_RESULT: ${{ needs.codeql-analyze.result == 'cancelled' && 'cancelled' || (needs.codeql-analyze.result == 'failure' && 'failure' || needs.codeql-analyze.outputs.codeql_status) }}
           CODEQL_ERRORS: ${{ needs.codeql-analyze.outputs.codeql_errors }}
           CODEQL_WARNINGS: ${{ needs.codeql-analyze.outputs.codeql_warnings }}
           CODEQL_MEDIUMS: ${{ needs.codeql-analyze.outputs.codeql_mediums }}

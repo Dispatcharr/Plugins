@@ -39,13 +39,18 @@ def append_auto_merge_reason(pr_number: str, repository: str, bot_login: str, re
         if REVIEW_FOOTER_MARKER in body and REVIEW_FOOTER_END in body:
             prefix, footer = body.split(REVIEW_FOOTER_MARKER, 1)
             content, suffix = footer.split(REVIEW_FOOTER_END, 1)
-            content = content.split(AUTO_MERGE_MARKER, 1)[0].removesuffix("</sub>\n").rstrip()
-            content = content.removesuffix("<br>").rstrip()
+            content = content.split(AUTO_MERGE_MARKER, 1)[0].strip()
+            # Reports posted before the formatting change used HTML footer text.
+            content = content.replace("<sub>", "").replace("</sub>", "")
+            content = content.replace("<br>", "").replace("• ", "- ").strip()
         else:
-            prefix, content, suffix = body.rstrip() + "\n\n", "\n<sub>Manual review required:", "\n"
-        body = (f"{prefix}{REVIEW_FOOTER_MARKER}{content}<br>\n"
-                f"{AUTO_MERGE_MARKER}• {html.escape(reason)}"
-                f"</sub>\n{REVIEW_FOOTER_END}{suffix}")
+            prefix, content, suffix = body.rstrip() + "\n\n", "", "\n"
+        if not content:
+            content = "**Manual review required:**\n"
+        elif content.startswith("Manual review required:"):
+            content = content.replace("Manual review required:\n", "**Manual review required:**\n\n", 1)
+        body = (f"{prefix}{REVIEW_FOOTER_MARKER}\n{content}\n"
+                f"{AUTO_MERGE_MARKER}- {html.escape(reason)}\n{REVIEW_FOOTER_END}{suffix}")
         return gh.update_issue_comment(repository, str(comment["id"]), body)
     return False
 
@@ -302,9 +307,12 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
         if codeql_result and codeql_result not in ("skipped", "success"):
             L.append("")
             overall_failed = True
-            errors = codeql_errors or "unknown"
-            L.append(f"❌ **CodeQL found {errors} high or critical issue(s)** - these must be "
-                     "fixed before merging.")
+            if codeql_errors.isdigit() and int(codeql_errors) > 0:
+                L.append(f"❌ **CodeQL found {codeql_errors} high or critical issue(s)** - these must be "
+                         "fixed before merging.")
+            else:
+                status = "was cancelled" if codeql_result == "cancelled" else "did not complete successfully"
+                L.append(f"❌ **CodeQL analysis {status}.** Check the CodeQL job logs and rerun validation.")
             L.append("")
             if codeql_findings:
                 L.append(codeql_findings.rstrip("\n"))
@@ -383,16 +391,17 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append("")
             L.append("Some checks failed. Please review the errors above and update your PR.")
 
+        L.extend(["", REVIEW_FOOTER_MARKER])
+        if review_reasons:
+            L.extend(["**Manual review required:**", ""])
+            L.extend(f"- {reason}" for reason in review_reasons)
+        L.append(REVIEW_FOOTER_END)
+
         if other_plugins_section:
             L.append("")
             L.append("---")
             L.append("")
             L.append(other_plugins_section)
-
-        if review_reasons:
-            L.extend(["", REVIEW_FOOTER_MARKER,
-                      "<sub>Manual review required:<br>\n" + "<br>\n".join(f"• {reason}" for reason in review_reasons)
-                      + "</sub>", REVIEW_FOOTER_END])
 
     return "\n".join(L) + "\n"
 

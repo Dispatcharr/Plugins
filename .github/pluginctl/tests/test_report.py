@@ -27,7 +27,9 @@ def test_manual_review_summary_includes_validation_reasons():
     c = report.build_comment(**_base_kwargs(
         has_new_plugin=True, codeql_result="success", codeql_suppressed="1",
         codeql_sandbox_detected="2", codeql_capability_detected="1"))
-    assert "<sub>Manual review required:" in c
+    assert "**Manual review required:**" in c
+    assert c.index("All validation checks passed") < c.index("**Manual review required:**")
+    assert "<sub>" not in c
     assert "New plugins require maintainer review." in c
     assert "suppressed findings" in c
     assert "sandbox-bypass findings" in c
@@ -38,7 +40,7 @@ def test_manual_review_summary_includes_validation_reasons():
 def test_manual_review_summary_omits_skipped_codeql():
     c = report.build_comment(**_base_kwargs(
         codeql_result="skipped", codeql_sandbox_detected="1"))
-    assert "<sub>Manual review required:" not in c
+    assert "**Manual review required:**" not in c
 
 
 def test_auto_merge_review_updates_latest_bot_report(monkeypatch):
@@ -56,11 +58,23 @@ def test_auto_merge_review_updates_latest_bot_report(monkeypatch):
     assert report.append_auto_merge_reason("573", "org/repo", "bot[bot]", "Author reached the limit")
     assert updates[0][1] == "3"
     assert "Author reached the limit" in updates[0][2]
-    assert "• New plugin" in updates[0][2]
-    assert "• Author reached the limit" in updates[0][2]
-    assert updates[0][2].count("<sub>") == 1
+    assert "- New plugin" in updates[0][2]
+    assert "- Author reached the limit" in updates[0][2]
+    assert "<sub>" not in updates[0][2]
     assert "stale" not in updates[0][2]
     assert not report.append_auto_merge_reason("573", "org/repo", "", "reason")
+
+
+def test_auto_merge_reason_stays_under_validation_before_other_plugins(monkeypatch):
+    body = report.build_comment(**_base_kwargs(other_plugins_section="Other plugins"))
+    comments = [{"id": 1, "body": body, "user": {"login": "bot"}}]
+    monkeypatch.setattr(report.gh, "issue_comments", lambda *a: comments)
+    updates = []
+    monkeypatch.setattr(report.gh, "update_issue_comment", lambda *a: updates.append(a) or True)
+    assert report.append_auto_merge_reason("1", "org/repo", "bot", "Needs <review>")
+    updated = updates[0][2]
+    assert updated.index("All validation checks passed") < updated.index("**Manual review required:**")
+    assert updated.index("- Needs &lt;review&gt;") < updated.index("Other plugins")
 
 
 def test_fragment_failure_shows_failed():
@@ -89,6 +103,15 @@ def test_codeql_high_block_and_separator():
     assert "❌ **CodeQL found 2 high or critical issue(s)**" in c
     assert "\n---\n" in c
     assert "## ❌ Validation failed" in c
+
+
+def test_codeql_scan_failure_without_findings_is_not_reported_as_findings():
+    for result in ("failure", "cancelled"):
+        c = report.build_comment(**_base_kwargs(codeql_result=result, codeql_errors="0"))
+        assert "CodeQL analysis" in c
+        assert "CodeQL found 0" not in c
+        assert "## ❌ Validation failed" in c
+    assert "was cancelled" in report.build_comment(**_base_kwargs(codeql_result="cancelled"))
 
 
 def test_clamav_failure_block():
