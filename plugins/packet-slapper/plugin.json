@@ -1,9 +1,11 @@
 {
+  "manifest_version": 2,
   "name": "Packet Slapper",
-  "version": "1.3.0",
-  "description": "Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency.",
+  "version": "2.0.0",
+  "description": "Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics.",
   "author": "write-erase",
   "license": "MIT",
+  "min_dispatcharr_version": "0.34.0",
   "source_type": "external",
   "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v{version}/packet-slapper.zip",
   "repo_url": "https://github.com/write-erase/packet-slapper"
