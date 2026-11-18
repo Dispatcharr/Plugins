@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T21:52:01Z",
+  "generated_at": "2026-11-18T17:02:56Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-17T15:56:04-05:00",
-    "download_count": 528,
+    "download_count": 554,
     "latest": {
       "version": "0.6.0",
       "commit_sha": "7072b066ebb901d36fc88d068f8fd9c667d0fd98",
@@ -28,7 +28,7 @@
       "latest_url": "epg-and-sports-editor-0.6.0/epg-and-sports-editor-0.6.0.zip",
       "url": "epg-and-sports-editor-0.6.0/epg-and-sports-editor-0.6.0.zip",
       "size": 186,
-      "download_count": 2
+      "download_count": 27
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.6.0/epg-and-sports-editor-v0.6.0.zip",
         "url": "epg-and-sports-editor-0.6.0/epg-and-sports-editor-0.6.0.zip",
         "size": 186,
-        "download_count": 2
+        "download_count": 27
       },
       {
         "version": "0.5.23",
@@ -58,7 +58,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.23/epg-and-sports-editor-v0.5.23.zip",
         "url": "epg-and-sports-editor-0.5.23/epg-and-sports-editor-0.5.23.zip",
         "size": 183,
-        "download_count": 55
+        "download_count": 56
       },
       {
         "version": "0.5.22",
@@ -174,5 +174,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCavzMhgAKCRB+wDprTCI0\nzhG3AP96CoLY3mMDm3zTYb8OGUGdvvnYU+e/yj65jXhjh3uZ7gEAhk4Q5yql/Qpl\nAUWB1+2g+qMT/trHoooZEo4fk/1nDAk=\n=6IKl\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCav3aRwAKCRB+wDprTCI0\nzgeBAQDu24HZk+7uxdIXlhbhgHdy2Mngwhdm/8bs3OSL1OhU8wD+KVKqd1SatoRW\nTZoB9GwLJZRY0cCPStHyMEIamQAwPg4=\n=4gQ2\n-----END PGP SIGNATURE-----"
 }

@@ -33,7 +33,7 @@ This branch contains all published plugin releases.
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
 | [`Multiview`](#multiview) | `0.6.0` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2832058` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
-| [`Packet Slapper`](#packet-slapper) | `1.3.0` | write-erase | MIT | Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency. |
+| [`Packet Slapper`](#packet-slapper) | `2.0.0` | write-erase | MIT | Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.6.0` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
 | [`reservoarr`](#reservoarr) | `6.8.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
@@ -463,17 +463,19 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 
 ### [Packet Slapper](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/packet-slapper/README.md)
 
-**Version:** `1.3.0` | **Author:** write-erase | **Last Updated:** Nov 14 2026, 21:09 UTC
+**Version:** `2.0.0` | **Author:** write-erase | **Last Updated:** Nov 18 2026, 17:02 UTC
 
-Runs scheduled or on-demand Ookla Speedtests through Dispatcharr to measure speed and latency.
+Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/write-erase/packet-slapper)
 
-**Downloads:**
-- [Latest Release (`1.3.0`)](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-1.3.0/packet-slapper-1.3.0.zip)
-- [All Versions (8 available)](./metadata/packet-slapper)
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.34.0-brightgreen?style=flat-square)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/packet-slapper) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/packet-slapper/README.md) | **Last Change:** [`df29445`](https://github.com/Dispatcharr/Plugins/commit/df29445f1f4d13be10c82d62d942a885c6421456)
+**Downloads:**
+- [Latest Release (`2.0.0`)](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-2.0.0/packet-slapper-2.0.0.zip)
+- [All Versions (9 available)](./metadata/packet-slapper)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/packet-slapper) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/packet-slapper/README.md) | **Last Change:** [`b119dd7`](https://github.com/Dispatcharr/Plugins/commit/b119dd78f14d4c96893473adc8d7b9dbf4e616d2)
 
 ---
 
@@ -779,4 +781,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 17 2026, 21:52 UTC*
+*Last updated: Nov 18 2026, 17:03 UTC*
