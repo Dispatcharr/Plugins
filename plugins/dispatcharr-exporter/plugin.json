@@ -1,12 +1,20 @@
 {
   "name": "Dispatcharr Exporter",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring",
   "license": "MIT",
   "discord_thread": "https://discord.com/channels/1340492560220684331/1451260201775923421",
   "author": "sethwv",
   "help_url": "https://github.com/swvn-dispatch/dispatcharr-exporter",
-  "min_dispatcharr_version": "v0.22.0",
+  "manifest_version": 2,
+  "min_dispatcharr_version": "v0.34.0",
+  "capabilities": [
+    "persistent_service",
+    "network_listener",
+    "proxy_internals",
+    "user_data"
+  ],
+  "actions": [],
   "repo_url": "https://github.com/swvn-dispatch/dispatcharr-exporter",
   "source_type": "external",
   "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v{version}/dispatcharr-exporter-{version}.zip"
