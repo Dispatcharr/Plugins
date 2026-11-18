@@ -40,6 +40,7 @@ This branch contains all published plugin releases.
 | [`Segmentarr`](#segmentarr) | `1.5.7` | Tw1zT3d2four7 | MIT | HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile. |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.3052124` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
+| [`Stream Usage`](#stream-usage) | `0.2.2` | funkasaur | MIT | Track sampled streaming traffic by user and channel. |
 | [`Tablo Tuner`](#tablo-tuner) | `0.1.0` | jkoehler11 | MIT | Connects a legacy Tablo through tablo-bridge: creates the M3U account, XMLTV source, channels and EPG mapping, and keeps them in sync. |
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
 | [`Ticker`](#ticker) | `0.6.0` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
@@ -588,6 +589,25 @@ Automatically add matching streams to channels based on name similarity and qual
 ---
 
 
+### [Stream Usage](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-usage/README.md)
+
+**Version:** `0.2.2` | **Author:** funkasaur | **Last Updated:** Nov 18 2026, 23:20 UTC
+
+Track sampled streaming traffic by user and channel.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/funkasaur/dispatcharr-stream-usage)
+
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
+
+**Downloads:**
+- [Latest Release (`0.2.2`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-usage-0.2.2/stream-usage-0.2.2.zip)
+- [All Versions (1 available)](./metadata/stream-usage)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-usage) | **Last Change:** [`9875ca9`](https://github.com/Dispatcharr/Plugins/commit/9875ca9b3c0d3e81885d74361ca84c913bc1de29)
+
+---
+
+
 ### [Tablo Tuner](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/tablo-tuner/README.md)
 
 **Version:** `0.1.0` | **Author:** jkoehler11 | **Last Updated:** Nov 01 2026, 16:21 UTC
@@ -781,4 +801,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 18 2026, 20:01 UTC*
+*Last updated: Nov 18 2026, 23:21 UTC*
