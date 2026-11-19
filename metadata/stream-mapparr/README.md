@@ -2,7 +2,7 @@
 
 # Stream-Mapparr
 
-**Version:** `1.26.3052124` | **Author:** PiratesIRC | **Last Updated:** Nov 01 2026, 21:37 UTC
+**Version:** `1.26.3221213` | **Author:** PiratesIRC | **Last Updated:** Nov 19 2026, 12:48 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -14,20 +14,21 @@ Automatically add matching streams to channels based on name similarity and qual
 
 ### Latest Release
 
-- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3052124/stream-mapparr-1.26.3052124.zip)
-- **Built:** Nov 01 2026, 21:37 UTC
-- **Source Commit:** [`2bfc663`](https://github.com/Dispatcharr/Plugins/commit/2bfc66325972f34a8194440859fb3bcb28bbe634)
+- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3221213/stream-mapparr-1.26.3221213.zip)
+- **Built:** Nov 19 2026, 12:48 UTC
+- **Source Commit:** [`63415b3`](https://github.com/Dispatcharr/Plugins/commit/63415b36791a0aef2c9ad1e5ae64674d68042b8a)
 
 **Checksums:**
 ```
-MD5:    ac97f20d0188c39426f1ad346af738c4
-SHA256: f1b01dd40b5e3726cd8e142ba1f617c799efbb26859d7aa1777e1981db8d7414
+MD5:    888053d2740abebaedfdddfce4361e37
+SHA256: 1b14bc2e94272d1c6c2188ec12d1399fa7e69da32182c40209fe8d0964c66f27
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3221213` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3221213/stream-mapparr-1.26.3221213.zip) | Nov 19 2026, 12:48 UTC | [`63415b3`](https://github.com/Dispatcharr/Plugins/commit/63415b36791a0aef2c9ad1e5ae64674d68042b8a) | 888053d2740abebaedfdddfce4361e37 | 1b14bc2e94272d1c6c2188ec12d1399fa7e69da32182c40209fe8d0964c66f27 |
 | `1.26.3052124` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3052124/stream-mapparr-1.26.3052124.zip) | Nov 01 2026, 21:37 UTC | [`2bfc663`](https://github.com/Dispatcharr/Plugins/commit/2bfc66325972f34a8194440859fb3bcb28bbe634) | ac97f20d0188c39426f1ad346af738c4 | f1b01dd40b5e3726cd8e142ba1f617c799efbb26859d7aa1777e1981db8d7414 |
 | `1.26.3021330` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3021330/stream-mapparr-1.26.3021330.zip) | Oct 29 2026, 13:40 UTC | [`f501499`](https://github.com/Dispatcharr/Plugins/commit/f501499754f0e8819f2c17d33f5f09e12076ba33) | 70386a6879155e1d928f3e9e1f518823 | 79698da9f9a6ad0d902212625918035927e9a9ec0d0df1fded3a154ee60e3643 |
 | `1.26.2981400` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2981400/stream-mapparr-1.26.2981400.zip) | Oct 25 2026, 14:09 UTC | [`878c8e0`](https://github.com/Dispatcharr/Plugins/commit/878c8e0ff3413d753294702c23d245e6e106b83d) | 9a6bee09934b90dc16f00442121dea57 | 0f39d7c1fc820c6a16e34e59091f092a4d8032eed0fcb1ffe07aa4ae5834cd7e |
@@ -37,7 +38,6 @@ SHA256: f1b01dd40b5e3726cd8e142ba1f617c799efbb26859d7aa1777e1981db8d7414
 | `1.26.2901408` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2901408/stream-mapparr-1.26.2901408.zip) | Oct 17 2026, 14:32 UTC | [`7479ce2`](https://github.com/Dispatcharr/Plugins/commit/7479ce291e2c491b8fe597a448fbcbe6b1ea37a6) | 5f9974c0a7c28477441fc4d9065fd0ee | 79d689a7562f9abc93ba9791c75e1452d59c57ee3f92b25fd79f0100fb7cff95 |
 | `1.26.2841900` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2841900/stream-mapparr-1.26.2841900.zip) | Oct 11 2026, 19:06 UTC | [`0bccc7e`](https://github.com/Dispatcharr/Plugins/commit/0bccc7eebc3dc3a39baf16702b5d59abf8a86db9) | 4fe6ec6c7461b599338a5bf4f46d3e17 | 8ad89a5a0b56ece1625966256a66ee7f3e9b9fd2f34233e39fbe7973cba8a450 |
 | `1.26.2841112` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2841112/stream-mapparr-1.26.2841112.zip) | Oct 11 2026, 11:19 UTC | [`6f08b41`](https://github.com/Dispatcharr/Plugins/commit/6f08b412e10347610e943f3b38ca12d64805aa0c) | ed72bc3989c89dab96253c8715a210a5 | fb5e9c578c7ace1f4b2371413288b06f86484b8bc2e33250cac85570d3959448 |
-| `1.26.2831803` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2831803/stream-mapparr-1.26.2831803.zip) | Oct 10 2026, 18:09 UTC | [`3c5624e`](https://github.com/Dispatcharr/Plugins/commit/3c5624e7243c5b5bd548b12022ef9fc499ea53c7) | d6ca7f148ea90ec881221b4a26ea29db | 1b2ec53ddd91cf96f2530669144e1910401bcc0b548f2600a761324ae7f28ee2 |
 
 ---
 
@@ -165,7 +165,9 @@ database. This plugin modifies channel and stream assignments.
   layout ranked before codec
 - **Bitrate tie-breaker**: when two streams match on resolution, frame rate and
   audio, the one with the higher measured video bitrate goes first, rounded to
-  the Bitrate Sort Step so small swings do not reorder them
+  the Bitrate Sort Step, and two streams change places only when their bitrates
+  differ by more than the Bitrate Sort Tolerance, so small swings do not
+  reorder them
 - **M3U source prioritization**: prefer streams from specific providers
 - **Dead stream filtering**: skip streams with 0x0 resolution
 - **Auto-deduplication**: collapse duplicate stream names during assignment
@@ -260,6 +262,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Audio Channels Priority** | string | "" | Audio layouts, most preferred first, for example `7.1, 5.1, stereo`. Ranked before codec. Blank disables it |
 | **Audio Codec Priority** | string | "" | Audio codecs, most preferred first, for example `eac3, ac3, aac`. Ranked after layout. Blank disables it |
 | **Bitrate Sort Step (kbps)** | number | 500 | When streams match on resolution, frame rate and audio, the higher measured video bitrate is placed first. Bitrates are rounded down to this step before comparing, so streams within one step keep their order. A stream with no measured bitrate goes after one that has one. 0 turns it off |
+| **Bitrate Sort Tolerance (%)** | number | 20 | Two streams in different bitrate steps change places only when the higher bitrate is more than this percentage above the lower one; otherwise they keep their current order. Stops a small change between IPTV Checker scans from reordering a channel. 0 compares the steps only |
 | **Share anonymous usage counts** | boolean | True | Sends this plugin's Streams Matched total and a random id to the plugin author's counter. See [Anonymous usage counts](#anonymous-usage-counts). |
 
 ## Actions
