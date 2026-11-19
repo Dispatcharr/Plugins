@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T12:48:46Z",
+  "generated_at": "2026-11-19T13:37:17Z",
   "manifest": {
     "slug": "dispatcharr-ranked-matchups",
     "name": "Ranked Matchups (Top Games)",
@@ -12,26 +12,41 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1508938899865604167",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-09T02:43:12Z",
-    "download_count": 1057,
+    "last_updated": "2026-11-19T08:36:40-05:00",
+    "download_count": 814,
     "latest": {
-      "version": "1.36.2",
-      "commit_sha": "870368f0fa566fb3fe87a2ee96903ad379e6b3b1",
-      "commit_sha_short": "870368f",
-      "changelog": "533",
-      "build_timestamp": "2026-11-09T02:43:29Z",
-      "last_updated": "2026-11-09T02:43:12Z",
-      "checksum_md5": "4f4b278aa9dc46f51172ae6bf3edf047",
-      "checksum_sha256": "c9737de75ff3e5ebc58a349b7496d1218076466286d1abce38f3f1be54e45f69",
-      "min_dispatcharr_version": "",
+      "version": "1.39.0",
+      "commit_sha": "27bb0e83b501a1396bd7f88ae33abbf440009e1c",
+      "commit_sha_short": "27bb0e8",
+      "changelog": "582",
+      "build_timestamp": "2026-11-19T13:36:58Z",
+      "last_updated": "2026-11-19T08:36:40-05:00",
+      "checksum_md5": "27ba0699068e12a8b32efd7734c5df82",
+      "checksum_sha256": "c0a996954e230c4660705bc74127522f3ff689f31e2d9bba2a3f3a171b76cd77",
+      "min_dispatcharr_version": "0.34.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.36.2/dispatcharr_ranked_matchups-v1.36.2.zip",
-      "latest_url": "dispatcharr-ranked-matchups-1.36.2/dispatcharr-ranked-matchups-1.36.2.zip",
-      "url": "dispatcharr-ranked-matchups-1.36.2/dispatcharr-ranked-matchups-1.36.2.zip",
-      "size": 809,
-      "download_count": 175
+      "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.39.0/dispatcharr_ranked_matchups-v1.39.0.zip",
+      "latest_url": "dispatcharr-ranked-matchups-1.39.0/dispatcharr-ranked-matchups-1.39.0.zip",
+      "url": "dispatcharr-ranked-matchups-1.39.0/dispatcharr-ranked-matchups-1.39.0.zip",
+      "size": 793,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.39.0",
+        "commit_sha": "27bb0e83b501a1396bd7f88ae33abbf440009e1c",
+        "commit_sha_short": "27bb0e8",
+        "changelog": "582",
+        "build_timestamp": "2026-11-19T13:36:58Z",
+        "last_updated": "2026-11-19T08:36:40-05:00",
+        "checksum_md5": "27ba0699068e12a8b32efd7734c5df82",
+        "checksum_sha256": "c0a996954e230c4660705bc74127522f3ff689f31e2d9bba2a3f3a171b76cd77",
+        "min_dispatcharr_version": "0.34.0",
+        "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.39.0/dispatcharr_ranked_matchups-v1.39.0.zip",
+        "url": "dispatcharr-ranked-matchups-1.39.0/dispatcharr-ranked-matchups-1.39.0.zip",
+        "size": 793,
+        "download_count": 0
+      },
       {
         "version": "1.36.2",
         "commit_sha": "870368f0fa566fb3fe87a2ee96903ad379e6b3b1",
@@ -157,22 +172,8 @@
         "url": "dispatcharr-ranked-matchups-1.32.0/dispatcharr-ranked-matchups-1.32.0.zip",
         "size": 596,
         "download_count": 7
-      },
-      {
-        "version": "1.31.0",
-        "commit_sha": "f74211b741020c7914c8b88aaaee9c20d44aea2a",
-        "commit_sha_short": "f74211b",
-        "changelog": "362",
-        "build_timestamp": "2026-09-27T02:40:55Z",
-        "last_updated": "2026-09-27T02:40:35Z",
-        "checksum_md5": "fe611737e47fa661ea2dd7ddeb9e7866",
-        "checksum_sha256": "145e69a12c8a143659a89251d1a6d6b2ba6ae317b64cf627d60f0d4ac8055361",
-        "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.31.0/plugin.zip",
-        "url": "dispatcharr-ranked-matchups-1.31.0/dispatcharr-ranked-matchups-1.31.0.zip",
-        "size": 575,
-        "download_count": 243
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCav7wNAAKCRB+wDprTCI0\nzlXsAP49xBFURpwZzQwTG13aX9pZ9Pe7RMpJu21p7YUVdaN8VQD/VbLR6wTdD9YZ\nYheVdgtQdfZMjRyDEP+H9Z3irNa0bw0=\n=I4ON\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCav77kAAKCRB+wDprTCI0\nzoIMAP40ZVBhY9CQwxgobnLG2B/OiYIW422OiB2SVLJmxEwuvQEA3xkKn96F7Ltu\nUfL3aAGvGxc3hE4EBxq5fYMGmh8yOgQ=\n=IR6U\n-----END PGP SIGNATURE-----"
 }
