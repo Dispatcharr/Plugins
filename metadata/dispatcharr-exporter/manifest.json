@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T12:48:46Z",
+  "generated_at": "2026-11-20T14:17:41Z",
   "manifest": {
     "slug": "dispatcharr-exporter",
     "name": "Dispatcharr Exporter",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-18T20:00:19Z",
-    "download_count": 618,
+    "download_count": 636,
     "latest": {
       "version": "3.4.0",
       "commit_sha": "c3d4ed9e9bf785af4032a09c00768b23061c4d43",
@@ -29,7 +29,7 @@
       "latest_url": "dispatcharr-exporter-3.4.0/dispatcharr-exporter-3.4.0.zip",
       "url": "dispatcharr-exporter-3.4.0/dispatcharr-exporter-3.4.0.zip",
       "size": 149,
-      "download_count": 13
+      "download_count": 28
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.4.0/dispatcharr-exporter-3.4.0.zip",
         "url": "dispatcharr-exporter-3.4.0/dispatcharr-exporter-3.4.0.zip",
         "size": 149,
-        "download_count": 13
+        "download_count": 28
       },
       {
         "version": "3.3.0",
@@ -60,7 +60,7 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.3.0/dispatcharr-exporter-3.3.0.zip",
         "url": "dispatcharr-exporter-3.3.0/dispatcharr-exporter-3.3.0.zip",
         "size": 156,
-        "download_count": 48
+        "download_count": 51
       },
       {
         "version": "3.2.0",
@@ -135,5 +135,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCav7wMwAKCRB+wDprTCI0\nzjgeAP9GKjRf/FoHqCCVw3mGPi/1mpQHOXAcCzv2Uxrb0fax/AEAstGsIOzATlKU\nnDCHx7H6I7wEsmKiwVqzQGKCcUOgag8=\n=54af\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawBWiwAKCRB+wDprTCI0\nzrULAQC/bL6YvB8M3ty+E5BP3AWBfv36Dqn1vpCVSwyC4PMWYAEAh0kVJWbOR82S\nUbEy+ldab5Br63YAJ9YksIe6B/049gs=\n=XywK\n-----END PGP SIGNATURE-----"
 }

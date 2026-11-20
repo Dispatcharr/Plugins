@@ -47,7 +47,7 @@ This branch contains all published plugin releases.
 | [`Twitcharr`](#twitcharr) | `1.3.3` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
 | [`UK Sport on TV`](#uk-sport-on-tv) | `0.3.0` | petebutty | MIT | Which channel shows each UK football match, weeks ahead: UK TV (Sky Sports, TNT Sports, Premier Sports, BBC, ITV…, from live-footballontv.com), and club channels (Celtic TV, Hearts TV…) for the home club's games UK TV doesn't show. Added to those channels' guides at each match's time (gaps only) and kept for players such as Viewarr. Polite, cached fetching. |
 | [`Underfed`](#underfed) | `0.10.0` | PilaScat | MIT | Moves a channel off a source that is starving it, drifting its sound, missing whole stretches, looping on corrupt packets or refusing it: to the next source when the stream arrives at a fraction of its bitrate, with its timestamps apart, with holes in its picture or sound or forcing reconnect after reconnect, to the back of the chain when the provider answers 403 or closes the connection without sending a byte. |
-| [`VOD Manager`](#vod-manager) | `2.6.4` | oxios0x00 | MIT | Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default. |
+| [`VOD Manager`](#vod-manager) | `2.6.5` | oxios0x00 | MIT | Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default. |
 | [`VOD Probe`](#vod-probe) | `1.3.4` | oxios0x00 | MIT | Probes the real quality of each VOD relation (movies and every episode of every series version) with ffprobe in a background task and writes it into the relation's custom_properties, so every tool reading Dispatcharr's API can use it. Can also backfill missing tmdb_id/imdb_id from the provider's per-title detail endpoint, merging safely into an existing catalogue entry when one already has the id. Dry run by default. |
 | [`VOD to Media Library`](#vod-to-media-library) | `1.18.1` | R3XCHRIS | MIT | Generate .strm files (with optional NFO metadata) from your Dispatcharr VOD catalogue so Jellyfin / Emby / Kodi / ChannelsDVR can index your movies and series. Adds a cron-driven auto-rescan that picks up newly-added episodes nightly. Optional category-nested folder layout for genre-organised libraries. |
 | [`YouTubearr`](#youtubearr) | `1.40.1` | jeff-gooch | Unlicense | Zero-dependency YouTube livestream plugin with automatic monitoring and configurable numbering |
@@ -718,17 +718,17 @@ Moves a channel off a source that is starving it, drifting its sound, missing wh
 
 ### [VOD Manager](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/vod-manager/README.md)
 
-**Version:** `2.6.4` | **Author:** oxios0x00 | **Last Updated:** Oct 10 2026, 10:00 UTC
+**Version:** `2.6.5` | **Author:** oxios0x00 | **Last Updated:** Nov 20 2026, 14:17 UTC
 
 Curates Dispatcharr's VOD catalogue from vod-probe's measurements: keeps the versions matching your quality/language settings and prunes the rest. Optional .strm generation for Emby/Jellyfin. Needs vod-probe. Dry-run by default.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/oxios0x00/dispatcharr-vod-manager)
 
 **Downloads:**
-- [Latest Release (`2.6.4`)](https://github.com/Dispatcharr/Plugins/releases/download/vod-manager-2.6.4/vod-manager-2.6.4.zip)
-- [All Versions (2 available)](./metadata/vod-manager)
+- [Latest Release (`2.6.5`)](https://github.com/Dispatcharr/Plugins/releases/download/vod-manager-2.6.5/vod-manager-2.6.5.zip)
+- [All Versions (3 available)](./metadata/vod-manager)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/vod-manager) | **Last Change:** [`767c134`](https://github.com/Dispatcharr/Plugins/commit/767c1346ef1c84136d45f08db69349b480fa8163)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/vod-manager) | **Last Change:** [`4a21509`](https://github.com/Dispatcharr/Plugins/commit/4a21509c78d3d7b11c33487c8c8a73e7ff8e5b81)
 
 ---
 
@@ -803,4 +803,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 19 2026, 13:37 UTC*
+*Last updated: Nov 20 2026, 14:17 UTC*

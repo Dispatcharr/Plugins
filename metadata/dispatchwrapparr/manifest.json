@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T12:48:46Z",
+  "generated_at": "2026-11-20T14:17:41Z",
   "manifest": {
     "slug": "dispatchwrapparr",
     "name": "Dispatchwrapparr",
@@ -14,7 +14,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-09-16T09:25:12Z",
-    "download_count": 1334,
+    "download_count": 1339,
     "latest": {
       "version": "1.7.8",
       "commit_sha": "0543ea1f4086b0da4e80e400422b2d0b72c70da9",
@@ -29,7 +29,7 @@
       "latest_url": "dispatchwrapparr-1.7.8/dispatchwrapparr-1.7.8.zip",
       "url": "dispatchwrapparr-1.7.8/dispatchwrapparr-1.7.8.zip",
       "size": 47,
-      "download_count": 338
+      "download_count": 343
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "min_dispatcharr_version": "v0.31.0",
         "url": "dispatchwrapparr-1.7.8/dispatchwrapparr-1.7.8.zip",
         "size": 47,
-        "download_count": 338
+        "download_count": 343
       },
       {
         "version": "1.7.7",
@@ -174,5 +174,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCav7wNAAKCRB+wDprTCI0\nzidHAQDDKe0CMITQ73h7cn0RC+ytdxTsUkcfw7c7W1VF3agZ5wEAtXGgqW3YUR5m\nrV6xPuXVs8Mmeo55cfSyshJOG5NGDgM=\n=Sglz\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawBWiwAKCRB+wDprTCI0\nzvUpAP9ifcdpUToE1TJWjq4Bobij2K7ZR4nK1Oc12bf6IzBR7gEA+7GHhib03FKN\nc0YO/5VJvdf4xHB8X7QGxZD2/7SHsgU=\n=gMGm\n-----END PGP SIGNATURE-----"
 }
