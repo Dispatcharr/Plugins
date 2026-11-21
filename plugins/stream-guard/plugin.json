@@ -1,0 +1,16 @@
+{
+  "name": "Stream Guard",
+  "version": "1.2.3",
+  "manifest_version": 2,
+  "description": "Alerts when channels silently start playing a different stream (hash-key changes, provider renumbering) and can put the old streams back.",
+  "author": "funkasaur",
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.34.0",
+  "capabilities": [
+    "background_tasks",
+    "outbound_network"
+  ],
+  "repo_url": "https://github.com/funkasaur/dispatcharr-stream-guard",
+  "source_type": "external",
+  "source_url": "https://github.com/funkasaur/dispatcharr-stream-guard/releases/download/v{version}/stream_guard-{version}.zip"
+}
