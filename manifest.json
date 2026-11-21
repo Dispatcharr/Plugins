@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T19:12:10Z",
+  "generated_at": "2026-11-21T19:16:25Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -258,15 +258,15 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/event-channel-managarr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-11-07T15:21:00Z",
-        "download_count": 1978,
-        "latest_version": "1.26.3111512",
-        "latest_changelog": "529",
-        "latest_md5": "1b53a374f78b44e87282ef3f2a127918",
-        "latest_sha256": "266be7c51a3ca269866f8b47116141340b3dcdb4482404aa385c9b768a3078ec",
-        "latest_url": "event-channel-managarr-1.26.3111512/event-channel-managarr-1.26.3111512.zip",
-        "latest_size": 260,
-        "min_dispatcharr_version": "v0.20.0"
+        "last_updated": "2026-11-21T19:15:49Z",
+        "download_count": 1910,
+        "latest_version": "1.26.3251903",
+        "latest_changelog": "605",
+        "latest_md5": "bde8cfe8cece239db8dcd75680deeb44",
+        "latest_sha256": "865482821f1823a310dd0e05130494126ce0235700af2a046e8b9d0104947a1f",
+        "latest_url": "event-channel-managarr-1.26.3251903/event-channel-managarr-1.26.3251903.zip",
+        "latest_size": 276,
+        "min_dispatcharr_version": "v0.34.0"
       },
       {
         "slug": "gluetun-rotate",
@@ -544,7 +544,7 @@
         "author": "funkasaur",
         "license": "MIT",
         "last_updated": "2026-11-21T12:40:21-05:00",
-        "download_count": 13,
+        "download_count": 14,
         "latest_version": "1.2.2",
         "latest_changelog": "589",
         "latest_md5": "1e38f2d647bb704f509e55bd05b78ead",
@@ -707,7 +707,7 @@
         "author": "R3XCHRIS",
         "license": "MIT",
         "last_updated": "2026-10-05T21:29:03Z",
-        "download_count": 3637,
+        "download_count": 3638,
         "latest_version": "1.18.1",
         "latest_changelog": "386",
         "latest_md5": "d8cbd43789c5bf36e450516c4f30ec6f",
@@ -735,5 +735,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHtEAAKCRB+wDprTCI0\nzgMsAQDO+0t0i+WB6f4K9wsZZUeZN69ykZhWJozSYSVU/5RrNQD+MvcQGz26OA1p\n85J7lqKKm7CqIzV2sZajdWJ35e1v8Qk=\n=lMGL\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHuDwAKCRB+wDprTCI0\nzo8jAQDODg+G8dFYNjDFcmM2grUUCy+wxv+liQ9qMQbRHo8D7wD/VJRNjNabtUGA\ntXrsaZJDW7MZ261uYkP5MstMLNoqsQQ=\n=Q/92\n-----END PGP SIGNATURE-----"
 }
