@@ -1,0 +1,19 @@
+{
+  "name": "Stream Probe",
+  "version": "1.2.0",
+  "manifest_version": 2,
+  "description": "Plays each channel for a few seconds through Dispatcharr's own proxy, one at a time, and records resolution, codec, frame rate and bitrate on the stream that served it. Connection limits are respected, so a busy account is skipped, never kicked. Report-only.",
+  "author": "funkasaur",
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.34.0",
+  "capabilities": [
+    "background_tasks",
+    "proxy_internals",
+    "subprocess",
+    "outbound_network",
+    "filesystem_write"
+  ],
+  "repo_url": "https://github.com/funkasaur/dispatcharr-stream-probe",
+  "source_type": "external",
+  "source_url": "https://github.com/funkasaur/dispatcharr-stream-probe/releases/download/v{version}/stream_probe-{version}.zip"
+}
