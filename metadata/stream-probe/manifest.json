@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T17:40:44Z",
+  "generated_at": "2026-11-21T17:41:39Z",
   "manifest": {
     "slug": "stream-probe",
     "name": "Stream Probe",
@@ -11,26 +11,41 @@
     "repo_url": "https://github.com/funkasaur/dispatcharr-stream-probe",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-21T04:25:39-05:00",
+    "last_updated": "2026-11-21T12:40:21-05:00",
     "download_count": 7,
     "latest": {
-      "version": "1.2.0",
-      "commit_sha": "0319ffb25a6304876d639a5601ec97bbd2aecb8c",
-      "commit_sha_short": "0319ffb",
-      "changelog": "585",
-      "build_timestamp": "2026-11-21T09:26:05Z",
-      "last_updated": "2026-11-21T04:25:39-05:00",
-      "checksum_md5": "28f2bc3f550ec9d43d3a389cc8c63896",
-      "checksum_sha256": "fa102e0865b10fbad294baa61ea566ae83dc80576ca7d3b1b0101d112c344cd1",
+      "version": "1.2.2",
+      "commit_sha": "24ddc0e14ab2f36b26a7577252a4488a7ff92adf",
+      "commit_sha_short": "24ddc0e",
+      "changelog": "589",
+      "build_timestamp": "2026-11-21T17:41:30Z",
+      "last_updated": "2026-11-21T12:40:21-05:00",
+      "checksum_md5": "1e38f2d647bb704f509e55bd05b78ead",
+      "checksum_sha256": "d5ce4995078e960e6b9573be6836d9d8937fab65b67736e85edebcb4fd4fd7c1",
       "min_dispatcharr_version": "v0.34.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/funkasaur/dispatcharr-stream-probe/releases/download/v1.2.0/stream_probe-1.2.0.zip",
-      "latest_url": "stream-probe-1.2.0/stream-probe-1.2.0.zip",
-      "url": "stream-probe-1.2.0/stream-probe-1.2.0.zip",
+      "source_url": "https://github.com/funkasaur/dispatcharr-stream-probe/releases/download/v1.2.2/stream_probe-1.2.2.zip",
+      "latest_url": "stream-probe-1.2.2/stream-probe-1.2.2.zip",
+      "url": "stream-probe-1.2.2/stream-probe-1.2.2.zip",
       "size": 198,
-      "download_count": 7
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.2.2",
+        "commit_sha": "24ddc0e14ab2f36b26a7577252a4488a7ff92adf",
+        "commit_sha_short": "24ddc0e",
+        "changelog": "589",
+        "build_timestamp": "2026-11-21T17:41:30Z",
+        "last_updated": "2026-11-21T12:40:21-05:00",
+        "checksum_md5": "1e38f2d647bb704f509e55bd05b78ead",
+        "checksum_sha256": "d5ce4995078e960e6b9573be6836d9d8937fab65b67736e85edebcb4fd4fd7c1",
+        "min_dispatcharr_version": "v0.34.0",
+        "source_url": "https://github.com/funkasaur/dispatcharr-stream-probe/releases/download/v1.2.2/stream_probe-1.2.2.zip",
+        "url": "stream-probe-1.2.2/stream-probe-1.2.2.zip",
+        "size": 198,
+        "download_count": 0
+      },
       {
         "version": "1.2.0",
         "commit_sha": "0319ffb25a6304876d639a5601ec97bbd2aecb8c",
@@ -48,5 +63,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHXpQAKCRB+wDprTCI0\nzp72AQCV/eF6yyol2ZgCW/oscoiYfYtJASUZz+IBsUx40sqRNgEA51xWv8TZ70LX\n/ohFIBCKhUtfD03dVHfjnHAJkq27Dw4=\n=4ZjG\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHX1wAKCRB+wDprTCI0\nzoI8AP4jUtuEW1OCAie+VEH94mMvJfEgzMCXX6p/m3SeI0JeaAEA2IheZOsAh76w\nNoihcw2KWU8AbWq1TnKwLrZvkjTOjA8=\n=jTl1\n-----END PGP SIGNATURE-----"
 }

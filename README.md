@@ -42,7 +42,7 @@ This branch contains all published plugin releases.
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream Guard`](#stream-guard) | `1.2.3` | funkasaur | MIT | Alerts when channels silently start playing a different stream (hash-key changes, provider renumbering) and can put the old streams back. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.3221213` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
-| [`Stream Probe`](#stream-probe) | `1.2.0` | funkasaur | MIT | Plays each channel for a few seconds through Dispatcharr's own proxy, one at a time, and records resolution, codec, frame rate and bitrate on the stream that served it. Connection limits are respected, so a busy account is skipped, never kicked. Report-only. |
+| [`Stream Probe`](#stream-probe) | `1.2.2` | funkasaur | MIT | Plays each channel for a few seconds through Dispatcharr's own proxy, one at a time, and records resolution, codec, frame rate and bitrate on the stream that served it. Connection limits are respected, so a busy account is skipped, never kicked. Report-only. |
 | [`Stream Usage`](#stream-usage) | `0.2.2` | funkasaur | MIT | Track sampled streaming traffic by user and channel. |
 | [`Tablo Tuner`](#tablo-tuner) | `0.1.0` | jkoehler11 | MIT | Connects a legacy Tablo through tablo-bridge: creates the M3U account, XMLTV source, channels and EPG mapping, and keeps them in sync. |
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
@@ -634,7 +634,7 @@ Automatically add matching streams to channels based on name similarity and qual
 
 ### [Stream Probe](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-probe/README.md)
 
-**Version:** `1.2.0` | **Author:** funkasaur | **Last Updated:** Nov 21 2026, 09:25 UTC
+**Version:** `1.2.2` | **Author:** funkasaur | **Last Updated:** Nov 21 2026, 17:40 UTC
 
 Plays each channel for a few seconds through Dispatcharr's own proxy, one at a time, and records resolution, codec, frame rate and bitrate on the stream that served it. Connection limits are respected, so a busy account is skipped, never kicked. Report-only.
 
@@ -643,10 +643,10 @@ Plays each channel for a few seconds through Dispatcharr's own proxy, one at a t
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.2.0`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-probe-1.2.0/stream-probe-1.2.0.zip)
-- [All Versions (1 available)](./metadata/stream-probe)
+- [Latest Release (`1.2.2`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-probe-1.2.2/stream-probe-1.2.2.zip)
+- [All Versions (2 available)](./metadata/stream-probe)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-probe) | **Last Change:** [`0319ffb`](https://github.com/Dispatcharr/Plugins/commit/0319ffb25a6304876d639a5601ec97bbd2aecb8c)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-probe) | **Last Change:** [`24ddc0e`](https://github.com/Dispatcharr/Plugins/commit/24ddc0e14ab2f36b26a7577252a4488a7ff92adf)
 
 ---
 
@@ -863,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 21 2026, 17:40 UTC*
+*Last updated: Nov 21 2026, 17:41 UTC*
