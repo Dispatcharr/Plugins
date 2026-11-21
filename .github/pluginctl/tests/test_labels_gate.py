@@ -28,6 +28,8 @@ def test_labels_close_pr_is_invalid():
 
 def test_label_catalog_contains_required_automation_labels():
     labels = {label.name: label for label in label_catalog.LABELS}
+    assert labels["Audit"].color == "FB8C00"
+    assert labels["Audit"].description == "Findings from repository or plugin audits that need review."
     assert labels["Plugin Update"].color == "130518"
     assert labels["Auto Merged"].description == "PR was merged automatically after validation"
 

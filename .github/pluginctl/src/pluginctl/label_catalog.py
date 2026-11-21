@@ -18,6 +18,7 @@ class Label:
 # Baseline labels mirror Dispatcharr/Plugins. The remaining entries are labels
 # created by this repository's automation.
 LABELS = (
+    Label("Audit", "FB8C00", "Findings from repository or plugin audits that need review."),
     Label("CodeQL Suppression Used", "FBCA04", "PR relies on an inline CodeQL suppression comment and requires maintainer review"),
     Label("Invalid", "333333", "The PR is invalid or created in error."),
     Label("New Plugin", "19D64D", "A new plugin being contributed to the repository."),
