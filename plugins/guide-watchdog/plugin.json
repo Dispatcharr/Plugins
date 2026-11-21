@@ -1,0 +1,17 @@
+{
+  "name": "Guide Watchdog",
+  "version": "1.2.0",
+  "manifest_version": 2,
+  "description": "Alerts by Telegram/email when an EPG source errors, stops refreshing or is about to run out of listings, or guide coverage drops; one alert when it starts, one when it clears.",
+  "author": "funkasaur",
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.34.0",
+  "capabilities": [
+    "background_tasks",
+    "outbound_network",
+    "filesystem_write"
+  ],
+  "repo_url": "https://github.com/funkasaur/dispatcharr-guide-watchdog",
+  "source_type": "external",
+  "source_url": "https://github.com/funkasaur/dispatcharr-guide-watchdog/releases/download/v{version}/guide_watchdog-{version}.zip"
+}
