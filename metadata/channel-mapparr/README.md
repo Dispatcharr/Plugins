@@ -2,32 +2,33 @@
 
 # Channel Mapparr
 
-**Version:** `1.26.2971911` | **Author:** PiratesIRC | **Last Updated:** Oct 24 2026, 15:39 UTC
+**Version:** `1.26.3251847` | **Author:** PiratesIRC | **Last Updated:** Nov 21 2026, 18:59 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Discord](https://img.shields.io/badge/Discord-Discussion-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/channels/1340492560220684331/1422963882548265110) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin)
 
-![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 ## Downloads
 
 ### Latest Release
 
-- **Download:** [`channel-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip)
-- **Built:** Oct 24 2026, 15:39 UTC
-- **Source Commit:** [`b786c14`](https://github.com/Dispatcharr/Plugins/commit/b786c1415f1c629c25bb5c2356ad9d7c2e7e8377)
+- **Download:** [`channel-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3251847/channel-mapparr-1.26.3251847.zip)
+- **Built:** Nov 21 2026, 18:59 UTC
+- **Source Commit:** [`cf434f9`](https://github.com/Dispatcharr/Plugins/commit/cf434f995463a7b1984576aeee492ae9fb943a97)
 
 **Checksums:**
 ```
-MD5:    77211ee6ccd7ab69867fdea305bf4636
-SHA256: 7e8c41a78efe6b87adb9243d6cda864c53adbdd2b934580ea0139b58c73456bc
+MD5:    a80dcc9555427654a9a0bc966fb21943
+SHA256: 6dfb436539ed5b6a4de0534a0a8005cc3c269385894451bf77b60d6a03592c58
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3251847` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3251847/channel-mapparr-1.26.3251847.zip) | Nov 21 2026, 18:59 UTC | [`cf434f9`](https://github.com/Dispatcharr/Plugins/commit/cf434f995463a7b1984576aeee492ae9fb943a97) | a80dcc9555427654a9a0bc966fb21943 | 6dfb436539ed5b6a4de0534a0a8005cc3c269385894451bf77b60d6a03592c58 |
 | `1.26.2971911` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2971911/channel-mapparr-1.26.2971911.zip) | Oct 24 2026, 15:39 UTC | [`b786c14`](https://github.com/Dispatcharr/Plugins/commit/b786c1415f1c629c25bb5c2356ad9d7c2e7e8377) | 77211ee6ccd7ab69867fdea305bf4636 | 7e8c41a78efe6b87adb9243d6cda864c53adbdd2b934580ea0139b58c73456bc |
 | `1.26.2911354` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2911354/channel-mapparr-1.26.2911354.zip) | Oct 18 2026, 14:30 UTC | [`1025b6f`](https://github.com/Dispatcharr/Plugins/commit/1025b6f7adb4475fc509f97f9b4725de9711aec4) | 05e2e51c8519fd4cee0abd3e1191d34a | 9fc5b90b11ee4f1dd77b62796ec19d107aabd63ff57ae1008b5ec691f3f715cb |
 | `1.26.2901846` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2901846/channel-mapparr-1.26.2901846.zip) | Oct 17 2026, 21:57 UTC | [`763fa0a`](https://github.com/Dispatcharr/Plugins/commit/763fa0aeccc097965c0056465fd216d33608064f) | 28d3958a01c9d85a51ac4e0a4ca008f1 | 3a7d8a14c94bc1b0d179651558f4c6fa00909f44d10976aa441b1c417a97f0f2 |
@@ -37,7 +38,6 @@ SHA256: 7e8c41a78efe6b87adb9243d6cda864c53adbdd2b934580ea0139b58c73456bc
 | `1.26.2832116` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2832116/channel-mapparr-1.26.2832116.zip) | Oct 10 2026, 21:22 UTC | [`946dc08`](https://github.com/Dispatcharr/Plugins/commit/946dc0869e372b73492427ea23e726ce40a55d52) | 2a059d2d1e503648e56924fb96905f07 | 02462e8be15eba5bce651b6befcdee17c3c39945618e18d8bb8eefde607d6f1f |
 | `1.26.2481147` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2481147/channel-mapparr-1.26.2481147.zip) | Sep 05 2026, 17:24 UTC | [`ffc025f`](https://github.com/Dispatcharr/Plugins/commit/ffc025f3bfd9396fcd0498d3bc03cec22ef5d7e0) | 2b618f3b86c63621911ebae1eb43924c | 9953f5f0364d96207c5864a1ef12759ca19b9c0c3e4fb07bc9414b76aa478fb4 |
 | `1.26.2291823` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2291823/channel-mapparr-1.26.2291823.zip) | Aug 17 2026, 23:39 UTC | [`f12b615`](https://github.com/Dispatcharr/Plugins/commit/f12b61552da0f0cb899d87fffde316cf2223f351) | e73db45b7c6a29be4a5fb1407fa56312 | e51b802391b0f3f8e2e3f0fbbc9360f265970c3fdc1279cc0af297be86126ac1 |
-| `1.26.2241315` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2241315/channel-mapparr-1.26.2241315.zip) | Aug 12 2026, 18:50 UTC | [`e745323`](https://github.com/Dispatcharr/Plugins/commit/e745323441f3a9aa3c7a5712db5c931c5e488383) | f28e5f90e155131fc07c5dd622b43ece | e992a3b732d4659e1dbff54ca0f8fb3b3d25bcde9b738b958086f2d172a5b222 |
 
 ---
 
@@ -74,7 +74,7 @@ A Dispatcharr plugin that standardizes broadcast (OTA) and premium/cable channel
 **Organizing**
 * **Category-based grouping**: move channels into groups by content category.
 * **M3U stream import**: create channels from streams, organized by category, in the background.
-* **Scoping**: process only named groups, or exclude groups with wildcard patterns. A pattern matching nothing refuses the run rather than silently processing everything.
+* **Scoping**: pick the channel groups to process, or the groups to exclude, from lists of the groups that exist; each list also offers one prefix pattern per group-name prefix, such as `US|*`. An entry matching nothing refuses the run rather than silently processing everything.
 * **Logos**: one default logo in bulk, or per-channel artwork fuzzy-matched against the [tv-logo/tv-logos](https://github.com/tv-logo/tv-logos) repository.
 
 **Seeing what happened**
@@ -101,7 +101,7 @@ rather than after 102. The plugin settings that name your M3U sources are delibe
 this page.*
 
 ## Requirements
-* Dispatcharr v0.20.0+
+* Dispatcharr v0.34.0+
 * Internet access, only for **Apply Per-Channel Logos (tv-logos)**, which fetches the logo file list from GitHub. The anonymous usage counts report (see below) also needs it, and it never blocks a run. Every other action works without it. The plugin no longer checks for its own updates.
 * The [Newsflasharr](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin) plugin, only if you want **emailed reports**. It is what actually sends the mail. Channel Mapparr does not require it: with Newsflasharr absent or disabled, nothing is sent and nothing fails.
 
