@@ -51,7 +51,7 @@ Click a heading and its tables appear.
 
 ## Requirements
 
-* Dispatcharr v0.20.0+
+* Dispatcharr v0.34.0+ (Dispatcharr 0.33 and earlier: use Dustarr 1.26.2901903)
 * The only internet access is the anonymous usage count: an HTTPS request to plugin-stats.dpas.workers.dev, which you can switch off (see [Anonymous usage counts](#anonymous-usage-counts)). The plugin never contacts your provider, never checks for its own updates, and fetches nothing when rendering a report.
 * The [Newsflasharr](https://github.com/PiratesIRC/Dispatcharr-Newsflasharr-Plugin) plugin, only if you want emailed reports. It is what actually sends the mail. Dustarr does not require it: with Newsflasharr absent or disabled, nothing is sent and nothing fails.
 
