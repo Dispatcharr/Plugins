@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T14:17:41Z",
+  "generated_at": "2026-11-21T09:26:13Z",
   "manifest": {
     "slug": "reservoarr",
     "name": "reservoarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-08T02:28:52Z",
-    "download_count": 1689,
+    "download_count": 1699,
     "latest": {
       "version": "6.8.0",
       "commit_sha": "523fbc98ab92211c19c35f0f20b16f53ece9d6bc",
@@ -31,7 +31,7 @@
       "latest_url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
       "url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
       "size": 53,
-      "download_count": 407
+      "download_count": 417
     },
     "versions": [
       {
@@ -47,7 +47,7 @@
         "source_url": "https://github.com/brko7/reservoarr/releases/download/v6.8.0/reservoarr-6.8.0.zip",
         "url": "reservoarr-6.8.0/reservoarr-6.8.0.zip",
         "size": 53,
-        "download_count": 407
+        "download_count": 417
       },
       {
         "version": "6.7.0",
@@ -186,5 +186,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawBWjgAKCRB+wDprTCI0\nzssxAQDYtOq+EyjjT2F6CWzdKqo+IDjW4R3avCZvitOKi1YWqQEA667t1zTHSDDP\nwgbuBaIcTGr5nqBH9E7i5cJNmag07Ag=\n=C5xS\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawFjvwAKCRB+wDprTCI0\nzrpAAQCI0drLv3U9+LIz5nrf91HcfIPpQf/k1mk4W/IwyFixMwEAmLmj7Ob6safg\nH3ZrT+wzFQ+PW/T70YEspb4dxpQnGwU=\n=o932\n-----END PGP SIGNATURE-----"
 }

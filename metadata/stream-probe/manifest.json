@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-11-21T09:26:13Z",
+  "manifest": {
+    "slug": "stream-probe",
+    "name": "Stream Probe",
+    "description": "Plays each channel for a few seconds through Dispatcharr's own proxy, one at a time, and records resolution, codec, frame rate and bitrate on the stream that served it. Connection limits are respected, so a busy account is skipped, never kicked. Report-only.",
+    "author": "funkasaur",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/funkasaur/dispatcharr-stream-probe/releases/download/v{version}/stream_probe-{version}.zip",
+    "repo_url": "https://github.com/funkasaur/dispatcharr-stream-probe",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-11-21T04:25:39-05:00",
+    "download_count": 0,
+    "latest": {
+      "version": "1.2.0",
+      "commit_sha": "0319ffb25a6304876d639a5601ec97bbd2aecb8c",
+      "commit_sha_short": "0319ffb",
+      "changelog": "585",
+      "build_timestamp": "2026-11-21T09:26:05Z",
+      "last_updated": "2026-11-21T04:25:39-05:00",
+      "checksum_md5": "28f2bc3f550ec9d43d3a389cc8c63896",
+      "checksum_sha256": "fa102e0865b10fbad294baa61ea566ae83dc80576ca7d3b1b0101d112c344cd1",
+      "min_dispatcharr_version": "v0.34.0",
+      "max_dispatcharr_version": "",
+      "source_url": "https://github.com/funkasaur/dispatcharr-stream-probe/releases/download/v1.2.0/stream_probe-1.2.0.zip",
+      "latest_url": "stream-probe-1.2.0/stream-probe-1.2.0.zip",
+      "url": "stream-probe-1.2.0/stream-probe-1.2.0.zip",
+      "size": 198,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "1.2.0",
+        "commit_sha": "0319ffb25a6304876d639a5601ec97bbd2aecb8c",
+        "commit_sha_short": "0319ffb",
+        "changelog": "585",
+        "build_timestamp": "2026-11-21T09:26:05Z",
+        "last_updated": "2026-11-21T04:25:39-05:00",
+        "checksum_md5": "28f2bc3f550ec9d43d3a389cc8c63896",
+        "checksum_sha256": "fa102e0865b10fbad294baa61ea566ae83dc80576ca7d3b1b0101d112c344cd1",
+        "min_dispatcharr_version": "v0.34.0",
+        "source_url": "https://github.com/funkasaur/dispatcharr-stream-probe/releases/download/v1.2.0/stream_probe-1.2.0.zip",
+        "url": "stream-probe-1.2.0/stream-probe-1.2.0.zip",
+        "size": 198,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawFjwAAKCRB+wDprTCI0\nznNqAQDRllyKzSVc5ByYtEWsrcp9F4h/SA9MluTn7JKuXSROFQEA3q+s+5Iz1iOc\npsSQDmAlLRtHjVfsnU/OrcEiuoe8Jw8=\n=/JVi\n-----END PGP SIGNATURE-----"
+}

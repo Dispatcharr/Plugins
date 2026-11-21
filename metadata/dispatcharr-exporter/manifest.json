@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T14:17:41Z",
+  "generated_at": "2026-11-21T09:26:13Z",
   "manifest": {
     "slug": "dispatcharr-exporter",
     "name": "Dispatcharr Exporter",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-18T20:00:19Z",
-    "download_count": 636,
+    "download_count": 648,
     "latest": {
       "version": "3.4.0",
       "commit_sha": "c3d4ed9e9bf785af4032a09c00768b23061c4d43",
@@ -29,7 +29,7 @@
       "latest_url": "dispatcharr-exporter-3.4.0/dispatcharr-exporter-3.4.0.zip",
       "url": "dispatcharr-exporter-3.4.0/dispatcharr-exporter-3.4.0.zip",
       "size": 149,
-      "download_count": 28
+      "download_count": 40
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/swvn-dispatch/dispatcharr-exporter/releases/download/v3.4.0/dispatcharr-exporter-3.4.0.zip",
         "url": "dispatcharr-exporter-3.4.0/dispatcharr-exporter-3.4.0.zip",
         "size": 149,
-        "download_count": 28
+        "download_count": 40
       },
       {
         "version": "3.3.0",
@@ -135,5 +135,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawBWiwAKCRB+wDprTCI0\nzrULAQC/bL6YvB8M3ty+E5BP3AWBfv36Dqn1vpCVSwyC4PMWYAEAh0kVJWbOR82S\nUbEy+ldab5Br63YAJ9YksIe6B/049gs=\n=XywK\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawFjuwAKCRB+wDprTCI0\nzqypAP9vliDZI3zrzDAfl0YWAyF+vs1g0kBLO7yvS2Jena8zHQD/fZ7sIOvZAjS4\nQBEPmHK0DQiIfdzYpL9yOzUvD/MFJQE=\n=ivtZ\n-----END PGP SIGNATURE-----"
 }
