@@ -33,8 +33,10 @@ treated as a legacy manifest by the scanner.
 The runtime's `filesystem_write` decision also depends on whether the resolved
 path is inside the plugin's code or version-stable data directory. The scanner
 does not issue a declaration finding for `open` because it cannot determine that
-path boundary reliably from source alone. Direct `io.open` and `os.open` are
-instead reported as potential wrapper-bypass attempts for maintainer review.
+path boundary reliably from source alone. Direct `io.open` and potentially
+writing `os.open` calls are instead reported as potential wrapper-bypass
+attempts for maintainer review. Explicitly read-only `os.open` calls with only
+recognized non-writing flags are excluded; unknown flags remain findings.
 
 ## Sandbox Bypass Queries
 

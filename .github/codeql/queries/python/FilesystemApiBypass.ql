@@ -11,11 +11,41 @@
 import python
 import semmle.python.ApiGraphs
 
+/** A directly referenced, non-writing os.open flag. */
+predicate safeOpenFlag(Expr flag) {
+  flag = API::moduleImport("os")
+      .getMember(["O_RDONLY", "O_DIRECTORY", "O_CLOEXEC", "O_NOFOLLOW"])
+      .asSource().asExpr()
+  or
+  exists(BinaryExpr combination |
+    flag = combination and combination.getOp() instanceof BitOr and
+    safeOpenFlag(combination.getLeft()) and safeOpenFlag(combination.getRight())
+  )
+}
+
+/** Require an explicit O_RDONLY, not just a combination of auxiliary flags. */
+predicate containsReadOnlyFlag(Expr flag) {
+  flag = API::moduleImport("os").getMember("O_RDONLY").asSource().asExpr()
+  or
+  exists(BinaryExpr combination |
+    flag = combination and combination.getOp() instanceof BitOr and
+    (containsReadOnlyFlag(combination.getLeft()) or containsReadOnlyFlag(combination.getRight()))
+  )
+}
+
+predicate readOnlyOsOpen(API::CallNode call) {
+  exists(Expr flags |
+    (flags = call.getArg(1).asExpr() or flags = call.getArgByName("flags").asExpr()) and
+    safeOpenFlag(flags) and containsReadOnlyFlag(flags)
+  )
+}
+
 from API::CallNode call
 where
   (
     call = API::moduleImport("io").getMember("open").getACall() or
-    call = API::moduleImport("os").getMember("open").getACall() or
+    call = API::moduleImport("os").getMember("open").getACall() and
+      not readOnlyOsOpen(call) or
     call = API::moduleImport("shutil")
       .getMember(["copy", "copy2", "copyfile", "copytree", "move", "rmtree"]).getACall() or
     call = API::moduleImport("pathlib").getMember("Path").getACall().getReturn()
