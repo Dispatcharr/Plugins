@@ -1,6 +1,6 @@
 {
   "name": "Stream Guard",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "manifest_version": 2,
   "description": "Alerts when channels silently start playing a different stream (hash-key changes, provider renumbering) and can put the old streams back.",
   "author": "funkasaur",
