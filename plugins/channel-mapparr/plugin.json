@@ -1,6 +1,6 @@
 {
   "name": "Channel Mapparr",
-  "version": "1.26.2971911",
+  "version": "1.26.3251847",
   "description": "Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.",
   "author": "PiratesIRC",
   "maintainers": [
@@ -11,6 +11,7 @@
   "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/{version}/Channel-Maparr.zip",
   "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin",
   "help_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin",
-  "min_dispatcharr_version": "v0.20.0",
-  "discord_thread": "https://discord.com/channels/1340492560220684331/1422963882548265110"
+  "min_dispatcharr_version": "v0.34.0",
+  "discord_thread": "https://discord.com/channels/1340492560220684331/1422963882548265110",
+  "manifest_version": 1
 }
