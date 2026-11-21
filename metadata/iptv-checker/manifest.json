@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T15:23:51Z",
+  "generated_at": "2026-11-21T17:40:44Z",
   "manifest": {
     "slug": "iptv-checker",
     "name": "IPTV Checker",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-08T13:17:51Z",
-    "download_count": 5821,
+    "download_count": 5830,
     "latest": {
       "version": "1.26.3121307",
       "commit_sha": "d28367c11c81c1972e20db28f0aa9ec371f00945",
@@ -28,7 +28,7 @@
       "latest_url": "iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip",
       "url": "iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip",
       "size": 415,
-      "download_count": 886
+      "download_count": 895
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3121307/iptv_checker-v1.26.3121307.zip",
         "url": "iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip",
         "size": 415,
-        "download_count": 886
+        "download_count": 895
       },
       {
         "version": "1.26.3052213",
@@ -183,5 +183,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawG3jgAKCRB+wDprTCI0\nzu1vAP9ac8JKr2Q8sG0a0+qXTg621Oc3BHJD6yz4IFSabWbvwAD+IBG5+oTPBmH6\niorA41eomtXpY5lsCS7u34kDoNgeAgU=\n=xiaC\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHXowAKCRB+wDprTCI0\nzoLoAPwPhBuh+uM2pz8t/zsSlmBQQz5qFq6/Vhky7FZNam0EygD+OE2n6etyUi9m\njl+b6l+rRGyX+YJfIQkpOKVrqlM66QY=\n=06l2\n-----END PGP SIGNATURE-----"
 }

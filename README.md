@@ -27,6 +27,7 @@ This branch contains all published plugin releases.
 | [`EPG Janitor`](#epg-janitor) | `1.26.2971931` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.3111512` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`Gluetun Rotate`](#gluetun-rotate) | `0.6.0` | PilaScat | MIT | Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address. |
+| [`Guide Watchdog`](#guide-watchdog) | `1.2.2` | funkasaur | MIT | Alerts by Telegram/email when an EPG source errors, stops refreshing or is about to run out of listings, or guide coverage drops; one alert when it starts, one when it clears. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.3121307` | PiratesIRC | MIT | Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead. |
 | [`Lineuparr`](#lineuparr) | `1.26.3052143` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`Logo Library`](#logo-library) | `0.2.0` | sethwv | MIT | Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching. |
@@ -39,6 +40,7 @@ This branch contains all published plugin releases.
 | [`reservoarr`](#reservoarr) | `6.8.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
 | [`Segmentarr`](#segmentarr) | `1.5.7` | Tw1zT3d2four7 | MIT | HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile. |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
+| [`Stream Guard`](#stream-guard) | `1.2.3` | funkasaur | MIT | Alerts when channels silently start playing a different stream (hash-key changes, provider renumbering) and can put the old streams back. |
 | [`Stream-Mapparr`](#stream-mapparr) | `1.26.3221213` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
 | [`Stream Probe`](#stream-probe) | `1.2.0` | funkasaur | MIT | Plays each channel for a few seconds through Dispatcharr's own proxy, one at a time, and records resolution, codec, frame rate and bitrate on the stream that served it. Connection limits are respected, so a busy account is skipped, never kicked. Report-only. |
 | [`Stream Usage`](#stream-usage) | `0.2.2` | funkasaur | MIT | Track sampled streaming traffic by user and channel. |
@@ -353,6 +355,25 @@ Moves Gluetun to another VPN server when the IPTV provider refuses the current e
 ---
 
 
+### [Guide Watchdog](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/guide-watchdog/README.md)
+
+**Version:** `1.2.2` | **Author:** funkasaur | **Last Updated:** Nov 21 2026, 17:40 UTC
+
+Alerts by Telegram/email when an EPG source errors, stops refreshing or is about to run out of listings, or guide coverage drops; one alert when it starts, one when it clears.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/funkasaur/dispatcharr-guide-watchdog)
+
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
+
+**Downloads:**
+- [Latest Release (`1.2.2`)](https://github.com/Dispatcharr/Plugins/releases/download/guide-watchdog-1.2.2/guide-watchdog-1.2.2.zip)
+- [All Versions (1 available)](./metadata/guide-watchdog)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/guide-watchdog) | **Last Change:** [`45be606`](https://github.com/Dispatcharr/Plugins/commit/45be606898d3bff538b4efbf1efe660446f7d6a6)
+
+---
+
+
 ### [IPTV Checker](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/iptv-checker/README.md)
 
 **Version:** `1.26.3121307` | **Author:** PiratesIRC | **Last Updated:** Nov 08 2026, 13:17 UTC
@@ -569,6 +590,25 @@ Automatically drops all active streams once per day at a configured time, with a
 - [All Versions (2 available)](./metadata/stream-dripper)
 
 **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-dripper) | **Last Change:** [`11962f9`](https://github.com/Dispatcharr/Plugins/commit/11962f98d23be75084ab4c565f834e547c2ad0a3)
+
+---
+
+
+### [Stream Guard](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-guard/README.md)
+
+**Version:** `1.2.3` | **Author:** funkasaur | **Last Updated:** Nov 21 2026, 17:40 UTC
+
+Alerts when channels silently start playing a different stream (hash-key changes, provider renumbering) and can put the old streams back.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/funkasaur/dispatcharr-stream-guard)
+
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
+
+**Downloads:**
+- [Latest Release (`1.2.3`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-guard-1.2.3/stream-guard-1.2.3.zip)
+- [All Versions (1 available)](./metadata/stream-guard)
+
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-guard) | **Last Change:** [`270e74c`](https://github.com/Dispatcharr/Plugins/commit/270e74cc3e8ac5d0ed26f25ee882b3e0a00735e3)
 
 ---
 
@@ -823,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 21 2026, 15:24 UTC*
+*Last updated: Nov 21 2026, 17:40 UTC*

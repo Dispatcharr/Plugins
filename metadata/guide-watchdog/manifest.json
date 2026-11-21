@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-11-21T17:40:44Z",
+  "manifest": {
+    "slug": "guide-watchdog",
+    "name": "Guide Watchdog",
+    "description": "Alerts by Telegram/email when an EPG source errors, stops refreshing or is about to run out of listings, or guide coverage drops; one alert when it starts, one when it clears.",
+    "author": "funkasaur",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/funkasaur/dispatcharr-guide-watchdog/releases/download/v{version}/guide_watchdog-{version}.zip",
+    "repo_url": "https://github.com/funkasaur/dispatcharr-guide-watchdog",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-11-21T12:40:03-05:00",
+    "download_count": 0,
+    "latest": {
+      "version": "1.2.2",
+      "commit_sha": "45be606898d3bff538b4efbf1efe660446f7d6a6",
+      "commit_sha_short": "45be606",
+      "changelog": "587",
+      "build_timestamp": "2026-11-21T17:40:25Z",
+      "last_updated": "2026-11-21T12:40:03-05:00",
+      "checksum_md5": "3513e0e2513f952ebe3567f455642c2c",
+      "checksum_sha256": "7cc104077fc6bcaf6f95e819a8261edba612ab96b8d0d72c3a2f95d67d24006b",
+      "min_dispatcharr_version": "v0.34.0",
+      "max_dispatcharr_version": "",
+      "source_url": "https://github.com/funkasaur/dispatcharr-guide-watchdog/releases/download/v1.2.2/guide_watchdog-1.2.2.zip",
+      "latest_url": "guide-watchdog-1.2.2/guide-watchdog-1.2.2.zip",
+      "url": "guide-watchdog-1.2.2/guide-watchdog-1.2.2.zip",
+      "size": 231,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "1.2.2",
+        "commit_sha": "45be606898d3bff538b4efbf1efe660446f7d6a6",
+        "commit_sha_short": "45be606",
+        "changelog": "587",
+        "build_timestamp": "2026-11-21T17:40:25Z",
+        "last_updated": "2026-11-21T12:40:03-05:00",
+        "checksum_md5": "3513e0e2513f952ebe3567f455642c2c",
+        "checksum_sha256": "7cc104077fc6bcaf6f95e819a8261edba612ab96b8d0d72c3a2f95d67d24006b",
+        "min_dispatcharr_version": "v0.34.0",
+        "source_url": "https://github.com/funkasaur/dispatcharr-guide-watchdog/releases/download/v1.2.2/guide_watchdog-1.2.2.zip",
+        "url": "guide-watchdog-1.2.2/guide-watchdog-1.2.2.zip",
+        "size": 231,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHXogAKCRB+wDprTCI0\nzouKAP4hgVcC77CU16jgz8/sz3FmYeCw0TCc/ess0opqcrD47AEAwzKtytreojVy\nXR/zCXddrbHVLnuys3HfyYOuYfNdOQI=\n=7fUH\n-----END PGP SIGNATURE-----"
+}

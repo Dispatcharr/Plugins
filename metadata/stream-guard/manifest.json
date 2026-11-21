@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-11-21T17:40:44Z",
+  "manifest": {
+    "slug": "stream-guard",
+    "name": "Stream Guard",
+    "description": "Alerts when channels silently start playing a different stream (hash-key changes, provider renumbering) and can put the old streams back.",
+    "author": "funkasaur",
+    "license": "MIT",
+    "source_type": "external",
+    "source_url": "https://github.com/funkasaur/dispatcharr-stream-guard/releases/download/v{version}/stream_guard-{version}.zip",
+    "repo_url": "https://github.com/funkasaur/dispatcharr-stream-guard",
+    "registry_url": "https://github.com/Dispatcharr/Plugins",
+    "registry_name": "Dispatcharr/Plugins",
+    "last_updated": "2026-11-21T12:40:07-05:00",
+    "download_count": 0,
+    "latest": {
+      "version": "1.2.3",
+      "commit_sha": "270e74cc3e8ac5d0ed26f25ee882b3e0a00735e3",
+      "commit_sha_short": "270e74c",
+      "changelog": "586",
+      "build_timestamp": "2026-11-21T17:40:34Z",
+      "last_updated": "2026-11-21T12:40:07-05:00",
+      "checksum_md5": "d0d46ef4b8763452f5b15ea1e713642d",
+      "checksum_sha256": "5343c5da02c28422c10fd30a4189e04c31ae2afcd9a23018d0ccf8c41831ea3a",
+      "min_dispatcharr_version": "v0.34.0",
+      "max_dispatcharr_version": "",
+      "source_url": "https://github.com/funkasaur/dispatcharr-stream-guard/releases/download/v1.2.3/stream_guard-1.2.3.zip",
+      "latest_url": "stream-guard-1.2.3/stream-guard-1.2.3.zip",
+      "url": "stream-guard-1.2.3/stream-guard-1.2.3.zip",
+      "size": 185,
+      "download_count": 0
+    },
+    "versions": [
+      {
+        "version": "1.2.3",
+        "commit_sha": "270e74cc3e8ac5d0ed26f25ee882b3e0a00735e3",
+        "commit_sha_short": "270e74c",
+        "changelog": "586",
+        "build_timestamp": "2026-11-21T17:40:34Z",
+        "last_updated": "2026-11-21T12:40:07-05:00",
+        "checksum_md5": "d0d46ef4b8763452f5b15ea1e713642d",
+        "checksum_sha256": "5343c5da02c28422c10fd30a4189e04c31ae2afcd9a23018d0ccf8c41831ea3a",
+        "min_dispatcharr_version": "v0.34.0",
+        "source_url": "https://github.com/funkasaur/dispatcharr-stream-guard/releases/download/v1.2.3/stream_guard-1.2.3.zip",
+        "url": "stream-guard-1.2.3/stream-guard-1.2.3.zip",
+        "size": 185,
+        "download_count": 0
+      }
+    ]
+  },
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHXpQAKCRB+wDprTCI0\nzs6MAQC92t67rap/iYKmZ3YKxMfzj3XDNbaNyBNL7jq9ZjWVmAD/R0Zk/faTj3kG\nl75OdawFX6YGfivZuv6fLLiMKW2kKAE=\n=diT6\n-----END PGP SIGNATURE-----"
+}
