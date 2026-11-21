@@ -2,32 +2,33 @@
 
 # Stream-Mapparr
 
-**Version:** `1.26.3221213` | **Author:** PiratesIRC | **Last Updated:** Nov 19 2026, 12:48 UTC
+**Version:** `1.26.3251830` | **Author:** PiratesIRC | **Last Updated:** Nov 21 2026, 18:43 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PiratesIRC/Stream-Mapparr)
 
-![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 ## Downloads
 
 ### Latest Release
 
-- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3221213/stream-mapparr-1.26.3221213.zip)
-- **Built:** Nov 19 2026, 12:48 UTC
-- **Source Commit:** [`63415b3`](https://github.com/Dispatcharr/Plugins/commit/63415b36791a0aef2c9ad1e5ae64674d68042b8a)
+- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3251830/stream-mapparr-1.26.3251830.zip)
+- **Built:** Nov 21 2026, 18:44 UTC
+- **Source Commit:** [`ac9fa69`](https://github.com/Dispatcharr/Plugins/commit/ac9fa698298f4b54a99cadde84c6e38bbfa39555)
 
 **Checksums:**
 ```
-MD5:    888053d2740abebaedfdddfce4361e37
-SHA256: 1b14bc2e94272d1c6c2188ec12d1399fa7e69da32182c40209fe8d0964c66f27
+MD5:    d96740b26a93993a4669611c5b30f1ec
+SHA256: 807ea632c5f383758af4828f7a21d4c405c805663841431f74f5fd6a40282bae
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3251830` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3251830/stream-mapparr-1.26.3251830.zip) | Nov 21 2026, 18:44 UTC | [`ac9fa69`](https://github.com/Dispatcharr/Plugins/commit/ac9fa698298f4b54a99cadde84c6e38bbfa39555) | d96740b26a93993a4669611c5b30f1ec | 807ea632c5f383758af4828f7a21d4c405c805663841431f74f5fd6a40282bae |
 | `1.26.3221213` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3221213/stream-mapparr-1.26.3221213.zip) | Nov 19 2026, 12:48 UTC | [`63415b3`](https://github.com/Dispatcharr/Plugins/commit/63415b36791a0aef2c9ad1e5ae64674d68042b8a) | 888053d2740abebaedfdddfce4361e37 | 1b14bc2e94272d1c6c2188ec12d1399fa7e69da32182c40209fe8d0964c66f27 |
 | `1.26.3052124` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3052124/stream-mapparr-1.26.3052124.zip) | Nov 01 2026, 21:37 UTC | [`2bfc663`](https://github.com/Dispatcharr/Plugins/commit/2bfc66325972f34a8194440859fb3bcb28bbe634) | ac97f20d0188c39426f1ad346af738c4 | f1b01dd40b5e3726cd8e142ba1f617c799efbb26859d7aa1777e1981db8d7414 |
 | `1.26.3021330` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3021330/stream-mapparr-1.26.3021330.zip) | Oct 29 2026, 13:40 UTC | [`f501499`](https://github.com/Dispatcharr/Plugins/commit/f501499754f0e8819f2c17d33f5f09e12076ba33) | 70386a6879155e1d928f3e9e1f518823 | 79698da9f9a6ad0d902212625918035927e9a9ec0d0df1fded3a154ee60e3643 |
@@ -37,7 +38,6 @@ SHA256: 1b14bc2e94272d1c6c2188ec12d1399fa7e69da32182c40209fe8d0964c66f27
 | `1.26.2901847` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2901847/stream-mapparr-1.26.2901847.zip) | Oct 17 2026, 18:59 UTC | [`3dd79d4`](https://github.com/Dispatcharr/Plugins/commit/3dd79d43677aff880e91bbb33883cb614b0dec01) | 90fddf324b89eb3dfa95e75b1d493751 | fe8c68a3581bbdd78ad6cff8f0fe431a642586b1a21d0e32832447f64b72514a |
 | `1.26.2901408` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2901408/stream-mapparr-1.26.2901408.zip) | Oct 17 2026, 14:32 UTC | [`7479ce2`](https://github.com/Dispatcharr/Plugins/commit/7479ce291e2c491b8fe597a448fbcbe6b1ea37a6) | 5f9974c0a7c28477441fc4d9065fd0ee | 79d689a7562f9abc93ba9791c75e1452d59c57ee3f92b25fd79f0100fb7cff95 |
 | `1.26.2841900` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2841900/stream-mapparr-1.26.2841900.zip) | Oct 11 2026, 19:06 UTC | [`0bccc7e`](https://github.com/Dispatcharr/Plugins/commit/0bccc7eebc3dc3a39baf16702b5d59abf8a86db9) | 4fe6ec6c7461b599338a5bf4f46d3e17 | 8ad89a5a0b56ece1625966256a66ee7f3e9b9fd2f34233e39fbe7973cba8a450 |
-| `1.26.2841112` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2841112/stream-mapparr-1.26.2841112.zip) | Oct 11 2026, 11:19 UTC | [`6f08b41`](https://github.com/Dispatcharr/Plugins/commit/6f08b412e10347610e943f3b38ca12d64805aa0c) | ed72bc3989c89dab96253c8715a210a5 | fb5e9c578c7ace1f4b2371413288b06f86484b8bc2e33250cac85570d3959448 |
 
 ---
 
@@ -233,7 +233,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Enable CSV Export** | boolean | True | Write a CSV on a scheduled Match and Assign run. A dry run always writes one |
 | **Delete CSV Exports Older Than (Days)** | number | 0 | Remove this plugin's older reports after each new one is written. 0, the default, keeps everything. Only files this plugin wrote are ever considered, because that directory is shared with other plugins. The newest report and the one just written always survive |
 | **Tag Handling** | select | Strip All | Strip All, Keep Regional, or Keep All |
-| **Channel Database** | select | US | Which channel database to use. You choose this, never your provider's country prefix, so one database per country serves every provider and none needs duplicating |
+| **Channel Database** | select (a pick list on Dispatcharr 0.34, where you can pick several, or leave it empty for every database) | US | Which channel database to use. You choose this, never your provider's country prefix, so one database per country serves every provider and none needs duplicating |
 | **Visible Channel Limit** | number | 1 | Channels per group to enable and assign streams to |
 | **Rate Limiting** | select | None | None, Low, Medium or High |
 | **Filter Dead Streams** | boolean | False | Skip 0x0 resolution streams. Requires IPTV Checker |
