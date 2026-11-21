@@ -1,6 +1,6 @@
 {
   "name": "Guide Watchdog",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "manifest_version": 2,
   "description": "Alerts by Telegram/email when an EPG source errors, stops refreshing or is about to run out of listings, or guide coverage drops; one alert when it starts, one when it clears.",
   "author": "funkasaur",
