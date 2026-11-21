@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T17:40:44Z",
+  "generated_at": "2026-11-21T17:57:43Z",
   "manifest": {
     "slug": "guide-watchdog",
     "name": "Guide Watchdog",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-21T12:40:03-05:00",
-    "download_count": 0,
+    "download_count": 1,
     "latest": {
       "version": "1.2.2",
       "commit_sha": "45be606898d3bff538b4efbf1efe660446f7d6a6",
@@ -28,7 +28,7 @@
       "latest_url": "guide-watchdog-1.2.2/guide-watchdog-1.2.2.zip",
       "url": "guide-watchdog-1.2.2/guide-watchdog-1.2.2.zip",
       "size": 231,
-      "download_count": 0
+      "download_count": 1
     },
     "versions": [
       {
@@ -44,9 +44,9 @@
         "source_url": "https://github.com/funkasaur/dispatcharr-guide-watchdog/releases/download/v1.2.2/guide_watchdog-1.2.2.zip",
         "url": "guide-watchdog-1.2.2/guide-watchdog-1.2.2.zip",
         "size": 231,
-        "download_count": 0
+        "download_count": 1
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHXogAKCRB+wDprTCI0\nzouKAP4hgVcC77CU16jgz8/sz3FmYeCw0TCc/ess0opqcrD47AEAwzKtytreojVy\nXR/zCXddrbHVLnuys3HfyYOuYfNdOQI=\n=7fUH\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHbnAAKCRB+wDprTCI0\nzr+RAQDXgqKdguIb38/Cy8yWiqtDxGWzNhT99PdlxCmRuhH6ygEAkQB2uwGWa3Y6\nIfUAxlCSsqAtXWrtuIx3v5yXhUxY1g8=\n=7unG\n-----END PGP SIGNATURE-----"
 }

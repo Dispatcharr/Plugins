@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T09:26:13Z",
+  "generated_at": "2026-11-21T17:57:43Z",
   "manifest": {
     "slug": "dustarr",
     "name": "Dustarr",
@@ -15,26 +15,41 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1542141054080524310",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-10-17T17:57:40-04:00",
+    "last_updated": "2026-11-21T17:57:15Z",
     "download_count": 900,
     "latest": {
-      "version": "1.26.2901903",
-      "commit_sha": "1b882f233078ff663758cc1ecdf82ff16afea84a",
-      "commit_sha_short": "1b882f2",
-      "changelog": "455",
-      "build_timestamp": "2026-10-17T21:58:05Z",
-      "last_updated": "2026-10-17T17:57:40-04:00",
-      "checksum_md5": "5d457ca12c31346cda8a080abbb0390a",
-      "checksum_sha256": "21b8d14c01e702ad18ac1d78ceb4c3b65ab19db826fb2e2e5cd4595c69ed90c9",
-      "min_dispatcharr_version": "v0.20.0",
+      "version": "1.26.3251749",
+      "commit_sha": "8493bd83222784d7ff6fb0f28b8c6aa3b09edd3f",
+      "commit_sha_short": "8493bd8",
+      "changelog": "595",
+      "build_timestamp": "2026-11-21T17:57:31Z",
+      "last_updated": "2026-11-21T17:57:15Z",
+      "checksum_md5": "17135d89a67bc9144675469a819a67b5",
+      "checksum_sha256": "968811b797bcde3f0c8f8b35b6f02af5f5dc7e4d2a0776d64e51e8532310c20c",
+      "min_dispatcharr_version": "v0.34.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.2901903/Dustarr-1.26.2901903.zip",
-      "latest_url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
-      "url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
-      "size": 132,
-      "download_count": 341
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.3251749/Dustarr-1.26.3251749.zip",
+      "latest_url": "dustarr-1.26.3251749/dustarr-1.26.3251749.zip",
+      "url": "dustarr-1.26.3251749/dustarr-1.26.3251749.zip",
+      "size": 137,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.26.3251749",
+        "commit_sha": "8493bd83222784d7ff6fb0f28b8c6aa3b09edd3f",
+        "commit_sha_short": "8493bd8",
+        "changelog": "595",
+        "build_timestamp": "2026-11-21T17:57:31Z",
+        "last_updated": "2026-11-21T17:57:15Z",
+        "checksum_md5": "17135d89a67bc9144675469a819a67b5",
+        "checksum_sha256": "968811b797bcde3f0c8f8b35b6f02af5f5dc7e4d2a0776d64e51e8532310c20c",
+        "min_dispatcharr_version": "v0.34.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.3251749/Dustarr-1.26.3251749.zip",
+        "url": "dustarr-1.26.3251749/dustarr-1.26.3251749.zip",
+        "size": 137,
+        "download_count": 0
+      },
       {
         "version": "1.26.2901903",
         "commit_sha": "1b882f233078ff663758cc1ecdf82ff16afea84a",
@@ -112,5 +127,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawFjvAAKCRB+wDprTCI0\nznetAP9ymFkcJonPvNHd2l+ZZBzHUcOA4qjQQ6EnkfuIHDFYcwEAtokLTc6/nvzl\nTgYE3khlVygvgEp8O9Hj9zefcIujlAw=\n=pbEI\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHbmwAKCRB+wDprTCI0\nzr3LAP9TKYcQjDESLVYpLMqZOT58xcxVOY3xDIaUiOigojJtXwEAl8IDPNxzuwRI\nbSKufVMUkOmYZFSLKBUeGxgfxLID5go=\n=VtNX\n-----END PGP SIGNATURE-----"
 }
