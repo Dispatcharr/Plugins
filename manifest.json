@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T19:09:18Z",
+  "generated_at": "2026-11-21T19:10:54Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -326,15 +326,15 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/lineuparr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-11-01T21:50:47Z",
-        "download_count": 4706,
-        "latest_version": "1.26.3052143",
-        "latest_changelog": "512",
-        "latest_md5": "6e4435ed9141d5e281e525120ebfd022",
-        "latest_sha256": "6269fec0df31bb90883974b2f28d701ca7bf4b11354309dda5b8afab0072058e",
-        "latest_url": "lineuparr-1.26.3052143/lineuparr-1.26.3052143.zip",
-        "latest_size": 457,
-        "min_dispatcharr_version": "v0.20.0"
+        "last_updated": "2026-11-21T19:10:17Z",
+        "download_count": 4206,
+        "latest_version": "1.26.3251844",
+        "latest_changelog": "602",
+        "latest_md5": "31989de1568eb98c2c3aeb57bf9a782b",
+        "latest_sha256": "3bb6478fc907d7c1d70fc5714df19cf6635ab9469e1e8e3c691dfeb08379ab82",
+        "latest_url": "lineuparr-1.26.3251844/lineuparr-1.26.3251844.zip",
+        "latest_size": 465,
+        "min_dispatcharr_version": "v0.34.0"
       },
       {
         "slug": "logo-library",
@@ -735,5 +735,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHsYwAKCRB+wDprTCI0\nzs3IAP4l7gM1Lc0FD8BL9dfYlN+FMmC943MQeZ6WOTBLAWx3egEAz9TxB97b81it\n90aWpso0wQVabD21elE6epvFj4fwfQU=\n=7SDr\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHswwAKCRB+wDprTCI0\nztLGAP0Xv2sh3Fk19NHye023LAs1JqfND7TpBxqkCo4h1z23mQEA9ROdBlrEdo2e\nJhxbaWM6LJPibwh36ASwLVtMRRVHmQ8=\n=RrrS\n-----END PGP SIGNATURE-----"
 }
