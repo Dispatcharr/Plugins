@@ -2,32 +2,33 @@
 
 # IPTV Checker
 
-**Version:** `1.26.3121307` | **Author:** PiratesIRC | **Last Updated:** Nov 08 2026, 13:17 UTC
+**Version:** `1.26.3251946` | **Author:** PiratesIRC | **Last Updated:** Nov 21 2026, 20:02 UTC
 
 Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin)
 
-![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
+![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 ## Downloads
 
 ### Latest Release
 
-- **Download:** [`iptv-checker-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip)
-- **Built:** Nov 08 2026, 13:18 UTC
-- **Source Commit:** [`d28367c`](https://github.com/Dispatcharr/Plugins/commit/d28367c11c81c1972e20db28f0aa9ec371f00945)
+- **Download:** [`iptv-checker-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3251946/iptv-checker-1.26.3251946.zip)
+- **Built:** Nov 21 2026, 20:02 UTC
+- **Source Commit:** [`5316ae2`](https://github.com/Dispatcharr/Plugins/commit/5316ae23f523ec9d84dc7d7e9f94a96c59886f82)
 
 **Checksums:**
 ```
-MD5:    4c78b0cb51428d968ca74dd84eaa3e9a
-SHA256: c0e1752e3cc31ad862bbd50be95c2af169f89cd93c1d6bd06fbd1b5b9f4e96ed
+MD5:    bd2453a07c84bed239c5d710a41bc109
+SHA256: aa1f6ca3a75d909cc84a31692e464966f894a0b2ee8c4905a36d05e461c79677
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3251946` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3251946/iptv-checker-1.26.3251946.zip) | Nov 21 2026, 20:02 UTC | [`5316ae2`](https://github.com/Dispatcharr/Plugins/commit/5316ae23f523ec9d84dc7d7e9f94a96c59886f82) | bd2453a07c84bed239c5d710a41bc109 | aa1f6ca3a75d909cc84a31692e464966f894a0b2ee8c4905a36d05e461c79677 |
 | `1.26.3121307` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip) | Nov 08 2026, 13:18 UTC | [`d28367c`](https://github.com/Dispatcharr/Plugins/commit/d28367c11c81c1972e20db28f0aa9ec371f00945) | 4c78b0cb51428d968ca74dd84eaa3e9a | c0e1752e3cc31ad862bbd50be95c2af169f89cd93c1d6bd06fbd1b5b9f4e96ed |
 | `1.26.3052213` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3052213/iptv-checker-1.26.3052213.zip) | Nov 01 2026, 22:25 UTC | [`2d96b87`](https://github.com/Dispatcharr/Plugins/commit/2d96b87590ac06589f5a8dd0968132fa80ce8908) | 13890039175a7fbf13a9930d6dfcb380 | 29d2b7cbbab7986cbb8ca3b8911147ee3612715f4e2dd806cbe564cdddb90f0f |
 | `1.26.2901902` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2901902/iptv-checker-1.26.2901902.zip) | Oct 17 2026, 21:58 UTC | [`06c0d38`](https://github.com/Dispatcharr/Plugins/commit/06c0d380e674e99b7fa98e5e0cf7b4914dd78eee) | faca88cf2cfb2ace4ed681e9bd75af80 | dfa15b723017d12efcb0855ca15dffebaac6c2aa30bc286556c01fdc87b31c9e |
@@ -37,7 +38,6 @@ SHA256: c0e1752e3cc31ad862bbd50be95c2af169f89cd93c1d6bd06fbd1b5b9f4e96ed
 | `1.26.2402308` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2402308/iptv-checker-1.26.2402308.zip) | Aug 28 2026, 23:25 UTC | [`f1f0426`](https://github.com/Dispatcharr/Plugins/commit/f1f0426d04b1850308fe98aee0df9321383044d3) | ea84409f0a8024caf7e809c985fda818 | 4ad182d41de3364ea7e9f98749e0a82c6867188b715f6600e49ae0cc2b02af7d |
 | `1.26.2201040` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2201040/iptv-checker-1.26.2201040.zip) | Aug 08 2026, 10:47 UTC | [`d663a41`](https://github.com/Dispatcharr/Plugins/commit/d663a410b27880e3df043156712d3c79652e89f3) | 2170f8d07b055a17b97bf88e63586915 | 0594cf87701f448c5a92c7b2a6ea60e8dda86a70c17f0752493d832c88d56a92 |
 | `1.26.2191412` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2191412/iptv-checker-1.26.2191412.zip) | Aug 07 2026, 13:58 UTC | [`3f8ef4c`](https://github.com/Dispatcharr/Plugins/commit/3f8ef4c23be6a4b9129d6ea72f789be4183ba39f) | 0b35e1ffe3d599d145714dcfc1688de2 | fdf7428f026975daae8a0b459df9e4f4f39f63c4dad9c9806dc6eb867abaeba5 |
-| `1.26.2191151` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2191151/iptv-checker-1.26.2191151.zip) | Aug 07 2026, 12:01 UTC | [`ad108d3`](https://github.com/Dispatcharr/Plugins/commit/ad108d3aa2865e71465b631c6bb1601054777684) | 48df2906e8d84ec23039b2e113d46057 | 840acf8faf4618bec26720c3598f12dfc7c31ce20c3a6f23c03e3dde64e88f46 |
 
 ---
 
@@ -95,7 +95,9 @@ Other things it does:
 
 ## Requirements
 
-- Dispatcharr v0.20.0 or newer, with channels and groups already configured.
+- Dispatcharr v0.34.0 or newer, with channels and groups already configured. The plugin uses the
+  0.34 plugin manifest, so Dispatcharr 0.33 and earlier cannot install this release; stay on
+  v1.26.3121307 there.
 - `ffprobe` in the container, and `ffmpeg` as well if you enable blank-screen, frozen-video or
   silent-audio detection.
 - `pytz` for the scheduler, which is normally already present.
@@ -118,7 +120,8 @@ No API credentials are needed. The plugin runs inside Dispatcharr with direct da
 
 ## Quick start
 
-1. Set **Channel Groups** and **Channel Groups Mode**. Leave the box empty to check every group.
+1. Pick groups in **Channel Groups** and set **Channel Groups Mode**. Leave the list empty to check
+   every group. Entries such as `US:*` pick every group whose name starts with `US:`.
 2. Click **Validate** to confirm the plugin can see your groups. It reports how many groups will be
    checked.
 3. Click **Load Groups**, then **Start Check**.

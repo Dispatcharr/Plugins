@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T19:35:16Z",
+  "generated_at": "2026-11-21T20:03:03Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-21T19:11:35Z",
-    "download_count": 492,
+    "download_count": 494,
     "latest": {
       "version": "0.6.02",
       "commit_sha": "e0f57a3d669c4bbfc9446e63301b8e53b8a09c82",
@@ -28,7 +28,7 @@
       "latest_url": "epg-and-sports-editor-0.6.02/epg-and-sports-editor-0.6.02.zip",
       "url": "epg-and-sports-editor-0.6.02/epg-and-sports-editor-0.6.02.zip",
       "size": 190,
-      "download_count": 2
+      "download_count": 4
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.6.02/epg-and-sports-editor-v0.6.02.zip",
         "url": "epg-and-sports-editor-0.6.02/epg-and-sports-editor-0.6.02.zip",
         "size": 190,
-        "download_count": 2
+        "download_count": 4
       },
       {
         "version": "0.6.01",
@@ -176,5 +176,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawHyeQAKCRB+wDprTCI0\nzlitAQCuyw5BIJVn7wpAZQPX/bF/jNodTGiSXb4eAhaZqxlrJwEA9BmDR7z8gkj7\nm9bSGOpfHibT9iU9qdGqbp7+v8bDdQw=\n=NEdp\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawH4/AAKCRB+wDprTCI0\nzovLAP0Vxf6uf9ndqERhrQF5CHrAoCXL/WBwmLr/HvsHNiMqRAEAh1hDGo5k8vJz\nQWnnmDQqUsKFLElg6RYGjUt0oND+YgE=\n=NFfL\n-----END PGP SIGNATURE-----"
 }
