@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T20:03:03Z",
+  "generated_at": "2026-11-22T03:55:34Z",
   "manifest": {
     "slug": "stream-usage",
     "name": "Stream Usage",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-18T18:20:28-05:00",
-    "download_count": 17,
+    "download_count": 19,
     "latest": {
       "version": "0.2.2",
       "commit_sha": "9875ca9b3c0d3e81885d74361ca84c913bc1de29",
@@ -28,7 +28,7 @@
       "latest_url": "stream-usage-0.2.2/stream-usage-0.2.2.zip",
       "url": "stream-usage-0.2.2/stream-usage-0.2.2.zip",
       "size": 167,
-      "download_count": 17
+      "download_count": 19
     },
     "versions": [
       {
@@ -44,9 +44,9 @@
         "source_url": "https://github.com/funkasaur/dispatcharr-stream-usage/releases/download/v0.2.2/stream_usage-0.2.2.zip",
         "url": "stream-usage-0.2.2/stream-usage-0.2.2.zip",
         "size": 167,
-        "download_count": 17
+        "download_count": 19
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawH4/gAKCRB+wDprTCI0\nzrw/AP9+L+rVnKFhl6H+tdn5fXPR129kL0xPfgC6lcLjyFGWBgD9H9Ag21Weqysq\nhvYvR7/IUMF8Byl+gc7ynNrIceJrBQs=\n=hyIX\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawJnvwAKCRB+wDprTCI0\nzqkAAP9LHkYEPBBh7yYZHS8g07YezrlQJLLuEJ3pj2p3CVFlswEAxj/Ezjwirt3s\nQX6TtWv0GfwTgtxpe326chqjlCXyWwU=\n=p4+0\n-----END PGP SIGNATURE-----"
 }
