@@ -2,7 +2,7 @@
 
 # Lineuparr
 
-**Version:** `1.26.3251844` | **Author:** PiratesIRC | **Last Updated:** Nov 21 2026, 19:10 UTC
+**Version:** `1.26.3262133` | **Author:** PiratesIRC | **Last Updated:** Nov 22 2026, 21:48 UTC
 
 Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them.
 
@@ -14,20 +14,21 @@ Mirror real-world provider channel lineups by creating channel groups, channels,
 
 ### Latest Release
 
-- **Download:** [`lineuparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.3251844/lineuparr-1.26.3251844.zip)
-- **Built:** Nov 21 2026, 19:10 UTC
-- **Source Commit:** [`bb70305`](https://github.com/Dispatcharr/Plugins/commit/bb70305b26b8ef8aaa416d2d34eaed944bcadaf2)
+- **Download:** [`lineuparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip)
+- **Built:** Nov 22 2026, 21:49 UTC
+- **Source Commit:** [`a7010ab`](https://github.com/Dispatcharr/Plugins/commit/a7010aba5684952d55ece78ae2c99453fd367d59)
 
 **Checksums:**
 ```
-MD5:    31989de1568eb98c2c3aeb57bf9a782b
-SHA256: 3bb6478fc907d7c1d70fc5714df19cf6635ab9469e1e8e3c691dfeb08379ab82
+MD5:    039f3dc5487d7635ee8c626d28f6776f
+SHA256: ddf63f16a6404788e4a2566a5bdecd1ac1f7e4e8c53587de5e46f14da96d0370
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3262133` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip) | Nov 22 2026, 21:49 UTC | [`a7010ab`](https://github.com/Dispatcharr/Plugins/commit/a7010aba5684952d55ece78ae2c99453fd367d59) | 039f3dc5487d7635ee8c626d28f6776f | ddf63f16a6404788e4a2566a5bdecd1ac1f7e4e8c53587de5e46f14da96d0370 |
 | `1.26.3251844` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.3251844/lineuparr-1.26.3251844.zip) | Nov 21 2026, 19:10 UTC | [`bb70305`](https://github.com/Dispatcharr/Plugins/commit/bb70305b26b8ef8aaa416d2d34eaed944bcadaf2) | 31989de1568eb98c2c3aeb57bf9a782b | 3bb6478fc907d7c1d70fc5714df19cf6635ab9469e1e8e3c691dfeb08379ab82 |
 | `1.26.3052143` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.3052143/lineuparr-1.26.3052143.zip) | Nov 01 2026, 21:51 UTC | [`19d1bec`](https://github.com/Dispatcharr/Plugins/commit/19d1bece405d1567063fd0f3e69f393609b8bf5d) | 6e4435ed9141d5e281e525120ebfd022 | 6269fec0df31bb90883974b2f28d701ca7bf4b11354309dda5b8afab0072058e |
 | `1.26.2901915` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2901915/lineuparr-1.26.2901915.zip) | Oct 17 2026, 21:58 UTC | [`0d24250`](https://github.com/Dispatcharr/Plugins/commit/0d24250ed3d41c58f7901674909f2b88042e892e) | aefc7a6f74fe96bb8f5ace95a562bc7a | cdf7c4c633184d102a56d00492f56db9baf520eb8a5fd40dd12cfa70a6fbc710 |
@@ -37,7 +38,6 @@ SHA256: 3bb6478fc907d7c1d70fc5714df19cf6635ab9469e1e8e3c691dfeb08379ab82
 | `1.26.2821835` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2821835/lineuparr-1.26.2821835.zip) | Oct 09 2026, 18:41 UTC | [`e66282c`](https://github.com/Dispatcharr/Plugins/commit/e66282ca01274495b23c22a60b89b11cda36a767) | dece7f089b66f4cbbb1a64e3c1b2a294 | 83eb0d6cd801a15b8e30cc90f3cf6fe59ac98e800c5a8f5f1c37807135ea227f |
 | `1.26.2561550` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2561550/lineuparr-1.26.2561550.zip) | Sep 13 2026, 16:03 UTC | [`e56e990`](https://github.com/Dispatcharr/Plugins/commit/e56e9906c18e092bb424366e0ed361c4bcd07612) | 48b855f675156903fe8421e7d80ccbf6 | e46ceda0cd9e14154a912dd642dfaa5dc406a5a6bff8882238098785929c0f42 |
 | `1.26.2481702` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2481702/lineuparr-1.26.2481702.zip) | Sep 05 2026, 17:43 UTC | [`73d6175`](https://github.com/Dispatcharr/Plugins/commit/73d61757c1729d0d58cd34fe24f4d422dcaf3642) | 532b59b37f580ced08de2a65933fa649 | ac627e4897183392e56761aa4d26a2598382297e4df8873259a27cc0ffbe2fa8 |
-| `1.26.2421451` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/lineuparr-1.26.2421451/lineuparr-1.26.2421451.zip) | Aug 30 2026, 14:59 UTC | [`476de89`](https://github.com/Dispatcharr/Plugins/commit/476de89d6d0dcdd560700459c3d16a5369e2ca9f) | 197c71fa2b92b46c7b3998dc47000219 | aa2e8a1a77efb2739802d5428c83a8067beead44ed48f96a546ccc91cf636741 |
 
 ---
 

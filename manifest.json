@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-22T21:49:02Z",
+  "generated_at": "2026-11-22T21:49:54Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -309,14 +309,14 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/iptv-checker/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-11-21T20:02:27Z",
-        "download_count": 6024,
-        "latest_version": "1.26.3251946",
-        "latest_changelog": "607",
-        "latest_md5": "bd2453a07c84bed239c5d710a41bc109",
-        "latest_sha256": "aa1f6ca3a75d909cc84a31692e464966f894a0b2ee8c4905a36d05e461c79677",
-        "latest_url": "iptv-checker-1.26.3251946/iptv-checker-1.26.3251946.zip",
-        "latest_size": 423,
+        "last_updated": "2026-11-22T21:49:26Z",
+        "download_count": 5969,
+        "latest_version": "1.26.3262133",
+        "latest_changelog": "612",
+        "latest_md5": "bb8982de6f848f6d5166ca9bac756eeb",
+        "latest_sha256": "6f9074357bbeab17e9ca40c0324e9ac262a8c4f46a26db3f0eb62962c7628aa6",
+        "latest_url": "iptv-checker-1.26.3262133/iptv-checker-1.26.3262133.zip",
+        "latest_size": 424,
         "min_dispatcharr_version": "v0.34.0"
       },
       {
@@ -326,14 +326,14 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/lineuparr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-11-21T19:10:17Z",
-        "download_count": 4339,
-        "latest_version": "1.26.3251844",
-        "latest_changelog": "602",
-        "latest_md5": "31989de1568eb98c2c3aeb57bf9a782b",
-        "latest_sha256": "3bb6478fc907d7c1d70fc5714df19cf6635ab9469e1e8e3c691dfeb08379ab82",
-        "latest_url": "lineuparr-1.26.3251844/lineuparr-1.26.3251844.zip",
-        "latest_size": 465,
+        "last_updated": "2026-11-22T21:48:57Z",
+        "download_count": 4055,
+        "latest_version": "1.26.3262133",
+        "latest_changelog": "611",
+        "latest_md5": "039f3dc5487d7635ee8c626d28f6776f",
+        "latest_sha256": "ddf63f16a6404788e4a2566a5bdecd1ac1f7e4e8c53587de5e46f14da96d0370",
+        "latest_url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
+        "latest_size": 467,
         "min_dispatcharr_version": "v0.34.0"
       },
       {
@@ -736,5 +736,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawNjVwAKCRB+wDprTCI0\nzuHoAQCdnIvfe8sdiBhBSTcwPgd6eId9UBqYL1xtxG4ydYJWkgEAyvmPESW+cGry\ntQHvrCr5ybWzksuAjQfYkanC2dIb8Ag=\n=ds4C\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawNjhwAKCRB+wDprTCI0\nzlA2AP9+eAWZATO2ydo68RrsjfUeFbrsFcHfIUa2EkE/q8W9LQEAwsracv75aN9H\nPhMzBvIj+4V12TRxNgk0uvRogodSYQc=\n=iR1J\n-----END PGP SIGNATURE-----"
 }
