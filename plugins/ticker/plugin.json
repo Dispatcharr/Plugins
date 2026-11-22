@@ -1,8 +1,13 @@
 {
   "name": "Ticker",
   "manifest_version": 1,
-  "version": "0.6.0",
+  "version": "0.6.01",
   "min_dispatcharr_version": "0.34.0",
+  "capabilities": [
+    "outbound_network",
+    "proxy_internals",
+    "filesystem_write"
+  ],
   "description": "Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts",
   "author": "jstevenscl",
   "license": "MIT",
