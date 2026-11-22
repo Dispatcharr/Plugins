@@ -2,7 +2,7 @@
 
 # Event Channel Managarr
 
-**Version:** `1.26.3251903` | **Author:** PiratesIRC | **Last Updated:** Nov 21 2026, 19:15 UTC
+**Version:** `1.26.3262214` | **Author:** PiratesIRC | **Last Updated:** Nov 22 2026, 22:23 UTC
 
 Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG.
 
@@ -14,20 +14,21 @@ Automates channel visibility by hiding channels without events and showing those
 
 ### Latest Release
 
-- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3251903/event-channel-managarr-1.26.3251903.zip)
-- **Built:** Nov 21 2026, 19:16 UTC
-- **Source Commit:** [`2e8cb41`](https://github.com/Dispatcharr/Plugins/commit/2e8cb41c32efc45d808eefa194a95f45a043ec2c)
+- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3262214/event-channel-managarr-1.26.3262214.zip)
+- **Built:** Nov 22 2026, 22:23 UTC
+- **Source Commit:** [`538e2b2`](https://github.com/Dispatcharr/Plugins/commit/538e2b2a1d4d6196306daa876c9ef3d868a518c5)
 
 **Checksums:**
 ```
-MD5:    bde8cfe8cece239db8dcd75680deeb44
-SHA256: 865482821f1823a310dd0e05130494126ce0235700af2a046e8b9d0104947a1f
+MD5:    8b76834d74eb6d58f98b1ee384f4f8bc
+SHA256: a329ff5a38ee5b7706ba98940c7f3b8475e4dcbafb9fe2801a2249beaf61c287
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3262214` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3262214/event-channel-managarr-1.26.3262214.zip) | Nov 22 2026, 22:23 UTC | [`538e2b2`](https://github.com/Dispatcharr/Plugins/commit/538e2b2a1d4d6196306daa876c9ef3d868a518c5) | 8b76834d74eb6d58f98b1ee384f4f8bc | a329ff5a38ee5b7706ba98940c7f3b8475e4dcbafb9fe2801a2249beaf61c287 |
 | `1.26.3251903` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3251903/event-channel-managarr-1.26.3251903.zip) | Nov 21 2026, 19:16 UTC | [`2e8cb41`](https://github.com/Dispatcharr/Plugins/commit/2e8cb41c32efc45d808eefa194a95f45a043ec2c) | bde8cfe8cece239db8dcd75680deeb44 | 865482821f1823a310dd0e05130494126ce0235700af2a046e8b9d0104947a1f |
 | `1.26.3111512` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3111512/event-channel-managarr-1.26.3111512.zip) | Nov 07 2026, 15:21 UTC | [`d30b729`](https://github.com/Dispatcharr/Plugins/commit/d30b729cf1384a97d9ab49af175bd8dbf5cc6cd6) | 1b53a374f78b44e87282ef3f2a127918 | 266be7c51a3ca269866f8b47116141340b3dcdb4482404aa385c9b768a3078ec |
 | `1.26.2981641` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2981641/event-channel-managarr-1.26.2981641.zip) | Oct 25 2026, 16:50 UTC | [`4d86769`](https://github.com/Dispatcharr/Plugins/commit/4d867694d8e2ef82e0a5f3da4f0303738184df70) | 9c683c54b9455d047508472c364bf80a | 7716643164ded2cad2f2d523beb6cf4252f4ac27f6a190fd962665456575bbe2 |
@@ -37,7 +38,6 @@ SHA256: 865482821f1823a310dd0e05130494126ce0235700af2a046e8b9d0104947a1f
 | `1.26.2821924` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821924/event-channel-managarr-1.26.2821924.zip) | Oct 09 2026, 19:31 UTC | [`6f08f74`](https://github.com/Dispatcharr/Plugins/commit/6f08f7435940cd25a47242311ebe36a5b401e285) | 157e498b348e35facf0f5d5e621ca02f | 4aed1cf1d7fc0eee849ff1942febf7b0280d717312d8595826e8fa114bb48cc6 |
 | `1.26.2821849` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821849/event-channel-managarr-1.26.2821849.zip) | Oct 09 2026, 18:55 UTC | [`d9bf8e5`](https://github.com/Dispatcharr/Plugins/commit/d9bf8e5bc2cab4ce2890b6486628a3be81302160) | da5135568d72864f89dcc2c90632e7d9 | 3b202d63877c3f4b48dc9baf17f44f28c726a835d8cb20c5a5c5f9cd9e8adfb2 |
 | `1.26.2821323` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821323/event-channel-managarr-1.26.2821323.zip) | Oct 09 2026, 13:29 UTC | [`033d920`](https://github.com/Dispatcharr/Plugins/commit/033d920f1ce7acda8dc524d653a90e724c6ae8d6) | 3583102f4743b7acea5b0e858d779794 | c8f1cfae749a5c26760d2437f0987537b0b9c391eaccbbf9c2a47a81902dce69 |
-| `1.26.2631853` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2631853/event-channel-managarr-1.26.2631853.zip) | Sep 20 2026, 18:58 UTC | [`69d4975`](https://github.com/Dispatcharr/Plugins/commit/69d49755bd377fbb1ed36627c4e61453874edc12) | b59cca2653d554d3bcfbd2552dc223c2 | a0942551001be5c7c6ce7c89c9057745ad1afbbc1c47bb1057d64d86eaf8c1fc |
 
 ---
 
