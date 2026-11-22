@@ -46,7 +46,7 @@ This branch contains all published plugin releases.
 | [`Stream Usage`](#stream-usage) | `0.2.2` | funkasaur | MIT | Track sampled streaming traffic by user and channel. |
 | [`Tablo Tuner`](#tablo-tuner) | `0.1.0` | jkoehler11 | MIT | Connects a legacy Tablo through tablo-bridge: creates the M3U account, XMLTV source, channels and EPG mapping, and keeps them in sync. |
 | [`Telegram Alerts`](#telegram-alerts) | `0.4.5` | R3XCHRIS | MIT | Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Includes a manual test action, per-event toggles, and an optional cron-driven daily report (public IP + geo + speedtest + activity + source health). |
-| [`Ticker`](#ticker) | `0.6.0` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
+| [`Ticker`](#ticker) | `0.6.01` | jstevenscl | MIT | Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts |
 | [`Twitcharr`](#twitcharr) | `1.3.3` | eliasbruno124-dev | MIT | Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback. |
 | [`UK Sport on TV`](#uk-sport-on-tv) | `0.3.0` | petebutty | MIT | Which channel shows each UK football match, weeks ahead: UK TV (Sky Sports, TNT Sports, Premier Sports, BBC, ITV…, from live-footballontv.com), and club channels (Celtic TV, Hearts TV…) for the home club's games UK TV doesn't show. Added to those channels' guides at each match's time (gaps only) and kept for players such as Viewarr. Polite, cached fetching. |
 | [`Underfed`](#underfed) | `0.10.0` | PilaScat | MIT | Moves a channel off a source that is starving it, drifting its sound, missing whole stretches, looping on corrupt packets or refusing it: to the next source when the stream arrives at a fraction of its bitrate, with its timestamps apart, with holes in its picture or sound or forcing reconnect after reconnect, to the back of the chain when the provider answers 403 or closes the connection without sending a byte. |
@@ -708,7 +708,7 @@ Push Dispatcharr channel/stream/VOD events to a Telegram chat via a bot. Include
 
 ### [Ticker](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/ticker/README.md)
 
-**Version:** `0.6.0` | **Author:** jstevenscl | **Last Updated:** Nov 17 2026, 19:46 UTC
+**Version:** `0.6.01` | **Author:** jstevenscl | **Last Updated:** Nov 22 2026, 07:26 UTC
 
 Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts
 
@@ -717,10 +717,10 @@ Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`0.6.0`)](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.6.0/ticker-0.6.0.zip)
-- [All Versions (8 available)](./metadata/ticker)
+- [Latest Release (`0.6.01`)](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.6.01/ticker-0.6.01.zip)
+- [All Versions (9 available)](./metadata/ticker)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/ticker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/ticker/README.md) | **Last Change:** [`4ac2b53`](https://github.com/Dispatcharr/Plugins/commit/4ac2b53678c99bec97c738193d88450f8d1bc855)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/ticker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/ticker/README.md) | **Last Change:** [`a34a834`](https://github.com/Dispatcharr/Plugins/commit/a34a834d297e319d33109032c5966013b5347601)
 
 ---
 
@@ -863,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 22 2026, 03:55 UTC*
+*Last updated: Nov 22 2026, 07:27 UTC*

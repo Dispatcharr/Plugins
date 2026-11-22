@@ -2,7 +2,7 @@
 
 # Ticker
 
-**Version:** `0.6.0` | **Author:** jstevenscl | **Last Updated:** Nov 17 2026, 19:46 UTC
+**Version:** `0.6.01` | **Author:** jstevenscl | **Last Updated:** Nov 22 2026, 07:26 UTC
 
 Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports Ticker, Custom Text, EAS/JAS Weather Alerts
 
@@ -14,20 +14,21 @@ Dynamic text overlays for IPTV channels — Satellite Radio Now Playing, Sports 
 
 ### Latest Release
 
-- **Download:** [`ticker-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.6.0/ticker-0.6.0.zip)
-- **Built:** Nov 17 2026, 19:47 UTC
-- **Source Commit:** [`4ac2b53`](https://github.com/Dispatcharr/Plugins/commit/4ac2b53678c99bec97c738193d88450f8d1bc855)
+- **Download:** [`ticker-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.6.01/ticker-0.6.01.zip)
+- **Built:** Nov 22 2026, 07:27 UTC
+- **Source Commit:** [`a34a834`](https://github.com/Dispatcharr/Plugins/commit/a34a834d297e319d33109032c5966013b5347601)
 
 **Checksums:**
 ```
-MD5:    b2f51f0fef6434bf36df22caa88502fe
-SHA256: 9039dbb87f55ccd181f6a1d53eccec4b4d9bcf573c84b2594259cbbf2515c2b7
+MD5:    60f579a448e55f0c8e5a7d7d4b252177
+SHA256: 7d9d73f8d1b3a33f6b0eae22965a4defac7fead808ad08d44db33841825c72be
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `0.6.01` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.6.01/ticker-0.6.01.zip) | Nov 22 2026, 07:27 UTC | [`a34a834`](https://github.com/Dispatcharr/Plugins/commit/a34a834d297e319d33109032c5966013b5347601) | 60f579a448e55f0c8e5a7d7d4b252177 | 7d9d73f8d1b3a33f6b0eae22965a4defac7fead808ad08d44db33841825c72be |
 | `0.6.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.6.0/ticker-0.6.0.zip) | Nov 17 2026, 19:47 UTC | [`4ac2b53`](https://github.com/Dispatcharr/Plugins/commit/4ac2b53678c99bec97c738193d88450f8d1bc855) | b2f51f0fef6434bf36df22caa88502fe | 9039dbb87f55ccd181f6a1d53eccec4b4d9bcf573c84b2594259cbbf2515c2b7 |
 | `0.5.06` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.5.06/ticker-0.5.06.zip) | Nov 16 2026, 20:17 UTC | [`5e3a120`](https://github.com/Dispatcharr/Plugins/commit/5e3a120cd5c4d3fc05d07467395bd53965bde7d5) | cf78c96f6d978f246fdf95ac01d152cc | ae8b5fcd0996f63797e57f04821f2f30eba8b1ff1e89bae2ca4b22bdf7ecd84d |
 | `0.5.05` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/ticker-0.5.05/ticker-0.5.05.zip) | Oct 22 2026, 23:29 UTC | [`7685d8a`](https://github.com/Dispatcharr/Plugins/commit/7685d8a0bc36087296f3ceff2e766e83fea5f6e6) | c9f9040cad3064c4a0af277e85c931af | 47a3c00a1f27d7398ed1bf54fef56d028f3a3d6c4e2398bfa9129da725c2f005 |

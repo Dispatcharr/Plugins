@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-22T03:55:34Z",
+  "generated_at": "2026-11-22T07:27:21Z",
   "manifest": {
     "slug": "iptv-checker",
     "name": "IPTV Checker",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-21T20:02:27Z",
-    "download_count": 5906,
+    "download_count": 5923,
     "latest": {
       "version": "1.26.3251946",
       "commit_sha": "5316ae23f523ec9d84dc7d7e9f94a96c59886f82",
@@ -28,7 +28,7 @@
       "latest_url": "iptv-checker-1.26.3251946/iptv-checker-1.26.3251946.zip",
       "url": "iptv-checker-1.26.3251946/iptv-checker-1.26.3251946.zip",
       "size": 423,
-      "download_count": 81
+      "download_count": 97
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3251946/iptv_checker-v1.26.3251946.zip",
         "url": "iptv-checker-1.26.3251946/iptv-checker-1.26.3251946.zip",
         "size": 423,
-        "download_count": 81
+        "download_count": 97
       },
       {
         "version": "1.26.3121307",
@@ -59,7 +59,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3121307/iptv_checker-v1.26.3121307.zip",
         "url": "iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip",
         "size": 415,
-        "download_count": 902
+        "download_count": 903
       },
       {
         "version": "1.26.3052213",
@@ -183,5 +183,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawJnvQAKCRB+wDprTCI0\nzu4uAQDxwcPW1Vgo3tNwF39DiQKqjhehrLMEjvk8poa8m3YhJQD+NCxo2kGk3jpe\nrZhYlk71DS1iyl9I0iWDyyjuM2B3pQA=\n=H4gl\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawKZXgAKCRB+wDprTCI0\nzk48APsEhmrATgxl2+E0MuM6wDmlSj8kHS0nKef90ohUoRU9fwD7BinesIGg8BKA\nhmcQalTmYkDdWm57D3tmtPBpJ+xB7gU=\n=e5b1\n-----END PGP SIGNATURE-----"
 }
