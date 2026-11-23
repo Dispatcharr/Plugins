@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-23T02:42:23Z",
+  "generated_at": "2026-11-23T19:24:52Z",
   "manifest": {
     "slug": "epg-and-sports-editor",
     "name": "EPG & Sports Editor",
@@ -11,26 +11,41 @@
     "repo_url": "https://github.com/jstevenscl/epg-and-sports-editor",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-23T02:41:50Z",
-    "download_count": 492,
+    "last_updated": "2026-11-23T19:24:08Z",
+    "download_count": 473,
     "latest": {
-      "version": "0.6.03",
-      "commit_sha": "87272e3a3aac2df3550b88e5aa6d9ed936aad3a9",
-      "commit_sha_short": "87272e3",
-      "changelog": "615",
-      "build_timestamp": "2026-11-23T02:42:08Z",
-      "last_updated": "2026-11-23T02:41:50Z",
-      "checksum_md5": "f93affbbae82b8eda873be40a8901184",
-      "checksum_sha256": "6e6ca867cad1746466a622a7a9a2a05aec4b3c62cbe37e4a109bac908ce88bef",
+      "version": "0.6.04",
+      "commit_sha": "da28a7a264b5912714f2529ee9446b7ad2ced415",
+      "commit_sha_short": "da28a7a",
+      "changelog": "624",
+      "build_timestamp": "2026-11-23T19:24:31Z",
+      "last_updated": "2026-11-23T19:24:08Z",
+      "checksum_md5": "9753a3a479aaf62eb5f330042bde75bb",
+      "checksum_sha256": "47ca738443a1bcd40531756fa8ad966d4bc3393880c6f64081ff31afeeff55e6",
       "min_dispatcharr_version": "0.34.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.6.03/epg-and-sports-editor-v0.6.03.zip",
-      "latest_url": "epg-and-sports-editor-0.6.03/epg-and-sports-editor-0.6.03.zip",
-      "url": "epg-and-sports-editor-0.6.03/epg-and-sports-editor-0.6.03.zip",
-      "size": 190,
+      "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.6.04/epg-and-sports-editor-v0.6.04.zip",
+      "latest_url": "epg-and-sports-editor-0.6.04/epg-and-sports-editor-0.6.04.zip",
+      "url": "epg-and-sports-editor-0.6.04/epg-and-sports-editor-0.6.04.zip",
+      "size": 191,
       "download_count": 0
     },
     "versions": [
+      {
+        "version": "0.6.04",
+        "commit_sha": "da28a7a264b5912714f2529ee9446b7ad2ced415",
+        "commit_sha_short": "da28a7a",
+        "changelog": "624",
+        "build_timestamp": "2026-11-23T19:24:31Z",
+        "last_updated": "2026-11-23T19:24:08Z",
+        "checksum_md5": "9753a3a479aaf62eb5f330042bde75bb",
+        "checksum_sha256": "47ca738443a1bcd40531756fa8ad966d4bc3393880c6f64081ff31afeeff55e6",
+        "min_dispatcharr_version": "0.34.0",
+        "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.6.04/epg-and-sports-editor-v0.6.04.zip",
+        "url": "epg-and-sports-editor-0.6.04/epg-and-sports-editor-0.6.04.zip",
+        "size": 191,
+        "download_count": 0
+      },
       {
         "version": "0.6.03",
         "commit_sha": "87272e3a3aac2df3550b88e5aa6d9ed936aad3a9",
@@ -44,7 +59,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.6.03/epg-and-sports-editor-v0.6.03.zip",
         "url": "epg-and-sports-editor-0.6.03/epg-and-sports-editor-0.6.03.zip",
         "size": 190,
-        "download_count": 0
+        "download_count": 15
       },
       {
         "version": "0.6.02",
@@ -59,7 +74,7 @@
         "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.6.02/epg-and-sports-editor-v0.6.02.zip",
         "url": "epg-and-sports-editor-0.6.02/epg-and-sports-editor-0.6.02.zip",
         "size": 190,
-        "download_count": 41
+        "download_count": 44
       },
       {
         "version": "0.6.01",
@@ -160,22 +175,8 @@
         "url": "epg-and-sports-editor-0.5.19/epg-and-sports-editor-0.5.19.zip",
         "size": 182,
         "download_count": 33
-      },
-      {
-        "version": "0.5.18",
-        "commit_sha": "6ad4e4705822914cbc76e2d881f4589051d82ef0",
-        "commit_sha_short": "6ad4e47",
-        "changelog": "523",
-        "build_timestamp": "2026-11-05T13:42:00Z",
-        "last_updated": "2026-11-05T13:41:40Z",
-        "checksum_md5": "cc82da7552c2e6117c53df296f8d7eb9",
-        "checksum_sha256": "34343a78e305b2bef2967f00dd937ae2b48ac6dc3585621e2b75dd26b3187a7d",
-        "source_url": "https://github.com/jstevenscl/epg-and-sports-editor/releases/download/v0.5.18/epg-and-sports-editor-v0.5.18.zip",
-        "url": "epg-and-sports-editor-0.5.18/epg-and-sports-editor-0.5.18.zip",
-        "size": 181,
-        "download_count": 37
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawOoFAAKCRB+wDprTCI0\nztIDAP4sCqb8TJpvRhhuCojLKGADgYLe2Y+0ArqzAftGYkw0ywEAn1FIvHkyUzcl\nYJ+Dvm7mrWuTE2jU4KZqiRlY3ynrIA0=\n=dIRc\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawSTCwAKCRB+wDprTCI0\nzoFVAP0UfQ1okhoYpd/YvqOKq6bBa+h+wbU7X32Vcy1Qh9OHuQEAtDB8vxXqkPL6\nqv3H0PyzLtgtMpXW0BRK0cOzKMk1jAY=\n=Uzry\n-----END PGP SIGNATURE-----"
 }
