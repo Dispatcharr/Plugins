@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-23T19:24:52Z",
+  "generated_at": "2026-11-23T19:29:34Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -410,14 +410,14 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/packet-slapper/manifest.json",
         "author": "write-erase",
         "license": "MIT",
-        "last_updated": "2026-11-18T17:02:18Z",
+        "last_updated": "2026-11-23T19:28:47Z",
         "download_count": 433,
-        "latest_version": "2.0.0",
-        "latest_changelog": "577",
-        "latest_md5": "4033e9d3e23e7c46fc3f81e4bcfb0e95",
-        "latest_sha256": "2879bae319423fffb596d9cbc9514d88455ac4461411e5206fdce05aebb7a5ad",
-        "latest_url": "packet-slapper-2.0.0/packet-slapper-2.0.0.zip",
-        "latest_size": 62,
+        "latest_version": "2.0.1",
+        "latest_changelog": "625",
+        "latest_md5": "d26c24a250f9466231f8d182412707f3",
+        "latest_sha256": "74a7108b0f887d2ef3e0b11823c696a71a176620bff298f130d745999aa58d76",
+        "latest_url": "packet-slapper-2.0.1/packet-slapper-2.0.1.zip",
+        "latest_size": 63,
         "min_dispatcharr_version": "0.34.0"
       },
       {
@@ -736,5 +736,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawSTEQAKCRB+wDprTCI0\nzsG4AP9I5w/mJCo2hdDLM3kdW56yRem7xR39NXyLCpgrdyURXwD7BUwYwnPeHTj0\nFXZK28W3BUqsis4y1KD3Cr+to8ooewY=\n=f39M\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawSUJQAKCRB+wDprTCI0\nzpFmAP0ZWtpzA8EjByTCRFZFmR6f3qYfuFUhNoOpSYXWHnyEjQEAtkn0alsQrRWB\nwYHCo2bKw1dyi+ZvwNDYgiBU+mN7YAU=\n=rnHi\n-----END PGP SIGNATURE-----"
 }

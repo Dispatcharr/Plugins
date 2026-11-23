@@ -34,7 +34,7 @@ This branch contains all published plugin releases.
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
 | [`Multiview`](#multiview) | `0.7.0` | sethwv | MIT | Tile multiple Dispatcharr channel streams into multi-view outputs using FFmpeg |
 | [`Newsflasharr`](#newsflasharr) | `1.26.2832058` | PiratesIRC | MIT | Central notification service: other plugins drop events, Newsflasharr routes them to Discord, a webhook, ntfy, Apprise, email, a Dispatcharr Connect Integration, or an on-screen banner over live TV, with deduplication, storm throttling, quiet hours and per-channel retry. |
-| [`Packet Slapper`](#packet-slapper) | `2.0.0` | write-erase | MIT | Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics. |
+| [`Packet Slapper`](#packet-slapper) | `2.0.1` | write-erase | MIT | Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics. |
 | [`PWS - Pirate Weatharr Station`](#pws-pirate-weatharr-station) | `1.6.0` | dexdeadly | MIT | TV-style weather channels powered by the Pirate Weather API & NOAA. Runs up to three stations, each with its own location and Dispatcharr channel. |
 | [`Profilarr`](#profilarr) | `2.1.6` | Tw1zT3d2four7 | MIT | Hybrid ffmpeg + cvlc stream profiles. ffmpeg fetches the provider stream directly with a custom user-agent and reconnect handling, and regenerates timestamps (+genpts+igndts+discardcorrupt); cvlc then buffers and delivers the already-clean stream, so downstream players don't freeze on a CDN-hiccup discontinuity. |
 | [`reservoarr`](#reservoarr) | `6.8.0` | brko7 | MIT | Delay-buffer stream profile that absorbs IPTV CDN gaps so Plex Live TV stops dying |
@@ -488,7 +488,7 @@ Central notification service: other plugins drop events, Newsflasharr routes the
 
 ### [Packet Slapper](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/packet-slapper/README.md)
 
-**Version:** `2.0.0` | **Author:** write-erase | **Last Updated:** Nov 18 2026, 17:02 UTC
+**Version:** `2.0.1` | **Author:** write-erase | **Last Updated:** Nov 23 2026, 19:28 UTC
 
 Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics.
 
@@ -497,10 +497,10 @@ Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network c
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`2.0.0`)](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-2.0.0/packet-slapper-2.0.0.zip)
-- [All Versions (9 available)](./metadata/packet-slapper)
+- [Latest Release (`2.0.1`)](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-2.0.1/packet-slapper-2.0.1.zip)
+- [All Versions (10 available)](./metadata/packet-slapper)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/packet-slapper) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/packet-slapper/README.md) | **Last Change:** [`b119dd7`](https://github.com/Dispatcharr/Plugins/commit/b119dd78f14d4c96893473adc8d7b9dbf4e616d2)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/packet-slapper) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/packet-slapper/README.md) | **Last Change:** [`deb55fe`](https://github.com/Dispatcharr/Plugins/commit/deb55fe5dc29c6c4b61e1d050a5cb8886a536f43)
 
 ---
 
@@ -863,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 23 2026, 19:25 UTC*
+*Last updated: Nov 23 2026, 19:29 UTC*

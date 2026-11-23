@@ -2,7 +2,7 @@
 
 # Packet Slapper
 
-**Version:** `2.0.0` | **Author:** write-erase | **Last Updated:** Nov 18 2026, 17:02 UTC
+**Version:** `2.0.1` | **Author:** write-erase | **Last Updated:** Nov 23 2026, 19:28 UTC
 
 Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics.
 
@@ -14,20 +14,21 @@ Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network c
 
 ### Latest Release
 
-- **Download:** [`packet-slapper-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-2.0.0/packet-slapper-2.0.0.zip)
-- **Built:** Nov 18 2026, 17:02 UTC
-- **Source Commit:** [`b119dd7`](https://github.com/Dispatcharr/Plugins/commit/b119dd78f14d4c96893473adc8d7b9dbf4e616d2)
+- **Download:** [`packet-slapper-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-2.0.1/packet-slapper-2.0.1.zip)
+- **Built:** Nov 23 2026, 19:29 UTC
+- **Source Commit:** [`deb55fe`](https://github.com/Dispatcharr/Plugins/commit/deb55fe5dc29c6c4b61e1d050a5cb8886a536f43)
 
 **Checksums:**
 ```
-MD5:    4033e9d3e23e7c46fc3f81e4bcfb0e95
-SHA256: 2879bae319423fffb596d9cbc9514d88455ac4461411e5206fdce05aebb7a5ad
+MD5:    d26c24a250f9466231f8d182412707f3
+SHA256: 74a7108b0f887d2ef3e0b11823c696a71a176620bff298f130d745999aa58d76
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `2.0.1` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-2.0.1/packet-slapper-2.0.1.zip) | Nov 23 2026, 19:29 UTC | [`deb55fe`](https://github.com/Dispatcharr/Plugins/commit/deb55fe5dc29c6c4b61e1d050a5cb8886a536f43) | d26c24a250f9466231f8d182412707f3 | 74a7108b0f887d2ef3e0b11823c696a71a176620bff298f130d745999aa58d76 |
 | `2.0.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-2.0.0/packet-slapper-2.0.0.zip) | Nov 18 2026, 17:02 UTC | [`b119dd7`](https://github.com/Dispatcharr/Plugins/commit/b119dd78f14d4c96893473adc8d7b9dbf4e616d2) | 4033e9d3e23e7c46fc3f81e4bcfb0e95 | 2879bae319423fffb596d9cbc9514d88455ac4461411e5206fdce05aebb7a5ad |
 | `1.3.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-1.3.0/packet-slapper-1.3.0.zip) | Nov 14 2026, 21:10 UTC | [`df29445`](https://github.com/Dispatcharr/Plugins/commit/df29445f1f4d13be10c82d62d942a885c6421456) | 375776049f0fe8b893eaf581796b94cf | a026df44c50a39e5e0bb188e4834d09cdb06612729e40077886f8ad2fb2c88cb |
 | `1.2.0` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/packet-slapper-1.2.0/packet-slapper-1.2.0.zip) | Nov 13 2026, 14:49 UTC | [`74cebcf`](https://github.com/Dispatcharr/Plugins/commit/74cebcfcf41fecbb96e868d6a04c59f3ca4a8854) | ff8b1efa420d093505e0e571174b1aad | 44599e6c6448e50e325cb6874b771eddd23b0d2dec3ba9596b7ddadbef068b44 |
