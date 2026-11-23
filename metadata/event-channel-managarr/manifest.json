@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-22T22:24:08Z",
+  "generated_at": "2026-11-23T02:42:23Z",
   "manifest": {
     "slug": "event-channel-managarr",
     "name": "Event Channel Managarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-22T22:23:35Z",
-    "download_count": 1517,
+    "download_count": 1524,
     "latest": {
       "version": "1.26.3262214",
       "commit_sha": "538e2b2a1d4d6196306daa876c9ef3d868a518c5",
@@ -31,7 +31,7 @@
       "latest_url": "event-channel-managarr-1.26.3262214/event-channel-managarr-1.26.3262214.zip",
       "url": "event-channel-managarr-1.26.3262214/event-channel-managarr-1.26.3262214.zip",
       "size": 277,
-      "download_count": 0
+      "download_count": 5
     },
     "versions": [
       {
@@ -47,7 +47,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.3262214/Event-Channel-Managarr.zip",
         "url": "event-channel-managarr-1.26.3262214/event-channel-managarr-1.26.3262214.zip",
         "size": 277,
-        "download_count": 0
+        "download_count": 5
       },
       {
         "version": "1.26.3251903",
@@ -62,7 +62,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.3251903/Event-Channel-Managarr.zip",
         "url": "event-channel-managarr-1.26.3251903/event-channel-managarr-1.26.3251903.zip",
         "size": 276,
-        "download_count": 92
+        "download_count": 94
       },
       {
         "version": "1.26.3111512",
@@ -186,5 +186,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawNrjQAKCRB+wDprTCI0\nzp6hAQD59UThmDoPcDdH/pXvqnlDz3o4JvaKekpl6nhZD0OKGgD+MhNNqJM7ULkF\n2ygBy3F5QFsU8NLpY7VTj7TQQ/OgMg0=\n=rxc1\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawOoFAAKCRB+wDprTCI0\nzh4ZAP9G9khzjJm4+jdmS716dl53UJovhW92TejBwM1nrDxOjgD+KBQofiOyIvGb\njK/N74fNbGhqbX/Os2dHLXFnVvsp8A4=\n=SASK\n-----END PGP SIGNATURE-----"
 }
