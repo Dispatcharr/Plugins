@@ -2,7 +2,7 @@
 
 # Stream-Mapparr
 
-**Version:** `1.26.3262042` | **Author:** PiratesIRC | **Last Updated:** Nov 22 2026, 20:53 UTC
+**Version:** `1.26.3281300` | **Author:** PiratesIRC | **Last Updated:** Nov 24 2026, 13:10 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -14,20 +14,21 @@ Automatically add matching streams to channels based on name similarity and qual
 
 ### Latest Release
 
-- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3262042/stream-mapparr-1.26.3262042.zip)
-- **Built:** Nov 22 2026, 20:53 UTC
-- **Source Commit:** [`9eaeeef`](https://github.com/Dispatcharr/Plugins/commit/9eaeeef0518e8b50dc5089f4d3df6afdfe27b296)
+- **Download:** [`stream-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip)
+- **Built:** Nov 24 2026, 13:10 UTC
+- **Source Commit:** [`9b43e62`](https://github.com/Dispatcharr/Plugins/commit/9b43e6226e91fd0d125e22e9c8ca1885f94f38f2)
 
 **Checksums:**
 ```
-MD5:    f30375fca440fbc3b38dc841953013a6
-SHA256: 03185a0a8c19995d8e7d0750ed30d69806bbc8f88d1431b7360b16382a36a26c
+MD5:    68ffe22b04c5ea191f4a2e15205acfd2
+SHA256: bb4501b86e6be244c01b3d3445366069eec872715e4e0145ead4b8f7814a0d35
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3281300` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip) | Nov 24 2026, 13:10 UTC | [`9b43e62`](https://github.com/Dispatcharr/Plugins/commit/9b43e6226e91fd0d125e22e9c8ca1885f94f38f2) | 68ffe22b04c5ea191f4a2e15205acfd2 | bb4501b86e6be244c01b3d3445366069eec872715e4e0145ead4b8f7814a0d35 |
 | `1.26.3262042` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3262042/stream-mapparr-1.26.3262042.zip) | Nov 22 2026, 20:53 UTC | [`9eaeeef`](https://github.com/Dispatcharr/Plugins/commit/9eaeeef0518e8b50dc5089f4d3df6afdfe27b296) | f30375fca440fbc3b38dc841953013a6 | 03185a0a8c19995d8e7d0750ed30d69806bbc8f88d1431b7360b16382a36a26c |
 | `1.26.3251830` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3251830/stream-mapparr-1.26.3251830.zip) | Nov 21 2026, 18:44 UTC | [`ac9fa69`](https://github.com/Dispatcharr/Plugins/commit/ac9fa698298f4b54a99cadde84c6e38bbfa39555) | d96740b26a93993a4669611c5b30f1ec | 807ea632c5f383758af4828f7a21d4c405c805663841431f74f5fd6a40282bae |
 | `1.26.3221213` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3221213/stream-mapparr-1.26.3221213.zip) | Nov 19 2026, 12:48 UTC | [`63415b3`](https://github.com/Dispatcharr/Plugins/commit/63415b36791a0aef2c9ad1e5ae64674d68042b8a) | 888053d2740abebaedfdddfce4361e37 | 1b14bc2e94272d1c6c2188ec12d1399fa7e69da32182c40209fe8d0964c66f27 |
@@ -37,7 +38,6 @@ SHA256: 03185a0a8c19995d8e7d0750ed30d69806bbc8f88d1431b7360b16382a36a26c
 | `1.26.2911937` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2911937/stream-mapparr-1.26.2911937.zip) | Oct 18 2026, 19:54 UTC | [`79767cd`](https://github.com/Dispatcharr/Plugins/commit/79767cd3ca436d0a626727af77fa4fe3ce3829b5) | b424c81027fd9bb5052c788b8c8c14df | 7cbe5837dbf7b300b86bae06871d8cb4cc2fd31aa9de2708351d4800b4022cc6 |
 | `1.26.2911353` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2911353/stream-mapparr-1.26.2911353.zip) | Oct 18 2026, 14:29 UTC | [`9343daf`](https://github.com/Dispatcharr/Plugins/commit/9343daf999925681ae2bc4161d09df20c3c5a0b4) | 521bde132f09bfe6af5dd164fdb88278 | 33370bba6b6a8c0ef2de1e251d2d3023d69ac942755eee894a766bd9c821f3e2 |
 | `1.26.2901847` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2901847/stream-mapparr-1.26.2901847.zip) | Oct 17 2026, 18:59 UTC | [`3dd79d4`](https://github.com/Dispatcharr/Plugins/commit/3dd79d43677aff880e91bbb33883cb614b0dec01) | 90fddf324b89eb3dfa95e75b1d493751 | fe8c68a3581bbdd78ad6cff8f0fe431a642586b1a21d0e32832447f64b72514a |
-| `1.26.2901408` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.2901408/stream-mapparr-1.26.2901408.zip) | Oct 17 2026, 14:32 UTC | [`7479ce2`](https://github.com/Dispatcharr/Plugins/commit/7479ce291e2c491b8fe597a448fbcbe6b1ea37a6) | 5f9974c0a7c28477441fc4d9065fd0ee | 79d689a7562f9abc93ba9791c75e1452d59c57ee3f92b25fd79f0100fb7cff95 |
 
 ---
 
@@ -281,7 +281,7 @@ the operation lock prevents concurrent runs and auto-expires after 10 minutes.
 | **Match US OTA Only** | Match US broadcast channels by callsign |
 | **Sort Alternate Streams** | Re-sort existing streams by quality, and by throughput tier where probe data exists |
 | **Probe Stream Throughput** | Measure sustained throughput for assigned streams. Run this before Sort Alternate Streams |
-| **Fill Mirror Backups** | For M3U accounts placed in one Dispatcharr server group that carry the same streams from different provider hosts, add to each channel the matching stream, found by provider stream id, from every other active account whose host the channel has no stream from yet. Two accounts on the same host count as one, and inactive accounts are skipped. New streams go after the existing provider streams and before any custom stream. Adds only and never removes. In live mode it first saves each changed channel's previous stream order to `/data/stream_mapparr_snapshots/`, and changes nothing if that save fails. Writes every addition to `/config/stream-mapparr/fill-mirror-backups.txt` |
+| **Fill Mirror Backups** | For M3U accounts placed in one Dispatcharr server group that carry the same streams from different provider hosts, add to each channel the matching stream, found by provider stream id, from every other active account whose host the channel has no stream from yet. Two accounts on the same host count as one, and inactive accounts are skipped. New streams go after the existing provider streams and before any custom stream. Adds only and never removes. In live mode it first saves each changed channel's previous stream order to `snapshots/` in the plugin's data directory (see [Where Stream-Mapparr keeps its files](#where-stream-mapparr-keeps-its-files)), and changes nothing if that save fails. Writes every addition to `/config/stream-mapparr/fill-mirror-backups.txt` |
 | **Manage Channel Visibility** | Enable or disable channels based on stream count |
 | **View Status** | Show the running operation's percentage and estimated time, or a summary of the last completed operation when nothing is running |
 | **Clear CSV Exports** | Delete plugin CSV files, skipping any written in the last 40 minutes |
@@ -381,11 +381,42 @@ asks the server to delete this install's figures. Once the server confirms the
 delete, the plugin forgets its id, and ticking the setting again later starts a
 new one; if the delete could not reach the server, the plugin keeps the id and
 retries. The plugin keeps that id and the timing of its reports in
-/data/plugin_stats/stream-mapparr/ (install_id, sent, backoff, disabled,
-delete_backoff, lock). To start a new id, untick the setting and let a run
+`usage/stream-mapparr/` inside the plugin's data directory (install_id, sent,
+backoff, disabled, delete_backoff, lock). To start a new id, untick the setting and let a run
 finish so the delete succeeds; deleting that folder while the setting is ticked
 leaves the old figures on the server, and the new id then sends the full total
 again, so the badge counts those matches twice.
+
+## Where Stream-Mapparr keeps its files
+
+Dispatcharr 0.34 gives each plugin a private data directory. On that version Stream-Mapparr
+keeps its state there, in `/data/plugins/_data/<plugin id>/` (for this plugin,
+`/data/plugins/_data/stream-mapparr/`). It holds the saved settings cache, the processed
+results, the last run's results, the match tally behind the Streams Matched badge, the
+channel snapshots, the readouts written when `/config` cannot be written, and the usage
+counts folder. On Dispatcharr 0.33 nothing moves.
+
+Four other places hold files:
+
+- `/data/plugins/_shared/newsflasharr/stream-mapparr/` holds the run reports that
+  Newsflasharr attaches to its notifications. The folder is shared with Newsflasharr.
+- `/data/exports/` holds the CSV exports, as before.
+- `/data/stream_mapparr_*` holds the files from earlier versions. The first run on this
+  version copies them across and leaves them where they are, and records what it copied in
+  `migrated.json` inside the data directory. Delete them by hand only when both of these are
+  true: the `failed` list in `migrated.json` is empty, and none of the old files has changed
+  since the time `migrated.json` records. A Dispatcharr process that still runs the earlier
+  version, such as a Celery worker that has not run a plugin action since the upgrade, keeps
+  writing the old files until it reloads the plugin, and a restart of Dispatcharr ends that.
+- `/data/plugins/_data/` holds seven small files beside the data directory:
+  `<plugin id>.scheduler.lock`, `<plugin id>.scheduler_last_run.json`, `<plugin id>.active`,
+  `<plugin id>.migrated`, `<plugin id>.operation.lock`, `<plugin id>.m3u_refresh.lock` and
+  `<plugin id>.m3u_refresh_pending` (the last exists only while a rerun is queued).
+
+Uninstalling the plugin and choosing "delete data" removes the data directory. That takes
+the match tally behind the Streams Matched badge and this install's anonymous usage id, so
+a reinstall starts a new id. The seven small files and the shared reports folder are not
+removed by that choice.
 
 ## Changelog
 
