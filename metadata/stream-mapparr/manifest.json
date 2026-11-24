@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T13:11:05Z",
+  "generated_at": "2026-11-24T16:25:40Z",
   "manifest": {
     "slug": "stream-mapparr",
     "name": "Stream-Mapparr",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-24T13:10:29Z",
-    "download_count": 2847,
+    "download_count": 2870,
     "latest": {
       "version": "1.26.3281300",
       "commit_sha": "9b43e6226e91fd0d125e22e9c8ca1885f94f38f2",
@@ -28,7 +28,7 @@
       "latest_url": "stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip",
       "url": "stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip",
       "size": 640,
-      "download_count": 0
+      "download_count": 20
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.3281300/Stream-Mapparr.zip",
         "url": "stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip",
         "size": 640,
-        "download_count": 0
+        "download_count": 20
       },
       {
         "version": "1.26.3262042",
@@ -59,7 +59,7 @@
         "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.3262042/Stream-Mapparr.zip",
         "url": "stream-mapparr-1.26.3262042/stream-mapparr-1.26.3262042.zip",
         "size": 630,
-        "download_count": 216
+        "download_count": 219
       },
       {
         "version": "1.26.3251830",
@@ -183,5 +183,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawWM8gAKCRB+wDprTCI0\nzucPAP9pKfXEN9a0rDOOBTK0BcuDBg/wI+wpsoJPrMOMhgxRrwD9E8TBj2Uo7JZF\nRyTGO1Y2p2st2gRClt8Z6ZnoS67xUwU=\n=/eru\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawW6jQAKCRB+wDprTCI0\nzoX6AP4gvliQ0tSIIb1JEffk5oQBtwmOb6PsundGvPHZUtl67QD8CGjjwwBIP8rO\nS0a8UP5yj8YPXOpm537LHb0Cc1q9mAU=\n=dyXl\n-----END PGP SIGNATURE-----"
 }

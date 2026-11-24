@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T13:11:05Z",
+  "generated_at": "2026-11-24T16:25:40Z",
   "manifest": {
     "slug": "twitcharr",
     "name": "Twitcharr",
@@ -14,26 +14,40 @@
     "repo_url": "https://github.com/eliasbruno124-dev/Twitcharr",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-03T19:44:39Z",
+    "last_updated": "2026-11-24T16:24:54Z",
     "download_count": 1052,
     "latest": {
-      "version": "1.3.3",
-      "commit_sha": "dd6e1fa8b36604c630c2b6afdd6cd349283002ec",
-      "commit_sha_short": "dd6e1fa",
-      "changelog": "516",
-      "build_timestamp": "2026-11-03T19:46:12Z",
-      "last_updated": "2026-11-03T19:44:39Z",
-      "checksum_md5": "8c3d32792c0e03a60bb89f1af79f0367",
-      "checksum_sha256": "f3e1074dc88bd077abc088fb588fa8523c9064fdc6651512baea91683f52753a",
+      "version": "1.3.4",
+      "commit_sha": "65a378b35ef6b88ff8aaa374a76eb8785025ec07",
+      "commit_sha_short": "65a378b",
+      "changelog": "629",
+      "build_timestamp": "2026-11-24T16:25:32Z",
+      "last_updated": "2026-11-24T16:24:54Z",
+      "checksum_md5": "73c81b69764c3c5b75179b9a3ab319f1",
+      "checksum_sha256": "779821cc94db8cf83fd9736bfafbc431f031f74203322c81bb918f1c66cb68fa",
       "min_dispatcharr_version": "",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v1.3.3/twitcharr.zip",
-      "latest_url": "twitcharr-1.3.3/twitcharr-1.3.3.zip",
-      "url": "twitcharr-1.3.3/twitcharr-1.3.3.zip",
-      "size": 76,
-      "download_count": 201
+      "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v1.3.4/twitcharr.zip",
+      "latest_url": "twitcharr-1.3.4/twitcharr-1.3.4.zip",
+      "url": "twitcharr-1.3.4/twitcharr-1.3.4.zip",
+      "size": 82,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.3.4",
+        "commit_sha": "65a378b35ef6b88ff8aaa374a76eb8785025ec07",
+        "commit_sha_short": "65a378b",
+        "changelog": "629",
+        "build_timestamp": "2026-11-24T16:25:32Z",
+        "last_updated": "2026-11-24T16:24:54Z",
+        "checksum_md5": "73c81b69764c3c5b75179b9a3ab319f1",
+        "checksum_sha256": "779821cc94db8cf83fd9736bfafbc431f031f74203322c81bb918f1c66cb68fa",
+        "source_url": "https://github.com/eliasbruno124-dev/Twitcharr/releases/download/v1.3.4/twitcharr.zip",
+        "url": "twitcharr-1.3.4/twitcharr-1.3.4.zip",
+        "size": 82,
+        "download_count": 0
+      },
       {
         "version": "1.3.3",
         "commit_sha": "dd6e1fa8b36604c630c2b6afdd6cd349283002ec",
@@ -103,5 +117,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawWM8wAKCRB+wDprTCI0\nzhPZAQCVsexUklc5ax+JDugnmaQct3ivHqJVcQGh9+S/iQMPYAD/WI1KhK3vqPqb\nDD79roCrjYk/ZLbvnvVcRQNV0Y24eQg=\n=IgUz\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawW6jQAKCRB+wDprTCI0\nzhrPAP9hREG2JDs/v+stOc8T5n0OCfQfxrP8qsHT+pwmCi01TQEAuu2TUpk6gFs/\nYskiGJOyoTu5hgPh2m+mxi3Lu4thlw0=\n=YZva\n-----END PGP SIGNATURE-----"
 }
