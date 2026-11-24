@@ -2,7 +2,7 @@
 
 # Twitcharr
 
-**Version:** `1.3.4` | **Author:** eliasbruno124-dev | **Last Updated:** Nov 24 2026, 16:24 UTC
+**Version:** `1.3.5` | **Author:** eliasbruno124-dev | **Last Updated:** Nov 24 2026, 20:03 UTC
 
 Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV guide data and Streamlink playback.
 
@@ -12,20 +12,21 @@ Twitch live-TV plugin for Dispatcharr with automatic channels, streams, XMLTV gu
 
 ### Latest Release
 
-- **Download:** [`twitcharr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/twitcharr-1.3.4/twitcharr-1.3.4.zip)
-- **Built:** Nov 24 2026, 16:25 UTC
-- **Source Commit:** [`65a378b`](https://github.com/Dispatcharr/Plugins/commit/65a378b35ef6b88ff8aaa374a76eb8785025ec07)
+- **Download:** [`twitcharr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/twitcharr-1.3.5/twitcharr-1.3.5.zip)
+- **Built:** Nov 24 2026, 20:04 UTC
+- **Source Commit:** [`07dae09`](https://github.com/Dispatcharr/Plugins/commit/07dae09d0aae8529f1c5a8c8da5189d423c950a9)
 
 **Checksums:**
 ```
-MD5:    73c81b69764c3c5b75179b9a3ab319f1
-SHA256: 779821cc94db8cf83fd9736bfafbc431f031f74203322c81bb918f1c66cb68fa
+MD5:    e0d87f789f9f2f54887c94a5eeca2e07
+SHA256: e748ee426039df281b080c495bcbf9eef88478f471b6fd2c66198e39eeb0633f
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.3.5` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/twitcharr-1.3.5/twitcharr-1.3.5.zip) | Nov 24 2026, 20:04 UTC | [`07dae09`](https://github.com/Dispatcharr/Plugins/commit/07dae09d0aae8529f1c5a8c8da5189d423c950a9) | e0d87f789f9f2f54887c94a5eeca2e07 | e748ee426039df281b080c495bcbf9eef88478f471b6fd2c66198e39eeb0633f |
 | `1.3.4` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/twitcharr-1.3.4/twitcharr-1.3.4.zip) | Nov 24 2026, 16:25 UTC | [`65a378b`](https://github.com/Dispatcharr/Plugins/commit/65a378b35ef6b88ff8aaa374a76eb8785025ec07) | 73c81b69764c3c5b75179b9a3ab319f1 | 779821cc94db8cf83fd9736bfafbc431f031f74203322c81bb918f1c66cb68fa |
 | `1.3.3` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/twitcharr-1.3.3/twitcharr-1.3.3.zip) | Nov 03 2026, 19:46 UTC | [`dd6e1fa`](https://github.com/Dispatcharr/Plugins/commit/dd6e1fa8b36604c630c2b6afdd6cd349283002ec) | 8c3d32792c0e03a60bb89f1af79f0367 | f3e1074dc88bd077abc088fb588fa8523c9064fdc6651512baea91683f52753a |
 | `1.3.2` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/twitcharr-1.3.2/twitcharr-1.3.2.zip) | Jul 13 2026, 02:54 UTC | [`2d65eb1`](https://github.com/Dispatcharr/Plugins/commit/2d65eb13b1ad72210ca517520c9d0608d2dc342b) | fcf4797c127a0eae8914cd83d172f63f | 2e9211be932ed2e92936daa00463c822b5b052b10a257afc81f4ecb2f2da8b2c |

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T19:55:24Z",
+  "generated_at": "2026-11-24T20:04:21Z",
   "manifest": {
     "slug": "epg-janitor",
     "name": "EPG Janitor",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-22T21:49:51Z",
-    "download_count": 4716,
+    "download_count": 4717,
     "latest": {
       "version": "1.26.3262133",
       "commit_sha": "fe7dec59bfd61ea9ff175532444dfb589024012f",
@@ -32,7 +32,7 @@
       "latest_url": "epg-janitor-1.26.3262133/epg-janitor-1.26.3262133.zip",
       "url": "epg-janitor-1.26.3262133/epg-janitor-1.26.3262133.zip",
       "size": 486,
-      "download_count": 175
+      "download_count": 176
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.3262133/EPG-Janitor.zip",
         "url": "epg-janitor-1.26.3262133/epg-janitor-1.26.3262133.zip",
         "size": 486,
-        "download_count": 175
+        "download_count": 176
       },
       {
         "version": "1.26.3251831",
@@ -187,5 +187,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawXrsQAKCRB+wDprTCI0\nzn2GAQD1cFNp0mms1p6ei6fKswIrvQYH3xWrbZwPjA0ciwXAMAEAsUtNLZ6R+F2V\nlLgaGwmIdzQ4anB/P4eMCOjuX0UTfA0=\n=OrkP\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawXtygAKCRB+wDprTCI0\nzgrHAP9TuA3i0eeEsC7bMrop1bsqtKjf1Zho6X/THIzbZCNBZQEAlgfYrgZyfMpF\noTxT8rCiF/rnOCv7WshgvuW8z0ZucAA=\n=HIh5\n-----END PGP SIGNATURE-----"
 }
