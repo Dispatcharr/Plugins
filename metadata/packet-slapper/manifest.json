@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-23T19:29:34Z",
+  "generated_at": "2026-11-24T03:59:10Z",
   "manifest": {
     "slug": "packet-slapper",
     "name": "Packet Slapper",
@@ -11,26 +11,41 @@
     "repo_url": "https://github.com/write-erase/packet-slapper",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-23T19:28:47Z",
-    "download_count": 433,
+    "last_updated": "2026-11-24T03:58:26Z",
+    "download_count": 400,
     "latest": {
-      "version": "2.0.1",
-      "commit_sha": "deb55fe5dc29c6c4b61e1d050a5cb8886a536f43",
-      "commit_sha_short": "deb55fe",
-      "changelog": "625",
-      "build_timestamp": "2026-11-23T19:29:17Z",
-      "last_updated": "2026-11-23T19:28:47Z",
-      "checksum_md5": "d26c24a250f9466231f8d182412707f3",
-      "checksum_sha256": "74a7108b0f887d2ef3e0b11823c696a71a176620bff298f130d745999aa58d76",
+      "version": "2.1.0",
+      "commit_sha": "81e5aa568ae963f4939d16b09484b3130f709e63",
+      "commit_sha_short": "81e5aa5",
+      "changelog": "626",
+      "build_timestamp": "2026-11-24T03:58:55Z",
+      "last_updated": "2026-11-24T03:58:26Z",
+      "checksum_md5": "07bd797cc78758240048ca1484a95b20",
+      "checksum_sha256": "055e19c8db0c763f2dd0aea8dd5ead485f05e8952efb312f350c6bad71e8cbe8",
       "min_dispatcharr_version": "0.34.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v2.0.1/packet-slapper.zip",
-      "latest_url": "packet-slapper-2.0.1/packet-slapper-2.0.1.zip",
-      "url": "packet-slapper-2.0.1/packet-slapper-2.0.1.zip",
-      "size": 63,
+      "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v2.1.0/packet-slapper.zip",
+      "latest_url": "packet-slapper-2.1.0/packet-slapper-2.1.0.zip",
+      "url": "packet-slapper-2.1.0/packet-slapper-2.1.0.zip",
+      "size": 64,
       "download_count": 0
     },
     "versions": [
+      {
+        "version": "2.1.0",
+        "commit_sha": "81e5aa568ae963f4939d16b09484b3130f709e63",
+        "commit_sha_short": "81e5aa5",
+        "changelog": "626",
+        "build_timestamp": "2026-11-24T03:58:55Z",
+        "last_updated": "2026-11-24T03:58:26Z",
+        "checksum_md5": "07bd797cc78758240048ca1484a95b20",
+        "checksum_sha256": "055e19c8db0c763f2dd0aea8dd5ead485f05e8952efb312f350c6bad71e8cbe8",
+        "min_dispatcharr_version": "0.34.0",
+        "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v2.1.0/packet-slapper.zip",
+        "url": "packet-slapper-2.1.0/packet-slapper-2.1.0.zip",
+        "size": 64,
+        "download_count": 0
+      },
       {
         "version": "2.0.1",
         "commit_sha": "deb55fe5dc29c6c4b61e1d050a5cb8886a536f43",
@@ -44,7 +59,7 @@
         "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v2.0.1/packet-slapper.zip",
         "url": "packet-slapper-2.0.1/packet-slapper-2.0.1.zip",
         "size": 63,
-        "download_count": 0
+        "download_count": 11
       },
       {
         "version": "2.0.0",
@@ -158,22 +173,8 @@
         "url": "packet-slapper-1.0.1/packet-slapper-1.0.1.zip",
         "size": 48,
         "download_count": 13
-      },
-      {
-        "version": "1.0.0",
-        "commit_sha": "3cfc312abf5b0b52533e0b41165189beae2d072e",
-        "commit_sha_short": "3cfc312",
-        "changelog": "364",
-        "build_timestamp": "2026-09-27T19:22:02Z",
-        "last_updated": "2026-09-27T15:21:43-04:00",
-        "checksum_md5": "af97ba78f3e7a0df5d2a7b6824342a07",
-        "checksum_sha256": "6e075bedfcbf06be6c60758f42394a4f771ed8761c4d0a769617c3858b162fb9",
-        "source_url": "https://github.com/write-erase/packet-slapper/releases/download/v1.0.0/packet-slapper.zip",
-        "url": "packet-slapper-1.0.0/packet-slapper-1.0.0.zip",
-        "size": 44,
-        "download_count": 44
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawSUIwAKCRB+wDprTCI0\nznwGAP4yil6xf7utguMrlkH49U1u6pwd9CnLJU3hXHmPeJwIRQEA08eFXH8eZlwB\nDy/hrKepRRWBME5NXSFHOXjC1yYXUwQ=\n=wk7e\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawULlgAKCRB+wDprTCI0\nzr1IAP9v7ZxnCWbYnpoYjp0TQuitS5WDiM+Drgz2LGHMJ3H01wEAra1M6m1H+5Dh\nmosMsRwbnvCPjvlOdIU75mJG+E8DdQU=\n=Lim9\n-----END PGP SIGNATURE-----"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-23T19:24:52Z",
+  "generated_at": "2026-11-24T03:59:10Z",
   "manifest": {
     "slug": "lineuparr",
     "name": "Lineuparr",
@@ -10,7 +10,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-22T21:48:57Z",
-    "download_count": 4128,
+    "download_count": 4175,
     "latest": {
       "version": "1.26.3262133",
       "commit_sha": "a7010aba5684952d55ece78ae2c99453fd367d59",
@@ -25,7 +25,7 @@
       "latest_url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
       "url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
       "size": 467,
-      "download_count": 70
+      "download_count": 113
     },
     "versions": [
       {
@@ -40,7 +40,7 @@
         "min_dispatcharr_version": "v0.34.0",
         "url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
         "size": 467,
-        "download_count": 70
+        "download_count": 113
       },
       {
         "version": "1.26.3251844",
@@ -54,7 +54,7 @@
         "min_dispatcharr_version": "v0.34.0",
         "url": "lineuparr-1.26.3251844/lineuparr-1.26.3251844.zip",
         "size": 465,
-        "download_count": 132
+        "download_count": 133
       },
       {
         "version": "1.26.3052143",
@@ -68,7 +68,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.3052143/lineuparr-1.26.3052143.zip",
         "size": 457,
-        "download_count": 880
+        "download_count": 882
       },
       {
         "version": "1.26.2901915",
@@ -165,9 +165,9 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "lineuparr-1.26.2481702/lineuparr-1.26.2481702.zip",
         "size": 414,
-        "download_count": 428
+        "download_count": 429
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawSTDAAKCRB+wDprTCI0\nzkuuAQDx/ZIeSHfdRkFVyYj6lxQ3EF+l1CwbMZttQjUGt3bScgEAp6JUkpC3S9ux\nFWmvEgkmtTGJKlDgWO9DL+TQZrJRDgo=\n=wAAL\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawULlQAKCRB+wDprTCI0\nzrikAP40kCH/H/b3VrVTDmDZ14Wui/IpvHWaFyO2sMQs5e6/WQEAj/ZB9poqP7js\nHX+jGYseD/7US8hIvEi0HFoFi7N0mw8=\n=T9WJ\n-----END PGP SIGNATURE-----"
 }
