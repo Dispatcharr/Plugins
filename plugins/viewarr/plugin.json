@@ -1,0 +1,12 @@
+{
+  "name": "Viewarr",
+  "version": "0.6.13",
+  "description": "The server half of Viewarr: does the sports and guide work once for the whole house, puts each channel's best stream first, acts on reports from the TVs, so every TV is quicker and keeps working with the TVs off.",
+  "author": "petebutty",
+  "license": "MIT",
+  "source_type": "external",
+  "source_url": "https://github.com/petebutty/viewarr-plugin/releases/download/v{version}/viewarr-plugin-{version}.zip",
+  "repo_url": "https://github.com/petebutty/viewarr-plugin",
+  "help_url": "https://github.com/petebutty/viewarr-plugin#readme",
+  "manifest_version": 1
+}
