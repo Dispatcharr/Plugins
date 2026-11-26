@@ -1,6 +1,6 @@
 {
   "name": "Lineuparr",
-  "version": "1.26.3301606",
+  "version": "1.26.3301641",
   "description": "Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them.",
   "author": "PiratesIRC",
   "license": "MIT",
@@ -28,6 +28,7 @@
     },
     {
       "id": "preview_stream_match",
+      "async": true,
       "label": "Preview Stream Match",
       "button_label": "👁️ Preview",
       "description": "Dry run. Shows which stream would attach to each lineup channel and how confidently, and writes a CSV export and an HTML report. Changes no channel, stream or guide.",
@@ -36,6 +37,7 @@
     },
     {
       "id": "full_sync",
+      "async": true,
       "label": "Full Sync",
       "button_label": "🚀 Full Sync",
       "description": "Every step in one run: create groups and channels from the lineup, match streams, assign guides and logos, and enable the channels in your profile. Unless Preserve Existing Streams is on, the stream matching step replaces each channel's whole stream list and then deletes any channel left with no streams.",
@@ -47,6 +49,7 @@
     },
     {
       "id": "sync_channels",
+      "async": true,
       "label": "Sync Channels Only",
       "button_label": "📺 Sync Channels",
       "description": "Creates and updates the channel groups and channels the lineup describes. Adds and renumbers only; it matches no streams and deletes nothing.",
@@ -58,6 +61,7 @@
     },
     {
       "id": "apply_stream_match",
+      "async": true,
       "label": "Apply Stream Match Only",
       "button_label": "🎯 Match Streams",
       "description": "Attaches matched streams to channels that already exist, in quality order. Unless Preserve Existing Streams is on, it replaces each channel's whole stream list rather than adding to it, and then deletes any channel left with no streams.",
@@ -69,6 +73,7 @@
     },
     {
       "id": "apply_epg_match",
+      "async": true,
       "label": "Apply EPG Match",
       "button_label": "📰 Match EPG",
       "description": "Matches guide entries to your channels and assigns the programme guide. A channel that already has a guide is left alone, so this adds and never replaces.",
@@ -80,6 +85,7 @@
     },
     {
       "id": "apply_logo_match",
+      "async": true,
       "label": "Assign Logos",
       "button_label": "🎨 Assign Logos",
       "description": "Assigns a logo to each channel, taken from the guide entry's icon, the Logo Manager, or the tv-logos repository on GitHub, in that order. Sets a logo where there is none and removes none.",
@@ -117,5 +123,10 @@
       "button_color": "cyan"
     }
   ],
-  "manifest_version": 1
+  "manifest_version": 1,
+  "capabilities": [
+    "outbound_network",
+    "filesystem_write",
+    "background_tasks"
+  ]
 }
