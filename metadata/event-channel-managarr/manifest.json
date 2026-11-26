@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:07:08Z",
+  "generated_at": "2026-11-26T16:21:15Z",
   "manifest": {
     "slug": "event-channel-managarr",
     "name": "Event Channel Managarr",
@@ -15,7 +15,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-26T16:06:20Z",
-    "download_count": 1686,
+    "download_count": 1687,
     "latest": {
       "version": "1.26.3301557",
       "commit_sha": "331a83a3b6b08d3058e5ea56d1a822208aeda7fb",
@@ -31,7 +31,7 @@
       "latest_url": "event-channel-managarr-1.26.3301557/event-channel-managarr-1.26.3301557.zip",
       "url": "event-channel-managarr-1.26.3301557/event-channel-managarr-1.26.3301557.zip",
       "size": 288,
-      "download_count": 0
+      "download_count": 1
     },
     "versions": [
       {
@@ -47,7 +47,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Event-Channel-Managarr-Plugin/releases/download/v1.26.3301557/Event-Channel-Managarr.zip",
         "url": "event-channel-managarr-1.26.3301557/event-channel-managarr-1.26.3301557.zip",
         "size": 288,
-        "download_count": 0
+        "download_count": 1
       },
       {
         "version": "1.26.3262214",
@@ -186,5 +186,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhZLwAKCRB+wDprTCI0\nzgVJAQDPx9p1Zgmw3DoUUhUFd4t9BjguMwt1P4SlKcr46HXfJQEA+87XtX/24FQF\nrkNp1PWInNsN0Zkkqs5o1OWMZJhF+Q4=\n=wlVG\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhcfwAKCRB+wDprTCI0\nzl6yAQCKGatpOG2+ehHqElVZ4fmEEnVNtCznzbptEAkJmCUuPAEA2PEGhhYo5tXn\npzFNWghVqfhiIt2qkEDg5sGdPpxaPQY=\n=XS1d\n-----END PGP SIGNATURE-----"
 }

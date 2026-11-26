@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:00:46Z",
+  "generated_at": "2026-11-26T16:21:15Z",
   "manifest": {
     "slug": "lineuparr",
     "name": "Lineuparr",
@@ -9,25 +9,39 @@
     "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-22T21:48:57Z",
-    "download_count": 4303,
+    "last_updated": "2026-11-26T16:20:36Z",
+    "download_count": 3879,
     "latest": {
-      "version": "1.26.3262133",
-      "commit_sha": "a7010aba5684952d55ece78ae2c99453fd367d59",
-      "commit_sha_short": "a7010ab",
-      "changelog": "611",
-      "build_timestamp": "2026-11-22T21:49:38Z",
-      "last_updated": "2026-11-22T21:48:57Z",
-      "checksum_md5": "039f3dc5487d7635ee8c626d28f6776f",
-      "checksum_sha256": "ddf63f16a6404788e4a2566a5bdecd1ac1f7e4e8c53587de5e46f14da96d0370",
+      "version": "1.26.3301606",
+      "commit_sha": "753bfd25c337e0cd30e5e3fc16424acc4041e60b",
+      "commit_sha_short": "753bfd2",
+      "changelog": "643",
+      "build_timestamp": "2026-11-26T16:20:59Z",
+      "last_updated": "2026-11-26T16:20:36Z",
+      "checksum_md5": "2d474fc964a6f5814f4e978473cc36bd",
+      "checksum_sha256": "1899bedcb0dac529b700ce0b7dfedeb738dd00514de62fbde338b014701e6c54",
       "min_dispatcharr_version": "v0.34.0",
       "max_dispatcharr_version": "",
-      "latest_url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
-      "url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
-      "size": 467,
-      "download_count": 238
+      "latest_url": "lineuparr-1.26.3301606/lineuparr-1.26.3301606.zip",
+      "url": "lineuparr-1.26.3301606/lineuparr-1.26.3301606.zip",
+      "size": 478,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.26.3301606",
+        "commit_sha": "753bfd25c337e0cd30e5e3fc16424acc4041e60b",
+        "commit_sha_short": "753bfd2",
+        "changelog": "643",
+        "build_timestamp": "2026-11-26T16:20:59Z",
+        "last_updated": "2026-11-26T16:20:36Z",
+        "checksum_md5": "2d474fc964a6f5814f4e978473cc36bd",
+        "checksum_sha256": "1899bedcb0dac529b700ce0b7dfedeb738dd00514de62fbde338b014701e6c54",
+        "min_dispatcharr_version": "v0.34.0",
+        "url": "lineuparr-1.26.3301606/lineuparr-1.26.3301606.zip",
+        "size": 478,
+        "download_count": 0
+      },
       {
         "version": "1.26.3262133",
         "commit_sha": "a7010aba5684952d55ece78ae2c99453fd367d59",
@@ -40,7 +54,7 @@
         "min_dispatcharr_version": "v0.34.0",
         "url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
         "size": 467,
-        "download_count": 238
+        "download_count": 243
       },
       {
         "version": "1.26.3251844",
@@ -152,22 +166,8 @@
         "url": "lineuparr-1.26.2561550/lineuparr-1.26.2561550.zip",
         "size": 424,
         "download_count": 893
-      },
-      {
-        "version": "1.26.2481702",
-        "commit_sha": "73d61757c1729d0d58cd34fe24f4d422dcaf3642",
-        "commit_sha_short": "73d6175",
-        "changelog": "279",
-        "build_timestamp": "2026-09-05T17:43:29Z",
-        "last_updated": "2026-09-05T17:43:14Z",
-        "checksum_md5": "532b59b37f580ced08de2a65933fa649",
-        "checksum_sha256": "ac627e4897183392e56761aa4d26a2598382297e4df8873259a27cc0ffbe2fa8",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "lineuparr-1.26.2481702/lineuparr-1.26.2481702.zip",
-        "size": 414,
-        "download_count": 429
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhXswAKCRB+wDprTCI0\nzq2AAQDzWB+BpWuXVEDPTAjTHNZ3Rs7YhyLWgjBpBbzbe43NdwD9HsF0KQ4Qbyli\nxPLk93n/OO/vNiJnmX7gWuMSg56fZQA=\n=E9MU\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhcgAAKCRB+wDprTCI0\nzkNoAQD+7YGYWo+L1MX+P8Sv4j8OjBAIQx3UicAs5eTSsUniwwD6AuwXoO32dkLC\nwWz9eRUqRiPavLXMoouggMARG6uJfAA=\n=q1Vs\n-----END PGP SIGNATURE-----"
 }

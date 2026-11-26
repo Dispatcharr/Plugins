@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:07:08Z",
+  "generated_at": "2026-11-26T16:21:15Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -259,7 +259,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T16:06:20Z",
-        "download_count": 1686,
+        "download_count": 1687,
         "latest_version": "1.26.3301557",
         "latest_changelog": "642",
         "latest_md5": "f7a84f16544c3ab54ca602e267cc6d5c",
@@ -310,7 +310,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-22T21:49:26Z",
-        "download_count": 6394,
+        "download_count": 6395,
         "latest_version": "1.26.3262133",
         "latest_changelog": "612",
         "latest_md5": "bb8982de6f848f6d5166ca9bac756eeb",
@@ -326,14 +326,14 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/lineuparr/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-11-22T21:48:57Z",
-        "download_count": 4303,
-        "latest_version": "1.26.3262133",
-        "latest_changelog": "611",
-        "latest_md5": "039f3dc5487d7635ee8c626d28f6776f",
-        "latest_sha256": "ddf63f16a6404788e4a2566a5bdecd1ac1f7e4e8c53587de5e46f14da96d0370",
-        "latest_url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
-        "latest_size": 467,
+        "last_updated": "2026-11-26T16:20:36Z",
+        "download_count": 3879,
+        "latest_version": "1.26.3301606",
+        "latest_changelog": "643",
+        "latest_md5": "2d474fc964a6f5814f4e978473cc36bd",
+        "latest_sha256": "1899bedcb0dac529b700ce0b7dfedeb738dd00514de62fbde338b014701e6c54",
+        "latest_url": "lineuparr-1.26.3301606/lineuparr-1.26.3301606.zip",
+        "latest_size": 478,
         "min_dispatcharr_version": "v0.34.0"
       },
       {
@@ -527,7 +527,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T15:44:33Z",
-        "download_count": 3005,
+        "download_count": 3007,
         "latest_version": "1.26.3301534",
         "latest_changelog": "639",
         "latest_md5": "6e9a60bc32249944cdaa91a8414b8239",
@@ -544,7 +544,7 @@
         "author": "funkasaur",
         "license": "MIT",
         "last_updated": "2026-11-21T12:40:21-05:00",
-        "download_count": 64,
+        "download_count": 65,
         "latest_version": "1.2.2",
         "latest_changelog": "589",
         "latest_md5": "1e38f2d647bb704f509e55bd05b78ead",
@@ -627,7 +627,7 @@
         "author": "eliasbruno124-dev",
         "license": "MIT",
         "last_updated": "2026-11-26T14:19:07Z",
-        "download_count": 1122,
+        "download_count": 1123,
         "latest_version": "1.3.7",
         "latest_changelog": "637",
         "latest_md5": "902e4b969be1bd03bece9f46fb0b02cd",
@@ -736,5 +736,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhZMgAKCRB+wDprTCI0\nzrH6AP46E6IJURq3n8evI3Aj2ZHW+huMwe1uC6EbgJplmdrJSQEArcAsG5qABp/7\n9xtSyBs2XyxOqCYN0aSQ3M3SeRugRQE=\n=d4P/\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhcgQAKCRB+wDprTCI0\nzrpaAQCAzACf8DsDG8KS8f55HbGl9Mt95RGLHZzaPgn7QW9ZTgEA6Ge7rlpC0dzd\n89oFuWaI0HAIpDxlZOhnZuOMPIGOmQU=\n=aAze\n-----END PGP SIGNATURE-----"
 }
