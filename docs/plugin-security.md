@@ -56,11 +56,16 @@ version range:
 | `requests-session-api` | `requests.Session` or `requests.session` outside guarded module helpers |
 | `os-process-api` | Direct `os` process-launch APIs outside guarded `subprocess` |
 | `asyncio-process-api` | Asyncio subprocess APIs outside guarded `subprocess` |
-| `filesystem-api` | Direct `io`, `os`, `shutil`, or `pathlib.Path` write APIs outside guarded `open` |
+| `filesystem-api` | Direct `io.open`, potentially writing `os.open`, and `pathlib.Path` open or content-write APIs outside guarded `open` |
 
 The broad frame, introspection, and dynamic-evaluation heuristics from the
 earlier query pack were removed because they do not model Dispatcharr's current
 `ContextVar` and plugin-local builtins design.
+
+The filesystem query does not report ordinary file-management APIs such as
+`shutil.copy2` or `Path.unlink`. These operations can bypass the wrapper too,
+but are common in legitimate plugins, and the wrapper is not a security boundary.
+The absence of a finding does not establish that filesystem access is confined.
 
 Both query families are informational to required validation. A contract finding,
 bypass finding, or CodeQL suppression applies `Manual Review Required`, which
