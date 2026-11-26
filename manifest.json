@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:21:15Z",
+  "generated_at": "2026-11-26T16:28:04Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -73,7 +73,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T15:53:16Z",
-        "download_count": 2306,
+        "download_count": 2307,
         "latest_version": "1.26.3301541",
         "latest_changelog": "640",
         "latest_md5": "e9124efa450f175e3cabf09f0b6941b2",
@@ -208,7 +208,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T16:00:03Z",
-        "download_count": 992,
+        "download_count": 994,
         "latest_version": "1.26.3301548",
         "latest_changelog": "641",
         "latest_md5": "3008c81efb521b536b86a09508c1b514",
@@ -259,7 +259,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T16:06:20Z",
-        "download_count": 1687,
+        "download_count": 1689,
         "latest_version": "1.26.3301557",
         "latest_changelog": "642",
         "latest_md5": "f7a84f16544c3ab54ca602e267cc6d5c",
@@ -305,18 +305,18 @@
       {
         "slug": "iptv-checker",
         "name": "IPTV Checker",
-        "description": "Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead.",
+        "description": "A Dispatcharr Plugin that goes through a playlist to check IPTV channels",
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/iptv-checker/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-11-22T21:49:26Z",
-        "download_count": 6395,
-        "latest_version": "1.26.3262133",
-        "latest_changelog": "612",
-        "latest_md5": "bb8982de6f848f6d5166ca9bac756eeb",
-        "latest_sha256": "6f9074357bbeab17e9ca40c0324e9ac262a8c4f46a26db3f0eb62962c7628aa6",
-        "latest_url": "iptv-checker-1.26.3262133/iptv-checker-1.26.3262133.zip",
-        "latest_size": 424,
+        "last_updated": "2026-11-26T16:27:26Z",
+        "download_count": 5573,
+        "latest_version": "1.26.3301619",
+        "latest_changelog": "644",
+        "latest_md5": "6dd9a0454200a1b8dd6b3c6041b2941f",
+        "latest_sha256": "4c51417c9d24faf65560bf572b781d2fbb2a15268550b45e9838a6242c62f4b8",
+        "latest_url": "iptv-checker-1.26.3301619/iptv-checker-1.26.3301619.zip",
+        "latest_size": 435,
         "min_dispatcharr_version": "v0.34.0"
       },
       {
@@ -460,7 +460,7 @@
         "author": "brko7",
         "license": "MIT",
         "last_updated": "2026-11-08T02:28:52Z",
-        "download_count": 1831,
+        "download_count": 1832,
         "latest_version": "6.8.0",
         "latest_changelog": "530",
         "latest_md5": "df146465205796e0cbdf00556513a577",
@@ -736,5 +736,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhcgQAKCRB+wDprTCI0\nzrpaAQCAzACf8DsDG8KS8f55HbGl9Mt95RGLHZzaPgn7QW9ZTgEA6Ge7rlpC0dzd\n89oFuWaI0HAIpDxlZOhnZuOMPIGOmQU=\n=aAze\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawheGwAKCRB+wDprTCI0\nzo9eAQDGUJj61UvvES7Glyc5g5PTTLvo02Ou90fK0SWVANwfrAEAn0BZA5GZJxM0\nMcU4heFQRMjt+eZo/lfwQGFg+A7bZgg=\n=V5Qq\n-----END PGP SIGNATURE-----"
 }

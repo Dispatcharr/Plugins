@@ -2,9 +2,9 @@
 
 # IPTV Checker
 
-**Version:** `1.26.3262133` | **Author:** PiratesIRC | **Last Updated:** Nov 22 2026, 21:49 UTC
+**Version:** `1.26.3301619` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 16:27 UTC
 
-Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead.
+A Dispatcharr Plugin that goes through a playlist to check IPTV channels
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://spdx.org/licenses/MIT.html) [![Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin)
 
@@ -14,20 +14,21 @@ Check IPTV stream status and quality with ffprobe, then rename, move, restore or
 
 ### Latest Release
 
-- **Download:** [`iptv-checker-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3262133/iptv-checker-1.26.3262133.zip)
-- **Built:** Nov 22 2026, 21:49 UTC
-- **Source Commit:** [`94a0f44`](https://github.com/Dispatcharr/Plugins/commit/94a0f446dd708f749444c8523d2afd1cee714333)
+- **Download:** [`iptv-checker-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3301619/iptv-checker-1.26.3301619.zip)
+- **Built:** Nov 26 2026, 16:27 UTC
+- **Source Commit:** [`f0b54ff`](https://github.com/Dispatcharr/Plugins/commit/f0b54ffa4f659d87c9d4842c440dc5ac6154eed8)
 
 **Checksums:**
 ```
-MD5:    bb8982de6f848f6d5166ca9bac756eeb
-SHA256: 6f9074357bbeab17e9ca40c0324e9ac262a8c4f46a26db3f0eb62962c7628aa6
+MD5:    6dd9a0454200a1b8dd6b3c6041b2941f
+SHA256: 4c51417c9d24faf65560bf572b781d2fbb2a15268550b45e9838a6242c62f4b8
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3301619` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3301619/iptv-checker-1.26.3301619.zip) | Nov 26 2026, 16:27 UTC | [`f0b54ff`](https://github.com/Dispatcharr/Plugins/commit/f0b54ffa4f659d87c9d4842c440dc5ac6154eed8) | 6dd9a0454200a1b8dd6b3c6041b2941f | 4c51417c9d24faf65560bf572b781d2fbb2a15268550b45e9838a6242c62f4b8 |
 | `1.26.3262133` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3262133/iptv-checker-1.26.3262133.zip) | Nov 22 2026, 21:49 UTC | [`94a0f44`](https://github.com/Dispatcharr/Plugins/commit/94a0f446dd708f749444c8523d2afd1cee714333) | bb8982de6f848f6d5166ca9bac756eeb | 6f9074357bbeab17e9ca40c0324e9ac262a8c4f46a26db3f0eb62962c7628aa6 |
 | `1.26.3251946` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3251946/iptv-checker-1.26.3251946.zip) | Nov 21 2026, 20:02 UTC | [`5316ae2`](https://github.com/Dispatcharr/Plugins/commit/5316ae23f523ec9d84dc7d7e9f94a96c59886f82) | bd2453a07c84bed239c5d710a41bc109 | aa1f6ca3a75d909cc84a31692e464966f894a0b2ee8c4905a36d05e461c79677 |
 | `1.26.3121307` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3121307/iptv-checker-1.26.3121307.zip) | Nov 08 2026, 13:18 UTC | [`d28367c`](https://github.com/Dispatcharr/Plugins/commit/d28367c11c81c1972e20db28f0aa9ec371f00945) | 4c78b0cb51428d968ca74dd84eaa3e9a | c0e1752e3cc31ad862bbd50be95c2af169f89cd93c1d6bd06fbd1b5b9f4e96ed |
@@ -37,7 +38,6 @@ SHA256: 6f9074357bbeab17e9ca40c0324e9ac262a8c4f46a26db3f0eb62962c7628aa6
 | `1.26.2561754` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2561754/iptv-checker-1.26.2561754.zip) | Sep 19 2026, 14:41 UTC | [`507db2c`](https://github.com/Dispatcharr/Plugins/commit/507db2c9b9b094551de71ea534566b08864d3c0d) | 6f4528c378c4000896f9453bdb1c790f | c011b8921ff2fa76450889123b068c6e95a2ad68bf5ab3bf381d399a8c768632 |
 | `1.26.2481600` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2481600/iptv-checker-1.26.2481600.zip) | Sep 05 2026, 16:22 UTC | [`1d17008`](https://github.com/Dispatcharr/Plugins/commit/1d17008721288ae94b2dad5309a91a76a5a20d8a) | 9a11728804bf3bc8081dc631c77d72fb | 7f86975260fdc2c91095294f5ab4c772c3d0f219cb994fc80ccffbdff0a452a3 |
 | `1.26.2402308` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2402308/iptv-checker-1.26.2402308.zip) | Aug 28 2026, 23:25 UTC | [`f1f0426`](https://github.com/Dispatcharr/Plugins/commit/f1f0426d04b1850308fe98aee0df9321383044d3) | ea84409f0a8024caf7e809c985fda818 | 4ad182d41de3364ea7e9f98749e0a82c6867188b715f6600e49ae0cc2b02af7d |
-| `1.26.2201040` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.2201040/iptv-checker-1.26.2201040.zip) | Aug 08 2026, 10:47 UTC | [`d663a41`](https://github.com/Dispatcharr/Plugins/commit/d663a410b27880e3df043156712d3c79652e89f3) | 2170f8d07b055a17b97bf88e63586915 | 0594cf87701f448c5a92c7b2a6ea60e8dda86a70c17f0752493d832c88d56a92 |
 
 ---
 
@@ -154,6 +154,43 @@ Contribution steps, the CI gates, and how updates reach the Dispatcharr plugin m
 This plugin makes bulk changes to your channel database, including permanent deletion when you
 enable it. Test on a small group first, keep a database backup, and read what an action says it will
 do before confirming it.
+
+## Where IPTV Checker keeps its files
+
+The plugin's private state is kept in a data folder that Dispatcharr creates for it under
+`/data/plugins/_data/`. The folder is named after the install: `iptv_checker` for a folder install and
+`iptv-checker` for an install from the Plugin Hub. In this guide `<data folder>` means that folder.
+
+| What | Where |
+|---|---|
+| Last results, loaded channels, windowed resume state, original groups for Restore | `<data folder>` (`results.json`, `loaded_channels.json`, `pending_resume.json`, `channel_state.json`) |
+| Streams-checked tally and the record of how far it was copied | `<data folder>` (`stream_counts.jsonl`, `stream_counts.offsets.json`) |
+| Anonymous usage install id and timing | `<data folder>/usage/iptv_checker/` |
+| Scheduler owner record, reload flag, fired-minute claims | Beside the data folder: `/data/plugins/_data/iptv_checker.scheduler.pid`, `iptv_checker.scheduler_reload.flag` and the folder `iptv_checker.fire_claims/` |
+| Progress file | Beside the data folder: `/data/plugins/_data/iptv_checker.progress.json` |
+| Report fallback, used only when `/config` cannot be written | `/data/plugins/_shared/newsflasharr/iptv-checker/` (the folder Newsflasharr reads) |
+| HTML report, dated copies and report CSV | `/config/iptv_checker/` (unchanged) |
+| CSV exports | `/data/exports/` (unchanged, shared with other plugins) |
+
+The files beside the data folder always use the folder key `iptv_checker`, whatever the install route,
+so every Dispatcharr worker finds the same owner record and claims. "Delete data" on uninstall removes
+the data folder only. The files beside it and the report folder are left in place.
+
+**Moving from the old layout.** The first start of this release copies each old `/data/iptv_checker_*`
+file into its new place. It only copies: a file that already exists in the new place is kept, and no old
+file is deleted or changed. While this release keeps the old layout, a worker on this release also reads
+the old owner record, reload flag and fire claims, so a worker still running the previous release does
+not start a second scheduler or fire a minute twice. The carry-over record is `migrated.json` in the data
+folder. Its `failed` list should be empty.
+
+**Progress mirror.** While the old layout is kept, every progress write also goes to
+`/data/iptv_checker_progress.json`, because Stream-Mapparr reads that exact path to stand aside while a
+scan runs. Point Stream-Mapparr at `/data/plugins/_data/iptv_checker.progress.json` and remove the mirror in
+the release after this one.
+
+**When the old files are safe to delete.** Only when `migrated.json` has an empty `failed` list and no old
+file has changed since the `time` recorded in it. An old file that keeps changing means a worker still runs
+the previous release.
 
 ## Anonymous usage counts
 
