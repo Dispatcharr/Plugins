@@ -6,7 +6,7 @@ A Dispatcharr plugin that records which channels are actually watched, and repor
 > **New to Dispatcharr plugins?** Start with the **[Dispatcharr Plugin Workflow guide](https://piratesirc.github.io/Dispatcharr-Plugin-Workflow/)**.
 > It explains what each plugin and tool does, where they overlap, and what order to use them in.
 
-**It never changes anything in Dispatcharr.** It reads which channels have viewers, writes its own report files, and keeps the state for the anonymous usage count in /data/plugin_stats/dustarr/. Nothing else.
+**It never changes anything in Dispatcharr.** It reads which channels have viewers, writes its own report files, and keeps the state for the anonymous usage count in Dispatcharr's data folder for the plugin. Nothing else.
 
 ## What it does
 
@@ -85,7 +85,24 @@ This is the part worth reading before installing anything that watches what your
 
 ## Where things are written
 
-The report and the CSV land in `/config/dustarr/`. `/config` is Dispatcharr's existing bind mount, so that is a real folder on your host: open the report by double clicking it. When `/config` cannot be written, they go to `/data/dustarr/reports/` instead. The full list of paths is in the [user guide](https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md#where-the-files-are-written).
+The report and the CSV land in `/config/dustarr/`. `/config` is Dispatcharr's existing bind mount, so that is a real folder on your host: open the report by double clicking it. When `/config` cannot be written, they go to `/data/plugins/_shared/newsflasharr/dustarr/` instead. The full list of paths is in the [user guide](https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md#where-the-files-are-written).
+
+## Where Dustarr keeps its files
+
+Dustarr's private state lives in Dispatcharr's data folder for the plugin, `/data/plugins/_data/dustarr/`.
+That folder holds `usage.json` (the recorded usage, the one file worth backing up),
+`scheduled_run.json`, `notify_state.json` and `usage/dustarr/`
+(the anonymous usage counter's install id and send timing). The reports Newsflasharr
+emails, when `/config` cannot be written, go to `/data/plugins/_shared/newsflasharr/dustarr/`.
+Nothing beside that folder is needed.
+
+The first start after an upgrade copies the old `/data/dustarr` and
+`/data/plugin_stats/dustarr` files into the data folder once. It never overwrites
+a new file, and it never deletes or edits an old one. The result is recorded in
+`migrated.json` in the data folder. While the old and new releases run side by
+side, a file the old release wrote more recently is taken over, so the usage
+history is not lost when the collector lease changes hands.
+Uninstalling with "delete data" removes the data folder, and the install id with it.
 
 ## Anonymous usage counts
 
@@ -127,7 +144,7 @@ takes effect the next time an action runs or a report is built; the plugin then 
 the server to delete this install's figures. Once the server confirms the delete,
 the plugin forgets its id, and ticking the setting again later starts a new one; if
 the delete could not reach the server, the plugin keeps the id and retries. The
-plugin keeps that id and the timing of its reports in /data/plugin_stats/dustarr/.
+plugin keeps that id and the timing of its reports in /data/plugins/_data/dustarr/usage/dustarr/.
 To start a new id, untick the setting and let an action run so the server deletes
 this install's figures; deleting that folder while the setting is ticked leaves
 the old figures on the server, and the new id then sends the full total again, so
