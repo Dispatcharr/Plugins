@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T03:59:10Z",
+  "generated_at": "2026-11-26T13:12:36Z",
   "manifest": {
     "slug": "stream-probe",
     "name": "Stream Probe",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-21T12:40:21-05:00",
-    "download_count": 53,
+    "download_count": 62,
     "latest": {
       "version": "1.2.2",
       "commit_sha": "24ddc0e14ab2f36b26a7577252a4488a7ff92adf",
@@ -28,7 +28,7 @@
       "latest_url": "stream-probe-1.2.2/stream-probe-1.2.2.zip",
       "url": "stream-probe-1.2.2/stream-probe-1.2.2.zip",
       "size": 198,
-      "download_count": 39
+      "download_count": 48
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/funkasaur/dispatcharr-stream-probe/releases/download/v1.2.2/stream_probe-1.2.2.zip",
         "url": "stream-probe-1.2.2/stream-probe-1.2.2.zip",
         "size": 198,
-        "download_count": 39
+        "download_count": 48
       },
       {
         "version": "1.2.0",
@@ -63,5 +63,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawULmAAKCRB+wDprTCI0\nzo2uAQCG8Y16F5qh7ihFqsEk4nHPEg2OJc0mE0smbAnCuPZq7QEAoO6QV/YieYfc\nPNKYCD2j21vnDlumdeqAimWOrGnRzww=\n=PYjQ\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawgwTwAKCRB+wDprTCI0\nzgxeAQC0oz8RhHXxsL9KTjt6opKPzzXJ7hhYgQmyv9zAG75UEQEA7brOua1J1Wxt\nKuHpFEcGFz4t3Zr4C0bd3X9/Jbd0yQ0=\n=ij6Y\n-----END PGP SIGNATURE-----"
 }

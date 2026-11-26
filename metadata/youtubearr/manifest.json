@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T16:25:40Z",
+  "generated_at": "2026-11-26T13:12:36Z",
   "manifest": {
     "slug": "youtubearr",
     "name": "YouTubearr",
@@ -10,7 +10,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-09-16T12:55:53Z",
-    "download_count": 2113,
+    "download_count": 2127,
     "latest": {
       "version": "1.40.1",
       "commit_sha": "e14ea92d80763c52784047f843aa76069b45c7c1",
@@ -25,7 +25,7 @@
       "latest_url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
       "url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
       "size": 5017,
-      "download_count": 765
+      "download_count": 779
     },
     "versions": [
       {
@@ -40,7 +40,7 @@
         "min_dispatcharr_version": "v0.20.0",
         "url": "youtubearr-1.40.1/youtubearr-1.40.1.zip",
         "size": 5017,
-        "download_count": 765
+        "download_count": 779
       },
       {
         "version": "1.40.0",
@@ -142,5 +142,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawW6jgAKCRB+wDprTCI0\nzqaNAP9Le2Q0uwUJUMoq41rUvOcCI1wV9OsYXuQF1PrE64kAQAD/epaEeNL8mMqg\nL+bB4X7YS+V5vA1e8wyF+R1iexTOFQs=\n=24DC\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawgwUQAKCRB+wDprTCI0\nzlPGAQCnbIBguIwe+tP0qmpbCQQGwvAwY9M6yK7ufDcuOfPzlgEArjXcPvN/TMcO\nVB5/B/HVwBexso6JNWv9JEGaim3j1Qc=\n=3K7Y\n-----END PGP SIGNATURE-----"
 }

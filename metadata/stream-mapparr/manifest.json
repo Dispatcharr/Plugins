@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T20:04:21Z",
+  "generated_at": "2026-11-26T13:12:36Z",
   "manifest": {
     "slug": "stream-mapparr",
     "name": "Stream-Mapparr",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-24T13:10:29Z",
-    "download_count": 2909,
+    "download_count": 3090,
     "latest": {
       "version": "1.26.3281300",
       "commit_sha": "9b43e6226e91fd0d125e22e9c8ca1885f94f38f2",
@@ -28,7 +28,7 @@
       "latest_url": "stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip",
       "url": "stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip",
       "size": 640,
-      "download_count": 57
+      "download_count": 229
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.3281300/Stream-Mapparr.zip",
         "url": "stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip",
         "size": 640,
-        "download_count": 57
+        "download_count": 229
       },
       {
         "version": "1.26.3262042",
@@ -74,7 +74,7 @@
         "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.3251830/Stream-Mapparr.zip",
         "url": "stream-mapparr-1.26.3251830/stream-mapparr-1.26.3251830.zip",
         "size": 624,
-        "download_count": 187
+        "download_count": 194
       },
       {
         "version": "1.26.3221213",
@@ -89,7 +89,7 @@
         "source_url": "https://github.com/PiratesIRC/Stream-Mapparr/releases/download/1.26.3221213/Stream-Mapparr.zip",
         "url": "stream-mapparr-1.26.3221213/stream-mapparr-1.26.3221213.zip",
         "size": 613,
-        "download_count": 277
+        "download_count": 279
       },
       {
         "version": "1.26.3052124",
@@ -183,5 +183,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawXtywAKCRB+wDprTCI0\nzkQCAQDxpM7BVcI4/i9Yno9xbBlwFuJkI3czc+8x/VcZQG+YQwD5AVdxWyz/8ieB\nRS7Z44ISULYieRnaiFdBXQL/lgzfzQ4=\n=LC3k\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawgwTwAKCRB+wDprTCI0\nzvjbAQDXzdsUavDemzHyFUAqkBWhqNRtvmHjFEIyphOZuqeBbAD/cftBXz+5l9UL\nNb00NdDFEO7X8NVlArSPZdLo+aFMhgI=\n=0TrQ\n-----END PGP SIGNATURE-----"
 }

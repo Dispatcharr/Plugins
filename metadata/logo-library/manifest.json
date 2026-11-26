@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T16:25:40Z",
+  "generated_at": "2026-11-26T13:12:36Z",
   "manifest": {
     "slug": "logo-library",
     "name": "Logo Library",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-17T01:31:49Z",
-    "download_count": 154,
+    "download_count": 170,
     "latest": {
       "version": "0.2.0",
       "commit_sha": "27483a186b0fe69b33b582ec369dc3aca3bbaf8b",
@@ -29,7 +29,7 @@
       "latest_url": "logo-library-0.2.0/logo-library-0.2.0.zip",
       "url": "logo-library-0.2.0/logo-library-0.2.0.zip",
       "size": 70,
-      "download_count": 130
+      "download_count": 146
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/swvn-dispatch/logo-library/releases/download/v0.2.0/logo-library-0.2.0.zip",
         "url": "logo-library-0.2.0/logo-library-0.2.0.zip",
         "size": 70,
-        "download_count": 130
+        "download_count": 146
       },
       {
         "version": "0.1.2",
@@ -94,5 +94,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawW6jAAKCRB+wDprTCI0\nzoDNAP9WlznR4mZirH9IeyvOpyouADIyVyhmT0mW89OVkfN+mgEA7hc26eipHUt8\nGRpwQbCPtbH7vE8bBSdMpeCqDJ2tigY=\n=ZCzp\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawgwTQAKCRB+wDprTCI0\nzq+3AQDzkjGFsh7b+gq2hHmBjWRBUnihfBbq2u/RkzOeB6EZLwEAt7omtReulVfP\nweEerP9uprEGjy2xRIl/RdYHOBFmkAA=\n=jFXa\n-----END PGP SIGNATURE-----"
 }
