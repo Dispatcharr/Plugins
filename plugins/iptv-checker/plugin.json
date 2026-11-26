@@ -1,7 +1,7 @@
 {
   "name": "IPTV Checker",
-  "version": "1.26.3262133",
-  "description": "Check IPTV stream status and quality with ffprobe, then rename, move, restore or delete channels based on the result. Judges a channel by all of its streams, so a working backup never marks it dead.",
+  "version": "1.26.3301619",
+  "description": "A Dispatcharr Plugin that goes through a playlist to check IPTV channels",
   "author": "PiratesIRC",
   "license": "MIT",
   "logo": "logo.png",
