@@ -2,7 +2,7 @@
 
 # Event Channel Managarr
 
-**Version:** `1.26.3262214` | **Author:** PiratesIRC | **Last Updated:** Nov 22 2026, 22:23 UTC
+**Version:** `1.26.3301557` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 16:06 UTC
 
 Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG.
 
@@ -14,20 +14,21 @@ Automates channel visibility by hiding channels without events and showing those
 
 ### Latest Release
 
-- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3262214/event-channel-managarr-1.26.3262214.zip)
-- **Built:** Nov 22 2026, 22:23 UTC
-- **Source Commit:** [`538e2b2`](https://github.com/Dispatcharr/Plugins/commit/538e2b2a1d4d6196306daa876c9ef3d868a518c5)
+- **Download:** [`event-channel-managarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3301557/event-channel-managarr-1.26.3301557.zip)
+- **Built:** Nov 26 2026, 16:06 UTC
+- **Source Commit:** [`331a83a`](https://github.com/Dispatcharr/Plugins/commit/331a83a3b6b08d3058e5ea56d1a822208aeda7fb)
 
 **Checksums:**
 ```
-MD5:    8b76834d74eb6d58f98b1ee384f4f8bc
-SHA256: a329ff5a38ee5b7706ba98940c7f3b8475e4dcbafb9fe2801a2249beaf61c287
+MD5:    f7a84f16544c3ab54ca602e267cc6d5c
+SHA256: 1986283d3be45682152a5bedfd24b129e108e8923627a7fe2d5217ecfc7a8695
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3301557` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3301557/event-channel-managarr-1.26.3301557.zip) | Nov 26 2026, 16:06 UTC | [`331a83a`](https://github.com/Dispatcharr/Plugins/commit/331a83a3b6b08d3058e5ea56d1a822208aeda7fb) | f7a84f16544c3ab54ca602e267cc6d5c | 1986283d3be45682152a5bedfd24b129e108e8923627a7fe2d5217ecfc7a8695 |
 | `1.26.3262214` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3262214/event-channel-managarr-1.26.3262214.zip) | Nov 22 2026, 22:23 UTC | [`538e2b2`](https://github.com/Dispatcharr/Plugins/commit/538e2b2a1d4d6196306daa876c9ef3d868a518c5) | 8b76834d74eb6d58f98b1ee384f4f8bc | a329ff5a38ee5b7706ba98940c7f3b8475e4dcbafb9fe2801a2249beaf61c287 |
 | `1.26.3251903` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3251903/event-channel-managarr-1.26.3251903.zip) | Nov 21 2026, 19:16 UTC | [`2e8cb41`](https://github.com/Dispatcharr/Plugins/commit/2e8cb41c32efc45d808eefa194a95f45a043ec2c) | bde8cfe8cece239db8dcd75680deeb44 | 865482821f1823a310dd0e05130494126ce0235700af2a046e8b9d0104947a1f |
 | `1.26.3111512` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3111512/event-channel-managarr-1.26.3111512.zip) | Nov 07 2026, 15:21 UTC | [`d30b729`](https://github.com/Dispatcharr/Plugins/commit/d30b729cf1384a97d9ab49af175bd8dbf5cc6cd6) | 1b53a374f78b44e87282ef3f2a127918 | 266be7c51a3ca269866f8b47116141340b3dcdb4482404aa385c9b768a3078ec |
@@ -37,7 +38,6 @@ SHA256: a329ff5a38ee5b7706ba98940c7f3b8475e4dcbafb9fe2801a2249beaf61c287
 | `1.26.2831317` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2831317/event-channel-managarr-1.26.2831317.zip) | Oct 10 2026, 13:24 UTC | [`74eac27`](https://github.com/Dispatcharr/Plugins/commit/74eac27236fedab043328aa9ee03221e52cc23e7) | 0cebe7942aa53349955e196d1eb4d300 | 9bbe10164c745f4205e773f82860e587b2af88ce24c74dd0cb122b165132ed0a |
 | `1.26.2821924` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821924/event-channel-managarr-1.26.2821924.zip) | Oct 09 2026, 19:31 UTC | [`6f08f74`](https://github.com/Dispatcharr/Plugins/commit/6f08f7435940cd25a47242311ebe36a5b401e285) | 157e498b348e35facf0f5d5e621ca02f | 4aed1cf1d7fc0eee849ff1942febf7b0280d717312d8595826e8fa114bb48cc6 |
 | `1.26.2821849` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821849/event-channel-managarr-1.26.2821849.zip) | Oct 09 2026, 18:55 UTC | [`d9bf8e5`](https://github.com/Dispatcharr/Plugins/commit/d9bf8e5bc2cab4ce2890b6486628a3be81302160) | da5135568d72864f89dcc2c90632e7d9 | 3b202d63877c3f4b48dc9baf17f44f28c726a835d8cb20c5a5c5f9cd9e8adfb2 |
-| `1.26.2821323` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.2821323/event-channel-managarr-1.26.2821323.zip) | Oct 09 2026, 13:29 UTC | [`033d920`](https://github.com/Dispatcharr/Plugins/commit/033d920f1ce7acda8dc524d653a90e724c6ae8d6) | 3583102f4743b7acea5b0e858d779794 | c8f1cfae749a5c26760d2437f0987537b0b9c391eaccbbf9c2a47a81902dce69 |
 
 ---
 
@@ -171,9 +171,38 @@ it takes effect when the next action or scheduled scan finishes; the plugin then
 asks the server to delete this install's figures. Once the server confirms the
 delete, the plugin forgets its id, and ticking the setting again later starts a
 new one; if the delete could not reach the server, the plugin keeps the id and
-retries. The plugin keeps that id and the timing of its reports in
-/data/plugin_stats/event-channel-managarr/ (install_id, sent, backoff, disabled,
-delete_backoff, lock). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked leaves the old figures on the server, and the new id then sends the full total again, so the badge counts it twice.
+retries. The plugin keeps that id and the timing of its reports in the folder
+usage/event-channel-managarr/ of its data folder (install_id, sent, backoff, disabled,
+delete_backoff, lock); see [Where Event Channel Managarr keeps its files](#where-event-channel-managarr-keeps-its-files). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked leaves the old figures on the server, and the new id then sends the full total again, so the badge counts it twice.
+
+## Where Event Channel Managarr keeps its files
+
+The plugin keeps its private files in its data folder, `/data/plugins/_data/event-channel-managarr/`. Dispatcharr creates that folder and names it for the plugin's key, `event-channel-managarr`. On the first start after an upgrade the plugin copies the files it used to keep under `/data` into that folder. The copy never deletes, renames or edits an old file, and a file already in the data folder is left as it is. The copy is recorded in `migrated.json` in the data folder.
+
+Inside the data folder:
+
+- `settings.json`: a copy of the saved settings. Dispatcharr's database row is the source of truth; this file is a cache of it.
+- `results.json`: the output of the last scan.
+- `undated_first_seen.json`: the first-seen record that `[UndatedAge:N]` and `[UndatedEnded]` read.
+- `group_sources.json`: the record of the dummy EPG sources the plugin created for each group mapping. The plugin uses it to move a channel back off a source later. Keep it: if it is lost, channels stay where they are and nothing is moved back.
+- `ledger.jsonl`: the run ledger, one line per applied run that changed a channel. It is append only and rotates once to `ledger.jsonl.1` at 5 MB. `ledger.offsets.json` and `ledger.lock` are bookkeeping for the copy of the ledger.
+- `usage/event-channel-managarr/`: the anonymous usage counter's install id and send record.
+- `migrated.json`: when the copy ran, which files it copied and which it could not.
+
+Beside the data folder, in `/data/plugins/_data/`:
+
+- `event-channel-managarr.last_run.json`: the last run of each scheduled time. Every worker reads it, so it sits beside the folder rather than inside it.
+- `event-channel-managarr.scan.lock`: the lock that keeps two scans from running at once.
+
+Outside both:
+
+- `/data/exports/`: the CSV exports. Seven plugins share this folder, and the plugin deletes only its own exports from it.
+
+Dispatcharr's **Delete data** option on uninstall removes the data folder. It does not remove the two files beside it.
+
+During the release that moves the files, a worker still running the previous release keeps writing the old files under `/data`. The new release reads both copies of the last-run record and takes both locks, so a scheduled run or a scan that the old worker has started or claimed is not repeated. The old files are safe to delete only when `migrated.json` has an empty `failed` list and none of the old files has changed since the time recorded in it. An old file that still changes means a worker on the previous release is still running.
+
+The old `/data` files were `event_channel_managarr_settings.json`, `event_channel_managarr_results.json`, `event_channel_managarr_undated_first_seen.json`, `event_channel_managarr_group_sources.json`, `event_channel_managarr_ledger.jsonl` (and `.1`), `event_channel_managarr_last_run.json`, `event_channel_managarr_scan.lock` and the folder `/data/plugin_stats/event-channel-managarr/`. Nothing reads `event_channel_managarr_version_check.json` any more, since the update check was removed, so it is not moved.
 
 ## Disclaimer
 
@@ -189,7 +218,7 @@ it never reads a stream URL. **Its only outbound network request is the anonymou
 once called the GitHub releases API was removed in `1.26.2251616`, along with the code behind it.
 
 What it writes is confined to your own Dispatcharr database and its data directory: channel
-visibility in the profiles you select, bindings to a dummy EPG source it manages, and CSV exports, plus one small folder for the anonymous usage count, /data/plugin_stats/event-channel-managarr/ (see [Anonymous usage counts](#anonymous-usage-counts)).
+visibility in the profiles you select, bindings to a dummy EPG source it manages, and CSV exports, plus one small folder for the anonymous usage count (see [Anonymous usage counts](#anonymous-usage-counts) and [Where Event Channel Managarr keeps its files](#where-event-channel-managarr-keeps-its-files)).
 The main scan has a **Dry Run** that writes nothing and exports what it *would* do to CSV. Run that
 first. The other actions that change data (**Run Now**, **Remove EPG from Hidden Channels**, **Clear
 CSV Exports**, **Cleanup Orphaned Tasks**) each ask for confirmation before they act.
