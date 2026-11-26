@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T15:16:12Z",
+  "generated_at": "2026-11-26T15:45:22Z",
   "manifest": {
     "slug": "dispatcharr-ranked-matchups",
     "name": "Ranked Matchups (Top Games)",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-26T15:15:23Z",
-    "download_count": 915,
+    "download_count": 918,
     "latest": {
       "version": "2.0.2",
       "commit_sha": "56f9fa53c013cb8b121114aac980da83bbf92c69",
@@ -29,7 +29,7 @@
       "latest_url": "dispatcharr-ranked-matchups-2.0.2/dispatcharr-ranked-matchups-2.0.2.zip",
       "url": "dispatcharr-ranked-matchups-2.0.2/dispatcharr-ranked-matchups-2.0.2.zip",
       "size": 799,
-      "download_count": 0
+      "download_count": 1
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v2.0.2/dispatcharr_ranked_matchups-v2.0.2.zip",
         "url": "dispatcharr-ranked-matchups-2.0.2/dispatcharr-ranked-matchups-2.0.2.zip",
         "size": 799,
-        "download_count": 0
+        "download_count": 1
       },
       {
         "version": "2.0.1",
@@ -75,7 +75,7 @@
         "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v1.39.0/dispatcharr_ranked_matchups-v1.39.0.zip",
         "url": "dispatcharr-ranked-matchups-1.39.0/dispatcharr-ranked-matchups-1.39.0.zip",
         "size": 793,
-        "download_count": 117
+        "download_count": 119
       },
       {
         "version": "1.36.2",
@@ -177,5 +177,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhNQgAKCRB+wDprTCI0\nzj7yAQCH1bjnPcMD6OZYSouPzdfPwmRlIOPFBdnV0fU2mLDHrwD/UhvOvhUXD9VD\nHBNZXC3yT/7aaX0dy4pv7tB7b32POQ0=\n=P62y\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhUGQAKCRB+wDprTCI0\nzg7tAP48Rrf9DZlMlBA6PRkFlXvSpgWGojKfNsawWISbwpkolAEAvx5KhzUYY3Lq\nGErlWdTKmHehe8rOe+uVaeyWmJjdoQs=\n=VjCa\n-----END PGP SIGNATURE-----"
 }

@@ -41,7 +41,7 @@ This branch contains all published plugin releases.
 | [`Segmentarr`](#segmentarr) | `1.5.7` | Tw1zT3d2four7 | MIT | HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile. |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream Guard`](#stream-guard) | `1.2.3` | funkasaur | MIT | Alerts when channels silently start playing a different stream (hash-key changes, provider renumbering) and can put the old streams back. |
-| [`Stream-Mapparr`](#stream-mapparr) | `1.26.3281300` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
+| [`Stream-Mapparr`](#stream-mapparr) | `1.26.3301534` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
 | [`Stream Probe`](#stream-probe) | `1.2.2` | funkasaur | MIT | Plays each channel for a few seconds through Dispatcharr's own proxy, one at a time, and records resolution, codec, frame rate and bitrate on the stream that served it. Connection limits are respected, so a busy account is skipped, never kicked. Report-only. |
 | [`Stream Usage`](#stream-usage) | `0.2.2` | funkasaur | MIT | Track sampled streaming traffic by user and channel. |
 | [`Tablo Tuner`](#tablo-tuner) | `0.1.0` | jkoehler11 | MIT | Connects a legacy Tablo through tablo-bridge: creates the M3U account, XMLTV source, channels and EPG mapping, and keeps them in sync. |
@@ -615,7 +615,7 @@ Alerts when channels silently start playing a different stream (hash-key changes
 
 ### [Stream-Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-mapparr/README.md)
 
-**Version:** `1.26.3281300` | **Author:** PiratesIRC | **Last Updated:** Nov 24 2026, 13:10 UTC
+**Version:** `1.26.3301534` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 15:44 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -624,10 +624,10 @@ Automatically add matching streams to channels based on name similarity and qual
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3281300`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3281300/stream-mapparr-1.26.3281300.zip)
+- [Latest Release (`1.26.3301534`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3301534/stream-mapparr-1.26.3301534.zip)
 - [All Versions (10 available)](./metadata/stream-mapparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/stream-mapparr/README.md) | **Last Change:** [`9b43e62`](https://github.com/Dispatcharr/Plugins/commit/9b43e6226e91fd0d125e22e9c8ca1885f94f38f2)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/stream-mapparr/README.md) | **Last Change:** [`ce3c53b`](https://github.com/Dispatcharr/Plugins/commit/ce3c53b29aeec32ac7d17b4c3a42cf2e5ca6bd8e)
 
 ---
 
@@ -863,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 26 2026, 15:16 UTC*
+*Last updated: Nov 26 2026, 15:45 UTC*
