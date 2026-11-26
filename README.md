@@ -22,7 +22,7 @@ This branch contains all published plugin releases.
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.4.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `2.0.2` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.8` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
-| [`Dustarr`](#dustarr) | `1.26.3251749` | PiratesIRC | MIT | Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider. |
+| [`Dustarr`](#dustarr) | `1.26.3301548` | PiratesIRC | MIT | Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider. |
 | [`EPG & Sports Editor`](#epg-sports-editor) | `0.6.05` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). Renamed from EPGeditARR; existing installs carry their settings forward automatically. |
 | [`EPG Janitor`](#epg-janitor) | `1.26.3262133` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.3262214` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
@@ -264,7 +264,7 @@ An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 
 ### [Dustarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dustarr/README.md)
 
-**Version:** `1.26.3251749` | **Author:** PiratesIRC | **Last Updated:** Nov 21 2026, 17:57 UTC
+**Version:** `1.26.3301548` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 16:00 UTC
 
 Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.
 
@@ -273,10 +273,10 @@ Records which channels are actually watched and reports the ones that are not, s
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3251749`)](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3251749/dustarr-1.26.3251749.zip)
-- [All Versions (6 available)](./metadata/dustarr)
+- [Latest Release (`1.26.3301548`)](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3301548/dustarr-1.26.3301548.zip)
+- [All Versions (7 available)](./metadata/dustarr)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dustarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dustarr/README.md) | **Last Change:** [`8493bd8`](https://github.com/Dispatcharr/Plugins/commit/8493bd83222784d7ff6fb0f28b8c6aa3b09edd3f)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dustarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dustarr/README.md) | **Last Change:** [`b568cae`](https://github.com/Dispatcharr/Plugins/commit/b568cae83910c68bd5b092f2de30249f27423817)
 
 ---
 
@@ -863,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 26 2026, 15:54 UTC*
+*Last updated: Nov 26 2026, 16:00 UTC*

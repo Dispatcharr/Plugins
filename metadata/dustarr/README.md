@@ -2,7 +2,7 @@
 
 # Dustarr
 
-**Version:** `1.26.3251749` | **Author:** PiratesIRC | **Last Updated:** Nov 21 2026, 17:57 UTC
+**Version:** `1.26.3301548` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 16:00 UTC
 
 Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.
 
@@ -14,20 +14,21 @@ Records which channels are actually watched and reports the ones that are not, s
 
 ### Latest Release
 
-- **Download:** [`dustarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3251749/dustarr-1.26.3251749.zip)
-- **Built:** Nov 21 2026, 17:57 UTC
-- **Source Commit:** [`8493bd8`](https://github.com/Dispatcharr/Plugins/commit/8493bd83222784d7ff6fb0f28b8c6aa3b09edd3f)
+- **Download:** [`dustarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3301548/dustarr-1.26.3301548.zip)
+- **Built:** Nov 26 2026, 16:00 UTC
+- **Source Commit:** [`b568cae`](https://github.com/Dispatcharr/Plugins/commit/b568cae83910c68bd5b092f2de30249f27423817)
 
 **Checksums:**
 ```
-MD5:    17135d89a67bc9144675469a819a67b5
-SHA256: 968811b797bcde3f0c8f8b35b6f02af5f5dc7e4d2a0776d64e51e8532310c20c
+MD5:    3008c81efb521b536b86a09508c1b514
+SHA256: e20c6dcf762e1624780dbc86d326da477623cfa9f3f982a354de2ca7930c8dba
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3301548` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3301548/dustarr-1.26.3301548.zip) | Nov 26 2026, 16:00 UTC | [`b568cae`](https://github.com/Dispatcharr/Plugins/commit/b568cae83910c68bd5b092f2de30249f27423817) | 3008c81efb521b536b86a09508c1b514 | e20c6dcf762e1624780dbc86d326da477623cfa9f3f982a354de2ca7930c8dba |
 | `1.26.3251749` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3251749/dustarr-1.26.3251749.zip) | Nov 21 2026, 17:57 UTC | [`8493bd8`](https://github.com/Dispatcharr/Plugins/commit/8493bd83222784d7ff6fb0f28b8c6aa3b09edd3f) | 17135d89a67bc9144675469a819a67b5 | 968811b797bcde3f0c8f8b35b6f02af5f5dc7e4d2a0776d64e51e8532310c20c |
 | `1.26.2901903` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2901903/dustarr-1.26.2901903.zip) | Oct 17 2026, 21:58 UTC | [`1b882f2`](https://github.com/Dispatcharr/Plugins/commit/1b882f233078ff663758cc1ecdf82ff16afea84a) | 5d457ca12c31346cda8a080abbb0390a | 21b8d14c01e702ad18ac1d78ceb4c3b65ab19db826fb2e2e5cd4595c69ed90c9 |
 | `1.26.2832018` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2832018/dustarr-1.26.2832018.zip) | Oct 10 2026, 20:24 UTC | [`8b49bab`](https://github.com/Dispatcharr/Plugins/commit/8b49bab36a73fbd7bfd560647175d59e2c68958a) | 1f947cd7fd07a12805b031f4f57649f5 | a03ea8c72e507e8022e3ac7d2f0c44ffdbc2a5c8cbb9be9b238695b7bd80cddc |
@@ -53,7 +54,7 @@ A Dispatcharr plugin that records which channels are actually watched, and repor
 > **New to Dispatcharr plugins?** Start with the **[Dispatcharr Plugin Workflow guide](https://piratesirc.github.io/Dispatcharr-Plugin-Workflow/)**.
 > It explains what each plugin and tool does, where they overlap, and what order to use them in.
 
-**It never changes anything in Dispatcharr.** It reads which channels have viewers, writes its own report files, and keeps the state for the anonymous usage count in /data/plugin_stats/dustarr/. Nothing else.
+**It never changes anything in Dispatcharr.** It reads which channels have viewers, writes its own report files, and keeps the state for the anonymous usage count in Dispatcharr's data folder for the plugin. Nothing else.
 
 ## What it does
 
@@ -132,7 +133,24 @@ This is the part worth reading before installing anything that watches what your
 
 ## Where things are written
 
-The report and the CSV land in `/config/dustarr/`. `/config` is Dispatcharr's existing bind mount, so that is a real folder on your host: open the report by double clicking it. When `/config` cannot be written, they go to `/data/dustarr/reports/` instead. The full list of paths is in the [user guide](https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md#where-the-files-are-written).
+The report and the CSV land in `/config/dustarr/`. `/config` is Dispatcharr's existing bind mount, so that is a real folder on your host: open the report by double clicking it. When `/config` cannot be written, they go to `/data/plugins/_shared/newsflasharr/dustarr/` instead. The full list of paths is in the [user guide](https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/blob/master/docs/USER-GUIDE.md#where-the-files-are-written).
+
+## Where Dustarr keeps its files
+
+Dustarr's private state lives in Dispatcharr's data folder for the plugin, `/data/plugins/_data/dustarr/`.
+That folder holds `usage.json` (the recorded usage, the one file worth backing up),
+`scheduled_run.json`, `notify_state.json` and `usage/dustarr/`
+(the anonymous usage counter's install id and send timing). The reports Newsflasharr
+emails, when `/config` cannot be written, go to `/data/plugins/_shared/newsflasharr/dustarr/`.
+Nothing beside that folder is needed.
+
+The first start after an upgrade copies the old `/data/dustarr` and
+`/data/plugin_stats/dustarr` files into the data folder once. It never overwrites
+a new file, and it never deletes or edits an old one. The result is recorded in
+`migrated.json` in the data folder. While the old and new releases run side by
+side, a file the old release wrote more recently is taken over, so the usage
+history is not lost when the collector lease changes hands.
+Uninstalling with "delete data" removes the data folder, and the install id with it.
 
 ## Anonymous usage counts
 
@@ -174,7 +192,7 @@ takes effect the next time an action runs or a report is built; the plugin then 
 the server to delete this install's figures. Once the server confirms the delete,
 the plugin forgets its id, and ticking the setting again later starts a new one; if
 the delete could not reach the server, the plugin keeps the id and retries. The
-plugin keeps that id and the timing of its reports in /data/plugin_stats/dustarr/.
+plugin keeps that id and the timing of its reports in /data/plugins/_data/dustarr/usage/dustarr/.
 To start a new id, untick the setting and let an action run so the server deletes
 this install's figures; deleting that folder while the setting is ticked leaves
 the old figures on the server, and the new id then sends the full total again, so
