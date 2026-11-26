@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:21:15Z",
+  "generated_at": "2026-11-26T16:51:35Z",
   "manifest": {
     "slug": "lineuparr",
     "name": "Lineuparr",
@@ -9,25 +9,39 @@
     "repo_url": "https://github.com/PiratesIRC/Dispatcharr-Lineuparr-Plugin",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-26T16:20:36Z",
-    "download_count": 3879,
+    "last_updated": "2026-11-26T16:50:58Z",
+    "download_count": 2991,
     "latest": {
-      "version": "1.26.3301606",
-      "commit_sha": "753bfd25c337e0cd30e5e3fc16424acc4041e60b",
-      "commit_sha_short": "753bfd2",
-      "changelog": "643",
-      "build_timestamp": "2026-11-26T16:20:59Z",
-      "last_updated": "2026-11-26T16:20:36Z",
-      "checksum_md5": "2d474fc964a6f5814f4e978473cc36bd",
-      "checksum_sha256": "1899bedcb0dac529b700ce0b7dfedeb738dd00514de62fbde338b014701e6c54",
+      "version": "1.26.3301641",
+      "commit_sha": "5dbdc61614e675eb6290b16cb53ce4c0f42a14d2",
+      "commit_sha_short": "5dbdc61",
+      "changelog": "645",
+      "build_timestamp": "2026-11-26T16:51:19Z",
+      "last_updated": "2026-11-26T16:50:58Z",
+      "checksum_md5": "9a0e7fed2a8b6beff24027f89c6ff35b",
+      "checksum_sha256": "90ebc69298e4134d9e9313b5d122346cfebc32ae0c20538d19ef1f800b34353f",
       "min_dispatcharr_version": "v0.34.0",
       "max_dispatcharr_version": "",
-      "latest_url": "lineuparr-1.26.3301606/lineuparr-1.26.3301606.zip",
-      "url": "lineuparr-1.26.3301606/lineuparr-1.26.3301606.zip",
+      "latest_url": "lineuparr-1.26.3301641/lineuparr-1.26.3301641.zip",
+      "url": "lineuparr-1.26.3301641/lineuparr-1.26.3301641.zip",
       "size": 478,
       "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.26.3301641",
+        "commit_sha": "5dbdc61614e675eb6290b16cb53ce4c0f42a14d2",
+        "commit_sha_short": "5dbdc61",
+        "changelog": "645",
+        "build_timestamp": "2026-11-26T16:51:19Z",
+        "last_updated": "2026-11-26T16:50:58Z",
+        "checksum_md5": "9a0e7fed2a8b6beff24027f89c6ff35b",
+        "checksum_sha256": "90ebc69298e4134d9e9313b5d122346cfebc32ae0c20538d19ef1f800b34353f",
+        "min_dispatcharr_version": "v0.34.0",
+        "url": "lineuparr-1.26.3301641/lineuparr-1.26.3301641.zip",
+        "size": 478,
+        "download_count": 0
+      },
       {
         "version": "1.26.3301606",
         "commit_sha": "753bfd25c337e0cd30e5e3fc16424acc4041e60b",
@@ -40,7 +54,7 @@
         "min_dispatcharr_version": "v0.34.0",
         "url": "lineuparr-1.26.3301606/lineuparr-1.26.3301606.zip",
         "size": 478,
-        "download_count": 0
+        "download_count": 5
       },
       {
         "version": "1.26.3262133",
@@ -152,22 +166,8 @@
         "url": "lineuparr-1.26.2821835/lineuparr-1.26.2821835.zip",
         "size": 426,
         "download_count": 52
-      },
-      {
-        "version": "1.26.2561550",
-        "commit_sha": "e56e9906c18e092bb424366e0ed361c4bcd07612",
-        "commit_sha_short": "e56e990",
-        "changelog": "294",
-        "build_timestamp": "2026-09-13T16:03:33Z",
-        "last_updated": "2026-09-13T16:03:17Z",
-        "checksum_md5": "48b855f675156903fe8421e7d80ccbf6",
-        "checksum_sha256": "e46ceda0cd9e14154a912dd642dfaa5dc406a5a6bff8882238098785929c0f42",
-        "min_dispatcharr_version": "v0.20.0",
-        "url": "lineuparr-1.26.2561550/lineuparr-1.26.2561550.zip",
-        "size": 424,
-        "download_count": 893
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhcgAAKCRB+wDprTCI0\nzkNoAQD+7YGYWo+L1MX+P8Sv4j8OjBAIQx3UicAs5eTSsUniwwD6AuwXoO32dkLC\nwWz9eRUqRiPavLXMoouggMARG6uJfAA=\n=q1Vs\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhjnQAKCRB+wDprTCI0\nzkNGAQC3w5ytTmOjjbtvuoYxsDYAgZ3w3QA4lPTZvRXFBvL3cQEAjsQGQWvJUd6D\nazt/aqk/uk4M10Ej9uPDtZ03feQOOQQ=\n=ahgs\n-----END PGP SIGNATURE-----"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:28:04Z",
+  "generated_at": "2026-11-26T16:51:35Z",
   "manifest": {
     "slug": "channel-mapparr",
     "name": "Channel Mapparr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-26T15:53:16Z",
-    "download_count": 2307,
+    "download_count": 2311,
     "latest": {
       "version": "1.26.3301541",
       "commit_sha": "91ed571709a334fdeac809e2a01229c030918c8b",
@@ -32,7 +32,7 @@
       "latest_url": "channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip",
       "url": "channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip",
       "size": 786,
-      "download_count": 1
+      "download_count": 4
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.3301541/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip",
         "size": 786,
-        "download_count": 1
+        "download_count": 4
       },
       {
         "version": "1.26.3262133",
@@ -63,7 +63,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Channel-Maparr-Plugin/releases/download/1.26.3262133/Channel-Maparr.zip",
         "url": "channel-mapparr-1.26.3262133/channel-mapparr-1.26.3262133.zip",
         "size": 777,
-        "download_count": 203
+        "download_count": 204
       },
       {
         "version": "1.26.3251925",
@@ -187,5 +187,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawheGAAKCRB+wDprTCI0\nzlK9AQDvBianlJHsL4gYqi3fSoJw/Um2rDuvJslpH9cEU7OhTwD+Ke+WUc3iRNwK\n7aywf5aQ5FkrRMPJ/pznc2/e9zsbcg0=\n=BXOd\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhjmwAKCRB+wDprTCI0\nzkgHAQCmZpql/D16nl8vWKae/tq2k4zf3FSS8XR6idPDVNBUnwD/UE06KZkoqaAy\nIJs0Kvc4wpxIZbktz4dx/eghLKJgNgY=\n=kiwc\n-----END PGP SIGNATURE-----"
 }
