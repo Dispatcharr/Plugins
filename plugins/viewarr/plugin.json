@@ -1,6 +1,6 @@
 {
   "name": "Viewarr",
-  "version": "0.6.13",
+  "version": "0.6.14",
   "description": "The server half of Viewarr: does the sports and guide work once for the whole house, puts each channel's best stream first, acts on reports from the TVs, so every TV is quicker and keeps working with the TVs off.",
   "author": "petebutty",
   "license": "MIT",
