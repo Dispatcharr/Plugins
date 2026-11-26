@@ -47,6 +47,12 @@ guide and `ITV2` does not take `ITV2 +1`'s. Regional variants route to the
 correct regional feed. Number words fold to digits, CamelCase splits, and dotted
 compounds split, while radio frequencies are left alone.
 
+**Keep chosen guides across refreshes.** Pinned EPG rules hold a fixed map of channel name
+to guide, for channels that a refresh keeps resetting, such as a trending list whose
+channels Dispatcharr recreates each time its M3U account refreshes. The map is applied
+again after each refresh of the accounts you name. Names match exactly, with no fuzzy
+scoring. See [Pinned EPG rules](https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/blob/main/docs/USER-GUIDE.md#pinned-epg-rules).
+
 **Clean up in bulk.** Remove EPG assignments by regular expression, from hidden
 channels, or from whole groups. Tag channels with missing programme data with a
 visible suffix. Export any run to CSV with the score, the method and the
@@ -116,9 +122,9 @@ it takes effect when the next action or scheduled run finishes; the plugin then
 asks the server to delete this install's figures. Once the server confirms the
 delete, the plugin forgets its id, and ticking the setting again later starts a
 new one; if the delete could not reach the server, the plugin keeps the id and
-retries. The plugin keeps that id and the timing of its reports in
-/data/plugin_stats/epg-janitor/ (install_id, sent, backoff, disabled,
-delete_backoff, lock). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked, or before the server confirms the delete,
+retries. The plugin keeps that id and the timing of its reports in the
+`usage/epg-janitor/` folder of its data directory (install_id, sent, backoff, disabled,
+delete_backoff, lock; on Dispatcharr 0.33, /data/plugin_stats/epg-janitor/). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked, or before the server confirms the delete,
 leaves the old figures on the server, and the new id then sends the full total
 again, so the badge counts it twice.
 
@@ -141,6 +147,33 @@ again, so the badge counts it twice.
 2. **Restart Dispatcharr**. Log out, then `docker restart dispatcharr` (or equivalent).
 3. **Install the new version**. Log back in, import the new zip, enable.
 4. **Your settings are preserved**. Dispatcharr stores plugin settings in its database separately from plugin code. Updates do not clear your configuration.
+
+## Where EPG Janitor keeps its files
+
+Dispatcharr 0.34 gives each plugin a private data directory. On that version EPG Janitor keeps
+its state there, in `/data/plugins/_data/<plugin id>/`. It holds the last scan's results, the
+match tally behind the EPGs Matched badge, and the usage counts folder. The scan progress
+file sits beside it (see below). On Dispatcharr 0.33 nothing moves.
+
+Other places hold files:
+
+- `/data/exports/` holds the CSV exports, as before. It is shared with other plugins, and this
+  plugin deletes only its own `epg_janitor_*.csv` files.
+- `/data/epg_automatch_preview.csv` holds the Auto-Match preview, as before.
+- `/data/epg_janitor_*` and `/data/plugin_stats/` hold the files from earlier versions. The
+  first run on this version copies them across and leaves them where they are, and records
+  what it copied in `migrated.json` inside the data directory. Delete them by hand only when
+  both of these are true: the `failed` list in `migrated.json` is empty, and none of the old
+  files has changed since the time `migrated.json` records. A Dispatcharr process that still
+  runs the earlier version keeps writing the old files until it reloads the plugin, and a
+  restart of Dispatcharr ends that.
+- `/data/plugins/_data/` holds three small files beside the data directory:
+  `<plugin id>.progress.json` (the scan's progress, read by every worker so one scan runs at a
+  time), `<plugin id>.active` and `<plugin id>.migrated`.
+
+Uninstalling the plugin and choosing "delete data" removes the data directory. That takes the
+match tally behind the EPGs Matched badge and this install's anonymous usage id, so a reinstall
+starts a new id. The three small files beside it are not removed by that choice.
 
 ## Official Plugin Hub
 
