@@ -38,6 +38,7 @@ def test_capability_contract_rules_only_apply_within_their_schema_range(monkeypa
     assert not capabilities.capability_contract_rule_applies(v3_rule, 2)
     assert capabilities.capability_contract_rule_applies(v3_rule, 3)
     assert capabilities.capability_contract_rule_applies(retired_rule, 2)
+    assert capabilities.capability_contract_rule_applies(retired_rule, 1)
     assert not capabilities.capability_contract_rule_applies(retired_rule, 3)
 
 

@@ -160,6 +160,57 @@ def test_capability_contract_requires_an_enforcing_manifest(tmp_path, monkeypatc
     assert sarif.classify([{"runs": [{"results": [result]}]}]).capability_contract == 1
 
 
+def test_v1_capability_findings_are_visible_without_review(tmp_path, monkeypatch):
+    _write_runtime_manifest(tmp_path, {"manifest_version": 1, "capabilities": []})
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sarif.feature_flags, "CAPABILITY_CONTRACT_DETECTION", True)
+    result = {
+        "ruleId": "plugin/capability-contract/subprocess",
+        "message": {"text": "Declare subprocess."},
+        "locations": [{"physicalLocation": {"artifactLocation": {
+            "uri": "plugins/demo/plugin.py"}, "region": {"startLine": 1}}}],
+    }
+    objs = [{"runs": [{"results": [result, {**result, "suppressions": [{"kind": "inSource"}]}]}]}]
+    counts = sarif.classify(objs)
+    assert counts.capability_contract_info == 2
+    assert counts.capability_contract_detected == counts.capability_contract == counts.suppressed == 0
+    table = sarif.capability_contract_findings_table(objs, "org/repo", "abc", [], informational=True)
+    assert table.count("Declare subprocess.") == 2
+    assert "(suppressed)" in table
+    assert "Declare subprocess." not in sarif.capability_contract_findings_table(objs, "org/repo", "abc", [])
+
+    (tmp_path / "plugins/demo/plugin.json").write_text(json.dumps({
+        "manifest_version": 1, "capabilities": ["subprocess"],
+    }), encoding="utf-8")
+    assert sarif.classify(objs).capability_contract_info == 0
+
+
+def test_v1_async_action_capability_is_inferred(tmp_path, monkeypatch):
+    _write_runtime_manifest(tmp_path, {"manifest_version": 1, "actions": [{"async": True}]})
+    monkeypatch.chdir(tmp_path)
+    result = {"ruleId": "plugin/capability-contract/background-tasks", "locations": [
+        {"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/plugin.py"}}}
+    ]}
+    assert not sarif.contract_result_is_finding(result)
+
+
+def test_proxy_internals_disclosure_respects_manifest_version_and_declaration(tmp_path, monkeypatch):
+    _write_runtime_manifest(tmp_path, {"manifest_version": 1})
+    monkeypatch.chdir(tmp_path)
+    result = {"ruleId": "plugin/capability-contract/proxy-internals", "locations": [
+        {"physicalLocation": {"artifactLocation": {"uri": "plugins/demo/plugin.py"}}}
+    ]}
+    assert sarif.contract_result_is_finding(result)
+    assert not sarif.contract_result_requires_review(result)
+    manifest = tmp_path / "plugins/demo/plugin.json"
+    manifest.write_text(json.dumps({"manifest_version": 2}), encoding="utf-8")
+    assert sarif.contract_result_requires_review(result)
+    manifest.write_text(json.dumps({
+        "manifest_version": 2, "capabilities": ["proxy_internals"],
+    }), encoding="utf-8")
+    assert not sarif.contract_result_is_finding(result)
+
+
 def test_sandbox_bypass_requires_an_enforcing_manifest(tmp_path, monkeypatch):
     plugin_dir = tmp_path / "plugins" / "demo"
     plugin_dir.mkdir(parents=True)

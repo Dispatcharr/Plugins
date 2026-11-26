@@ -46,10 +46,8 @@ where
     call = API::moduleImport("io").getMember("open").getACall() or
     call = API::moduleImport("os").getMember("open").getACall() and
       not readOnlyOsOpen(call) or
-    call = API::moduleImport("shutil")
-      .getMember(["copy", "copy2", "copyfile", "copytree", "move", "rmtree"]).getACall() or
     call = API::moduleImport("pathlib").getMember("Path").getACall().getReturn()
-      .getMember(["open", "write_text", "write_bytes", "touch", "mkdir", "unlink", "rename", "replace"])
+      .getMember(["open", "write_text", "write_bytes"])
       .getACall()
   )
 select call, "This direct filesystem API bypasses Dispatcharr's plugin-local open wrapper."

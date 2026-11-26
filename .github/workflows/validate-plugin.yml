@@ -371,6 +371,14 @@ jobs:
           path: codeql-capability-contract-findings
         continue-on-error: true
 
+      - name: Download informational CodeQL capability findings
+        if: needs.codeql-analyze.outputs.codeql_capability_contract_info != '0'
+        uses: actions/download-artifact@v8
+        with:
+          name: codeql-capability-info-findings
+          path: codeql-capability-info-findings
+        continue-on-error: true
+
       - name: Download ClamAV findings detail
         if: needs.clamav-scan.outputs.clamav_infected != '0'
         uses: actions/download-artifact@v8
@@ -393,6 +401,7 @@ jobs:
           CODEQL_SUPPRESSED: ${{ needs.codeql-analyze.outputs.codeql_suppressed }}
           CODEQL_SANDBOX_BYPASS: ${{ needs.codeql-analyze.outputs.codeql_sandbox_bypass }}
           CODEQL_CAPABILITY_CONTRACT: ${{ needs.codeql-analyze.outputs.codeql_capability_contract }}
+          CODEQL_CAPABILITY_INFO: ${{ needs.codeql-analyze.outputs.codeql_capability_contract_info }}
           CODEQL_SANDBOX_DETECTED: ${{ needs.codeql-analyze.outputs.codeql_sandbox_bypass_detected }}
           CODEQL_CAPABILITY_DETECTED: ${{ needs.codeql-analyze.outputs.codeql_capability_contract_detected }}
           HAS_NEW_PLUGIN: ${{ needs.detect-changes.outputs.has_new_plugin }}

@@ -9,7 +9,7 @@ depth.
 ## Capability Contract Queries
 
 The Python CodeQL pack reports direct use of selected guarded APIs when the
-scanned runtime manifest is enforcing and omits the matching capability:
+scanned runtime manifest supports capabilities and omits the matching capability:
 
 | Rule | Detection |
 |---|---|
@@ -19,9 +19,13 @@ scanned runtime manifest is enforcing and omits the matching capability:
 | `background-tasks` | `context["dispatch_task"]` without `background_tasks` |
 | `celery-dispatch` | `context["dispatch_internal_task"]` without `celery_dispatch` |
 | `persistent-service` | `on_leader_acquired` without `persistent_service` |
+| `filesystem-write` | Direct watched-directory creation helper without `filesystem_write` |
+| `proxy-internals` | Known live proxy `ChannelService` internals without `proxy_internals` |
 
 `pluginctl.capabilities` mirrors Dispatcharr's capability and manifest-version
-policy. Versions 0 and 1 do not produce contract findings. Each capability
+policy. Version 0 does not produce contract findings. Version 1 findings are
+informational and do not require review or block automatic merging; version 2
+and later findings require review. Each capability
 contract rule declares the manifest versions where it applies, so new checks do
 not affect older schemas and retired checks do not affect newer schemas. Unknown
 future capabilities remain valid declarations. For external plugins, the scan
@@ -56,14 +60,19 @@ version range:
 | `requests-session-api` | `requests.Session` or `requests.session` outside guarded module helpers |
 | `os-process-api` | Direct `os` process-launch APIs outside guarded `subprocess` |
 | `asyncio-process-api` | Asyncio subprocess APIs outside guarded `subprocess` |
-| `filesystem-api` | Direct `io`, `os`, `shutil`, or `pathlib.Path` write APIs outside guarded `open` |
+| `filesystem-api` | Direct `io.open`, potentially writing `os.open`, and `pathlib.Path` open or content-write APIs outside guarded `open` |
 
 The broad frame, introspection, and dynamic-evaluation heuristics from the
 earlier query pack were removed because they do not model Dispatcharr's current
 `ContextVar` and plugin-local builtins design.
 
-Both query families are informational to required validation. A contract finding,
-bypass finding, or CodeQL suppression applies `Manual Review Required`, which
+The filesystem query does not report ordinary file-management APIs such as
+`shutil.copy2` or `Path.unlink`. These operations can bypass the wrapper too,
+but are common in legitimate plugins, and the wrapper is not a security boundary.
+The absence of a finding does not establish that filesystem access is confined.
+
+Both query families are informational to required validation. An enforcing-manifest
+contract finding, bypass finding, or applicable CodeQL suppression applies `Manual Review Required`, which
 blocks automatic merging until a maintainer reviews the PR. Removing the detected
 code clears the label on the next validation run.
 
@@ -71,4 +80,5 @@ code clears the label on the next validation run.
 
 Use an inline `codeql[rule-id]` suppression only for a justified exception. A
 suppressed result still applies `Manual Review Required` and blocks automatic
-merge.
+merge, except for version 1 capability-contract findings, which remain informational
+even when suppressed.

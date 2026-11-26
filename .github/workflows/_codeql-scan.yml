@@ -40,6 +40,8 @@ on:
         value: ${{ jobs.analyze.outputs.codeql_capability_contract }}
       codeql_capability_contract_detected:
         value: ${{ jobs.analyze.outputs.codeql_capability_contract_detected }}
+      codeql_capability_contract_info:
+        value: ${{ jobs.analyze.outputs.codeql_capability_contract_info }}
 
 permissions:
   actions: read
@@ -67,6 +69,7 @@ jobs:
       codeql_sandbox_bypass_detected: ${{ steps.status.outputs.codeql_sandbox_bypass_detected }}
       codeql_capability_contract: ${{ steps.status.outputs.codeql_capability_contract }}
       codeql_capability_contract_detected: ${{ steps.status.outputs.codeql_capability_contract_detected }}
+      codeql_capability_contract_info: ${{ steps.status.outputs.codeql_capability_contract_info }}
     steps:
       - name: Checkout PR merge commit for analysis
         uses: actions/checkout@v6
@@ -203,6 +206,14 @@ jobs:
         with:
           name: codeql-capability-contract-findings
           path: codeql-capability-contract-findings.md
+          if-no-files-found: ignore
+
+      - name: Upload informational capability findings for PR comment
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-capability-info-findings
+          path: codeql-capability-info-findings.md
           if-no-files-found: ignore
 
       - name: Fail job if CodeQL found high/error/critical issues

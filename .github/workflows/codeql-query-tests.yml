@@ -28,6 +28,6 @@ jobs:
         working-directory: .github/codeql/queries/python/tests
       - name: Run query tests
         run: |
-          ! rg -n '^ERROR:' .github/codeql/queries/python/tests --glob '*.expected'
+          ! grep -r -n --include='*.expected' '^ERROR:' .github/codeql/queries/python/tests
           ${{ steps.init.outputs.codeql-path }} query compile --check-only .github/codeql/queries/python
           ${{ steps.init.outputs.codeql-path }} test run --additional-packs=.github/codeql/queries/python .github/codeql/queries/python/tests

@@ -97,7 +97,7 @@ KNOWN_CAPABILITIES: dict[str, dict[str, Any]] = {
         "min_manifest_version": 1,
         "max_manifest_version": None,
         "runtime_enforced": False,
-        "codeql_rules": [],
+        "codeql_rules": ["plugin/capability-contract/proxy-internals"],
     },
     "user_data": {
         "group": "data",
@@ -257,7 +257,7 @@ def capability_contract_rule_applies(rule_id: str, manifest_version: int) -> boo
     for policy in KNOWN_CAPABILITIES.values():
         if rule_id in policy.get("codeql_rules", []):
             return (
-                manifest_version_enforces_sandbox(manifest_version)
+                manifest_version_parses_capabilities(manifest_version)
                 and rule_applies_to_manifest_version(policy, manifest_version)
             )
     return False
