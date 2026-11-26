@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T23:25:55Z",
+  "generated_at": "2026-11-26T23:27:04Z",
   "manifest": {
     "slug": "epg-janitor",
     "name": "EPG Janitor",
@@ -15,26 +15,41 @@
     "discord_thread": "https://discord.com/channels/1340492560220684331/1420051973994053848",
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
-    "last_updated": "2026-11-26T14:10:10-05:00",
-    "download_count": 4860,
+    "last_updated": "2026-11-26T18:25:56-05:00",
+    "download_count": 4681,
     "latest": {
-      "version": "1.26.3301738",
-      "commit_sha": "de756d20a89e53b5ac23e4fe7aa070de6b0ad86a",
-      "commit_sha_short": "de756d2",
-      "changelog": "647",
-      "build_timestamp": "2026-11-26T19:10:33Z",
-      "last_updated": "2026-11-26T14:10:10-05:00",
-      "checksum_md5": "b2bca77cc5cc85371069ff2d5290bd6c",
-      "checksum_sha256": "71161695c723b70ac566f1bf395b835f2b730b24ef8afc2a63b8ace54a06470d",
+      "version": "1.26.3302104",
+      "commit_sha": "99e65b267685bce5928f0a2c68b13be42854c9f4",
+      "commit_sha_short": "99e65b2",
+      "changelog": "650",
+      "build_timestamp": "2026-11-26T23:26:36Z",
+      "last_updated": "2026-11-26T18:25:56-05:00",
+      "checksum_md5": "b32f14cf20c0193e8d4b61183e019432",
+      "checksum_sha256": "c50f7958a260481024ee4856e6e2c2cde2a389626e838413e476604b9aff5041",
       "min_dispatcharr_version": "v0.34.0",
       "max_dispatcharr_version": "",
-      "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.3301738/EPG-Janitor.zip",
-      "latest_url": "epg-janitor-1.26.3301738/epg-janitor-1.26.3301738.zip",
-      "url": "epg-janitor-1.26.3301738/epg-janitor-1.26.3301738.zip",
-      "size": 502,
-      "download_count": 21
+      "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.3302104/EPG-Janitor.zip",
+      "latest_url": "epg-janitor-1.26.3302104/epg-janitor-1.26.3302104.zip",
+      "url": "epg-janitor-1.26.3302104/epg-janitor-1.26.3302104.zip",
+      "size": 504,
+      "download_count": 0
     },
     "versions": [
+      {
+        "version": "1.26.3302104",
+        "commit_sha": "99e65b267685bce5928f0a2c68b13be42854c9f4",
+        "commit_sha_short": "99e65b2",
+        "changelog": "650",
+        "build_timestamp": "2026-11-26T23:26:36Z",
+        "last_updated": "2026-11-26T18:25:56-05:00",
+        "checksum_md5": "b32f14cf20c0193e8d4b61183e019432",
+        "checksum_sha256": "c50f7958a260481024ee4856e6e2c2cde2a389626e838413e476604b9aff5041",
+        "min_dispatcharr_version": "v0.34.0",
+        "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.3302104/EPG-Janitor.zip",
+        "url": "epg-janitor-1.26.3302104/epg-janitor-1.26.3302104.zip",
+        "size": 504,
+        "download_count": 0
+      },
       {
         "version": "1.26.3301738",
         "commit_sha": "de756d20a89e53b5ac23e4fe7aa070de6b0ad86a",
@@ -169,23 +184,8 @@
         "url": "epg-janitor-1.26.2281111/epg-janitor-1.26.2281111.zip",
         "size": 462,
         "download_count": 699
-      },
-      {
-        "version": "1.26.2241232",
-        "commit_sha": "990a732418764787445fe9afce6b8d5f31beddf2",
-        "commit_sha_short": "990a732",
-        "changelog": "232",
-        "build_timestamp": "2026-08-12T18:14:43Z",
-        "last_updated": "2026-08-12T18:14:24Z",
-        "checksum_md5": "8421a27d9dd9c7ba8e2f0732f573a16a",
-        "checksum_sha256": "07b8e5bfa73cd1505278eadb9dd20965be45b6f10e75f6b426015e7cb4fbb739",
-        "min_dispatcharr_version": "v0.20.0",
-        "source_url": "https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/releases/download/1.26.2241232/EPG-Janitor.zip",
-        "url": "epg-janitor-1.26.2241232/epg-janitor-1.26.2241232.zip",
-        "size": 460,
-        "download_count": 179
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawjACgAKCRB+wDprTCI0\nzt6nAQDdMNkmJ3IUzn17BwklKIVKaz4XZT7F6UgIRA8+KyilgAEAxmfp4IescgH1\nUHgkl9VePaAfl+ul9pGYsmbGAUlBFQE=\n=qFqB\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawjATAAKCRB+wDprTCI0\nzvrmAP9BghvwdsCF/Vp5uWIbhxjVLWITM2DQVljtKYH5yub7OwD+I1VP6m7vH2ut\nVmB2SJrd3BSlyE2OPPcjkY8bddj81Qo=\n=s2w8\n-----END PGP SIGNATURE-----"
 }

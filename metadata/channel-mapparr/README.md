@@ -2,7 +2,7 @@
 
 # Channel Mapparr
 
-**Version:** `1.26.3301541` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 15:53 UTC
+**Version:** `1.26.3302105` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 23:26 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.
 
@@ -14,20 +14,21 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 
 ### Latest Release
 
-- **Download:** [`channel-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip)
-- **Built:** Nov 26 2026, 15:53 UTC
-- **Source Commit:** [`91ed571`](https://github.com/Dispatcharr/Plugins/commit/91ed571709a334fdeac809e2a01229c030918c8b)
+- **Download:** [`channel-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3302105/channel-mapparr-1.26.3302105.zip)
+- **Built:** Nov 26 2026, 23:26 UTC
+- **Source Commit:** [`9a6f5c1`](https://github.com/Dispatcharr/Plugins/commit/9a6f5c134baffd015391ecbd9efd7306c68150ef)
 
 **Checksums:**
 ```
-MD5:    e9124efa450f175e3cabf09f0b6941b2
-SHA256: 05f02fcbb5426d185744b50f5ca95ae8bd493981d504cd9fd5492791ac18d366
+MD5:    64bce7402a48155c9584d31a0ce1e4e4
+SHA256: af9ec7e57c68cf5b50b8b927db98715b41ff611f00f60b79f5771b8625f0a679
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3302105` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3302105/channel-mapparr-1.26.3302105.zip) | Nov 26 2026, 23:26 UTC | [`9a6f5c1`](https://github.com/Dispatcharr/Plugins/commit/9a6f5c134baffd015391ecbd9efd7306c68150ef) | 64bce7402a48155c9584d31a0ce1e4e4 | af9ec7e57c68cf5b50b8b927db98715b41ff611f00f60b79f5771b8625f0a679 |
 | `1.26.3301541` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip) | Nov 26 2026, 15:53 UTC | [`91ed571`](https://github.com/Dispatcharr/Plugins/commit/91ed571709a334fdeac809e2a01229c030918c8b) | e9124efa450f175e3cabf09f0b6941b2 | 05f02fcbb5426d185744b50f5ca95ae8bd493981d504cd9fd5492791ac18d366 |
 | `1.26.3262133` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3262133/channel-mapparr-1.26.3262133.zip) | Nov 22 2026, 21:48 UTC | [`584250c`](https://github.com/Dispatcharr/Plugins/commit/584250c13b59410fb2cb3a4069d3245dd2e6067d) | 4c123784ace78270bd56437311487aa2 | 1d992968526936ca6ba44698f6b3ab53182c52395e928a0c84adc5bece164ddf |
 | `1.26.3251925` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3251925/channel-mapparr-1.26.3251925.zip) | Nov 21 2026, 19:34 UTC | [`e095b48`](https://github.com/Dispatcharr/Plugins/commit/e095b48f72b3631ee2ddbe9bb57472035ab2a549) | dc0245bbe8fb5f104c010d5d1a4c5c8e | 01d25c6b733acb7ed7c1140fc2189f16677993c85352d8ecbf20a353459bef40 |
@@ -37,7 +38,6 @@ SHA256: 05f02fcbb5426d185744b50f5ca95ae8bd493981d504cd9fd5492791ac18d366
 | `1.26.2901846` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2901846/channel-mapparr-1.26.2901846.zip) | Oct 17 2026, 21:57 UTC | [`763fa0a`](https://github.com/Dispatcharr/Plugins/commit/763fa0aeccc097965c0056465fd216d33608064f) | 28d3958a01c9d85a51ac4e0a4ca008f1 | 3a7d8a14c94bc1b0d179651558f4c6fa00909f44d10976aa441b1c417a97f0f2 |
 | `1.26.2901605` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2901605/channel-mapparr-1.26.2901605.zip) | Oct 17 2026, 16:15 UTC | [`5741478`](https://github.com/Dispatcharr/Plugins/commit/5741478bb12bae8832897f6600ab4659077bb2dd) | e8fa75b12edc80ca5e0224e61a5fc7e0 | 612b1790cf29f93902add1878ff4c27cf3ac9887a29baeb6bbc4877c5539661d |
 | `1.26.2881225` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2881225/channel-mapparr-1.26.2881225.zip) | Oct 15 2026, 12:43 UTC | [`2e4d8a9`](https://github.com/Dispatcharr/Plugins/commit/2e4d8a9d05aa01b4f6c4f0cea38f34cbe5ecc8fa) | df503d0bca03c1cf4b3f5aea6f1d4ec2 | 5014961f5d8c6834b00a276e1422be4674eb45916e11fcfcd3397df0e9e0884e |
-| `1.26.2840039` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2840039/channel-mapparr-1.26.2840039.zip) | Oct 11 2026, 00:45 UTC | [`f2c9af3`](https://github.com/Dispatcharr/Plugins/commit/f2c9af3a4ca59c83fbb38b5bd83e532dcdd1ca13) | d48c1dafb1d5460221d7f6631e6e1347 | e2d45292add8312bccf6d95e5e08c66940fc9b5e2797507247c61d879c6d5474 |
 
 ---
 
@@ -128,7 +128,7 @@ The setting is the last one in the settings form, in its own section. Unticking 
 
 ## Where Channel Mapparr keeps its files
 
-The plugin keeps its private files in its data folder. Dispatcharr creates that folder under /data/plugins/_data/, named for the plugin's key (channel-mapparr for a folder install, channel_mapparr after a Hub install). On the first start after an upgrade the plugin copies the files it used to keep under /data into that folder. The copy never deletes, renames or edits an old file, and a file already in the data folder is left as it is. The copy is recorded in migrated.json in the data folder.
+The plugin keeps its private files in its data folder. Dispatcharr creates that folder under /data/plugins/_data/, named for the plugin's slug, or its key when it has no slug. The key comes from the plugin's folder name, and the folder can carry different names on different installs (`channel-mapparr`, `channel_maparr` and `channel_mapparr` have all been seen). The folder name follows Dispatcharr's own rule (its `stable_plugin_data_path` function); this repository does not verify that rule. When the directory Dispatcharr passes differs from the one the plugin resolved, the plugin names the resolved directory in a warning. On the first start after an upgrade the plugin copies the files it used to keep under /data into that folder. The copy never deletes, renames or edits an old file, and a file already in the data folder is left as it is. The copy is recorded in migrated.json in the data folder.
 
 Inside the data folder:
 

@@ -14,7 +14,7 @@ This branch contains all published plugin releases.
 | [`AerioTV Presets`](#aeriotv-presets) | `0.0.8` | jonzey231 | AGPL-3.0-or-later | Preconfigure a user's AerioTV favorites, group order, hidden groups, and settings. Their AerioTV devices offer Dispatcharr Sync on first launch and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer. |
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.4.2` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
 | [`Automap Channelarr`](#automap-channelarr) | `0.4.2` | Megamannen | Artistic-2.0 | Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper. |
-| [`Channel Mapparr`](#channel-mapparr) | `1.26.3301541` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
+| [`Channel Mapparr`](#channel-mapparr) | `1.26.3302105` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
 | [`Channel Name Cleaner`](#channel-name-cleaner) | `0.2.0` | noodlemctwoodle | MIT | Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.8.0` | PilaScat | MIT | Plays a looping image or video when every stream on a channel has failed, so viewers see a message instead of an error. It can show a second card when the provider is full, list the channels in use, and send channels back to their stream. |
@@ -22,10 +22,10 @@ This branch contains all published plugin releases.
 | [`Dispatcharr Exporter`](#dispatcharr-exporter) | `3.4.0` | sethwv | MIT | Expose Dispatcharr metrics in Prometheus exporter-compatible format for monitoring |
 | [`Ranked Matchups (Top Games)`](#ranked-matchups-top-games-) | `2.0.2` | Jacob-Lasky | MIT | Never miss a good game. Scores every upcoming game across 39 leagues, tours and competitions (22 of them soccer, plus NFL, NBA, MLB, NHL, NCAA D1 football and basketball, UFC, boxing, tennis, golf and motorsport), then builds a Top Matchups group holding only the ones worth watching and shows why each game ranked where it did in its EPG description. Finished games can clear themselves out and be replaced from a bench of the next-best fixtures. |
 | [`Dispatchwrapparr`](#dispatchwrapparr) | `1.7.8` | jordandalley | MIT | An intelligent DRM/Clearkey capable stream profile for Dispatcharr |
-| [`Dustarr`](#dustarr) | `1.26.3301548` | PiratesIRC | MIT | Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider. |
+| [`Dustarr`](#dustarr) | `1.26.3302105` | PiratesIRC | MIT | Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider. |
 | [`EPG & Sports Editor`](#epg-sports-editor) | `0.6.05` | jstevenscl | MIT | Transform and clean your EPG data using regex and find/replace rules. Creates virtual copies of your sources — originals are never touched. Fills placeholder schedules for channels with no EPG, and includes a Sports Editor: automatically renames Auto Channel Sync-created sports channels, assigns matchup logos, and generates real Pregame/Live/Postgame EPG data by matching against a live public schedule (93 leagues — every major US team sport, 30+ soccer competitions, tennis, golf, NASCAR, F1, UFC/MMA/boxing/darts, and more). Renamed from EPGeditARR; existing installs carry their settings forward automatically. |
-| [`EPG Janitor`](#epg-janitor) | `1.26.3301738` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
-| [`Event Channel Managarr`](#event-channel-managarr) | `1.26.3301557` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
+| [`EPG Janitor`](#epg-janitor) | `1.26.3302104` | PiratesIRC | MIT | Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments. |
+| [`Event Channel Managarr`](#event-channel-managarr) | `1.26.3302104` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`Gluetun Rotate`](#gluetun-rotate) | `0.6.0` | PilaScat | MIT | Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address. |
 | [`Guide Watchdog`](#guide-watchdog) | `1.2.2` | funkasaur | MIT | Alerts by Telegram/email when an EPG source errors, stops refreshing or is about to run out of listings, or guide coverage drops; one alert when it starts, one when it clears. |
 | [`IPTV Checker`](#iptv-checker) | `1.26.3301646` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
@@ -41,7 +41,7 @@ This branch contains all published plugin releases.
 | [`Segmentarr`](#segmentarr) | `1.5.7` | Tw1zT3d2four7 | MIT | HLS-segmenting stream profile for Dispatcharr: splits XC/URL provider streams into segments, repairs timestamp breaks, and delivers clean MPEG-TS through cvlc to a matching Output Profile. |
 | [`Stream Dripper`](#stream-dripper) | `2.0.0` | Megamannen | Artistic-2.0 | Automatically drops all active streams once per day at a configured time, with a manual drop-now button. |
 | [`Stream Guard`](#stream-guard) | `1.2.3` | funkasaur | MIT | Alerts when channels silently start playing a different stream (hash-key changes, provider renumbering) and can put the old streams back. |
-| [`Stream-Mapparr`](#stream-mapparr) | `1.26.3301534` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
+| [`Stream-Mapparr`](#stream-mapparr) | `1.26.3302105` | PiratesIRC | MIT | Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup. |
 | [`Stream Probe`](#stream-probe) | `1.2.2` | funkasaur | MIT | Plays each channel for a few seconds through Dispatcharr's own proxy, one at a time, and records resolution, codec, frame rate and bitrate on the stream that served it. Connection limits are respected, so a busy account is skipped, never kicked. Report-only. |
 | [`Stream Usage`](#stream-usage) | `0.2.2` | funkasaur | MIT | Track sampled streaming traffic by user and channel. |
 | [`Tablo Tuner`](#tablo-tuner) | `0.1.0` | jkoehler11 | MIT | Connects a legacy Tablo through tablo-bridge: creates the M3U account, XMLTV source, channels and EPG mapping, and keeps them in sync. |
@@ -116,7 +116,7 @@ Deterministic rule-based channel mapper: pools each M3U group's streams by norma
 
 ### [Channel Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-mapparr/README.md)
 
-**Version:** `1.26.3301541` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 15:53 UTC
+**Version:** `1.26.3302105` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 23:26 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.
 
@@ -125,10 +125,10 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3301541`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip)
+- [Latest Release (`1.26.3302105`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3302105/channel-mapparr-1.26.3302105.zip)
 - [All Versions (10 available)](./metadata/channel-mapparr)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`91ed571`](https://github.com/Dispatcharr/Plugins/commit/91ed571709a334fdeac809e2a01229c030918c8b)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`9a6f5c1`](https://github.com/Dispatcharr/Plugins/commit/9a6f5c134baffd015391ecbd9efd7306c68150ef)
 
 ---
 
@@ -264,7 +264,7 @@ An intelligent DRM/Clearkey capable stream profile for Dispatcharr
 
 ### [Dustarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/dustarr/README.md)
 
-**Version:** `1.26.3301548` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 16:00 UTC
+**Version:** `1.26.3302105` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 23:25 UTC
 
 Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.
 
@@ -273,10 +273,10 @@ Records which channels are actually watched and reports the ones that are not, s
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3301548`)](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3301548/dustarr-1.26.3301548.zip)
-- [All Versions (7 available)](./metadata/dustarr)
+- [Latest Release (`1.26.3302105`)](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3302105/dustarr-1.26.3302105.zip)
+- [All Versions (8 available)](./metadata/dustarr)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dustarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dustarr/README.md) | **Last Change:** [`b568cae`](https://github.com/Dispatcharr/Plugins/commit/b568cae83910c68bd5b092f2de30249f27423817)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/dustarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/dustarr/README.md) | **Last Change:** [`bf84f62`](https://github.com/Dispatcharr/Plugins/commit/bf84f6245a02b58af5d4c2f458a95c8cad147304)
 
 ---
 
@@ -302,7 +302,7 @@ Transform and clean your EPG data using regex and find/replace rules. Creates vi
 
 ### [EPG Janitor](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/epg-janitor/README.md)
 
-**Version:** `1.26.3301738` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 19:10 UTC
+**Version:** `1.26.3302104` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 23:25 UTC
 
 Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments.
 
@@ -311,17 +311,17 @@ Scans for channels with EPG assignments but no program data. Auto-matches EPG to
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3301738`)](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.3301738/epg-janitor-1.26.3301738.zip)
+- [Latest Release (`1.26.3302104`)](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.3302104/epg-janitor-1.26.3302104.zip)
 - [All Versions (10 available)](./metadata/epg-janitor)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epg-janitor) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/epg-janitor/README.md) | **Last Change:** [`de756d2`](https://github.com/Dispatcharr/Plugins/commit/de756d20a89e53b5ac23e4fe7aa070de6b0ad86a)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/epg-janitor) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/epg-janitor/README.md) | **Last Change:** [`99e65b2`](https://github.com/Dispatcharr/Plugins/commit/99e65b267685bce5928f0a2c68b13be42854c9f4)
 
 ---
 
 
 ### [Event Channel Managarr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/event-channel-managarr/README.md)
 
-**Version:** `1.26.3301557` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 16:06 UTC
+**Version:** `1.26.3302104` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 23:26 UTC
 
 Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG.
 
@@ -330,10 +330,10 @@ Automates channel visibility by hiding channels without events and showing those
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.20.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3301557`)](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3301557/event-channel-managarr-1.26.3301557.zip)
+- [Latest Release (`1.26.3302104`)](https://github.com/Dispatcharr/Plugins/releases/download/event-channel-managarr-1.26.3302104/event-channel-managarr-1.26.3302104.zip)
 - [All Versions (10 available)](./metadata/event-channel-managarr)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/event-channel-managarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/event-channel-managarr/README.md) | **Last Change:** [`331a83a`](https://github.com/Dispatcharr/Plugins/commit/331a83a3b6b08d3058e5ea56d1a822208aeda7fb)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/event-channel-managarr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/event-channel-managarr/README.md) | **Last Change:** [`49193e2`](https://github.com/Dispatcharr/Plugins/commit/49193e2884cf8cad49b46278a71951729213771e)
 
 ---
 
@@ -615,7 +615,7 @@ Alerts when channels silently start playing a different stream (hash-key changes
 
 ### [Stream-Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/stream-mapparr/README.md)
 
-**Version:** `1.26.3301534` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 15:44 UTC
+**Version:** `1.26.3302105` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 23:25 UTC
 
 Automatically add matching streams to channels based on name similarity and quality precedence. Supports unlimited stream matching, channel visibility management, and CSV export cleanup.
 
@@ -624,10 +624,10 @@ Automatically add matching streams to channels based on name similarity and qual
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3301534`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3301534/stream-mapparr-1.26.3301534.zip)
+- [Latest Release (`1.26.3302105`)](https://github.com/Dispatcharr/Plugins/releases/download/stream-mapparr-1.26.3302105/stream-mapparr-1.26.3302105.zip)
 - [All Versions (10 available)](./metadata/stream-mapparr)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/stream-mapparr/README.md) | **Last Change:** [`ce3c53b`](https://github.com/Dispatcharr/Plugins/commit/ce3c53b29aeec32ac7d17b4c3a42cf2e5ca6bd8e)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/stream-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/stream-mapparr/README.md) | **Last Change:** [`3a9b0c0`](https://github.com/Dispatcharr/Plugins/commit/3a9b0c061ab8fc98714dc626653c095bb57e5d9b)
 
 ---
 
@@ -863,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 26 2026, 23:26 UTC*
+*Last updated: Nov 26 2026, 23:27 UTC*

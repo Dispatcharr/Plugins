@@ -2,7 +2,7 @@
 
 # Dustarr
 
-**Version:** `1.26.3301548` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 16:00 UTC
+**Version:** `1.26.3302105` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 23:25 UTC
 
 Records which channels are actually watched and reports the ones that are not, so you can turn off the dead weight in your lineup. Read only: it never changes a channel and never contacts your provider.
 
@@ -14,20 +14,21 @@ Records which channels are actually watched and reports the ones that are not, s
 
 ### Latest Release
 
-- **Download:** [`dustarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3301548/dustarr-1.26.3301548.zip)
-- **Built:** Nov 26 2026, 16:00 UTC
-- **Source Commit:** [`b568cae`](https://github.com/Dispatcharr/Plugins/commit/b568cae83910c68bd5b092f2de30249f27423817)
+- **Download:** [`dustarr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3302105/dustarr-1.26.3302105.zip)
+- **Built:** Nov 26 2026, 23:26 UTC
+- **Source Commit:** [`bf84f62`](https://github.com/Dispatcharr/Plugins/commit/bf84f6245a02b58af5d4c2f458a95c8cad147304)
 
 **Checksums:**
 ```
-MD5:    3008c81efb521b536b86a09508c1b514
-SHA256: e20c6dcf762e1624780dbc86d326da477623cfa9f3f982a354de2ca7930c8dba
+MD5:    b3346feb88052e249e0db50749366e73
+SHA256: 27f45e27e15cb12f5f8d8413cf94ca398622cc3a2767acaebba875cb0c7c99ac
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3302105` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3302105/dustarr-1.26.3302105.zip) | Nov 26 2026, 23:26 UTC | [`bf84f62`](https://github.com/Dispatcharr/Plugins/commit/bf84f6245a02b58af5d4c2f458a95c8cad147304) | b3346feb88052e249e0db50749366e73 | 27f45e27e15cb12f5f8d8413cf94ca398622cc3a2767acaebba875cb0c7c99ac |
 | `1.26.3301548` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3301548/dustarr-1.26.3301548.zip) | Nov 26 2026, 16:00 UTC | [`b568cae`](https://github.com/Dispatcharr/Plugins/commit/b568cae83910c68bd5b092f2de30249f27423817) | 3008c81efb521b536b86a09508c1b514 | e20c6dcf762e1624780dbc86d326da477623cfa9f3f982a354de2ca7930c8dba |
 | `1.26.3251749` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.3251749/dustarr-1.26.3251749.zip) | Nov 21 2026, 17:57 UTC | [`8493bd8`](https://github.com/Dispatcharr/Plugins/commit/8493bd83222784d7ff6fb0f28b8c6aa3b09edd3f) | 17135d89a67bc9144675469a819a67b5 | 968811b797bcde3f0c8f8b35b6f02af5f5dc7e4d2a0776d64e51e8532310c20c |
 | `1.26.2901903` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/dustarr-1.26.2901903/dustarr-1.26.2901903.zip) | Oct 17 2026, 21:58 UTC | [`1b882f2`](https://github.com/Dispatcharr/Plugins/commit/1b882f233078ff663758cc1ecdf82ff16afea84a) | 5d457ca12c31346cda8a080abbb0390a | 21b8d14c01e702ad18ac1d78ceb4c3b65ab19db826fb2e2e5cd4595c69ed90c9 |
