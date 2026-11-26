@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:56:00Z",
+  "generated_at": "2026-11-26T19:10:53Z",
   "manifest": {
     "slug": "lineuparr",
     "name": "Lineuparr",
@@ -10,7 +10,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-26T16:50:58Z",
-    "download_count": 2993,
+    "download_count": 3007,
     "latest": {
       "version": "1.26.3301641",
       "commit_sha": "5dbdc61614e675eb6290b16cb53ce4c0f42a14d2",
@@ -25,7 +25,7 @@
       "latest_url": "lineuparr-1.26.3301641/lineuparr-1.26.3301641.zip",
       "url": "lineuparr-1.26.3301641/lineuparr-1.26.3301641.zip",
       "size": 478,
-      "download_count": 0
+      "download_count": 12
     },
     "versions": [
       {
@@ -40,7 +40,7 @@
         "min_dispatcharr_version": "v0.34.0",
         "url": "lineuparr-1.26.3301641/lineuparr-1.26.3301641.zip",
         "size": 478,
-        "download_count": 0
+        "download_count": 12
       },
       {
         "version": "1.26.3301606",
@@ -54,7 +54,7 @@
         "min_dispatcharr_version": "v0.34.0",
         "url": "lineuparr-1.26.3301606/lineuparr-1.26.3301606.zip",
         "size": 478,
-        "download_count": 7
+        "download_count": 8
       },
       {
         "version": "1.26.3262133",
@@ -68,7 +68,7 @@
         "min_dispatcharr_version": "v0.34.0",
         "url": "lineuparr-1.26.3262133/lineuparr-1.26.3262133.zip",
         "size": 467,
-        "download_count": 243
+        "download_count": 244
       },
       {
         "version": "1.26.3251844",
@@ -169,5 +169,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhkpQAKCRB+wDprTCI0\nznWHAQC3ZnW28ek62Xkc8uv6S9CDKpdk1YM9v1wKMsQ+MlHPmAEA6/7IOfQw91sY\nsztg7PYEkG6OGP1wovpAbaZJeRKDRAk=\n=Ml49\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawiERAAKCRB+wDprTCI0\nzgIfAP9cSqn+BE516czuu1bge75R8BvStl7CTUNKj9vq/wpaPwEA8HvQKMomfaTX\n2sMSP6JJ27YmwrmeRPF64Ng7vElUDAc=\n=sKef\n-----END PGP SIGNATURE-----"
 }

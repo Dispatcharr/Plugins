@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:56:00Z",
+  "generated_at": "2026-11-26T19:10:53Z",
   "manifest": {
     "slug": "dispatcharr-ranked-matchups",
     "name": "Ranked Matchups (Top Games)",
@@ -13,7 +13,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-26T15:15:23Z",
-    "download_count": 920,
+    "download_count": 927,
     "latest": {
       "version": "2.0.2",
       "commit_sha": "56f9fa53c013cb8b121114aac980da83bbf92c69",
@@ -29,7 +29,7 @@
       "latest_url": "dispatcharr-ranked-matchups-2.0.2/dispatcharr-ranked-matchups-2.0.2.zip",
       "url": "dispatcharr-ranked-matchups-2.0.2/dispatcharr-ranked-matchups-2.0.2.zip",
       "size": 799,
-      "download_count": 3
+      "download_count": 9
     },
     "versions": [
       {
@@ -45,7 +45,7 @@
         "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v2.0.2/dispatcharr_ranked_matchups-v2.0.2.zip",
         "url": "dispatcharr-ranked-matchups-2.0.2/dispatcharr-ranked-matchups-2.0.2.zip",
         "size": 799,
-        "download_count": 3
+        "download_count": 9
       },
       {
         "version": "2.0.1",
@@ -60,7 +60,7 @@
         "source_url": "https://github.com/Jacob-Lasky/dispatcharr_ranked_matchups/releases/download/v2.0.1/dispatcharr_ranked_matchups-v2.0.1.zip",
         "url": "dispatcharr-ranked-matchups-2.0.1/dispatcharr-ranked-matchups-2.0.1.zip",
         "size": 793,
-        "download_count": 1
+        "download_count": 2
       },
       {
         "version": "1.39.0",
@@ -177,5 +177,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhkowAKCRB+wDprTCI0\nzlF7AQCdWL6FCeXZDcZpUq+nwRFOIeJj99/xWNSkP9sG756MYwEA3WkArfI8C2fh\nGJ3Jcq/W8SCNTNoGN6O94SYfRdxDuAQ=\n=iczm\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawiEQgAKCRB+wDprTCI0\nzswKAP9hWxbT6jSO0EkrC462x5JNEnRUOlc/Qm/asoUEx+2XWgD/fBge/RxqrdKa\nu8Wbgp4rhBtuUb7t/ZEt25yEzKZKEA0=\n=/ph7\n-----END PGP SIGNATURE-----"
 }

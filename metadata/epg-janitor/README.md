@@ -2,7 +2,7 @@
 
 # EPG Janitor
 
-**Version:** `1.26.3262133` | **Author:** PiratesIRC | **Last Updated:** Nov 22 2026, 21:49 UTC
+**Version:** `1.26.3301738` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 19:10 UTC
 
 Scans for channels with EPG assignments but no program data. Auto-matches EPG to channels using intelligent fuzzy matching with aliases, removes EPG from hidden channels, and manages EPG assignments.
 
@@ -14,20 +14,21 @@ Scans for channels with EPG assignments but no program data. Auto-matches EPG to
 
 ### Latest Release
 
-- **Download:** [`epg-janitor-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.3262133/epg-janitor-1.26.3262133.zip)
-- **Built:** Nov 22 2026, 21:50 UTC
-- **Source Commit:** [`fe7dec5`](https://github.com/Dispatcharr/Plugins/commit/fe7dec59bfd61ea9ff175532444dfb589024012f)
+- **Download:** [`epg-janitor-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.3301738/epg-janitor-1.26.3301738.zip)
+- **Built:** Nov 26 2026, 19:10 UTC
+- **Source Commit:** [`de756d2`](https://github.com/Dispatcharr/Plugins/commit/de756d20a89e53b5ac23e4fe7aa070de6b0ad86a)
 
 **Checksums:**
 ```
-MD5:    6d635427a9543adf3c6546f69aaf90a9
-SHA256: e54b121da1a4aaf916ab6a363c139f7082f39b6b5ac1bd7f0578d9287738ed48
+MD5:    b2bca77cc5cc85371069ff2d5290bd6c
+SHA256: 71161695c723b70ac566f1bf395b835f2b730b24ef8afc2a63b8ace54a06470d
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3301738` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.3301738/epg-janitor-1.26.3301738.zip) | Nov 26 2026, 19:10 UTC | [`de756d2`](https://github.com/Dispatcharr/Plugins/commit/de756d20a89e53b5ac23e4fe7aa070de6b0ad86a) | b2bca77cc5cc85371069ff2d5290bd6c | 71161695c723b70ac566f1bf395b835f2b730b24ef8afc2a63b8ace54a06470d |
 | `1.26.3262133` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.3262133/epg-janitor-1.26.3262133.zip) | Nov 22 2026, 21:50 UTC | [`fe7dec5`](https://github.com/Dispatcharr/Plugins/commit/fe7dec59bfd61ea9ff175532444dfb589024012f) | 6d635427a9543adf3c6546f69aaf90a9 | e54b121da1a4aaf916ab6a363c139f7082f39b6b5ac1bd7f0578d9287738ed48 |
 | `1.26.3251831` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.3251831/epg-janitor-1.26.3251831.zip) | Nov 21 2026, 19:09 UTC | [`f6108fe`](https://github.com/Dispatcharr/Plugins/commit/f6108fec81583e212ab5c2ec120676692477e91e) | cfc966cf4db0c5cea205bc05a363a34f | 1677f1466c02294c24c261f817d84d6b89ec0ac200a690aae889f84049006855 |
 | `1.26.2971931` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2971931/epg-janitor-1.26.2971931.zip) | Oct 24 2026, 16:03 UTC | [`a936019`](https://github.com/Dispatcharr/Plugins/commit/a936019d4a6d242aa44ea677a0f9591c776b738f) | 93c6b8b0918a24bf2608d44e16ba18c6 | f145ee0739b626b3b618eb4c639728cadad3872836b3a0f51b6894a1b8ad94fa |
@@ -37,7 +38,6 @@ SHA256: e54b121da1a4aaf916ab6a363c139f7082f39b6b5ac1bd7f0578d9287738ed48
 | `1.26.2481223` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2481223/epg-janitor-1.26.2481223.zip) | Sep 05 2026, 19:57 UTC | [`ceb7847`](https://github.com/Dispatcharr/Plugins/commit/ceb784785395a3750996e248f9cd24812d52987f) | de24b7ac4404039dec564a5bd315d4f8 | 2cc9ba6b40733bf40a059376deb72da9639cec40df4dcdcfa0cd77abffb7f60a |
 | `1.26.2281111` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2281111/epg-janitor-1.26.2281111.zip) | Aug 16 2026, 16:17 UTC | [`79842f2`](https://github.com/Dispatcharr/Plugins/commit/79842f28375fb5829e2ba64029deb1d60f7c5fb1) | 8e7ade420998eadd4c60fcb617672989 | 239cf4955b3d079ab76c97983a6989472470af7d7cd847b87ac9cabfd8761e30 |
 | `1.26.2241232` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2241232/epg-janitor-1.26.2241232.zip) | Aug 12 2026, 18:14 UTC | [`990a732`](https://github.com/Dispatcharr/Plugins/commit/990a732418764787445fe9afce6b8d5f31beddf2) | 8421a27d9dd9c7ba8e2f0732f573a16a | 07b8e5bfa73cd1505278eadb9dd20965be45b6f10e75f6b426015e7cb4fbb739 |
-| `1.26.2241113` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/epg-janitor-1.26.2241113/epg-janitor-1.26.2241113.zip) | Aug 12 2026, 16:23 UTC | [`72a2b84`](https://github.com/Dispatcharr/Plugins/commit/72a2b847e6409f41f87f84b29b27df6ba40a2da1) | 5959b74ddfba7eab9cf884abaf750f7c | 2570b9dcbe9e2f30a90a6ce5422061a7a886ca72423fbd35f1d2fcacc1aa4a0b |
 
 ---
 
@@ -97,6 +97,12 @@ siblings do not cross-match, so `Fox Sports 1` does not take `Fox Sports 2`'s
 guide and `ITV2` does not take `ITV2 +1`'s. Regional variants route to the
 correct regional feed. Number words fold to digits, CamelCase splits, and dotted
 compounds split, while radio frequencies are left alone.
+
+**Keep chosen guides across refreshes.** Pinned EPG rules hold a fixed map of channel name
+to guide, for channels that a refresh keeps resetting, such as a trending list whose
+channels Dispatcharr recreates each time its M3U account refreshes. The map is applied
+again after each refresh of the accounts you name. Names match exactly, with no fuzzy
+scoring. See [Pinned EPG rules](https://github.com/PiratesIRC/Dispatcharr-EPG-Janitor-Plugin/blob/main/docs/USER-GUIDE.md#pinned-epg-rules).
 
 **Clean up in bulk.** Remove EPG assignments by regular expression, from hidden
 channels, or from whole groups. Tag channels with missing programme data with a
@@ -167,9 +173,9 @@ it takes effect when the next action or scheduled run finishes; the plugin then
 asks the server to delete this install's figures. Once the server confirms the
 delete, the plugin forgets its id, and ticking the setting again later starts a
 new one; if the delete could not reach the server, the plugin keeps the id and
-retries. The plugin keeps that id and the timing of its reports in
-/data/plugin_stats/epg-janitor/ (install_id, sent, backoff, disabled,
-delete_backoff, lock). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked, or before the server confirms the delete,
+retries. The plugin keeps that id and the timing of its reports in the
+`usage/epg-janitor/` folder of its data directory (install_id, sent, backoff, disabled,
+delete_backoff, lock; on Dispatcharr 0.33, /data/plugin_stats/epg-janitor/). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked, or before the server confirms the delete,
 leaves the old figures on the server, and the new id then sends the full total
 again, so the badge counts it twice.
 
@@ -192,6 +198,33 @@ again, so the badge counts it twice.
 2. **Restart Dispatcharr**. Log out, then `docker restart dispatcharr` (or equivalent).
 3. **Install the new version**. Log back in, import the new zip, enable.
 4. **Your settings are preserved**. Dispatcharr stores plugin settings in its database separately from plugin code. Updates do not clear your configuration.
+
+## Where EPG Janitor keeps its files
+
+Dispatcharr 0.34 gives each plugin a private data directory. On that version EPG Janitor keeps
+its state there, in `/data/plugins/_data/<plugin id>/`. It holds the last scan's results, the
+match tally behind the EPGs Matched badge, and the usage counts folder. The scan progress
+file sits beside it (see below). On Dispatcharr 0.33 nothing moves.
+
+Other places hold files:
+
+- `/data/exports/` holds the CSV exports, as before. It is shared with other plugins, and this
+  plugin deletes only its own `epg_janitor_*.csv` files.
+- `/data/epg_automatch_preview.csv` holds the Auto-Match preview, as before.
+- `/data/epg_janitor_*` and `/data/plugin_stats/` hold the files from earlier versions. The
+  first run on this version copies them across and leaves them where they are, and records
+  what it copied in `migrated.json` inside the data directory. Delete them by hand only when
+  both of these are true: the `failed` list in `migrated.json` is empty, and none of the old
+  files has changed since the time `migrated.json` records. A Dispatcharr process that still
+  runs the earlier version keeps writing the old files until it reloads the plugin, and a
+  restart of Dispatcharr ends that.
+- `/data/plugins/_data/` holds three small files beside the data directory:
+  `<plugin id>.progress.json` (the scan's progress, read by every worker so one scan runs at a
+  time), `<plugin id>.active` and `<plugin id>.migrated`.
+
+Uninstalling the plugin and choosing "delete data" removes the data directory. That takes the
+match tally behind the EPGs Matched badge and this install's anonymous usage id, so a reinstall
+starts a new id. The three small files beside it are not removed by that choice.
 
 ## Official Plugin Hub
 

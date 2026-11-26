@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:56:00Z",
+  "generated_at": "2026-11-26T19:10:53Z",
   "manifest": {
     "slug": "iptv-checker",
     "name": "IPTV Checker",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-26T16:55:25Z",
-    "download_count": 5136,
+    "download_count": 5157,
     "latest": {
       "version": "1.26.3301646",
       "commit_sha": "527c72572bd4f41b112778bbb9a05f58b9c252f0",
@@ -28,7 +28,7 @@
       "latest_url": "iptv-checker-1.26.3301646/iptv-checker-1.26.3301646.zip",
       "url": "iptv-checker-1.26.3301646/iptv-checker-1.26.3301646.zip",
       "size": 435,
-      "download_count": 0
+      "download_count": 15
     },
     "versions": [
       {
@@ -44,7 +44,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3301646/iptv_checker-v1.26.3301646.zip",
         "url": "iptv-checker-1.26.3301646/iptv-checker-1.26.3301646.zip",
         "size": 435,
-        "download_count": 0
+        "download_count": 15
       },
       {
         "version": "1.26.3301619",
@@ -59,7 +59,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3301619/iptv_checker-v1.26.3301619.zip",
         "url": "iptv-checker-1.26.3301619/iptv-checker-1.26.3301619.zip",
         "size": 435,
-        "download_count": 4
+        "download_count": 9
       },
       {
         "version": "1.26.3262133",
@@ -74,7 +74,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-IPTV-Checker-Plugin/releases/download/v1.26.3262133/iptv_checker-v1.26.3262133.zip",
         "url": "iptv-checker-1.26.3262133/iptv-checker-1.26.3262133.zip",
         "size": 424,
-        "download_count": 412
+        "download_count": 413
       },
       {
         "version": "1.26.3251946",
@@ -183,5 +183,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhkpQAKCRB+wDprTCI0\nznDPAPoDTkOUHS3xFaPoF03qbFDBdWAe0XVP9rWbWHTacQmD8gD/UaTmqhVW0ehk\np+4ELUoqBWbTKgQxWB/Ri0oxOLKiVwg=\n=0wm8\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawiERAAKCRB+wDprTCI0\nzuDPAP9jsWozDDje/1b3EZmvy5pku58BZj9zy6iNZv49wT4DwAEAk0UOl597rdsB\nm0D04F72gbuBGeKIRS/XY8u//eVZSQg=\n=aopl\n-----END PGP SIGNATURE-----"
 }
