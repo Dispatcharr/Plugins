@@ -14,7 +14,7 @@ This branch contains all published plugin releases.
 | [`AerioTV Presets`](#aeriotv-presets) | `0.0.8` | jonzey231 | AGPL-3.0-or-later | Preconfigure a user's AerioTV favorites, group order, hidden groups, and settings. Their AerioTV devices offer Dispatcharr Sync on first launch and start from this setup. Requires AerioTV 1.8.45 or newer on Apple devices and AerioTV for Android 0.5.14 or newer. |
 | [`Audio Buffer Tuner`](#audio-buffer-tuner) | `0.4.2` | CtznSniiips | MIT | Speeds up channel startup for low-bitrate (usually audio only) streams by lowering the TS-proxy prebuffer for chosen Channel Groups. |
 | [`Automap Channelarr`](#automap-channelarr) | `0.4.2` | Megamannen | Artistic-2.0 | Deterministic rule-based channel mapper: pools each M3U group's streams by normalized name and lays them out as channels from a configured start number. Event groups become schedule-ordered, self-cleaning channel blocks. Replaces the built-in automapper. |
-| [`Channel Mapparr`](#channel-mapparr) | `1.26.3262133` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
+| [`Channel Mapparr`](#channel-mapparr) | `1.26.3301541` | PiratesIRC | MIT | Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries. |
 | [`Channel Name Cleaner`](#channel-name-cleaner) | `0.2.0` | noodlemctwoodle | MIT | Clean up messy IPTV channel names — strip pipe/bracket quality tags (| HD |, (1080p), [VIP]) and junk separators, with a dry-run preview, per-group scope, a protect-list, a collision strategy, stats, bulk apply, undo and an optional scheduler. |
 | [`Clapparr`](#clapparr) | `1.3.0` | v8eta | MIT | The metadata slate for your DVR: writes Kodi/Plex NFO sidecars, posters and episode thumbnails so recordings present with real titles, summaries and artwork instead of 'Episode 08-18'. |
 | [`Could Not Dispatch`](#could-not-dispatch) | `0.8.0` | PilaScat | MIT | Plays a looping image or video when every stream on a channel has failed, so viewers see a message instead of an error. It can show a second card when the provider is full, list the channels in use, and send channels back to their stream. |
@@ -116,7 +116,7 @@ Deterministic rule-based channel mapper: pools each M3U group's streams by norma
 
 ### [Channel Mapparr](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/channel-mapparr/README.md)
 
-**Version:** `1.26.3262133` | **Author:** PiratesIRC | **Last Updated:** Nov 22 2026, 21:48 UTC
+**Version:** `1.26.3301541` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 15:53 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.
 
@@ -125,10 +125,10 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3262133`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3262133/channel-mapparr-1.26.3262133.zip)
+- [Latest Release (`1.26.3301541`)](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip)
 - [All Versions (10 available)](./metadata/channel-mapparr)
 
-**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`584250c`](https://github.com/Dispatcharr/Plugins/commit/584250c13b59410fb2cb3a4069d3245dd2e6067d)
+**Maintainers:** PiratesIRC | **Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/channel-mapparr) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/channel-mapparr/README.md) | **Last Change:** [`91ed571`](https://github.com/Dispatcharr/Plugins/commit/91ed571709a334fdeac809e2a01229c030918c8b)
 
 ---
 
@@ -863,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 26 2026, 15:45 UTC*
+*Last updated: Nov 26 2026, 15:54 UTC*

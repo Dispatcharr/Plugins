@@ -2,7 +2,7 @@
 
 # Channel Mapparr
 
-**Version:** `1.26.3262133` | **Author:** PiratesIRC | **Last Updated:** Nov 22 2026, 21:48 UTC
+**Version:** `1.26.3301541` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 15:53 UTC
 
 Standardizes broadcast (OTA) and premium/cable channel names using network data and channel lists. Supports M3U stream import, category organization, and fuzzy matching across about 42,600 channels in 13 countries.
 
@@ -14,20 +14,21 @@ Standardizes broadcast (OTA) and premium/cable channel names using network data 
 
 ### Latest Release
 
-- **Download:** [`channel-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3262133/channel-mapparr-1.26.3262133.zip)
-- **Built:** Nov 22 2026, 21:48 UTC
-- **Source Commit:** [`584250c`](https://github.com/Dispatcharr/Plugins/commit/584250c13b59410fb2cb3a4069d3245dd2e6067d)
+- **Download:** [`channel-mapparr-latest.zip`](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip)
+- **Built:** Nov 26 2026, 15:53 UTC
+- **Source Commit:** [`91ed571`](https://github.com/Dispatcharr/Plugins/commit/91ed571709a334fdeac809e2a01229c030918c8b)
 
 **Checksums:**
 ```
-MD5:    4c123784ace78270bd56437311487aa2
-SHA256: 1d992968526936ca6ba44698f6b3ab53182c52395e928a0c84adc5bece164ddf
+MD5:    e9124efa450f175e3cabf09f0b6941b2
+SHA256: 05f02fcbb5426d185744b50f5ca95ae8bd493981d504cd9fd5492791ac18d366
 ```
 
 ### All Versions
 
 | Version | Download | Built | Commit | MD5 | SHA256 |
 |---------|----------|-------|--------|-----|--------|
+| `1.26.3301541` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3301541/channel-mapparr-1.26.3301541.zip) | Nov 26 2026, 15:53 UTC | [`91ed571`](https://github.com/Dispatcharr/Plugins/commit/91ed571709a334fdeac809e2a01229c030918c8b) | e9124efa450f175e3cabf09f0b6941b2 | 05f02fcbb5426d185744b50f5ca95ae8bd493981d504cd9fd5492791ac18d366 |
 | `1.26.3262133` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3262133/channel-mapparr-1.26.3262133.zip) | Nov 22 2026, 21:48 UTC | [`584250c`](https://github.com/Dispatcharr/Plugins/commit/584250c13b59410fb2cb3a4069d3245dd2e6067d) | 4c123784ace78270bd56437311487aa2 | 1d992968526936ca6ba44698f6b3ab53182c52395e928a0c84adc5bece164ddf |
 | `1.26.3251925` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3251925/channel-mapparr-1.26.3251925.zip) | Nov 21 2026, 19:34 UTC | [`e095b48`](https://github.com/Dispatcharr/Plugins/commit/e095b48f72b3631ee2ddbe9bb57472035ab2a549) | dc0245bbe8fb5f104c010d5d1a4c5c8e | 01d25c6b733acb7ed7c1140fc2189f16677993c85352d8ecbf20a353459bef40 |
 | `1.26.3251847` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.3251847/channel-mapparr-1.26.3251847.zip) | Nov 21 2026, 18:59 UTC | [`cf434f9`](https://github.com/Dispatcharr/Plugins/commit/cf434f995463a7b1984576aeee492ae9fb943a97) | a80dcc9555427654a9a0bc966fb21943 | 6dfb436539ed5b6a4de0534a0a8005cc3c269385894451bf77b60d6a03592c58 |
@@ -37,7 +38,6 @@ SHA256: 1d992968526936ca6ba44698f6b3ab53182c52395e928a0c84adc5bece164ddf
 | `1.26.2901605` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2901605/channel-mapparr-1.26.2901605.zip) | Oct 17 2026, 16:15 UTC | [`5741478`](https://github.com/Dispatcharr/Plugins/commit/5741478bb12bae8832897f6600ab4659077bb2dd) | e8fa75b12edc80ca5e0224e61a5fc7e0 | 612b1790cf29f93902add1878ff4c27cf3ac9887a29baeb6bbc4877c5539661d |
 | `1.26.2881225` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2881225/channel-mapparr-1.26.2881225.zip) | Oct 15 2026, 12:43 UTC | [`2e4d8a9`](https://github.com/Dispatcharr/Plugins/commit/2e4d8a9d05aa01b4f6c4f0cea38f34cbe5ecc8fa) | df503d0bca03c1cf4b3f5aea6f1d4ec2 | 5014961f5d8c6834b00a276e1422be4674eb45916e11fcfcd3397df0e9e0884e |
 | `1.26.2840039` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2840039/channel-mapparr-1.26.2840039.zip) | Oct 11 2026, 00:45 UTC | [`f2c9af3`](https://github.com/Dispatcharr/Plugins/commit/f2c9af3a4ca59c83fbb38b5bd83e532dcdd1ca13) | d48c1dafb1d5460221d7f6631e6e1347 | e2d45292add8312bccf6d95e5e08c66940fc9b5e2797507247c61d879c6d5474 |
-| `1.26.2832116` | [Download](https://github.com/Dispatcharr/Plugins/releases/download/channel-mapparr-1.26.2832116/channel-mapparr-1.26.2832116.zip) | Oct 10 2026, 21:22 UTC | [`946dc08`](https://github.com/Dispatcharr/Plugins/commit/946dc0869e372b73492427ea23e726ce40a55d52) | 2a059d2d1e503648e56924fb96905f07 | 02462e8be15eba5bce651b6befcdee17c3c39945618e18d8bb8eefde607d6f1f |
 
 ---
 
@@ -124,7 +124,28 @@ The server stores that id with the total and the date of the last report, and ke
 
 What counts as an active install: an install that sent at least one report in the last 30 UTC days. A badge changes after the server's hourly recount, which runs at the start of each UTC hour, and Shields may cache the badge for up to an hour more, so a new report can take up to about two hours to show.
 
-The setting is the last one in the settings form, in its own section. Unticking it takes effect when the next action finishes; the plugin then asks the server to delete this install's figures. Once the server confirms the delete, the plugin forgets its id, and ticking the setting again later starts a new one; if the delete could not reach the server, the plugin keeps the id and retries. The plugin keeps that id and the timing of its reports in /data/plugin_stats/channel-mapparr/ (install_id, sent, backoff, disabled, delete_backoff, lock). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked, or before the server confirms the delete, leaves the old figures on the server, and the new id then sends the full total again, so the badge counts it twice.
+The setting is the last one in the settings form, in its own section. Unticking it takes effect when the next action finishes; the plugin then asks the server to delete this install's figures. Once the server confirms the delete, the plugin forgets its id, and ticking the setting again later starts a new one; if the delete could not reach the server, the plugin keeps the id and retries. The plugin keeps that id and the timing of its reports in the usage folder of its data folder (usage/channel-mapparr/ under /data/plugins/_data/, see Where Channel Mapparr keeps its files) (install_id, sent, backoff, disabled, delete_backoff, lock). To start a new id, untick the setting and let an action run so the server deletes this install's figures; deleting that folder while the setting is ticked, or before the server confirms the delete, leaves the old figures on the server, and the new id then sends the full total again, so the badge counts it twice.
+
+## Where Channel Mapparr keeps its files
+
+The plugin keeps its private files in its data folder. Dispatcharr creates that folder under /data/plugins/_data/, named for the plugin's key (channel-mapparr for a folder install, channel_mapparr after a Hub install). On the first start after an upgrade the plugin copies the files it used to keep under /data into that folder. The copy never deletes, renames or edits an old file, and a file already in the data folder is left as it is. The copy is recorded in migrated.json in the data folder.
+
+Inside the data folder:
+
+- channel_mapparr_loaded_channels.json: the last channel list the plugin loaded.
+- channel_mapparr_progress.json: the progress of the running or last action, read by Show Status.
+- channel_mapparr_m3u_import_results.json: the results of the last M3U import.
+- channel_maparr_rename_counts.jsonl: the Channels Renamed tally, one line per run that renamed a channel. It is append only.
+- logo_backups/: the logos that Replace Logos (tv-logos) replaced, saved before each real run changes anything.
+- usage/channel-mapparr/: the usage reporter's install id and send record.
+
+Outside the data folder:
+
+- /data/plugins/_shared/newsflasharr/channel-mapparr/: the emailed reports that Newsflasharr attaches. Newsflasharr reads them from there.
+- /data/exports/: the CSV exports. Seven plugins share this folder, and the plugin deletes only its own exports from it.
+- /data/channel-mapparr/report_count.json: the count of reports built, which Newsflasharr's Show Status reads at that path, so it stays there.
+
+Delete data on uninstall removes the data folder, with the tally and the install id in it. It does not remove the shared reports folder or /data/exports. Once migrated.json shows no failed copy, the old /data files can be removed by hand, provided no old file has changed since the time recorded in migrated.json, because a process still running the previous version keeps writing them.
 
 ## Documentation
 
