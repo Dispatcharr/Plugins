@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:51:35Z",
+  "generated_at": "2026-11-26T16:56:00Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -174,7 +174,7 @@
         "author": "Jacob-Lasky",
         "license": "MIT",
         "last_updated": "2026-11-26T15:15:23Z",
-        "download_count": 919,
+        "download_count": 920,
         "latest_version": "2.0.2",
         "latest_changelog": "638",
         "latest_md5": "5ad31a25c47d4e2054b7ad8874cd176f",
@@ -208,7 +208,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T16:00:03Z",
-        "download_count": 996,
+        "download_count": 997,
         "latest_version": "1.26.3301548",
         "latest_changelog": "641",
         "latest_md5": "3008c81efb521b536b86a09508c1b514",
@@ -309,13 +309,13 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/iptv-checker/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-11-26T16:27:26Z",
-        "download_count": 5578,
-        "latest_version": "1.26.3301619",
-        "latest_changelog": "644",
-        "latest_md5": "6dd9a0454200a1b8dd6b3c6041b2941f",
-        "latest_sha256": "4c51417c9d24faf65560bf572b781d2fbb2a15268550b45e9838a6242c62f4b8",
-        "latest_url": "iptv-checker-1.26.3301619/iptv-checker-1.26.3301619.zip",
+        "last_updated": "2026-11-26T16:55:25Z",
+        "download_count": 5136,
+        "latest_version": "1.26.3301646",
+        "latest_changelog": "646",
+        "latest_md5": "a3d51d0e0af538a4f74b6d83cdc9047e",
+        "latest_sha256": "01eac73160da4e32f8d68dd827b3767e536c724da78658f3513266b5e63dfbc8",
+        "latest_url": "iptv-checker-1.26.3301646/iptv-checker-1.26.3301646.zip",
         "latest_size": 435,
         "min_dispatcharr_version": "v0.34.0"
       },
@@ -327,7 +327,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T16:50:58Z",
-        "download_count": 2991,
+        "download_count": 2993,
         "latest_version": "1.26.3301641",
         "latest_changelog": "645",
         "latest_md5": "9a0e7fed2a8b6beff24027f89c6ff35b",
@@ -527,7 +527,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T15:44:33Z",
-        "download_count": 3012,
+        "download_count": 3014,
         "latest_version": "1.26.3301534",
         "latest_changelog": "639",
         "latest_md5": "6e9a60bc32249944cdaa91a8414b8239",
@@ -725,7 +725,7 @@
         "author": "jeff-gooch",
         "license": "Unlicense",
         "last_updated": "2026-09-16T12:55:53Z",
-        "download_count": 2127,
+        "download_count": 2128,
         "latest_version": "1.40.1",
         "latest_changelog": "307",
         "latest_md5": "b55e865bef8184938cad616281e1895c",
@@ -736,5 +736,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhjoAAKCRB+wDprTCI0\nzlyJAP4y4pT2rXYmkaR7fgedvmTfITEEYF7fbNsvOOBvWzIVnAD/Y4Ahe9l+PEJY\n8S4QzPPlQ0O+Z0AMIySL0DTnLSdjwgM=\n=qcsM\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhkpgAKCRB+wDprTCI0\nztekAQDucSjjPKGkI0/XvRBogPY4CnoIZr/Pk39HOaEr/xGt4gD+IBBZxZTjURFZ\nVfkk13RhITqv/SM/SIQAEHQRKdqG/w8=\n=qcg1\n-----END PGP SIGNATURE-----"
 }
