@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T16:51:35Z",
+  "generated_at": "2026-11-26T23:25:55Z",
   "manifest": {
     "slug": "stream-guard",
     "name": "Stream Guard",
@@ -12,7 +12,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-21T12:40:07-05:00",
-    "download_count": 19,
+    "download_count": 21,
     "latest": {
       "version": "1.2.3",
       "commit_sha": "270e74cc3e8ac5d0ed26f25ee882b3e0a00735e3",
@@ -28,7 +28,7 @@
       "latest_url": "stream-guard-1.2.3/stream-guard-1.2.3.zip",
       "url": "stream-guard-1.2.3/stream-guard-1.2.3.zip",
       "size": 185,
-      "download_count": 19
+      "download_count": 21
     },
     "versions": [
       {
@@ -44,9 +44,9 @@
         "source_url": "https://github.com/funkasaur/dispatcharr-stream-guard/releases/download/v1.2.3/stream_guard-1.2.3.zip",
         "url": "stream-guard-1.2.3/stream-guard-1.2.3.zip",
         "size": 185,
-        "download_count": 19
+        "download_count": 21
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawhjngAKCRB+wDprTCI0\nzs/EAQCl8rAl7wZfhIgtEfn1wFYEAJeW3C6Y/JiVHtD/W6O32wEAsYuEfVXdO7Xf\n1sZNuGasLiuDJeOuT8bqJfvvVkKmhAA=\n=/OYW\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawjADAAKCRB+wDprTCI0\nzrW5AP9egJ0VPVfbWGQGQOb2rGaxAGEyYgCpjHsRR4cgJmMqHwEAtTIsGf+tS/k5\nzJxqvo88GQwa0MfWPwVo7OjZuu3DLg8=\n=izCs\n-----END PGP SIGNATURE-----"
 }
