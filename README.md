@@ -28,7 +28,7 @@ This branch contains all published plugin releases.
 | [`Event Channel Managarr`](#event-channel-managarr) | `1.26.3302104` | PiratesIRC | MIT | Automates channel visibility by hiding channels without events and showing those with events, based on EPG data and channel names. Optionally manages dummy EPG for channels without real EPG. |
 | [`Gluetun Rotate`](#gluetun-rotate) | `0.6.0` | PilaScat | MIT | Moves Gluetun to another VPN server when the IPTV provider refuses the current exit address. |
 | [`Guide Watchdog`](#guide-watchdog) | `1.2.2` | funkasaur | MIT | Alerts by Telegram/email when an EPG source errors, stops refreshing or is about to run out of listings, or guide coverage drops; one alert when it starts, one when it clears. |
-| [`IPTV Checker`](#iptv-checker) | `1.26.3301646` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
+| [`IPTV Checker`](#iptv-checker) | `1.26.3302104` | PiratesIRC | MIT | A Dispatcharr Plugin that goes through a playlist to check IPTV channels |
 | [`Lineuparr`](#lineuparr) | `1.26.3302148` | PiratesIRC | MIT | Mirror real-world provider channel lineups by creating channel groups, channels, and fuzzy-matching IPTV streams to them. |
 | [`Logo Library`](#logo-library) | `0.2.0` | sethwv | MIT | Assign channel logos from a catalog (like the tv-logo/tv-logos repo) using manual mappings or group-based automatic matching. |
 | [`M3U Expiration Notifier`](#m3u-expiration-notifier) | `1.0.0` | barryanderson | MIT | Checks your M3U account expiration dates on a schedule and emails you before (and when) they expire. |
@@ -376,7 +376,7 @@ Alerts by Telegram/email when an EPG source errors, stops refreshing or is about
 
 ### [IPTV Checker](https://github.com/Dispatcharr/Plugins/blob/releases/metadata/iptv-checker/README.md)
 
-**Version:** `1.26.3301646` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 16:55 UTC
+**Version:** `1.26.3302104` | **Author:** PiratesIRC | **Last Updated:** Nov 26 2026, 23:26 UTC
 
 A Dispatcharr Plugin that goes through a playlist to check IPTV channels
 
@@ -385,10 +385,10 @@ A Dispatcharr Plugin that goes through a playlist to check IPTV channels
 ![Dispatcharr min](https://img.shields.io/badge/Dispatcharr_min-v0.34.0-brightgreen?style=flat-square)
 
 **Downloads:**
-- [Latest Release (`1.26.3301646`)](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3301646/iptv-checker-1.26.3301646.zip)
+- [Latest Release (`1.26.3302104`)](https://github.com/Dispatcharr/Plugins/releases/download/iptv-checker-1.26.3302104/iptv-checker-1.26.3302104.zip)
 - [All Versions (10 available)](./metadata/iptv-checker)
 
-**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/iptv-checker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/iptv-checker/README.md) | **Last Change:** [`527c725`](https://github.com/Dispatcharr/Plugins/commit/527c72572bd4f41b112778bbb9a05f58b9c252f0)
+**Source:** [Browse](https://github.com/Dispatcharr/Plugins/tree/main/plugins/iptv-checker) | [README](https://github.com/Dispatcharr/Plugins/blob/main/plugins/iptv-checker/README.md) | **Last Change:** [`8754fb3`](https://github.com/Dispatcharr/Plugins/commit/8754fb34044158b4eb98e9f87739ab178b282e03)
 
 ---
 
@@ -863,4 +863,4 @@ curl https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/manifest.jso
 
 ---
 
-*Last updated: Nov 26 2026, 23:27 UTC*
+*Last updated: Nov 26 2026, 23:28 UTC*
