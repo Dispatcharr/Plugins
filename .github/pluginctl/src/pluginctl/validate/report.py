@@ -140,7 +140,8 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
                      codeql_capability_contract_findings: str = "",
                       prerelease_plugins: Optional[list[str]] = None,
                       has_new_plugin: bool = False, codeql_sandbox_detected: str = "",
-                      codeql_capability_detected: str = "") -> str:
+                       codeql_capability_detected: str = "", codeql_capability_info: str = "",
+                       codeql_capability_info_findings: str = "") -> str:
     L: list[str] = []
     overall_failed = fragment_failed
     if title_valid and title_valid != "true":
@@ -303,6 +304,15 @@ def build_comment(*, plugin_count: str, close_pr: bool, close_reason: str,
             L.append("")
             if codeql_capability_contract_findings:
                 L.append(codeql_capability_contract_findings.rstrip("\n"))
+
+        if codeql_capability_info and codeql_capability_info != "0" and codeql_result != "skipped":
+            L.append("")
+            L.append(f"**CodeQL found {codeql_capability_info} potential undeclared capability finding(s) "
+                     "in non-enforcing manifests**")
+            L.append("Informational only. These findings do not require review or block automatic merging.")
+            L.append("")
+            if codeql_capability_info_findings:
+                L.append(codeql_capability_info_findings.rstrip("\n"))
 
         if codeql_result and codeql_result not in ("skipped", "success"):
             L.append("")
@@ -544,6 +554,10 @@ def run(pr_number: str, pr_author: str, plugin_count: str, close_pr: bool,
         has_new_plugin=os.environ.get("HAS_NEW_PLUGIN") == "true",
         codeql_sandbox_detected=os.environ.get("CODEQL_SANDBOX_DETECTED", ""),
         codeql_capability_detected=os.environ.get("CODEQL_CAPABILITY_DETECTED", ""),
+        codeql_capability_info=os.environ.get("CODEQL_CAPABILITY_INFO", ""),
+        codeql_capability_info_findings=_read(
+            "codeql-capability-info-findings/codeql-capability-info-findings.md"
+        ),
     )
 
     with open("pr_comment.txt", "w", encoding="utf-8") as fh:

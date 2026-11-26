@@ -9,12 +9,8 @@
  */
 
 import python
+import PluginContext
 
-from Call call, Subscript helper, StringLiteral key, Name context
-where
-  call.getFunc() = helper and
-  helper.getObject() = context and
-  context.getId() = "context" and
-  helper.getIndex() = key and
-  key.getText() = "dispatch_internal_task"
+from Call call
+where contextHelperCall(call, "dispatch_internal_task")
 select call, "This internal task dispatch requires the `celery_dispatch` capability."

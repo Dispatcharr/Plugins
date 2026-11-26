@@ -9,12 +9,8 @@
  */
 
 import python
+import PluginContext
 
-from Call call, Subscript helper, StringLiteral key, Name context
-where
-  call.getFunc() = helper and
-  helper.getObject() = context and
-  context.getId() = "context" and
-  helper.getIndex() = key and
-  key.getText() = "dispatch_task"
+from Call call
+where contextHelperCall(call, "dispatch_task")
 select call, "This plugin task dispatch requires the `background_tasks` capability."

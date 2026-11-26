@@ -200,6 +200,16 @@ def test_capability_contract_is_informational_and_review_gated():
     assert "## 🎉 All validation checks passed!" in c
 
 
+def test_v1_capability_findings_are_shown_without_review():
+    c = report.build_comment(**_base_kwargs(
+        codeql_result="success", codeql_capability_info="1",
+        codeql_capability_info_findings="v1 finding"))
+    assert "v1 finding" in c
+    assert "do not require review or block automatic merging" in c
+    assert "**Manual review required:**" not in c
+    assert "## 🎉 All validation checks passed!" in c
+
+
 def test_codeql_skipped_notice_no_separator_when_only_success():
     c = report.build_comment(**_base_kwargs(codeql_result="success"))
     # success + no unscanned -> no findings separator, still passes

@@ -1,0 +1,2 @@
+| bad.py:4:1:4:44 | ControlFlowNode for Attribute() | This use of live proxy internals should declare the `proxy_internals` capability. |
+| bad.py:5:1:5:43 | ControlFlowNode for Attribute() | This use of live proxy internals should declare the `proxy_internals` capability. |
