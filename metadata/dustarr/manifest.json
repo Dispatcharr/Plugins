@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-28T06:12:18Z",
+  "generated_at": "2026-11-28T20:19:13Z",
   "manifest": {
     "slug": "dustarr",
     "name": "Dustarr",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-26T18:25:48-05:00",
-    "download_count": 1039,
+    "download_count": 1052,
     "latest": {
       "version": "1.26.3302105",
       "commit_sha": "bf84f6245a02b58af5d4c2f458a95c8cad147304",
@@ -32,7 +32,7 @@
       "latest_url": "dustarr-1.26.3302105/dustarr-1.26.3302105.zip",
       "url": "dustarr-1.26.3302105/dustarr-1.26.3302105.zip",
       "size": 151,
-      "download_count": 31
+      "download_count": 42
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.3302105/Dustarr-1.26.3302105.zip",
         "url": "dustarr-1.26.3302105/dustarr-1.26.3302105.zip",
         "size": 151,
-        "download_count": 31
+        "download_count": 42
       },
       {
         "version": "1.26.3301548",
@@ -93,7 +93,7 @@
         "source_url": "https://github.com/PiratesIRC/Dispatcharr-Dustarr-Plugin/releases/download/1.26.2901903/Dustarr-1.26.2901903.zip",
         "url": "dustarr-1.26.2901903/dustarr-1.26.2901903.zip",
         "size": 132,
-        "download_count": 342
+        "download_count": 344
       },
       {
         "version": "1.26.2832018",
@@ -157,5 +157,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawpwyAAKCRB+wDprTCI0\nzhSnAP4puqJr93syTcDCVDl7gI2EFCrjpCshacMN146FoaQ7FAD/aMrLoin+MT+b\nOIsoRXcxlPzFJLa8urLa/Re5hig3+A4=\n=Ie5G\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaws3RwAKCRB+wDprTCI0\nztuyAP93XeITbUzIyHyI+inL7JlLqQVGX3+r6Momh/txMMwIkQEA1GqGSw851Pxs\nHkb2CX5eRufbFeGXQR2w85bsm8ydXQU=\n=AvgM\n-----END PGP SIGNATURE-----"
 }

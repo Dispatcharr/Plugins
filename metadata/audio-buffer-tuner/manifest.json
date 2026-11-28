@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-28T06:12:18Z",
+  "generated_at": "2026-11-28T20:19:13Z",
   "manifest": {
     "slug": "audio-buffer-tuner",
     "name": "Audio Buffer Tuner",
@@ -16,7 +16,7 @@
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
     "last_updated": "2026-11-17T17:06:36Z",
-    "download_count": 212,
+    "download_count": 213,
     "latest": {
       "version": "0.4.2",
       "commit_sha": "ad0311fab4809bffbecf73e442fe4ab800442691",
@@ -32,7 +32,7 @@
       "latest_url": "audio-buffer-tuner-0.4.2/audio-buffer-tuner-0.4.2.zip",
       "url": "audio-buffer-tuner-0.4.2/audio-buffer-tuner-0.4.2.zip",
       "size": 98,
-      "download_count": 49
+      "download_count": 50
     },
     "versions": [
       {
@@ -48,7 +48,7 @@
         "source_url": "https://github.com/CtznSniiips/audio-buffer-tuner/releases/download/v0.4.2/audio-buffer-tuner.zip",
         "url": "audio-buffer-tuner-0.4.2/audio-buffer-tuner-0.4.2.zip",
         "size": 98,
-        "download_count": 49
+        "download_count": 50
       },
       {
         "version": "0.4.1",
@@ -97,5 +97,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawpwxgAKCRB+wDprTCI0\nzvj/AP0QCyV9AqMyWa3vVHU1ngommithVg9sSVfkoTHQT/FbvgD/Rj+RQ2+7qsHR\nDlbFgUpyI2y7vH0yRPvAKoyjwtuaXwQ=\n=yqtz\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCaws3RAAKCRB+wDprTCI0\nzoKWAQCIiufpq6Sw51CkE2OMHWdgXfLNf11qqeLaGst+3GjD6gEA4YETsumFlv7e\nN/s1EIVKUq66SJuSGejaXjgVJRDgiA4=\n=V7LN\n-----END PGP SIGNATURE-----"
 }
