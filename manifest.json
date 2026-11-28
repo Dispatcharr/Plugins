@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-28T21:17:50Z",
+  "generated_at": "2026-11-28T21:26:15Z",
   "manifest": {
     "registry_url": "https://github.com/Dispatcharr/Plugins",
     "registry_name": "Dispatcharr/Plugins",
@@ -241,14 +241,13 @@
         "manifest_url": "https://raw.githubusercontent.com/Dispatcharr/Plugins/releases/metadata/epg-janitor/manifest.json",
         "author": "PiratesIRC",
         "license": "MIT",
-        "last_updated": "2026-11-26T18:25:56-05:00",
-        "download_count": 4871,
-        "latest_version": "1.26.3302104",
-        "latest_changelog": "650",
-        "latest_md5": "b32f14cf20c0193e8d4b61183e019432",
-        "latest_sha256": "c50f7958a260481024ee4856e6e2c2cde2a389626e838413e476604b9aff5041",
-        "latest_url": "epg-janitor-1.26.3302104/epg-janitor-1.26.3302104.zip",
-        "latest_size": 504,
+        "last_updated": "2026-11-28T21:25:38Z",
+        "download_count": 4173,
+        "latest_version": "1.26.3322055",
+        "latest_md5": "742857fee0b11acabd04c9ed43cb9872",
+        "latest_sha256": "43ef5af89380af278c2d4057d908d8ace4e4b949f864d2949b02f7106430bdb4",
+        "latest_url": "epg-janitor-1.26.3322055/epg-janitor-1.26.3322055.zip",
+        "latest_size": 514,
         "min_dispatcharr_version": "v0.34.0"
       },
       {
@@ -310,7 +309,7 @@
         "author": "PiratesIRC",
         "license": "MIT",
         "last_updated": "2026-11-26T18:26:33-05:00",
-        "download_count": 4727,
+        "download_count": 4728,
         "latest_version": "1.26.3302104",
         "latest_changelog": "653",
         "latest_md5": "b7b100c80ee88a7f650f8e0dfe64cad6",
@@ -411,7 +410,7 @@
         "author": "write-erase",
         "license": "MIT",
         "last_updated": "2026-11-28T21:17:18Z",
-        "download_count": 391,
+        "download_count": 392,
         "latest_version": "2.3.0",
         "latest_changelog": "658",
         "latest_md5": "866fb32e6b2409f41f4662481c8d07c2",
@@ -736,5 +735,5 @@
       }
     ]
   },
-  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawtFBQAKCRB+wDprTCI0\nztX2AQD3qboZe4eslmEi07PE14SjWZYw04Zi+eaG4bgtE9UIjQD+MG65yFJVEosV\nzcXSb7tTBZM0e1yuWy7gGLB7+nYQVQ0=\n=fVEh\n-----END PGP SIGNATURE-----"
+  "signature": "-----BEGIN PGP SIGNATURE-----\n\niHUEABYKAB0WIQRGqTBWjg+5yoNM1/h+wDprTCI0zgUCawtG/QAKCRB+wDprTCI0\nzjSzAQDrDQaTrGD2iOzNj5rCEE19LTtMqvGW2Q7IUcV8KozZlwEAif+c6ECkqNhM\nNNYiBG4UPn7sznzLwpmEoFEsNiw3/gs=\n=ztZr\n-----END PGP SIGNATURE-----"
 }
