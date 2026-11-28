@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Packet Slapper",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Runs scheduled or on-demand Ookla speedtests through Dispatcharr's own network connection, with alerts and optional Discord posts and Prometheus metrics.",
   "author": "write-erase",
   "license": "MIT",
